@@ -102,3 +102,21 @@ targeted tests and the final574+29 Linux suite passed, while runtime/image bytes
 stayed unchanged. Existing private-value checks found no current leak. Final
 distribution uses a fresh manifest/CRC/current-byte/private-value check; source
 packaging cannot create a GitHub repository or substitute for GitHub CI.
+
+## 2026-10-29 — authenticated clean publication
+
+The connected GitHub account was authenticated, while the standalone CLI had no
+login. Git Credential Manager already held the intended DankWoodsmoke account;
+its standard noninteractive authentication succeeded without a new login,
+credential output or persistent CLI-token copy. A separate private repository
+was created and the exact sanitized archive became a new root commit using the
+GitHub noreply identity. No original private history was imported.
+
+Qualified source commit575ffff431edad9e00f2a9bf189b6117488ca26e passed actual
+GitHub workflow40884082179 with149 frontend and574+29 backend tests, build,
+dependency audits and real isolated bootstrap/role/database/pipeline gates.
+Publication metadata changes only documentation; application/runtime bytes stay
+fixed. Final commit and tag CI, distribution manifests/checksums and uploaded
+asset round-trip checks are recorded separately with the release before it is
+made public. No browser login, credential creation or platform messaging was
+needed.

@@ -1,0 +1,193 @@
+{
+  "recorded_at": "2026-10-29T13:45:54.620963+00:00",
+  "scope": "Actual GitHub-hosted qualified-source CI, separate from final publication/tag metadata and local live-provider/browser tests",
+  "repository": "DankWoodsmoke/conflict-monitor-public",
+  "run_id": 40884082179,
+  "run_url": "https://github.com/DankWoodsmoke/conflict-monitor-public/actions/runs/40884082179",
+  "commit": "575ffff431edad9e00f2a9bf189b6117488ca26e",
+  "status": "completed",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "name": "frontend",
+      "conclusion": "success",
+      "startedAt": "2026-10-29T13:40:24Z",
+      "completedAt": "2026-10-29T13:40:59Z",
+      "url": "https://github.com/DankWoodsmoke/conflict-monitor-public/actions/runs/40884082179/job/123483001513",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run test:compat",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm test",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run build",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm audit --audit-level=moderate",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "backend",
+      "conclusion": "success",
+      "startedAt": "2026-10-29T13:40:24Z",
+      "completedAt": "2026-10-29T13:41:49Z",
+      "url": "https://github.com/DankWoodsmoke/conflict-monitor-public/actions/runs/40884082179/job/123483001949",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pip install --upgrade pip setuptools",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pip install -r backend/requirements-dev.txt",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m ruff check --select E9,F63,F7,F82 backend tools",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pytest -q",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Generate isolated runtime password",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m app.bootstrap",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Use restricted runtime login for integration gates",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python tools/verify_database_role.py",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python tools/verify_postgis.py",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python tools/verify_live_pipeline.py",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python tools/release_gate.py --scan-only",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pip-audit",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "raw_metadata_sha256": "ac549e5d7b85529824b029265d5189b6b6ee16e37c8d48845401dcf0eedd6a2e",
+  "raw_log_sha256": "c10f5fa7a016077ed4d4c1253fb1c8c30502e2a36438a48544132745044f35a7",
+  "limits": [
+    "GitHub unit/integration/build/advisory checks are distinct from the local actual-provider/browser/MP4/hour observations.",
+    "No physical-device, source-truth, every-line or whole-host security claim.",
+    "Final tag CI and uploaded distribution hashes are recorded separately with release assets."
+  ],
+  "privacy": "Only CI metadata/step outcomes and hashes; no raw logs, credentials, publisher bodies, private paths or original repository history."
+}

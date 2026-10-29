@@ -66,4 +66,8 @@ This is a source release candidate. It does not establish every-line correctness
 general model accuracy, global source completeness, physical-device/screen-reader
 qualification, a 24/7 SLA or sustained public load. Existing-ID revision recovery
 needs a separate update cursor. The unreachable former VPS was not changed;
-unknown later server writes are not recovered. GitHub CI/publication has not run.
+unknown later server writes are not recovered. Actual GitHub CI passed the
+qualified source's frontend/backend, build/audit and restricted-role database/
+pipeline gates. The [release page](https://github.com/DankWoodsmoke/conflict-monitor-public/releases/tag/v0.2.0-rc.1)
+links the final tag, workflow result and independently checked source archive;
+this candidate is explicitly a prerelease.

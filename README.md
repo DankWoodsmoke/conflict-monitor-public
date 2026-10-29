@@ -2,7 +2,9 @@
 
 An OSINT workspace centered on one persistent Google Earth canvas, with source reports, regional ADS-B/AIS, thermal observations, replay, Media and Brief panels. It preserves original evidence and makes source age, unresolved locations and coverage limits visible. Optional local Qwen extraction and Piper/FFmpeg narrated source cards use no paid inference or speech API.
 
-**Status: 0.2.0-rc.1, locally qualified release candidate.** See [verification](docs/VERIFICATION.md) for executed checks and remaining limits. GitHub CI/publication has not run; the former server was not changed.
+**Version: 0.2.0-rc.1.** See the [release](https://github.com/DankWoodsmoke/conflict-monitor-public/releases/tag/v0.2.0-rc.1), [GitHub CI](https://github.com/DankWoodsmoke/conflict-monitor-public/actions/workflows/verify.yml) and [verification](docs/VERIFICATION.md) for downloads, executed checks and remaining limits. The former server and original private repository were not changed.
+
+[![Verify release candidate](https://github.com/DankWoodsmoke/conflict-monitor-public/actions/workflows/verify.yml/badge.svg?branch=codex%2Fpublic-release)](https://github.com/DankWoodsmoke/conflict-monitor-public/actions/workflows/verify.yml)
 
 ## Explore without credentials
 
@@ -80,7 +82,7 @@ npm run build
 npm audit
 ```
 
-The fresh-PostGIS gate is `python tools/verify_postgis.py` with `DATABASE_URL` naming a separately initialized `conflict_monitor_test` database. Initialize it through `python -m app.bootstrap` as the administrator, then run the gate as the restricted runtime role. The separate actual HTTP/WebSocket gate requires `python tools/verify_live_pipeline.py --public-feed`. Missing infrastructure returns an incomplete/failing exit code. See the workflow and [verification](docs/VERIFICATION.md) for exact setup and evidence; authored CI has not yet run on GitHub.
+The fresh-PostGIS gate is `python tools/verify_postgis.py` with `DATABASE_URL` naming a separately initialized `conflict_monitor_test` database. Initialize it through `python -m app.bootstrap` as the administrator, then run the gate as the restricted runtime role. The separate actual HTTP/WebSocket gate can additionally exercise `python tools/verify_live_pipeline.py --public-feed`. Missing infrastructure returns an incomplete/failing exit code. [Actual GitHub CI](docs/qualification/2026-10-29-github-qualified-source-ci.json) passed the hosted build/unit/advisory and restricted-role database/pipeline gates; local live-provider, Google/browser and media observations remain separate evidence.
 
 `python tools/release_gate.py --scan-only` checks the allowlisted public source. `--package-candidate` creates a source ZIP and SHA-256 manifest; it does not certify a stable release. Export excludes secrets, sessions, databases, logs, dependency trees and private Git history.
 

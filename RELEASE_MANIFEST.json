@@ -589,8 +589,8 @@
     },
     {
       "path": "docs/DECISIONS.md",
-      "bytes": 16717,
-      "sha256": "2481cc00921d3f28591fe74a0524aec7e1f021f83af1d3d2e0d4b99d80c187bf"
+      "bytes": 17796,
+      "sha256": "653ab579361fba2e786d588dfb25e3c51becf270f1d69880f4f0ac321cff1dae"
     },
     {
       "path": "docs/FREE_DATA_PIPELINE.md",
@@ -656,6 +656,11 @@
       "path": "docs/qualification/2026-10-29-earth-restart-and-video.json",
       "bytes": 2709,
       "sha256": "c92a9dd77a0c809c14bace685151142f8fc72d32417dda3dcc1d3fbd1ea771a4"
+    },
+    {
+      "path": "docs/qualification/2026-10-29-github-qualified-source-ci.json",
+      "bytes": 6512,
+      "sha256": "8c01e5465b45d3b32f2cd218286e5c04d4d7f766ba2d22f4fd6bf5a67fbf3518"
     },
     {
       "path": "docs/qualification/2026-10-29-historical-database-recovery.json",
@@ -994,8 +999,8 @@
     },
     {
       "path": "docs/RELEASE_NOTES.md",
-      "bytes": 4853,
-      "sha256": "f56b4da20c90402d2fe074608508013e192a8b1e0a2f2babeb9e41b0e08b5a3f"
+      "bytes": 5169,
+      "sha256": "e8961bdc366b778bcbe8f05b67bf0875c3eef952920e88dbc7ecb052e2391d9d"
     },
     {
       "path": "docs/RELEASE_NOTES_PHASE2.md",
@@ -1039,8 +1044,8 @@
     },
     {
       "path": "docs/VERIFICATION.md",
-      "bytes": 19808,
-      "sha256": "bfa5a3770b6c262624f52863736bfc28e8b2979fd9e6bcaac832774838ba334b"
+      "bytes": 20892,
+      "sha256": "8aba54fd60998b5d78a017abff22e69aee93d1cd8410691f94d00868c5f5ce53"
     },
     {
       "path": "docs/VERIFICATION_PHASE1.md",
@@ -1494,8 +1499,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 11247,
-      "sha256": "c11a852992fec5effdd344702c451eeec55401aab1fb26c261e1adf781d0264c"
+      "bytes": 11808,
+      "sha256": "ef3c7373221e9f9cd64d76efad95407cdde291a1290ec179cf714f5044e3b92b"
     },
     {
       "path": "SECURITY.md",
