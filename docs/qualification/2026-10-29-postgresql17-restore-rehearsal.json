@@ -1,0 +1,132 @@
+{
+  "observed_at": "2026-10-29T06:43:11.364683+00:00",
+  "status": "PASS",
+  "scope": "Isolated fresh-volume logical restore rehearsal; live volume not mounted or changed",
+  "database_image": "postgis/postgis:17-3.6@sha256:1ac10b2551ba84ae05db8e7da477afcd0a3fede99bcb7705da2ee157390cb095",
+  "source_versions": {
+    "postgresql": "17.5 (Debian 17.5-1.pgdg110+1)",
+    "postgis": "3.5.2"
+  },
+  "restored_versions": {
+    "postgresql": "17.11 (Debian 17.11-1.pgdg13+2)",
+    "postgis": "3.6.4"
+  },
+  "backup": {
+    "format": "custom pg_dump -Fc",
+    "bytes": 576804,
+    "sha256": "4678b0a034f35ab8210cbe5c105234be906b44e12dcc8e0d9b18496accc33292",
+    "storage": "Private; publisher bodies and credentials are not distributed"
+  },
+  "consistent_snapshot": "Read-only REPEATABLE READ transaction exports pg_export_snapshot(); PostgreSQL 17.11 pg_dump --snapshot consumes it before transaction release",
+  "checks": {
+    "patched_postgresql17": true,
+    "patched_postgis": true,
+    "all_application_table_counts_and_hashes": true,
+    "event_raw_sha256": true,
+    "receipt_content_hashes": true,
+    "checkpoints": true,
+    "spatial_values_match_columns": true,
+    "fresh_collation_version_matches_runtime": true,
+    "required_indexes_present": true,
+    "sequences_not_regressed": true,
+    "restored_replay_sql_sampling_bound": true,
+    "restored_replay_shapes_and_time_order": true,
+    "source_digest_original_snapshot_sha_recomputed": true,
+    "source_digest_references_resolve": true,
+    "public_digest_risk_remains_unassessed": true,
+    "meter_geography_query_at_stored_point": true,
+    "all_indexes_valid": true,
+    "all_23_index_definitions_unchanged": true
+  },
+  "application_table_counts": {
+    "events": 79,
+    "source_reports": 89,
+    "channel_checkpoints": 3,
+    "tracking_snapshots": 108,
+    "sitreps": 14,
+    "intel_media": 0,
+    "usage_log": 0,
+    "cost_config": 0,
+    "alembic_version": 1
+  },
+  "locale": {
+    "name": "en_US.utf8",
+    "source_glibc_collation_version": "2.31",
+    "fresh_target_collation_version": "2.41",
+    "target_matches_runtime": true
+  },
+  "spatial_plan": {
+    "nodes": [
+      "Bitmap Heap Scan",
+      "Bitmap Index Scan"
+    ],
+    "index": "ix_events_geography",
+    "planner_forced": false,
+    "distance_meters": 2000
+  },
+  "read_only_restored_services": {
+    "replay_source_snapshots": 108,
+    "replay_materialized": 16,
+    "stored_digest_id": 14,
+    "stored_digest_source_count": 12,
+    "meter_query_matched": 1
+  },
+  "separate_fresh_qualification_database": {
+    "migrations": "0001 through 0003 PASS",
+    "verify_postgis": "PASS",
+    "verify_live_pipeline_public_feed": "13 checks PASS",
+    "synthetic_rows_entered_live_restored_database": false
+  },
+  "commands": [
+    "docker run --rm --network container:<source-db> --env-file <private-pgpassword> <pinned-target-image> pg_dump -h 127.0.0.1 -U monitor -d conflict_monitor --snapshot <held-snapshot> --no-owner --no-acl -Fc",
+    "createdb -U monitor -T template0 --encoding UTF8 --locale en_US.utf8 conflict_monitor",
+    "pg_restore -U monitor -d conflict_monitor --no-owner --no-acl --exit-on-error <private-dump>",
+    "psql -U monitor -d conflict_monitor -v ON_ERROR_STOP=1 -c 'SELECT postgis_extensions_upgrade();'",
+    "alembic upgrade head (separate conflict_monitor_test database)",
+    "python tools/verify_postgis.py (separate conflict_monitor_test database)",
+    "python tools/verify_live_pipeline.py --public-feed (separate conflict_monitor_test database)"
+  ],
+  "source_receipts": [
+    {
+      "path": "Private pg17-rehearsal/rehearsal.json",
+      "sha256": "edfa3a2e71742048cdf60913d59a9dfb668dac1842adadf1f23c550a03dedaa4"
+    },
+    {
+      "path": "Private pg17-rehearsal/source-snapshot.json",
+      "sha256": "09cef82850b6d51f7573696b6dc2edee7b5e710d7e19154d24ecef8506556a71"
+    },
+    {
+      "path": "Private pg17-rehearsal/restored-snapshot.json",
+      "sha256": "9a11edd7df2281fe0d605e47577e532ef954dcbd464270357cc1648829db07f6"
+    },
+    {
+      "path": "Private pg17-rehearsal/readonly-checks.json",
+      "sha256": "d4ff9403fc9e4968982724b75170cd3934dc9089e81ab6cd23784f8c302e96b9"
+    },
+    {
+      "path": "Private pg17-rehearsal/fresh-migration.log",
+      "sha256": "388c9eae982fcae436900b05c9c2ac3da2c03220d5f07b0b073338b1c87422e4"
+    },
+    {
+      "path": "Private pg17-rehearsal/postgis-gate.log",
+      "sha256": "1bb37e6511d9336e0bde8aad23fd2915680b8e9c10064968f55d4966b9eef7f5"
+    },
+    {
+      "path": "Private pg17-rehearsal/pipeline-13.log",
+      "sha256": "6dbcc3c49fba9f4cc7c3ef9c6eff6f544a85565e36543a203a9bb56326d9adae"
+    }
+  ],
+  "primary_references": [
+    "https://www.postgresql.org/docs/17/release-17-11.html",
+    "https://github.com/postgis/docker-postgis#readme",
+    "https://postgis.net/docs/postgis_administration.html#upgrading"
+  ],
+  "limitations": [
+    "Isolated restore rehearsal only; live cutover has not occurred in this receipt.",
+    "The source volume was not attached to the target or changed.",
+    "Row/hash equality is persistence evidence, not factual accuracy of source reports.",
+    "Qualification fixture rows were confined to a separate database.",
+    "Package-vulnerability appraisal is separate; this is not a zero-vulnerability claim.",
+    "Final live backup, cutover equality and fresh image-bound observation require new receipts."
+  ]
+}

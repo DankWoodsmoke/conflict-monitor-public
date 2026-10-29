@@ -1,0 +1,1471 @@
+{
+  "started_at": "2026-10-29T05:24:06.376985+00:00",
+  "scope": "Same frozen12-case sample GPU-vs-CPU execution comparison after CPU model selection; not a new independent holdout or a production profile change",
+  "model": "qwen3.5:4b",
+  "num_gpu_request": 99,
+  "keep_alive": 0,
+  "before_gpu_memory_mib": "1242, 10769",
+  "frozen_fixture_sha256": "80dcaf62fb084530642a209c309d34cb04e199d6046d91c9e8c2f75da8135099",
+  "system_sha256": "dd73ee0c4fc9b4e2d424bcbf5b76f0138f12f432e3837f43c21715567e899d95",
+  "validator_sha256": "910e909ac1d09dc700382bb10091a1cae01329651bd5f820572a86bc9c5e1827",
+  "batches": [
+    {
+      "ids": [
+        101,
+        102,
+        103,
+        104
+      ],
+      "response_bytes": 954,
+      "response_sha256": "305fa89174b73244f838ff02ac7fc920a16128b1b56f291b2b3d889e18c46da3",
+      "done": true,
+      "done_reason": "stop",
+      "eval_count": 140,
+      "raw_model_content": "{\"reports\":[{\"id\":101,\"relevance\":\"relevant\",\"stance\":\"denied\",\"place_mentions\":[\"Homs\"],\"actor_mentions\":[\"army\"],\"quantity_mentions\":[]},{\"id\":102,\"relevance\":\"relevant\",\"stance\":\"reported\",\"place_mentions\":[\"Kharkiv\"],\"actor_mentions\":[\"hospital\"],\"quantity_mentions\":[\"12 to 18\"]},{\"id\":103,\"relevance\":\"relevant\",\"stance\":\"uncertain\",\"place_mentions\":[\"Erbil\"],\"actor_mentions\":[],\"quantity_mentions\":[]},{\"id\":104,\"relevance\":\"not_relevant\",\"stance\":\"reported\",\"place_mentions\":[\"Valencia\"],\"actor_mentions\":[],\"quantity_mentions\":[]}]}",
+      "production_gate": "accepted",
+      "accepted_ids": [
+        101,
+        102,
+        103,
+        104
+      ],
+      "seconds": 66.078
+    },
+    {
+      "ids": [
+        105,
+        106,
+        107,
+        108
+      ],
+      "response_bytes": 959,
+      "response_sha256": "8583b5fdc929513da4d66e047e8bd945dac417003ede2c7d605e1d7c0f021035",
+      "done": true,
+      "done_reason": "stop",
+      "eval_count": 137,
+      "raw_model_content": "{\"reports\":[{\"id\":105,\"relevance\":\"relevant\",\"stance\":\"denied\",\"place_mentions\":[\"دمشق\"],\"actor_mentions\":[\"الجيش\"],\"quantity_mentions\":[]},{\"id\":106,\"relevance\":\"relevant\",\"stance\":\"denied\",\"place_mentions\":[\"Bagdad\"],\"actor_mentions\":[\"El ministerio\"],\"quantity_mentions\":[]},{\"id\":107,\"relevance\":\"relevant\",\"stance\":\"uncertain\",\"place_mentions\":[\"Paris\",\"Jordan\"],\"actor_mentions\":[],\"quantity_mentions\":[]},{\"id\":108,\"relevance\":\"not_relevant\",\"stance\":\"uncertain\",\"place_mentions\":[\"Haifa\"],\"actor_mentions\":[],\"quantity_mentions\":[]}]}",
+      "production_gate": "accepted",
+      "accepted_ids": [
+        105,
+        106,
+        107,
+        108
+      ],
+      "seconds": 5.688
+    },
+    {
+      "ids": [
+        109,
+        110,
+        111,
+        112
+      ],
+      "response_bytes": 956,
+      "response_sha256": "235bf7c5b0d1ce2ae3ee1ec6307b89377581bb1907b5ebc6891236392bd8ab23",
+      "done": true,
+      "done_reason": "stop",
+      "eval_count": 143,
+      "raw_model_content": "{\"reports\":[{\"id\":109,\"relevance\":\"relevant\",\"stance\":\"uncertain\",\"place_mentions\":[],\"actor_mentions\":[\"Aid workers\"],\"quantity_mentions\":[]},{\"id\":110,\"relevance\":\"relevant\",\"stance\":\"denied\",\"place_mentions\":[\"Kyiv\"],\"actor_mentions\":[\"NATO\"],\"quantity_mentions\":[\"500\"]},{\"id\":111,\"relevance\":\"not_relevant\",\"stance\":\"uncertain\",\"place_mentions\":[],\"actor_mentions\":[],\"quantity_mentions\":[]},{\"id\":112,\"relevance\":\"relevant\",\"stance\":\"uncertain\",\"place_mentions\":[\"Goma\"],\"actor_mentions\":[\"Local rescuers\"],\"quantity_mentions\":[\"7 and 11\"]}]}",
+      "production_gate": "accepted",
+      "accepted_ids": [
+        109,
+        110,
+        111,
+        112
+      ],
+      "seconds": 5.531
+    }
+  ],
+  "raw_predictions": [
+    {
+      "id": 101,
+      "relevance": "relevant",
+      "stance": "denied",
+      "place_mentions": [
+        "Homs"
+      ],
+      "actor_mentions": [
+        "army"
+      ],
+      "quantity_mentions": []
+    },
+    {
+      "id": 102,
+      "relevance": "relevant",
+      "stance": "reported",
+      "place_mentions": [
+        "Kharkiv"
+      ],
+      "actor_mentions": [
+        "hospital"
+      ],
+      "quantity_mentions": [
+        "12 to 18"
+      ]
+    },
+    {
+      "id": 103,
+      "relevance": "relevant",
+      "stance": "uncertain",
+      "place_mentions": [
+        "Erbil"
+      ],
+      "actor_mentions": [],
+      "quantity_mentions": []
+    },
+    {
+      "id": 104,
+      "relevance": "not_relevant",
+      "stance": "reported",
+      "place_mentions": [
+        "Valencia"
+      ],
+      "actor_mentions": [],
+      "quantity_mentions": []
+    },
+    {
+      "id": 105,
+      "relevance": "relevant",
+      "stance": "denied",
+      "place_mentions": [
+        "دمشق"
+      ],
+      "actor_mentions": [
+        "الجيش"
+      ],
+      "quantity_mentions": []
+    },
+    {
+      "id": 106,
+      "relevance": "relevant",
+      "stance": "denied",
+      "place_mentions": [
+        "Bagdad"
+      ],
+      "actor_mentions": [
+        "El ministerio"
+      ],
+      "quantity_mentions": []
+    },
+    {
+      "id": 107,
+      "relevance": "relevant",
+      "stance": "uncertain",
+      "place_mentions": [
+        "Paris",
+        "Jordan"
+      ],
+      "actor_mentions": [],
+      "quantity_mentions": []
+    },
+    {
+      "id": 108,
+      "relevance": "not_relevant",
+      "stance": "uncertain",
+      "place_mentions": [
+        "Haifa"
+      ],
+      "actor_mentions": [],
+      "quantity_mentions": []
+    },
+    {
+      "id": 109,
+      "relevance": "relevant",
+      "stance": "uncertain",
+      "place_mentions": [],
+      "actor_mentions": [
+        "Aid workers"
+      ],
+      "quantity_mentions": []
+    },
+    {
+      "id": 110,
+      "relevance": "relevant",
+      "stance": "denied",
+      "place_mentions": [
+        "Kyiv"
+      ],
+      "actor_mentions": [
+        "NATO"
+      ],
+      "quantity_mentions": [
+        "500"
+      ]
+    },
+    {
+      "id": 111,
+      "relevance": "not_relevant",
+      "stance": "uncertain",
+      "place_mentions": [],
+      "actor_mentions": [],
+      "quantity_mentions": []
+    },
+    {
+      "id": 112,
+      "relevance": "relevant",
+      "stance": "uncertain",
+      "place_mentions": [
+        "Goma"
+      ],
+      "actor_mentions": [
+        "Local rescuers"
+      ],
+      "quantity_mentions": [
+        "7 and 11"
+      ]
+    }
+  ],
+  "runtime_vram_samples": [
+    {
+      "at": "2026-10-29T05:24:27.666270+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:27.922371+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:28.174107+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:28.429659+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:28.684652+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:28.940037+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:29.195561+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:29.461765+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:29.713735+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:29.977538+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:30.240754+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:30.492712+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:30.752146+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:31.007306+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:31.261782+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:31.529171+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:31.788062+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:32.055965+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:32.309811+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:32.563642+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:32.827426+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:33.079618+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:33.343282+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:33.609187+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:33.863966+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:34.128517+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:34.390189+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:34.652707+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:34.914101+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:35.179786+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:35.441910+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:35.696829+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:35.964996+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:36.233185+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:36.488544+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:36.757615+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:37.026582+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:37.291819+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:37.548570+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:37.814474+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:38.070991+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:38.335458+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:38.591483+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:38.843428+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:39.095962+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:39.349083+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:39.608675+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:39.873404+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:40.127332+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:40.391813+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:40.651720+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:40.914462+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:41.179440+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:41.431366+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:41.696490+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:41.948428+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:42.209329+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:42.464415+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:42.716729+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:42.970117+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:43.232230+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:43.497292+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:43.759129+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:44.012292+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:44.265208+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:44.530158+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:44.782514+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:45.049147+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:45.304842+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:45.565789+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:45.821686+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:46.083150+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:46.336811+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:46.596074+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:46.860356+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:47.115588+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:47.382901+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:47.649591+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:47.902026+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:48.154842+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:48.412058+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:48.675935+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:48.943107+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:49.195789+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:49.461542+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:49.714162+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:49.968146+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:50.227623+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:50.489435+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:50.755761+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:51.011326+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:51.268295+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:51.524464+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:51.788413+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:52.040242+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:52.294676+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:52.555274+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:52.823279+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:53.079559+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:53.334636+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:53.586663+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:53.844994+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:54.110706+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:54.363271+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:54.622833+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:54.882614+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:55.136200+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:55.395370+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:55.652012+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:55.905274+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:56.157711+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:56.411575+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:56.669063+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:56.929964+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:57.184718+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:57.443012+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:57.699727+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:57.963297+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:58.226253+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:58.483172+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:58.746599+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:59.001004+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:59.264231+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:59.519490+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:24:59.779713+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:00.041149+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:00.297322+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:00.548851+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:00.804112+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:01.062678+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:01.324567+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:01.575908+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:01.837814+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:02.097510+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:02.358475+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:02.613981+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:02.874421+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:03.141703+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:03.399691+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:03.652424+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:03.913260+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:04.169098+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:04.434926+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:04.691287+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:04.957554+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:05.215013+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:05.475493+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:05.742270+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:05.999081+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:06.256690+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:06.510410+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:06.776870+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:07.034205+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:07.299280+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:07.565887+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:07.820205+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:08.075032+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:08.336717+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:08.589731+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:08.843668+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:09.098942+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:09.351791+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:09.605632+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:09.868326+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:10.133777+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:10.392497+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:10.648036+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:10.900106+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:11.160566+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:11.411780+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:11.671717+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:11.936109+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:12.194412+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:12.446507+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:12.700395+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:16.824970+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:17.080681+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:17.337486+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:17.595668+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:17.861052+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:18.116079+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:18.371598+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:22.275526+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:22.533406+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:22.798925+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:23.052384+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:23.305963+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:23.567483+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    },
+    {
+      "at": "2026-10-29T05:25:23.820197+00:00",
+      "size_vram": 3176440789,
+      "size": 3176440789,
+      "context_length": 8192
+    }
+  ],
+  "production_config_modified": false,
+  "gool_services_modified": false,
+  "downloads": false,
+  "model_digest": "d8b0f5e9760cd1682034f292d7ef72ec46f432149be0df7574bf2d6e92e38c04",
+  "explicit_unload_sent": false,
+  "model_absent_after_unload": true,
+  "metrics": {
+    "relevance": {
+      "correct": 10,
+      "total": 12,
+      "by_label": {
+        "relevant": {
+          "tp": 9,
+          "fp": 0,
+          "fn": 1,
+          "precision": 1.0,
+          "recall": 0.9
+        },
+        "not_relevant": {
+          "tp": 1,
+          "fp": 2,
+          "fn": 0,
+          "precision": 0.3333333333333333,
+          "recall": 1.0
+        },
+        "uncertain": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "precision": null,
+          "recall": 0.0
+        }
+      },
+      "abstentions": 0
+    },
+    "stance": {
+      "correct": 11,
+      "total": 12,
+      "by_label": {
+        "reported": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "denied": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 1,
+          "precision": 1.0,
+          "recall": 0.8
+        },
+        "uncertain": {
+          "tp": 5,
+          "fp": 1,
+          "fn": 0,
+          "precision": 0.8333333333333334,
+          "recall": 1.0
+        }
+      },
+      "abstentions": 6
+    },
+    "places": {
+      "tp": 10,
+      "fp": 1,
+      "fn": 0,
+      "precision": 0.9090909090909091,
+      "recall": 1.0
+    },
+    "required_actor_cases": [
+      {
+        "id": 107,
+        "expected": "Jordan",
+        "found": false
+      },
+      {
+        "id": 110,
+        "expected": "NATO",
+        "found": true
+      }
+    ],
+    "quantity_range_cases": [
+      {
+        "id": 102,
+        "expected_numbers": [
+          "12",
+          "18"
+        ],
+        "all_found": true
+      },
+      {
+        "id": 110,
+        "expected_numbers": [
+          "500"
+        ],
+        "all_found": true
+      },
+      {
+        "id": 112,
+        "expected_numbers": [
+          "7",
+          "11"
+        ],
+        "all_found": true
+      }
+    ]
+  },
+  "accepted_reports": 12,
+  "rejected_batches": 0,
+  "seconds": 77.29700000000001,
+  "cpu_baseline_seconds": 80.578,
+  "peak_runtime_size_vram": 3176440789,
+  "after_gpu_memory_mib": "1131, 10880",
+  "ended_at": "2026-10-29T05:25:24.206425+00:00",
+  "cpu_to_gpu_elapsed_speedup": 1.042446666752914,
+  "performance_interpretation": "Cold initialization included: total1.04x CPU; last two later GPU requests5.688/5.531s versus CPU25.593/28.282s (~4.8x), not a universal throughput guarantee."
+}

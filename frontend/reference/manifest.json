@@ -1,0 +1,26 @@
+{
+  "scope": "Historical reference, not part of the active Earth application",
+  "source_paths_and_sha256": {
+    "src/components/AccuracyLayer.tsx": "d163c56a08d3f5e805479c851e307eb3d141a56fe441f7d84f8fb8e623555742",
+    "src/components/AircraftLayer.tsx": "64d8cd9183855a7faa543ca0cff93cef4e2b9622162f8a50f26c5aa2abed5799",
+    "src/components/AlertPanel.tsx": "aceca903cd9a12183696933a81408212b4555617e8d9f99427872a4a80c7526a",
+    "src/components/EscalationGauge.tsx": "d926bb90c3418c8cee9963074ff5c4ffb4c494b0932da37928a3af2d3e096718",
+    "src/components/GlobeView.tsx": "35045ed98bb4efaac6f983ab283d05e69cfe602bcb62ef71af0bfffba7823276",
+    "src/components/IntelPulsePanel.tsx": "00fafa14bd8b8328b848b95287e630dfcccb077290593183fda7f92391ee84e6",
+    "src/components/MapPanel.tsx": "22993a8df0c265353ffa94eaca29ec04a1f497442473cf01f341b697d68a5a90",
+    "src/components/SignalPanel.tsx": "abbf9dd1040783ba46d8fecd830c49d7305630aa3ddd66eb7bcaf733d01a984f",
+    "src/components/StrategicPulseBar.tsx": "71d88ef094093db77eb9ea01b15a07d4f55bd1312a9d9f78eeeef55a9c6982ca",
+    "src/StrategicPulseBar.tsx": "04046c012ebeda9669801695bcae47d54ca908af5d85cd9730f50eb44f21b224",
+    "src/lib/release.test.ts": "afec4eb0f263eadb1df4937ccb46e808f9da25e072c28455358fe6fd676669a1"
+  },
+  "removed_optional_dependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.5.0",
+    "three": "^0.183.2",
+    "leaflet": "^1.9.4",
+    "resium": "^1.18.0",
+    "satellite.js": "^7.0.0",
+    "@types/leaflet": "^1.9.14",
+    "@types/three": "^0.183.1"
+  }
+}

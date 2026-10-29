@@ -1,0 +1,1098 @@
+{
+  "status": "PASS_BOUNDED_OBSERVED_SAMPLE",
+  "recorded_at": "2026-10-29T09:25:17.162264+00:00",
+  "started_at": "2026-10-29T08:55:00.032017+00:00",
+  "finished_at": "2026-10-29T09:25:01.085569+00:00",
+  "requested_seconds": 1800,
+  "elapsed_seconds": 1800.625,
+  "backend_image_id": "sha256:4202bfc7add922228c024623b1879ccec7eaf617c718d583b69568b440f90788",
+  "scope": "One passive30minute post-backlog production RSS observation. HTTP/WS/read-only ordinary-role SQL only; no second poller, manual trigger, models, Telegram clients, provider keys, publisher bodies or article URLs persisted.",
+  "capture_script_sha256": "fd3c88a96693dfe013450e681cfe94d0c809c2e40e2d597d78bad53e8026ad50",
+  "original_private_receipt_sha256": "6cd60cb702da6d151f3d26d69d32c166c9bbd9bdf652f237682380daa6453861",
+  "database_clock_client_brackets": {
+    "before": {
+      "client_sent_at": "2026-10-29T08:55:00.193686+00:00",
+      "client_received_at": "2026-10-29T08:55:00.444569+00:00",
+      "value": {
+        "database": "conflict_monitor",
+        "user": "monitor",
+        "database_clock": "2026-10-29T08:55:00.334761+00:00",
+        "max_id": 763,
+        "paid_usage_rows": 0,
+        "runtime_privileges": {
+          "superuser": false,
+          "create_db": false,
+          "create_role": false,
+          "replication": false
+        }
+      }
+    },
+    "after": {
+      "client_sent_at": "2026-10-29T09:25:00.713933+00:00",
+      "client_received_at": "2026-10-29T09:25:00.935148+00:00",
+      "value": {
+        "database": "conflict_monitor",
+        "user": "monitor",
+        "database_clock": "2026-10-29T09:25:00.826794+00:00",
+        "max_id": 776,
+        "paid_usage_rows": 0,
+        "runtime_privileges": {
+          "superuser": false,
+          "create_db": false,
+          "create_role": false,
+          "replication": false
+        }
+      }
+    }
+  },
+  "actual_rss_ws_deliveries": 8,
+  "source_delivery_counts": {
+    "rss_middle_east_monitor_candidate": 4,
+    "rss_rfi": 1,
+    "rss_consortium_news_candidate": 1,
+    "rss_oilprice": 1,
+    "rss_naked_capitalism_candidate": 1
+  },
+  "configured_sources_without_observed_ws_delivery": [
+    "rss_972_magazine_candidate",
+    "rss_aljazeera",
+    "rss_antiwar_blog_candidate",
+    "rss_bbc_mideast",
+    "rss_caitlin_johnstone_candidate",
+    "rss_chris_hedges_candidate",
+    "rss_cpj_candidate",
+    "rss_defense_one",
+    "rss_democracy_now_candidate",
+    "rss_dropsitenews_rss",
+    "rss_dw_world",
+    "rss_freightwaves",
+    "rss_geopolitical_economy_candidate",
+    "rss_grayzone_candidate",
+    "rss_greenwald_candidate",
+    "rss_guardian_mideast",
+    "rss_gzero_candidate",
+    "rss_hellenic_shipping",
+    "rss_jpost",
+    "rss_middle_east_eye",
+    "rss_peak_prosperity_candidate",
+    "rss_responsible_statecraft_candidate",
+    "rss_splash247",
+    "rss_the_war_zone",
+    "rss_times_of_israel",
+    "rss_war_on_rocks"
+  ],
+  "api_new_rss_ids_without_observed_ws_delivery": [],
+  "websocket_connections": [
+    {
+      "connected_at": "2026-10-29T08:55:00.746360+00:00",
+      "closed_at": "2026-10-29T09:25:00.461299+00:00"
+    }
+  ],
+  "observer_errors": [],
+  "source_clock_basis_counts": {
+    "publication": 8,
+    "updated": 0,
+    "unknown_or_other": 0
+  },
+  "observed_signed_clock_differences_seconds": {
+    "all_source_clocks_to_event_created": {
+      "samples": 8,
+      "min": 3.466901,
+      "median": 22.3468735,
+      "p90_nearest_rank": 174.504974,
+      "max": 174.504974,
+      "negative_samples_retained": 0
+    },
+    "publication_clocks_to_event_created_only": {
+      "samples": 8,
+      "min": 3.466901,
+      "median": 22.3468735,
+      "p90_nearest_rank": 174.504974,
+      "max": 174.504974,
+      "negative_samples_retained": 0
+    },
+    "updated_clocks_to_event_created_only": {
+      "samples": 0,
+      "min": null,
+      "median": null,
+      "p90_nearest_rank": null,
+      "max": null,
+      "negative_samples_retained": 0
+    },
+    "event_created_to_websocket_received": {
+      "samples": 8,
+      "min": 0.006268,
+      "median": 0.0082155,
+      "p90_nearest_rank": 0.022418,
+      "max": 0.022418,
+      "negative_samples_retained": 0
+    }
+  },
+  "events": [
+    {
+      "event": {
+        "id": 764,
+        "source": "rss_middle_east_monitor_candidate",
+        "timestamp": "2026-10-29T08:56:44Z",
+        "created_at": "2026-10-29T08:56:53.210100Z",
+        "event_type": "unclassified",
+        "severity": 0,
+        "lat": null,
+        "lon": null,
+        "classification_status": "not_requested",
+        "geolocation_precision": "unknown",
+        "raw_sha256": "dc3007ebe1a9a598b1482d3bfb0d461a2668ddfbed59f29421d8a6db41b5833d",
+        "source_url_sha256": "bf31f22a5d605165834280a21d39ed40841cac7244af5a0b490ffc0deacc1559"
+      },
+      "websocket_received_at": "2026-10-29T08:56:53.217488+00:00",
+      "repeated_deliveries": 0,
+      "db_api_exact_hash_clock_receipt_binding": true,
+      "publisher_to_creation_seconds": 9.2101,
+      "creation_to_websocket_receipt_seconds": 0.007388,
+      "source_receipt_clock_binding": {
+        "id": 764,
+        "identity": "0b97503ff25f2ccb777883a7b2571263da23d209e4d8a7d95a67a0ecf88a8d0e",
+        "content_hash": "dc3007ebe1a9a598b1482d3bfb0d461a2668ddfbed59f29421d8a6db41b5833d",
+        "ledger_received_at": "2026-10-29T08:56:53.206818+00:00",
+        "source_time_basis": "source_publication_time",
+        "original_feed_retrieved_at": "2026-10-29T08:56:53.199624+00:00"
+      }
+    },
+    {
+      "event": {
+        "id": 768,
+        "source": "rss_middle_east_monitor_candidate",
+        "timestamp": "2026-10-29T09:02:34Z",
+        "created_at": "2026-10-29T09:02:53.126992Z",
+        "event_type": "unclassified",
+        "severity": 0,
+        "lat": null,
+        "lon": null,
+        "classification_status": "not_requested",
+        "geolocation_precision": "unknown",
+        "raw_sha256": "903a8c2347da76751e6623f60fdcf804ab4f84a5b201fc245c7480e7e28211f0",
+        "source_url_sha256": "e1ca7ff6e713f0fa6537072844b5b0dbc7ca53b1dce08349721e45ea0e6da020"
+      },
+      "websocket_received_at": "2026-10-29T09:02:53.134443+00:00",
+      "repeated_deliveries": 0,
+      "db_api_exact_hash_clock_receipt_binding": true,
+      "publisher_to_creation_seconds": 19.126992,
+      "creation_to_websocket_receipt_seconds": 0.007451,
+      "source_receipt_clock_binding": {
+        "id": 768,
+        "identity": "4cefcf2c8b2f944892ab9f2004a311f30bb0c40b971d1c6aa2a26309b8dda638",
+        "content_hash": "903a8c2347da76751e6623f60fdcf804ab4f84a5b201fc245c7480e7e28211f0",
+        "ledger_received_at": "2026-10-29T09:02:53.123637+00:00",
+        "source_time_basis": "source_publication_time",
+        "original_feed_retrieved_at": "2026-10-29T09:02:53.118388+00:00"
+      }
+    },
+    {
+      "event": {
+        "id": 769,
+        "source": "rss_rfi",
+        "timestamp": "2026-10-29T08:59:59Z",
+        "created_at": "2026-10-29T09:02:53.504974Z",
+        "event_type": "unclassified",
+        "severity": 0,
+        "lat": null,
+        "lon": null,
+        "classification_status": "not_requested",
+        "geolocation_precision": "unknown",
+        "raw_sha256": "7e6955dbc4d9195dbdb986039e75d5ffe173b5fc3a56bcb739c0b9ea1b701a3b",
+        "source_url_sha256": "c257f5a71de1677a96bc1240628d769bcdec300aa2ad7c6e1f1672e9b8387952"
+      },
+      "websocket_received_at": "2026-10-29T09:02:53.511242+00:00",
+      "repeated_deliveries": 0,
+      "db_api_exact_hash_clock_receipt_binding": true,
+      "publisher_to_creation_seconds": 174.504974,
+      "creation_to_websocket_receipt_seconds": 0.006268,
+      "source_receipt_clock_binding": {
+        "id": 769,
+        "identity": "41d6426a5dfaedfeac9adc50e11a9ef977c8be0134378bb4c79be6454fc2785b",
+        "content_hash": "7e6955dbc4d9195dbdb986039e75d5ffe173b5fc3a56bcb739c0b9ea1b701a3b",
+        "ledger_received_at": "2026-10-29T09:02:53.501978+00:00",
+        "source_time_basis": "source_publication_time",
+        "original_feed_retrieved_at": "2026-10-29T09:02:53.497231+00:00"
+      }
+    },
+    {
+      "event": {
+        "id": 771,
+        "source": "rss_middle_east_monitor_candidate",
+        "timestamp": "2026-10-29T09:10:20Z",
+        "created_at": "2026-10-29T09:10:54.766863Z",
+        "event_type": "unclassified",
+        "severity": 0,
+        "lat": null,
+        "lon": null,
+        "classification_status": "not_requested",
+        "geolocation_precision": "unknown",
+        "raw_sha256": "fc73da0ee3723b0b0db59353b10e99b2c03a729cb78fe869634e56f630e4ffac",
+        "source_url_sha256": "fc7e759bb91d1070a0f6f96ebe8c7aa7ea1fa818969f4e6e61528695c582cb1b"
+      },
+      "websocket_received_at": "2026-10-29T09:10:54.773656+00:00",
+      "repeated_deliveries": 0,
+      "db_api_exact_hash_clock_receipt_binding": true,
+      "publisher_to_creation_seconds": 34.766863,
+      "creation_to_websocket_receipt_seconds": 0.006793,
+      "source_receipt_clock_binding": {
+        "id": 771,
+        "identity": "fd74f4fa3abc5129b8ae64d8d959c9c432ece470c03aaa5628b642316153df7d",
+        "content_hash": "fc73da0ee3723b0b0db59353b10e99b2c03a729cb78fe869634e56f630e4ffac",
+        "ledger_received_at": "2026-10-29T09:10:54.763857+00:00",
+        "source_time_basis": "source_publication_time",
+        "original_feed_retrieved_at": "2026-10-29T09:10:54.759827+00:00"
+      }
+    },
+    {
+      "event": {
+        "id": 772,
+        "source": "rss_consortium_news_candidate",
+        "timestamp": "2026-10-29T09:13:28Z",
+        "created_at": "2026-10-29T09:13:53.566755Z",
+        "event_type": "unclassified",
+        "severity": 0,
+        "lat": null,
+        "lon": null,
+        "classification_status": "not_requested",
+        "geolocation_precision": "unknown",
+        "raw_sha256": "152112fbe1e74ecc4bf8cabdc135992f073f031d29a10548e0e135746828924e",
+        "source_url_sha256": "5618c028fb922b6ee4b9817b12764bd5ed306543d189d601a21eafabfb270520"
+      },
+      "websocket_received_at": "2026-10-29T09:13:53.576213+00:00",
+      "repeated_deliveries": 0,
+      "db_api_exact_hash_clock_receipt_binding": true,
+      "publisher_to_creation_seconds": 25.566755,
+      "creation_to_websocket_receipt_seconds": 0.009458,
+      "source_receipt_clock_binding": {
+        "id": 772,
+        "identity": "8e7cd35c5bbffd6f97687c033189eb7b38ff85baecb31df69a91ef2c5eb4141a",
+        "content_hash": "152112fbe1e74ecc4bf8cabdc135992f073f031d29a10548e0e135746828924e",
+        "ledger_received_at": "2026-10-29T09:13:53.563204+00:00",
+        "source_time_basis": "source_publication_time",
+        "original_feed_retrieved_at": "2026-10-29T09:13:53.558039+00:00"
+      }
+    },
+    {
+      "event": {
+        "id": 773,
+        "source": "rss_oilprice",
+        "timestamp": "2026-10-29T09:15:00Z",
+        "created_at": "2026-10-29T09:15:53.307266Z",
+        "event_type": "unclassified",
+        "severity": 0,
+        "lat": null,
+        "lon": null,
+        "classification_status": "not_requested",
+        "geolocation_precision": "unknown",
+        "raw_sha256": "cf8aec760770b20c383a427865eb6dd074446dcf374c6615e8a0b17d4f2c0798",
+        "source_url_sha256": "b735609877cd98ba783ee6757f7f05ec2bb7a3b19a053274c7ae02cf763ca8b7"
+      },
+      "websocket_received_at": "2026-10-29T09:15:53.316246+00:00",
+      "repeated_deliveries": 0,
+      "db_api_exact_hash_clock_receipt_binding": true,
+      "publisher_to_creation_seconds": 53.307266,
+      "creation_to_websocket_receipt_seconds": 0.00898,
+      "source_receipt_clock_binding": {
+        "id": 773,
+        "identity": "c0d37914b25a1ad3e4a97d4ab3bb53d30fa16d868b5322e120fb8d7533f27216",
+        "content_hash": "cf8aec760770b20c383a427865eb6dd074446dcf374c6615e8a0b17d4f2c0798",
+        "ledger_received_at": "2026-10-29T09:15:53.304263+00:00",
+        "source_time_basis": "source_publication_time",
+        "original_feed_retrieved_at": "2026-10-29T09:15:53.299288+00:00"
+      }
+    },
+    {
+      "event": {
+        "id": 775,
+        "source": "rss_middle_east_monitor_candidate",
+        "timestamp": "2026-10-29T09:20:51Z",
+        "created_at": "2026-10-29T09:20:54.466901Z",
+        "event_type": "unclassified",
+        "severity": 0,
+        "lat": null,
+        "lon": null,
+        "classification_status": "not_requested",
+        "geolocation_precision": "unknown",
+        "raw_sha256": "5cd4c08f91cd8bccf96acc304923ee39c5db43c3111055c454f04438d7411ded",
+        "source_url_sha256": "5cdcd4e7ab70aa215470a32384396ccf4e5631a8d810463307d4c822be311ec8"
+      },
+      "websocket_received_at": "2026-10-29T09:20:54.489319+00:00",
+      "repeated_deliveries": 0,
+      "db_api_exact_hash_clock_receipt_binding": true,
+      "publisher_to_creation_seconds": 3.466901,
+      "creation_to_websocket_receipt_seconds": 0.022418,
+      "source_receipt_clock_binding": {
+        "id": 775,
+        "identity": "4e59aa6f5e1f231d33b0945d2da971a1c9740aa03d59266dc69552fdedd3b144",
+        "content_hash": "5cd4c08f91cd8bccf96acc304923ee39c5db43c3111055c454f04438d7411ded",
+        "ledger_received_at": "2026-10-29T09:20:54.462987+00:00",
+        "source_time_basis": "source_publication_time",
+        "original_feed_retrieved_at": "2026-10-29T09:20:54.455328+00:00"
+      }
+    },
+    {
+      "event": {
+        "id": 776,
+        "source": "rss_naked_capitalism_candidate",
+        "timestamp": "2026-10-29T09:23:46Z",
+        "created_at": "2026-10-29T09:23:53.485342Z",
+        "event_type": "unclassified",
+        "severity": 0,
+        "lat": null,
+        "lon": null,
+        "classification_status": "not_requested",
+        "geolocation_precision": "unknown",
+        "raw_sha256": "8b214e44993fbd09ef085684a064dc11590e7c97f724c79f26b5d17096fd8a8a",
+        "source_url_sha256": "135a26c60246be58fc1122c87339accc27a556be4ff1a177766b77b0b9d9dcd9"
+      },
+      "websocket_received_at": "2026-10-29T09:23:53.495262+00:00",
+      "repeated_deliveries": 0,
+      "db_api_exact_hash_clock_receipt_binding": true,
+      "publisher_to_creation_seconds": 7.485342,
+      "creation_to_websocket_receipt_seconds": 0.00992,
+      "source_receipt_clock_binding": {
+        "id": 776,
+        "identity": "5d82ea1b3825d392dbd1bcdbce50a387604e2e2d66d793fa611a765b595c3221",
+        "content_hash": "8b214e44993fbd09ef085684a064dc11590e7c97f724c79f26b5d17096fd8a8a",
+        "ledger_received_at": "2026-10-29T09:23:53.480311+00:00",
+        "source_time_basis": "source_publication_time",
+        "original_feed_retrieved_at": "2026-10-29T09:23:53.474492+00:00"
+      }
+    }
+  ],
+  "sampled_health_and_cycles": [
+    {
+      "observed_at": "2026-10-29T08:55:00.682898+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T08:54:52.062358+00:00",
+        "finished_at": "2026-10-29T08:54:54.627719+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 3,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.565381,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T08:56:00.825687+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T08:55:52.060835+00:00",
+        "finished_at": "2026-10-29T08:55:55.453022+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 3,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 3.39221,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T08:57:00.866023+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T08:56:52.060413+00:00",
+        "finished_at": "2026-10-29T08:56:54.455314+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 3,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.39492,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T08:58:00.884959+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T08:57:52.057500+00:00",
+        "finished_at": "2026-10-29T08:57:54.462541+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 0,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.405053,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T08:59:00.919689+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T08:58:52.056893+00:00",
+        "finished_at": "2026-10-29T08:58:54.826412+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 0,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.769543,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:00:00.946321+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T08:59:52.055425+00:00",
+        "finished_at": "2026-10-29T08:59:55.107970+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 0,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 3.05257,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:01:00.970731+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:00:52.053345+00:00",
+        "finished_at": "2026-10-29T09:00:54.418693+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 0,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.365365,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:02:01.020199+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:01:52.051509+00:00",
+        "finished_at": "2026-10-29T09:01:54.622229+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 0,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.570737,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:03:01.053050+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:02:52.049961+00:00",
+        "finished_at": "2026-10-29T09:02:54.314428+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 4,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.26449,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:04:01.083461+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:03:52.046857+00:00",
+        "finished_at": "2026-10-29T09:03:54.821104+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 1,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.774263,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:05:01.116342+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:04:52.045677+00:00",
+        "finished_at": "2026-10-29T09:04:54.534192+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 0,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.488536,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:06:01.163268+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:05:52.043957+00:00",
+        "finished_at": "2026-10-29T09:05:55.141356+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 0,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 3.097417,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:07:01.210107+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:06:52.041972+00:00",
+        "finished_at": "2026-10-29T09:06:56.352464+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 0,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 4.310507,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:08:01.242888+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:07:52.040057+00:00",
+        "finished_at": "2026-10-29T09:07:54.496924+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 1,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.456887,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:09:01.273823+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:08:52.038356+00:00",
+        "finished_at": "2026-10-29T09:08:55.071630+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 0,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 3.033289,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:10:01.302804+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:09:52.036303+00:00",
+        "finished_at": "2026-10-29T09:09:54.497183+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 0,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.460897,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:11:01.334862+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:10:52.035362+00:00",
+        "finished_at": "2026-10-29T09:10:54.792553+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 3,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.757231,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:12:01.367103+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:11:52.033723+00:00",
+        "finished_at": "2026-10-29T09:11:54.554437+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 0,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.520731,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:13:01.396037+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:12:52.031471+00:00",
+        "finished_at": "2026-10-29T09:12:54.636111+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 0,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.604662,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:14:01.422820+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:13:52.029736+00:00",
+        "finished_at": "2026-10-29T09:13:54.672453+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 2,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.642736,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:15:01.458245+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:14:52.028007+00:00",
+        "finished_at": "2026-10-29T09:14:54.728969+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 1,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.700984,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:16:01.516346+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:15:52.026557+00:00",
+        "finished_at": "2026-10-29T09:15:54.529482+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 2,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.502945,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:17:01.557518+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:16:52.024840+00:00",
+        "finished_at": "2026-10-29T09:16:54.517016+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 0,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.492201,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:18:01.609594+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:17:52.023718+00:00",
+        "finished_at": "2026-10-29T09:17:54.911036+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 0,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.887343,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:19:01.660099+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:18:52.021687+00:00",
+        "finished_at": "2026-10-29T09:18:54.995429+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 0,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.973761,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:20:01.693512+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:19:52.019488+00:00",
+        "finished_at": "2026-10-29T09:19:54.887285+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 0,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.867817,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:21:01.712096+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:20:52.019283+00:00",
+        "finished_at": "2026-10-29T09:20:55.486872+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 3,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 3.467607,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:22:01.732777+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:21:52.017832+00:00",
+        "finished_at": "2026-10-29T09:21:54.808885+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 0,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.791072,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:23:01.759336+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:22:52.016339+00:00",
+        "finished_at": "2026-10-29T09:22:55.088021+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 0,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 3.071702,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    },
+    {
+      "observed_at": "2026-10-29T09:24:01.785778+00:00",
+      "health_status": "healthy",
+      "mode": "live",
+      "rss_mode": "reports",
+      "rss_relevance_mode": "selected_sources",
+      "cycle": {
+        "started_at": "2026-10-29T09:23:52.014509+00:00",
+        "finished_at": "2026-10-29T09:23:54.827764+00:00",
+        "configured_sources": 31,
+        "fetch_concurrency": 4,
+        "reserved_attempts": 155,
+        "attempt_limit": 200,
+        "attempted_items": 1,
+        "conditional_http_enabled": false,
+        "budget_scope": "Processing/classifier invocations only; legacy provider retries are not an HTTP/token/dollar cap.",
+        "seconds": 2.813277,
+        "classifier_invocations_upper_bound": 0
+      },
+      "feed_state_counts": {
+        "ok": 31
+      },
+      "sources_with_non_ok_state": []
+    }
+  ],
+  "limitations": [
+    "Signed publisher-to-creation differences compare publisher-declared source clocks with database creation, not incident time, globally earliest reporting or factual truth.",
+    "Publisher clock accuracy is unverified; old/corrected articles may still be newly encountered after backlog drain. Negative signed lags are retained and may indicate clock skew/future tolerance.",
+    "Creation-to-WS receipt includes database/broadcast/network/client scheduling and wall-clock comparison, not pure network latency. Database/client timestamp brackets are retained.",
+    "No source ranking or independent-corroboration claim; quiet sources and API arrivals missed by WS are listed explicitly.",
+    "One bounded observation with sampled health/status, not continuous uptime or completeness proof. Current paid-provider ledger does not count separately recorded local model evaluations.",
+    "Event.created_at uses PostgreSQL now(), the transaction timestamp, rather than the exact commit instant. SourceReport first receipt and original feed retrieval clocks are preserved separately.",
+    "Publisher clock accuracy, granularity and upstream publication/feed cache delay are unverified. A newly created Event may contain an older or corrected publisher story; post-backlog means a local acquisition phase, not proof of first encounter anywhere.",
+    "The source time basis is read from the exact immutable reported receipt. Publication and Atom updated fallbacks are counted separately; neither is incident time.",
+    "Small and quiet-source samples cannot rank publisher timeliness or establish a latency SLA. All negative differences are retained without adjustment; no model calls or synthetic arrivals were introduced."
+  ]
+}

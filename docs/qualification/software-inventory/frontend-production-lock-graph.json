@@ -1,0 +1,551 @@
+{
+  "generated_at": "2026-10-29T06:12:16.984Z",
+  "status": "GRAPH_ENUMERATED",
+  "scope": "Independent traversal of npm Arborist virtual lock graph from root production/optional/peer edges, never dev edges. Potential production dependency closure, not measured JavaScript reachability, exact bundled dependency inclusion, license clearance, or the container OS inventory.",
+  "package_lock_sha256": "43c8ffc1161d38c6b87b7afecda26f350012675ec35529c2677360379e9bc821",
+  "method": "Traverse root and transitive edges of types prod/optional/peer/peerOptional; separately compare with global node.dev=false classification. No package installation or graph mutation.",
+  "direct_production_dependencies": {
+    "cesium": "1.139.1",
+    "dompurify": "3.4.17",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "selected_locations": 33,
+  "global_non_dev_locations": 33,
+  "independent_selection_disagreements": [],
+  "missing_edges": [],
+  "packages": [
+    {
+      "name": "@cesium/engine",
+      "version": "23.0.1",
+      "location": "node_modules/@cesium/engine",
+      "integrity": "sha512-67Wki33c2mgAH/xKVTai35ZxCTgZ7oFCW1SQAqsfLb/zCBCA24+QZKjL02n2fO6Hlpq6ds6JZRBi44DRcNP9FA==",
+      "registry_source": "https://registry.npmjs.org/@cesium/engine/-/engine-23.0.1.tgz",
+      "license_metadata": "Apache-2.0",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": [
+        {
+          "name": "@cesium/wasm-splats",
+          "type": "prod",
+          "target": "node_modules/@cesium/wasm-splats"
+        },
+        {
+          "name": "@spz-loader/core",
+          "type": "prod",
+          "target": "node_modules/@spz-loader/core"
+        },
+        {
+          "name": "@tweenjs/tween.js",
+          "type": "prod",
+          "target": "node_modules/@cesium/engine/node_modules/@tweenjs/tween.js"
+        },
+        {
+          "name": "@zip.js/zip.js",
+          "type": "prod",
+          "target": "node_modules/@zip.js/zip.js"
+        },
+        {
+          "name": "autolinker",
+          "type": "prod",
+          "target": "node_modules/autolinker"
+        },
+        {
+          "name": "bitmap-sdf",
+          "type": "prod",
+          "target": "node_modules/bitmap-sdf"
+        },
+        {
+          "name": "dompurify",
+          "type": "prod",
+          "target": "node_modules/dompurify"
+        },
+        {
+          "name": "draco3d",
+          "type": "prod",
+          "target": "node_modules/draco3d"
+        },
+        {
+          "name": "earcut",
+          "type": "prod",
+          "target": "node_modules/earcut"
+        },
+        {
+          "name": "grapheme-splitter",
+          "type": "prod",
+          "target": "node_modules/grapheme-splitter"
+        },
+        {
+          "name": "jsep",
+          "type": "prod",
+          "target": "node_modules/jsep"
+        },
+        {
+          "name": "kdbush",
+          "type": "prod",
+          "target": "node_modules/kdbush"
+        },
+        {
+          "name": "ktx-parse",
+          "type": "prod",
+          "target": "node_modules/ktx-parse"
+        },
+        {
+          "name": "lerc",
+          "type": "prod",
+          "target": "node_modules/lerc"
+        },
+        {
+          "name": "mersenne-twister",
+          "type": "prod",
+          "target": "node_modules/mersenne-twister"
+        },
+        {
+          "name": "meshoptimizer",
+          "type": "prod",
+          "target": "node_modules/meshoptimizer"
+        },
+        {
+          "name": "pako",
+          "type": "prod",
+          "target": "node_modules/pako"
+        },
+        {
+          "name": "protobufjs",
+          "type": "prod",
+          "target": "node_modules/protobufjs"
+        },
+        {
+          "name": "rbush",
+          "type": "prod",
+          "target": "node_modules/rbush"
+        },
+        {
+          "name": "topojson-client",
+          "type": "prod",
+          "target": "node_modules/topojson-client"
+        },
+        {
+          "name": "urijs",
+          "type": "prod",
+          "target": "node_modules/urijs"
+        }
+      ]
+    },
+    {
+      "name": "@tweenjs/tween.js",
+      "version": "25.0.0",
+      "location": "node_modules/@cesium/engine/node_modules/@tweenjs/tween.js",
+      "integrity": "sha512-XKLA6syeBUaPzx4j3qwMqzzq+V4uo72BnlbOjmuljLrRqdsd3qnzvZZoxvMHZ23ndsRS4aufU6JOZYpCbU6T1A==",
+      "registry_source": "https://registry.npmjs.org/@tweenjs/tween.js/-/tween.js-25.0.0.tgz",
+      "license_metadata": "MIT",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    },
+    {
+      "name": "@cesium/wasm-splats",
+      "version": "0.1.0-alpha.2",
+      "location": "node_modules/@cesium/wasm-splats",
+      "integrity": "sha512-t9pMkknv31hhIbLpMa8yPvmqfpvs5UkUjgqlQv9SeO8VerCXOYnyP8/486BDaFrztM0A7FMbRjsXtNeKvqQghA==",
+      "registry_source": "https://registry.npmjs.org/@cesium/wasm-splats/-/wasm-splats-0.1.0-alpha.2.tgz",
+      "license_metadata": "Apache-2.0",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    },
+    {
+      "name": "@cesium/widgets",
+      "version": "14.4.1",
+      "location": "node_modules/@cesium/widgets",
+      "integrity": "sha512-2zT5JECBE59n4ow1RRRvhwlhjSb7a7gmo38bc6yewiKiVnTmYaavLuabA3+CnTihK71UD/HxjPzwPF0GCl2UGg==",
+      "registry_source": "https://registry.npmjs.org/@cesium/widgets/-/widgets-14.4.1.tgz",
+      "license_metadata": "Apache-2.0",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": [
+        {
+          "name": "@cesium/engine",
+          "type": "prod",
+          "target": "node_modules/@cesium/engine"
+        },
+        {
+          "name": "nosleep.js",
+          "type": "prod",
+          "target": "node_modules/nosleep.js"
+        }
+      ]
+    },
+    {
+      "name": "@spz-loader/core",
+      "version": "0.3.0",
+      "location": "node_modules/@spz-loader/core",
+      "integrity": "sha512-sbStwMHb/MIE29st7rRuMYWqhX1UmLSFzdpyGtUZUXLkFNIuYKblzjQdtiet8bau8sUf21uL1DQ451zuySGmcA==",
+      "registry_source": "https://registry.npmjs.org/@spz-loader/core/-/core-0.3.0.tgz",
+      "license_metadata": "Apache-2.0",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    },
+    {
+      "name": "@types/trusted-types",
+      "version": "2.0.7",
+      "location": "node_modules/@types/trusted-types",
+      "integrity": "sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==",
+      "registry_source": "https://registry.npmjs.org/@types/trusted-types/-/trusted-types-2.0.7.tgz",
+      "license_metadata": "MIT",
+      "optional": true,
+      "dev_optional": true,
+      "dependencies": []
+    },
+    {
+      "name": "@zip.js/zip.js",
+      "version": "2.8.23",
+      "location": "node_modules/@zip.js/zip.js",
+      "integrity": "sha512-RB+RLnxPJFPrGvQ9rgO+4JOcsob6lD32OcF0QE0yg24oeW9q8KnTTNlugcDaIveEcCbclobJcZP+fLQ++sH0bw==",
+      "registry_source": "https://registry.npmjs.org/@zip.js/zip.js/-/zip.js-2.8.23.tgz",
+      "license_metadata": "BSD-3-Clause",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    },
+    {
+      "name": "autolinker",
+      "version": "4.1.5",
+      "location": "node_modules/autolinker",
+      "integrity": "sha512-vEfYZPmvVOIuE567XBVCsx8SBgOYtjB2+S1iAaJ+HgH+DNjAcrHem2hmAeC9yaNGWayicv4yR+9UaJlkF3pvtw==",
+      "registry_source": "https://registry.npmjs.org/autolinker/-/autolinker-4.1.5.tgz",
+      "license_metadata": "MIT",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": [
+        {
+          "name": "tslib",
+          "type": "prod",
+          "target": "node_modules/tslib"
+        }
+      ]
+    },
+    {
+      "name": "bitmap-sdf",
+      "version": "1.0.4",
+      "location": "node_modules/bitmap-sdf",
+      "integrity": "sha512-1G3U4n5JE6RAiALMxu0p1XmeZkTeCwGKykzsLTCqVzfSDaN6S7fKnkIkfejogz+iwqBWc0UYAIKnKHNN7pSfDg==",
+      "registry_source": "https://registry.npmjs.org/bitmap-sdf/-/bitmap-sdf-1.0.4.tgz",
+      "license_metadata": "MIT",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    },
+    {
+      "name": "cesium",
+      "version": "1.139.1",
+      "location": "node_modules/cesium",
+      "integrity": "sha512-Wj7OGuozqHgkj+Ij0B9j+YUQxiviEKf4AKfOC8bp84UcyyY9r92EfRWXiePP4Or6MI7OaM3YkGtGSaLRXhNvLg==",
+      "registry_source": "https://registry.npmjs.org/cesium/-/cesium-1.139.1.tgz",
+      "license_metadata": "Apache-2.0",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": [
+        {
+          "name": "@cesium/engine",
+          "type": "prod",
+          "target": "node_modules/@cesium/engine"
+        },
+        {
+          "name": "@cesium/widgets",
+          "type": "prod",
+          "target": "node_modules/@cesium/widgets"
+        }
+      ]
+    },
+    {
+      "name": "commander",
+      "version": "2.20.3",
+      "location": "node_modules/commander",
+      "integrity": "sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==",
+      "registry_source": "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz",
+      "license_metadata": "MIT",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    },
+    {
+      "name": "dompurify",
+      "version": "3.4.17",
+      "location": "node_modules/dompurify",
+      "integrity": "sha512-B/pSlYVHQ58kqISD/yDjuJ1yfzI34m1gF4lAod2bwSRhiN4K5Cl3H8Af7hqB2PmTL911tdEudnnXn5FnhRoz0w==",
+      "registry_source": "https://registry.npmjs.org/dompurify/-/dompurify-3.4.17.tgz",
+      "license_metadata": "(MPL-2.0 OR Apache-2.0)",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": [
+        {
+          "name": "@types/trusted-types",
+          "type": "optional",
+          "target": "node_modules/@types/trusted-types"
+        }
+      ]
+    },
+    {
+      "name": "draco3d",
+      "version": "1.5.7",
+      "location": "node_modules/draco3d",
+      "integrity": "sha512-m6WCKt/erDXcw+70IJXnG7M3awwQPAsZvJGX5zY7beBqpELw6RDGkYVU0W43AFxye4pDZ5i2Lbyc/NNGqwjUVQ==",
+      "registry_source": "https://registry.npmjs.org/draco3d/-/draco3d-1.5.7.tgz",
+      "license_metadata": "Apache-2.0",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    },
+    {
+      "name": "earcut",
+      "version": "3.0.2",
+      "location": "node_modules/earcut",
+      "integrity": "sha512-X7hshQbLyMJ/3RPhyObLARM2sNxxmRALLKx1+NVFFnQ9gKzmCrxm9+uLIAdBcvc8FNLpctqlQ2V6AE92Ol9UDQ==",
+      "registry_source": "https://registry.npmjs.org/earcut/-/earcut-3.0.2.tgz",
+      "license_metadata": "ISC",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    },
+    {
+      "name": "grapheme-splitter",
+      "version": "1.0.4",
+      "location": "node_modules/grapheme-splitter",
+      "integrity": "sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==",
+      "registry_source": "https://registry.npmjs.org/grapheme-splitter/-/grapheme-splitter-1.0.4.tgz",
+      "license_metadata": "MIT",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    },
+    {
+      "name": "jsep",
+      "version": "1.4.0",
+      "location": "node_modules/jsep",
+      "integrity": "sha512-B7qPcEVE3NVkmSJbaYxvv4cHkVW7DQsZz13pUMrfS8z8Q/BuShN+gcTXrUlPiGqM2/t/EEaI030bpxMqY8gMlw==",
+      "registry_source": "https://registry.npmjs.org/jsep/-/jsep-1.4.0.tgz",
+      "license_metadata": "MIT",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    },
+    {
+      "name": "kdbush",
+      "version": "4.0.2",
+      "location": "node_modules/kdbush",
+      "integrity": "sha512-WbCVYJ27Sz8zi9Q7Q0xHC+05iwkm3Znipc2XTlrnJbsHMYktW4hPhXUE8Ys1engBrvffoSCqbil1JQAa7clRpA==",
+      "registry_source": "https://registry.npmjs.org/kdbush/-/kdbush-4.0.2.tgz",
+      "license_metadata": "ISC",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    },
+    {
+      "name": "ktx-parse",
+      "version": "1.1.0",
+      "location": "node_modules/ktx-parse",
+      "integrity": "sha512-mKp3y+FaYgR7mXWAbyyzpa/r1zDWeaunH+INJO4fou3hb45XuNSwar+7llrRyvpMWafxSIi99RNFJ05MHedaJQ==",
+      "registry_source": "https://registry.npmjs.org/ktx-parse/-/ktx-parse-1.1.0.tgz",
+      "license_metadata": "MIT",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    },
+    {
+      "name": "lerc",
+      "version": "2.0.0",
+      "location": "node_modules/lerc",
+      "integrity": "sha512-7qo1Mq8ZNmaR4USHHm615nEW2lPeeWJ3bTyoqFbd35DLx0LUH7C6ptt5FDCTAlbIzs3+WKrk5SkJvw8AFDE2hg==",
+      "registry_source": "https://registry.npmjs.org/lerc/-/lerc-2.0.0.tgz",
+      "license_metadata": "Apache-2.0",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    },
+    {
+      "name": "long",
+      "version": "5.3.2",
+      "location": "node_modules/long",
+      "integrity": "sha512-mNAgZ1GmyNhD7AuqnTG3/VQ26o760+ZYBPKjPvugO8+nLbYfX6TVpJPseBvopbdY+qpZ/lKUnmEc1LeZYS3QAA==",
+      "registry_source": "https://registry.npmjs.org/long/-/long-5.3.2.tgz",
+      "license_metadata": "Apache-2.0",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    },
+    {
+      "name": "mersenne-twister",
+      "version": "1.1.0",
+      "location": "node_modules/mersenne-twister",
+      "integrity": "sha512-mUYWsMKNrm4lfygPkL3OfGzOPTR2DBlTkBNHM//F6hGp8cLThY897crAlk3/Jo17LEOOjQUrNAx6DvgO77QJkA==",
+      "registry_source": "https://registry.npmjs.org/mersenne-twister/-/mersenne-twister-1.1.0.tgz",
+      "license_metadata": "MIT",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    },
+    {
+      "name": "meshoptimizer",
+      "version": "1.0.1",
+      "location": "node_modules/meshoptimizer",
+      "integrity": "sha512-Vix+QlA1YYT3FwmBBZ+49cE5y/b+pRrcXKqGpS5ouh33d3lSp2PoTpCw19E0cKDFWalembrHnIaZetf27a+W2g==",
+      "registry_source": "https://registry.npmjs.org/meshoptimizer/-/meshoptimizer-1.0.1.tgz",
+      "license_metadata": "MIT",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    },
+    {
+      "name": "nosleep.js",
+      "version": "0.12.0",
+      "location": "node_modules/nosleep.js",
+      "integrity": "sha512-9d1HbpKLh3sdWlhXMhU6MMH+wQzKkrgfRkYV0EBdvt99YJfj0ilCJrWRDYG2130Tm4GXbEoTCx5b34JSaP+HhA==",
+      "registry_source": "https://registry.npmjs.org/nosleep.js/-/nosleep.js-0.12.0.tgz",
+      "license_metadata": "MIT",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    },
+    {
+      "name": "pako",
+      "version": "2.1.0",
+      "location": "node_modules/pako",
+      "integrity": "sha512-w+eufiZ1WuJYgPXbV/PO3NCMEc3xqylkKHzp8bxp1uW4qaSNQUkwmLLEc3kKsfz8lpV1F8Ht3U1Cm+9Srog2ug==",
+      "registry_source": "https://registry.npmjs.org/pako/-/pako-2.1.0.tgz",
+      "license_metadata": "(MIT AND Zlib)",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    },
+    {
+      "name": "protobufjs",
+      "version": "8.8.1",
+      "location": "node_modules/protobufjs",
+      "integrity": "sha512-d9e9179bjXSJdpJ3+R9fP8hzXsnKLyxTjHLG1dUzje8a27pPyXCe6PrcRtgx2rjoM3IZzHd2vAs+6J/BsO1k7Q==",
+      "registry_source": "https://registry.npmjs.org/protobufjs/-/protobufjs-8.8.1.tgz",
+      "license_metadata": "BSD-3-Clause",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": [
+        {
+          "name": "long",
+          "type": "prod",
+          "target": "node_modules/long"
+        }
+      ]
+    },
+    {
+      "name": "quickselect",
+      "version": "3.0.0",
+      "location": "node_modules/quickselect",
+      "integrity": "sha512-XdjUArbK4Bm5fLLvlm5KpTFOiOThgfWWI4axAZDWg4E/0mKdZyI9tNEfds27qCi1ze/vwTR16kvmmGhRra3c2g==",
+      "registry_source": "https://registry.npmjs.org/quickselect/-/quickselect-3.0.0.tgz",
+      "license_metadata": "ISC",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    },
+    {
+      "name": "rbush",
+      "version": "4.0.1",
+      "location": "node_modules/rbush",
+      "integrity": "sha512-IP0UpfeWQujYC8Jg162rMNc01Rf0gWMMAb2Uxus/Q0qOFw4lCcq6ZnQEZwUoJqWyUGJ9th7JjwI4yIWo+uvoAQ==",
+      "registry_source": "https://registry.npmjs.org/rbush/-/rbush-4.0.1.tgz",
+      "license_metadata": "MIT",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": [
+        {
+          "name": "quickselect",
+          "type": "prod",
+          "target": "node_modules/quickselect"
+        }
+      ]
+    },
+    {
+      "name": "react",
+      "version": "19.2.4",
+      "location": "node_modules/react",
+      "integrity": "sha512-9nfp2hYpCwOjAN+8TZFGhtWEwgvWHXqESH8qT89AT/lWklpLON22Lc8pEtnpsZz7VmawabSU0gCjnj8aC0euHQ==",
+      "registry_source": "https://registry.npmjs.org/react/-/react-19.2.4.tgz",
+      "license_metadata": "MIT",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    },
+    {
+      "name": "react-dom",
+      "version": "19.2.4",
+      "location": "node_modules/react-dom",
+      "integrity": "sha512-AXJdLo8kgMbimY95O2aKQqsz2iWi9jMgKJhRBAxECE4IFxfcazB2LmzloIoibJI3C12IlY20+KFaLv+71bUJeQ==",
+      "registry_source": "https://registry.npmjs.org/react-dom/-/react-dom-19.2.4.tgz",
+      "license_metadata": "MIT",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": [
+        {
+          "name": "react",
+          "type": "peer",
+          "target": "node_modules/react"
+        },
+        {
+          "name": "scheduler",
+          "type": "prod",
+          "target": "node_modules/scheduler"
+        }
+      ]
+    },
+    {
+      "name": "scheduler",
+      "version": "0.27.0",
+      "location": "node_modules/scheduler",
+      "integrity": "sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q==",
+      "registry_source": "https://registry.npmjs.org/scheduler/-/scheduler-0.27.0.tgz",
+      "license_metadata": "MIT",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    },
+    {
+      "name": "topojson-client",
+      "version": "3.1.0",
+      "location": "node_modules/topojson-client",
+      "integrity": "sha512-605uxS6bcYxGXw9qi62XyrV6Q3xwbndjachmNxu8HWTtVPxZfEJN9fd/SZS1Q54Sn2y0TMyMxFj/cJINqGHrKw==",
+      "registry_source": "https://registry.npmjs.org/topojson-client/-/topojson-client-3.1.0.tgz",
+      "license_metadata": "ISC",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": [
+        {
+          "name": "commander",
+          "type": "prod",
+          "target": "node_modules/commander"
+        }
+      ]
+    },
+    {
+      "name": "tslib",
+      "version": "2.8.1",
+      "location": "node_modules/tslib",
+      "integrity": "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==",
+      "registry_source": "https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz",
+      "license_metadata": "0BSD",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    },
+    {
+      "name": "urijs",
+      "version": "1.19.11",
+      "location": "node_modules/urijs",
+      "integrity": "sha512-HXgFDgDommxn5/bIv0cnQZsPhHDA90NPHD6+c/v21U5+Sx5hoP8+dP9IZXBU1gIfvdRfhG8cel9QNPeionfcCQ==",
+      "registry_source": "https://registry.npmjs.org/urijs/-/urijs-1.19.11.tgz",
+      "license_metadata": "MIT",
+      "optional": false,
+      "dev_optional": false,
+      "dependencies": []
+    }
+  ]
+}

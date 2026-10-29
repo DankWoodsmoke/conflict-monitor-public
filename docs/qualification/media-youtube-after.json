@@ -1,0 +1,94 @@
+{
+  "checked_at": "2026-10-29T04:16:10.545Z",
+  "scope": "Isolated fresh headless Chrome context, rebuilt production Media tab, explicit activation of recorded YouTube reference only",
+  "phase": "after_referrer_repair",
+  "base_origin": "http://127.0.0.1:5190",
+  "embed_requests": [
+    {
+      "host": "www.youtube-nocookie.com",
+      "path": "/embed/mk4vcHtawSo",
+      "referer": "http://127.0.0.1:5190/"
+    }
+  ],
+  "source_requirement": {
+    "url": "https://developers.google.com/youtube/terms/required-minimum-functionality#embedded-player-api-client-identity",
+    "error_definition_url": "https://developers.google.com/youtube/iframe_api_reference#Events",
+    "summary": "YouTube embedded players require HTTP Referer identification; recommended policy is strict-origin-when-cross-origin. Error153 denotes missing Referer or equivalent identity."
+  },
+  "changes_to_product": false,
+  "playback_verified": true,
+  "iframe": {
+    "referrer_policy": "strict-origin-when-cross-origin",
+    "title": "Predictive History GT#16: PAX JUDAICA RISING"
+  },
+  "frame_snapshot": {
+    "body_text": "Game Theory #16: Pax Judaica Rising (Re-Upload)\nPredictive History\nPredictive History\n2.95M subscribers\nWatch on",
+    "document_referrer": "http://127.0.0.1:5190/",
+    "media": [
+      {
+        "current_time": 0,
+        "paused": true,
+        "ready_state": 0,
+        "duration": null,
+        "error_code": null
+      }
+    ]
+  },
+  "app_frame_status": [
+    "External frame received \u00b7 playback and live status unverifiedOpen source \u2197\u00d7"
+  ],
+  "status": "observed",
+  "native_play_probe": {
+    "checked_at": "2026-10-29T04:17:10.145Z",
+    "controls": [
+      {
+        "aria_label": null,
+        "title": null,
+        "class_name": "ytp-unmute ytp-popup ytp-button ytp-unmute-animated ytp-unmute-shrink",
+        "visible": false
+      },
+      {
+        "aria_label": "Play video",
+        "title": "Play video",
+        "class_name": "ytmCuedOverlayPlayButton",
+        "visible": true
+      },
+      {
+        "aria_label": "Hide player controls",
+        "title": null,
+        "class_name": "ytmA11yStylesHiddenButton",
+        "visible": true
+      },
+      {
+        "aria_label": null,
+        "title": null,
+        "class_name": "ytmVideoInfoLink ytmVideoInfoChannelAvatar",
+        "visible": true
+      },
+      {
+        "aria_label": "Close",
+        "title": "",
+        "class_name": "ytSpecButtonShapeNextHost ytSpecButtonShapeNextText ytSpecButtonShapeNextOverlay ytSpecButtonShapeNextSizeM ytSpecButtonShapeNextIconOnlyDefault",
+        "visible": true
+      },
+      {
+        "aria_label": "Copy link",
+        "title": "",
+        "class_name": "ytSpecButtonShapeNextHost ytSpecButtonShapeNextText ytSpecButtonShapeNextOverlay ytSpecButtonShapeNextSizeM ytSpecButtonShapeNextIconOnlyDefault",
+        "visible": true
+      }
+    ],
+    "clicked": true,
+    "result": {
+      "body_text": "Today, I want to discuss\nhow this war will end. I cannot",
+      "media": [
+        {
+          "current_time": 5.66072,
+          "paused": false,
+          "ready_state": 4,
+          "error_code": null
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,731 @@
+{
+  "observed_at": "2026-10-29T09:56:02.961302+00:00",
+  "status": "PASS",
+  "scope": "Final149/cb2 single-profile actual one-hour service/REST/WebSocket/PostGIS observation",
+  "assessment": {
+    "scope": "bounded_read_only_local_deployment_soak",
+    "started_at": "2026-10-29T08:50:00.342441+00:00",
+    "ended_at": "2026-10-29T09:50:00.340805+00:00",
+    "observer_version": 3,
+    "observer_sha256": "e47988b453e8ce48363e0ec198539fb1071022ac89cc3208b1e35621e385c771",
+    "requires_single_image_pair": true,
+    "requires_database_identity": true,
+    "requires_no_paid_usage": true,
+    "database_profile": {
+      "database_identities": [
+        {
+          "image": "sha256:1ac10b2551ba84ae05db8e7da477afcd0a3fede99bcb7705da2ee157390cb095",
+          "volume": "cmonitor_live_pg17_36_20261029"
+        }
+      ],
+      "sql_versions_observed": [
+        {
+          "postgresql": "17.11",
+          "postgis": "3.6.4"
+        }
+      ],
+      "identity_samples": 60,
+      "expected": {
+        "postgresql": "17.11",
+        "postgis": "3.6.4",
+        "data_volume": "cmonitor_live_pg17_36_20261029"
+      }
+    },
+    "elapsed_seconds": 3600.0,
+    "requested_seconds": 3600,
+    "samples": 120,
+    "status": "qualified_sample",
+    "requirements": {
+      "observer_finished": true,
+      "requested_duration_observed": true,
+      "sample_cadence_bounded": true,
+      "rest_requests_successful": true,
+      "sampled_integrity_preserved": true,
+      "sql_checks_available": true,
+      "sql_integrity_preserved": true,
+      "websocket_connected": true,
+      "websocket_available_over_95_percent": true,
+      "websocket_payloads_valid": true,
+      "one_backend_and_frontend_image_pair": true,
+      "database_identity_observed_throughout": true,
+      "one_three_container_start_and_database_volume_identity": true,
+      "database_versions_and_collation_observed": true,
+      "expected_postgresql_version": true,
+      "expected_postgis_version": true,
+      "expected_database_volume": true,
+      "no_recorded_paid_usage": true
+    },
+    "deployment_segments": [
+      {
+        "at": "2026-10-29T08:50:02.803011+00:00",
+        "elapsed_seconds": 0.23,
+        "identity": "cmonitor-live-backend-1|sha256:4202bfc7add922228c024623b1879ccec7eaf617c718d583b69568b440f90788|2026-10-29T08:16:49.824386759Z|[]\ncmonitor-live-db-1|sha256:1ac10b2551ba84ae05db8e7da477afcd0a3fede99bcb7705da2ee157390cb095|2026-10-29T08:16:42.490467249Z|[{\"Destination\": \"/var/lib/postgresql/data\", \"Name\": \"cmonitor_live_pg17_36_20261029\", \"Type\": \"volume\"}]\ncmonitor-live-frontend-1|sha256:cb2cc67e72d8c1fc67049c6b91d621ee2e31de0be3e3c4ccda4890a791e5422a|2026-10-29T08:47:10.635227757Z|[]",
+        "containers": [
+          {
+            "name": "cmonitor-live-backend-1",
+            "image": "sha256:4202bfc7add922228c024623b1879ccec7eaf617c718d583b69568b440f90788",
+            "started_at": "2026-10-29T08:16:49.824386759Z"
+          },
+          {
+            "name": "cmonitor-live-db-1",
+            "image": "sha256:1ac10b2551ba84ae05db8e7da477afcd0a3fede99bcb7705da2ee157390cb095",
+            "started_at": "2026-10-29T08:16:42.490467249Z",
+            "pgdata": [
+              {
+                "Type": "volume",
+                "Name": "cmonitor_live_pg17_36_20261029",
+                "Destination": "/var/lib/postgresql/data"
+              }
+            ]
+          },
+          {
+            "name": "cmonitor-live-frontend-1",
+            "image": "sha256:cb2cc67e72d8c1fc67049c6b91d621ee2e31de0be3e3c4ccda4890a791e5422a",
+            "started_at": "2026-10-29T08:47:10.635227757Z"
+          }
+        ],
+        "observed_seconds": 3599.77
+      }
+    ],
+    "max_sample_gap_seconds": 30.02,
+    "endpoint_timing_ms": {
+      "/api/health": {
+        "samples": 120,
+        "p50": 0.0,
+        "p95": 16.0,
+        "max": 94.0
+      },
+      "/api/status": {
+        "samples": 120,
+        "p50": 15.0,
+        "p95": 16.0,
+        "max": 31.0
+      },
+      "/api/events?limit=50": {
+        "samples": 120,
+        "p50": 15.0,
+        "p95": 16.0,
+        "max": 16.0
+      },
+      "/api/tracking/aircraft": {
+        "samples": 120,
+        "p50": 16.0,
+        "p95": 16.0,
+        "max": 31.0
+      },
+      "/api/tracking/vessels": {
+        "samples": 120,
+        "p50": 15.0,
+        "p95": 16.0,
+        "max": 32.0
+      },
+      "/api/tracking/tle": {
+        "samples": 120,
+        "p50": 0.0,
+        "p95": 16.0,
+        "max": 16.0
+      },
+      "/api/satellite/hotspots": {
+        "samples": 120,
+        "p50": 31.0,
+        "p95": 46.0,
+        "max": 125.0
+      },
+      "/api/sitreps/latest": {
+        "samples": 120,
+        "p50": 0.0,
+        "p95": 16.0,
+        "max": 32.0
+      }
+    },
+    "http_errors": {},
+    "integrity_findings": {},
+    "provider_status_observations": {
+      "aircraft": {
+        "ok": 120
+      },
+      "maritime": {
+        "ok": 120
+      },
+      "satellites": {
+        "ok": 120
+      },
+      "thermal_observations": {
+        "ok": 120
+      },
+      "telegram": {
+        "ok": 120
+      }
+    },
+    "container_resource_samples": {
+      "cmonitor-live-backend-1": {
+        "cpu_percent": {
+          "samples": 60,
+          "first": 0.24,
+          "last": 0.14,
+          "min": 0.12,
+          "max": 13.16
+        },
+        "memory_mib": {
+          "samples": 60,
+          "first": 220.2,
+          "last": 226.2,
+          "min": 220.1,
+          "max": 232.9
+        },
+        "pids": {
+          "samples": 60,
+          "first": 30,
+          "last": 34,
+          "min": 30,
+          "max": 35
+        }
+      },
+      "cmonitor-live-frontend-1": {
+        "cpu_percent": {
+          "samples": 60,
+          "first": 0.0,
+          "last": 0.0,
+          "min": 0.0,
+          "max": 1.27
+        },
+        "memory_mib": {
+          "samples": 60,
+          "first": 17.02,
+          "last": 17.02,
+          "min": 17.02,
+          "max": 18.34
+        },
+        "pids": {
+          "samples": 60,
+          "first": 21,
+          "last": 21,
+          "min": 21,
+          "max": 21
+        }
+      },
+      "cmonitor-live-db-1": {
+        "cpu_percent": {
+          "samples": 60,
+          "first": 3.36,
+          "last": 0.03,
+          "min": 0.0,
+          "max": 6.43
+        },
+        "memory_mib": {
+          "samples": 60,
+          "first": 72.43,
+          "last": 63.65,
+          "min": 51.98,
+          "max": 74.41
+        },
+        "pids": {
+          "samples": 60,
+          "first": 12,
+          "last": 12,
+          "min": 12,
+          "max": 18
+        }
+      }
+    },
+    "sql_checks": 12,
+    "unavailable_sql_checks": 0,
+    "sql_first": {
+      "at": "2026-10-29T08:50:00.583374+00:00",
+      "postgresql_version": "17.11 (Debian 17.11-1.pgdg13+2)",
+      "postgis_version": "3.6.4",
+      "collation_version_matches": true,
+      "events": 759,
+      "receipts": 796,
+      "pending_receipts_over_5m": 0,
+      "synthetic_events": 0,
+      "invalid_positions": 0,
+      "position_geometry_mismatch": 0,
+      "duplicate_channel_message_ids": 0,
+      "checkpoint_behind_stored_message": 0,
+      "usage_calls": 0,
+      "snapshots": 168
+    },
+    "sql_last": {
+      "at": "2026-10-29T09:45:01.395818+00:00",
+      "postgresql_version": "17.11 (Debian 17.11-1.pgdg13+2)",
+      "postgis_version": "3.6.4",
+      "collation_version_matches": true,
+      "events": 790,
+      "receipts": 849,
+      "pending_receipts_over_5m": 0,
+      "synthetic_events": 0,
+      "invalid_positions": 0,
+      "position_geometry_mismatch": 0,
+      "duplicate_channel_message_ids": 0,
+      "checkpoint_behind_stored_message": 0,
+      "usage_calls": 0,
+      "snapshots": 195
+    },
+    "websocket": {
+      "connections": 1,
+      "disconnects": 0,
+      "observed_connected_seconds": 3599.68,
+      "connected_fraction": 0.99991,
+      "event_messages": 32,
+      "payload_errors": 0,
+      "delivery_observed": true
+    },
+    "limitations": [
+      "Provider state and sampled API/SQL behavior do not establish factual truth or global source coverage.",
+      "WebSocket connection with no event messages does not qualify event delivery; use the separate real pipeline test.",
+      "Deployment segments are distinct; total duration does not imply the final image ran for that duration.",
+      "No physical device, every code path, long-term reliability, or sustained-load claim is established."
+    ]
+  },
+  "normal_observer_completion": "observation_completed",
+  "observed_process_exit_code": 0,
+  "http_requests_observed": 960,
+  "sql_scheduled_checks": {
+    "count": 12,
+    "first_elapsed_seconds": 0.23,
+    "last_elapsed_seconds": 3301.05,
+    "max_gap_seconds": 300.1099999999999
+  },
+  "end_container_identities": [
+    {
+      "name": "/cmonitor-live-backend-1",
+      "image": "sha256:4202bfc7add922228c024623b1879ccec7eaf617c718d583b69568b440f90788",
+      "started_at": "2026-10-29T08:16:49.824386759Z"
+    },
+    {
+      "name": "/cmonitor-live-frontend-1",
+      "image": "sha256:cb2cc67e72d8c1fc67049c6b91d621ee2e31de0be3e3c4ccda4890a791e5422a",
+      "started_at": "2026-10-29T08:47:10.635227757Z"
+    },
+    {
+      "name": "/cmonitor-live-db-1",
+      "image": "sha256:1ac10b2551ba84ae05db8e7da477afcd0a3fede99bcb7705da2ee157390cb095",
+      "started_at": "2026-10-29T08:16:42.490467249Z"
+    }
+  ],
+  "all_three_image_and_start_identities_unchanged": true,
+  "rss_status_observations_by_source": {
+    "bbc_mideast": {
+      "ok": 120
+    },
+    "the_war_zone": {
+      "ok": 120
+    },
+    "aljazeera": {
+      "ok": 120
+    },
+    "times_of_israel": {
+      "ok": 120
+    },
+    "rfi": {
+      "ok": 120
+    },
+    "defense_one": {
+      "ok": 120
+    },
+    "guardian_mideast": {
+      "ok": 120
+    },
+    "dw_world": {
+      "ok": 120
+    },
+    "middle_east_eye": {
+      "ok": 120
+    },
+    "jpost": {
+      "ok": 120
+    },
+    "dropsitenews_rss": {
+      "ok": 120
+    },
+    "war_on_rocks": {
+      "ok": 120
+    },
+    "oilprice": {
+      "ok": 120
+    },
+    "freightwaves": {
+      "ok": 120
+    },
+    "hellenic_shipping": {
+      "ok": 120
+    },
+    "splash247": {
+      "ok": 120
+    },
+    "chris_hedges_candidate": {
+      "ok": 120
+    },
+    "greenwald_candidate": {
+      "ok": 120
+    },
+    "caitlin_johnstone_candidate": {
+      "ok": 120
+    },
+    "consortium_news_candidate": {
+      "ok": 120
+    },
+    "grayzone_candidate": {
+      "ok": 120
+    },
+    "antiwar_blog_candidate": {
+      "ok": 120
+    },
+    "middle_east_monitor_candidate": {
+      "ok": 120
+    },
+    "972_magazine_candidate": {
+      "ok": 120
+    },
+    "democracy_now_candidate": {
+      "ok": 120
+    },
+    "responsible_statecraft_candidate": {
+      "ok": 120
+    },
+    "cpj_candidate": {
+      "ok": 120
+    },
+    "peak_prosperity_candidate": {
+      "ok": 120
+    },
+    "gzero_candidate": {
+      "ok": 120
+    },
+    "naked_capitalism_candidate": {
+      "ok": 120
+    },
+    "geopolitical_economy_candidate": {
+      "ok": 120
+    }
+  },
+  "final_provider_snapshot": {
+    "observed_at": "2026-10-29T09:56:02.961302+00:00",
+    "rss_feed_count": 31,
+    "rss_status_counts": {
+      "ok": 31
+    },
+    "rss_feeds": [
+      {
+        "status": "ok",
+        "source": "bbc_mideast",
+        "cache_age_seconds": 9.34514,
+        "publication_age_seconds": 2954.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "the_war_zone",
+        "cache_age_seconds": 9.58806,
+        "publication_age_seconds": 50561.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "aljazeera",
+        "cache_age_seconds": 9.370828,
+        "publication_age_seconds": 2332.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "times_of_israel",
+        "cache_age_seconds": 9.314032,
+        "publication_age_seconds": 5293.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "rfi",
+        "cache_age_seconds": 9.06136,
+        "publication_age_seconds": 3363.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "defense_one",
+        "cache_age_seconds": 8.913788,
+        "publication_age_seconds": 45967.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "guardian_mideast",
+        "cache_age_seconds": 10.800569,
+        "publication_age_seconds": 1387.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "dw_world",
+        "cache_age_seconds": 10.744583,
+        "publication_age_seconds": 41402.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "middle_east_eye",
+        "cache_age_seconds": 10.780857,
+        "publication_age_seconds": 461.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "jpost",
+        "cache_age_seconds": 10.68091,
+        "publication_age_seconds": -2720.043992,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "dropsitenews_rss",
+        "cache_age_seconds": 10.705596,
+        "publication_age_seconds": 40472.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "war_on_rocks",
+        "cache_age_seconds": 10.625527,
+        "publication_age_seconds": 6929.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "oilprice",
+        "cache_age_seconds": 10.479494,
+        "publication_age_seconds": 2462.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "freightwaves",
+        "cache_age_seconds": 10.570112,
+        "publication_age_seconds": 22226.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "hellenic_shipping",
+        "cache_age_seconds": 10.558569,
+        "publication_age_seconds": 42908.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "splash247",
+        "cache_age_seconds": 10.274894,
+        "publication_age_seconds": 602.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "chris_hedges_candidate",
+        "cache_age_seconds": 10.500519,
+        "publication_age_seconds": 40118.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "greenwald_candidate",
+        "cache_age_seconds": 10.498015,
+        "publication_age_seconds": 225325.956008,
+        "publication_stale": true
+      },
+      {
+        "status": "ok",
+        "source": "caitlin_johnstone_candidate",
+        "cache_age_seconds": 10.433254,
+        "publication_age_seconds": 100685.956008,
+        "publication_stale": true
+      },
+      {
+        "status": "ok",
+        "source": "consortium_news_candidate",
+        "cache_age_seconds": 10.310817,
+        "publication_age_seconds": 2554.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "grayzone_candidate",
+        "cache_age_seconds": 10.4403,
+        "publication_age_seconds": 484403.956008,
+        "publication_stale": true
+      },
+      {
+        "status": "ok",
+        "source": "antiwar_blog_candidate",
+        "cache_age_seconds": 9.711116,
+        "publication_age_seconds": 161494.956008,
+        "publication_stale": true
+      },
+      {
+        "status": "ok",
+        "source": "middle_east_monitor_candidate",
+        "cache_age_seconds": 9.340724,
+        "publication_age_seconds": 950.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "972_magazine_candidate",
+        "cache_age_seconds": 10.223146,
+        "publication_age_seconds": 59202.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "democracy_now_candidate",
+        "cache_age_seconds": 10.083333,
+        "publication_age_seconds": 77980.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "responsible_statecraft_candidate",
+        "cache_age_seconds": 10.177378,
+        "publication_age_seconds": 21059.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "cpj_candidate",
+        "cache_age_seconds": 10.043996,
+        "publication_age_seconds": 46702.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "peak_prosperity_candidate",
+        "cache_age_seconds": 10.020047,
+        "publication_age_seconds": 46008.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "gzero_candidate",
+        "cache_age_seconds": 9.661586,
+        "publication_age_seconds": 54128.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "naked_capitalism_candidate",
+        "cache_age_seconds": 9.726431,
+        "publication_age_seconds": 1936.956008,
+        "publication_stale": false
+      },
+      {
+        "status": "ok",
+        "source": "geopolitical_economy_candidate",
+        "cache_age_seconds": 8.414145,
+        "publication_age_seconds": 91236.956008,
+        "publication_stale": true
+      }
+    ],
+    "providers": {
+      "aircraft": {
+        "status": "ok",
+        "source": "adsb.lol",
+        "count": 163,
+        "cache_age_seconds": 7.6
+      },
+      "maritime": {
+        "status": "ok",
+        "source": "aisstream",
+        "connected": true,
+        "count": 179,
+        "cache_age_seconds": 3.6
+      },
+      "satellites": {
+        "status": "ok",
+        "source": "CelesTrak",
+        "record_count": 45,
+        "data_age_seconds": 5950.8,
+        "data_stale": false
+      },
+      "thermal_observations": {
+        "status": "ok",
+        "source": "VIIRS_NOAA20_NRT",
+        "poll_in_progress": false,
+        "cache_age_seconds": 5860.408424,
+        "observation_age_seconds": 39542.956229,
+        "observations_stale": false,
+        "observation_count": 342,
+        "association_truncated": false
+      },
+      "telegram": {
+        "status": "ok",
+        "cache_age_seconds": 245.670897,
+        "publication_age_seconds": 541.956386,
+        "publication_stale": false
+      }
+    },
+    "workers": {
+      "telegram": "running",
+      "aircraft": "running",
+      "satellites": "running",
+      "maritime": "running",
+      "rss": "running",
+      "source_digest": "running",
+      "snapshots": "running",
+      "match_review": "running",
+      "thermal_observations": "running",
+      "telegram_periodic": "running",
+      "local_analysis": "stopped",
+      "local_video": "stopped"
+    }
+  },
+  "commands": [
+    "python tools/live_soak.py --seconds 3600 --interval 30 --output artifacts/<fresh-dir> --expected-postgresql 17.11 --expected-postgis 3.6.4 --expected-data-volume cmonitor_live_pg17_36_20261029",
+    "python tools/summarize_live_soak.py artifacts/<same-dir> --require-single-image --require-database-identity --require-no-paid-usage"
+  ],
+  "source_receipts": [
+    {
+      "path": "artifacts/earth-pg17-cb2-final-soak/summary.json",
+      "sha256": "addd111e1e601388434b5a84edd7805e074e54d70a99203a0bbce9c1eebbd508"
+    },
+    {
+      "path": "artifacts/earth-pg17-cb2-final-soak/samples.jsonl",
+      "sha256": "df6ed1b6ebead276f94160ae39af63054edffc92170d4ab42824338257ac89e9"
+    },
+    {
+      "path": "artifacts/earth-pg17-cb2-final-soak/websocket.jsonl",
+      "sha256": "78266eaf09ca803eb47e4c8e96afa73045b2b388229f703a27347d8e295cebab"
+    },
+    {
+      "path": "artifacts/earth-pg17-cb2-final-soak/segments.jsonl",
+      "sha256": "4f836287d27352613cda11ba8ae706a700bacb0953af7c2245e80f8b4ea941be"
+    },
+    {
+      "path": "artifacts/earth-pg17-cb2-final-soak/assessment.json",
+      "sha256": "c3a03269bc8497cc228b97b06180d7a9203df1ed78718392630df8f137395f25"
+    },
+    {
+      "path": "artifacts/earth-pg17-cb2-final-soak/end-identity.json",
+      "sha256": "9735cb007ccc3dcbc9cf3d18b5f5eec297792ac06f27000b834b7aa18a8f22c8"
+    },
+    {
+      "path": "artifacts/earth-pg17-cb2-final-soak/final-provider-snapshot.json",
+      "sha256": "d81c2088ad2763e18189fe4b08c474506b21b2dafd8d6ea030d05c3d0c75a10a"
+    }
+  ],
+  "tool_hashes": {
+    "tools/live_soak.py": "e47988b453e8ce48363e0ec198539fb1071022ac89cc3208b1e35621e385c771",
+    "tools/summarize_live_soak.py": "28cb7685d59cdb426ed406e13c95a317317131119d2917c430ad3a8b3af74430"
+  },
+  "related_receipts": [
+    "2026-10-29-postgresql17-cb2-browser-lifecycle-market.json",
+    "2026-10-29-postgresql17-cb2-browser-mobile-touch.json",
+    "2026-10-29-postgresql17-02ee-intermediate-workload.json"
+  ],
+  "limitations": [
+    "Sampled service/provider behavior is not source factual truth, global geographic coverage or guaranteed future reliability.",
+    "The completed finalcb2 hour is collector/browser/read workload; controlled inference/video generation is documented separately in the prior02ee bounded profile.",
+    "This is not a sustained-load capacity proof, physical-device or screen-reader qualification, every-line execution claim, or universal source/video/model semantic accuracy claim.",
+    "Provider polling success and publication/observation ages are distinct. Unknown clocks remain unknown; no raw publisher bodies, article URLs or credentials are distributed here.",
+    "Native/OS package applicability and GitHub CI/publication have separate evidence; this receipt does not infer either."
+  ]
+}

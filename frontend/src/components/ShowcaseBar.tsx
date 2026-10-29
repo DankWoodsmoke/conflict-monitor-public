@@ -1,0 +1,34 @@
+import { useEffect, useState } from "react";
+import type { ViewMode } from "../App";
+import { showcase } from "../lib/showcase";
+
+const chapters: Array<{view:ViewMode;name:string;title:string;body:string;features:string[]}> = [
+  {view:"earth",name:"Earth workspace",title:"Follow a position back to its source.",body:"One Earth workspace combines reports, tracking, search, layers and replay. Unknown coordinates stay in the feed. Aircraft are surface projections and inherited infrastructure is optional and unverified.",features:["Source filters + searchable report feed","Observation clocks + surface projections","Thermal observations + source links","Persistent Earth with Media and Brief panels"]},
+  {view:"media",name:"Media desk",title:"Keep observation separate from interpretation.",body:"A four-panel media desk brings broadcast, briefing, analysis and camera sources together. The exercise panels are explicitly illustrative; no third-party streams are loaded.",features:["Four media panels","Breaking + source intelligence","Event-type matrix","Radiation provider panel"]},
+  {view:"sitrep",name:"Situation report",title:"Make the reasoning inspectable.",body:"Open the intelligence brief, compare source events and inspect competing hypotheses. Analysis, assumptions and missing evidence remain visible alongside the assessment.",features:["Situation + escalation assessment","Economic + humanitarian context","Hypotheses + falsifying observations","Source references + report history"]},
+];
+
+export function ShowcaseBar({view,onView}:{view:ViewMode;onView:(v:ViewMode)=>void}) {
+  const [open,setOpen]=useState(false);
+  const index=Math.max(0,chapters.findIndex(c=>c.view===view));
+  const chapter=chapters[index];
+  useEffect(()=>{ const handler=(e:KeyboardEvent)=>{if(e.key==="Escape")setOpen(false);};window.addEventListener("keydown",handler);return()=>window.removeEventListener("keydown",handler);},[]);
+  const download=()=>{
+    const blob=new Blob([JSON.stringify({schema:"conflict-monitor-showcase/1",mode:"synthetic",...showcase},null,2)],{type:"application/json"});
+    const url=URL.createObjectURL(blob); const a=document.createElement("a");a.href=url;a.download="conflict-monitor-synthetic-exercise.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),0);
+  };
+  return <>
+    <div className="showcase-banner" role="region" aria-label="Synthetic showcase controls">
+      <div className="showcase-wordmark"><span className="showcase-dot"/>SHOWCASE<span className="showcase-divider">/</span><span className="showcase-disclosure">Synthetic exercise · no live intelligence</span></div>
+      <div className="showcase-actions"><button onClick={()=>setOpen(v=>!v)} aria-expanded={open}>Capability tour <span>↗</span></button><button onClick={download} title="Export the exact synthetic fixture and reference clock">Export exercise ↓</button><a href={window.location.pathname}>Live configuration</a></div>
+    </div>
+    {open && <section className="showcase-tour" role="dialog" aria-modal="false" aria-label="Capability tour">
+      <button className="tour-close" onClick={()=>setOpen(false)} aria-label="Close capability tour">×</button>
+      <span className="tour-kicker">CONFLICT MONITOR / CAPABILITY TOUR</span>
+      <nav className="tour-chapters" aria-label="Tour chapters">{chapters.map((c,i)=><button key={c.view} onClick={()=>onView(c.view)} aria-current={view===c.view?"step":undefined}><span>0{i+1}</span>{c.name}</button>)}</nav>
+      <h1>{chapter.title}</h1><p>{chapter.body}</p>
+      <ul>{chapter.features.map(f=><li key={f}>{f}</li>)}</ul>
+      <footer><span>{index+1} of {chapters.length}</span><button onClick={()=>onView(chapters[(index+1)%chapters.length].view)}>Next capability →</button></footer>
+    </section>}
+  </>;
+}

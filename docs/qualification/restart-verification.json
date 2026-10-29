@@ -1,0 +1,14 @@
+{
+  "application_restart": "PASS",
+  "preserved_original_rows": 64,
+  "original_id_boundary": 64,
+  "raw_text_fingerprint_equal": true,
+  "fingerprint_algorithm": "PostgreSQL MD5, equality regression only, not authenticity",
+  "health": {
+    "status": "healthy",
+    "database": "connected",
+    "live_ingestion_enabled": true,
+    "provider_health": "see /status; task liveness does not establish data freshness"
+  },
+  "production_creation_id_cursor": "PASS"
+}

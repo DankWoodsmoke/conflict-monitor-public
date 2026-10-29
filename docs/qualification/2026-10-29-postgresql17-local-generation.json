@@ -1,0 +1,121 @@
+{
+  "started_at": "2026-10-29T08:25:03.667322+00:00",
+  "status": "PASS",
+  "scope": "Actual loopback production API, PostGIS, owned local model and local speech/video generation",
+  "limitations": [
+    "Source truth, independent corroboration, precise incident locations and model general accuracy remain unverified.",
+    "Paid UsageLog rows do not count local inference or electricity. A successful run qualifies one new local inference job.",
+    "Successful decoding/PCM checks do not certify listener audibility or pronunciation."
+  ],
+  "checks": {
+    "core_readiness": "PASS",
+    "actual_live_mode_without_synthetic_fallback": "PASS",
+    "local_generation_explicitly_enabled": "PASS",
+    "actual_postgis_source_matches_api": "PASS",
+    "no_other_generation_is_running": "PASS",
+    "local_ai_job_admitted": "PASS",
+    "new_analysis_is_bound_to_actual_source": "PASS",
+    "no_model_coordinates_or_fact_verdict": "PASS",
+    "analysis_snapshot_hash_recomputed": "PASS",
+    "exact_unicode_and_utf16_source_spans": "PASS",
+    "actual_owned_local_model_identity_and_cpu_request": "PASS",
+    "video_job_admitted": "PASS",
+    "new_video_is_bound_to_actual_source": "PASS",
+    "video_snapshot_hash_recomputed_and_matches_analysis": "PASS",
+    "content_addressed_video_name_and_url": "PASS",
+    "downloaded_mp4_exact_full_sha256_and_size": "PASS",
+    "actual_http_206_byte_range": "PASS",
+    "independent_mp4_probe": "PASS",
+    "actual_h264_720p_and_aac_streams": "PASS",
+    "independent_complete_video_and_audio_decode": "PASS",
+    "server_pcm_energy_and_full_decode_receipts": "PASS",
+    "source_report_not_mutated_by_generation": "PASS",
+    "no_recorded_paid_usage_rows_before_or_after": "PASS",
+    "core_readiness_after_optional_jobs": "PASS"
+  },
+  "source": {
+    "event_id": 55,
+    "source": "rss_aljazeera",
+    "published_at": "2026-10-29T03:12:47Z",
+    "original_text_sha256": "02be39a0340c000207635e52903f0cce9a79b4508a433479a95c853ebf0f4cbe"
+  },
+  "usage_log_rows_before": 0,
+  "local_ai": {
+    "model": "qwen3.5:4b",
+    "model_digest": "d8b0f5e9760cd1682034f292d7ef72ec46f432149be0df7574bf2d6e92e38c04",
+    "generated_at": "2026-10-29T08:25:23.252838+00:00",
+    "prompt_eval_count": 519,
+    "eval_count": 50,
+    "total_duration_ns": 19200504400,
+    "system_sha256": "dd73ee0c4fc9b4e2d424bcbf5b76f0138f12f432e3837f43c21715567e899d95",
+    "source_snapshot_sha256": "ca6f1b6bf117f619c17ae7da50200250e6138362bd6a1f2128c6368dda704eb7",
+    "model_calls_qualified": 1,
+    "paid_api": false
+  },
+  "video": {
+    "generated_at": "2026-10-29T08:25:24.297052+00:00",
+    "sha256": "0932039e271f22c6afa7f25afab4fca9947b795b98ca567dde959c404d16470d",
+    "filename": "0932039e271f22c6afa7f25afab4fca9.mp4",
+    "bytes": 650081,
+    "duration_seconds": 33.503337,
+    "source_snapshot_sha256": "ca6f1b6bf117f619c17ae7da50200250e6138362bd6a1f2128c6368dda704eb7",
+    "voice_model_sha256": "5d4f08ba6a2a48c44592eed3ce56bf85e9de3dd4e20df90541ae68a8310c029a",
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "width": 1280,
+        "height": 720,
+        "r_frame_rate": "24/1"
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "22050",
+        "channels": 1,
+        "r_frame_rate": "0/0"
+      }
+    ]
+  },
+  "usage_log_rows_after": 0,
+  "ended_at": "2026-10-29T08:25:50.147290+00:00",
+  "asr_consistency": {
+    "captured_at": "2026-10-29T08:27:56.881265+00:00",
+    "scope": "Exact new production MP4, cached offline CPU/int8 ASR consistency; not human audibility, pronunciation or MOS",
+    "video_sha256": "0932039e271f22c6afa7f25afab4fca9947b795b98ca567dde959c404d16470d",
+    "narration_sha256": "ede105047209aee6599d5ee58bd5f55abbe2860276d38354dc01b25a21d3e6f7",
+    "source_snapshot_sha256": "ca6f1b6bf117f619c17ae7da50200250e6138362bd6a1f2128c6368dda704eb7",
+    "asr_model": "Systran/faster-whisper-medium.en",
+    "asr_model_snapshot": "a29b04bd15381511a9af671baec01072039215e3",
+    "cpu_threads": 2,
+    "gpu_used": false,
+    "model_downloaded": false,
+    "status": "completed",
+    "seconds": 20.719,
+    "expected_word_count": 70,
+    "recognized_word_count": 70,
+    "word_errors_unadjusted": 0,
+    "word_error_rate_unadjusted": 0.0,
+    "disclaimer_unverified_recognized": true,
+    "no_incident_footage_recognized": true
+  },
+  "asr_edit_counts": {
+    "substitution": 0,
+    "insertion": 0,
+    "deletion": 0
+  },
+  "raw_receipt_sha256": "daa319f2997484b55d1c994fad50536f85420df07b91cd7102b47d5757bfe573",
+  "raw_asr_receipt_sha256": "d407dfba57d025543df92a4d34420bbf211c337d2026f3889e8c41d5ead6cc07",
+  "sanitization": "Publisher bodies/headlines/narration/transcript/URLs, runtime paths, environment/session values and operator credentials omitted. Original private execution receipts retained.",
+  "prior_attempts": [
+    {
+      "stage": "before_generation",
+      "result": "bounded verifier rejected500-report list exceeding1.5MB; no generationPOST executed"
+    },
+    {
+      "stage": "after_valid_local_analysis",
+      "result": "verifier omitted newly added canonical source_platform from reconstructed hash; full-contract hash independently matched stored artifact. No videoPOST yet. Verifier repaired and existing10regressions passed before new full execution."
+    }
+  ],
+  "execution_accounting": "The successful gate contains one local analysis and one local video job. The prior stopped verification also ran one local analysis; it is not erased or included as a successful gate. No paid API calls recorded."
+}

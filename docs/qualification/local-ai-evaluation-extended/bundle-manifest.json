@@ -1,0 +1,41 @@
+{
+  "generated_at": "2026-10-29T05:58:01.685050+00:00",
+  "scope": "Completed24-case public synthetic evaluation bundle. Original pre-call dependencies are separately bound by frozen.json.",
+  "files": [
+    {
+      "path": "cpu-results.json",
+      "bytes": 26555,
+      "sha256": "c2da406025674b424d6c0fb540c462ccb1c45881f51c543d8cbe3d278b18a1d3"
+    },
+    {
+      "path": "evaluate.py",
+      "bytes": 6445,
+      "sha256": "44deae3eac5353ed4c790226b3016b7486be2c8847934dfeb0ab2154580a0c50"
+    },
+    {
+      "path": "execution-observations.json",
+      "bytes": 1267,
+      "sha256": "e4fa36bae1baf24286dc64cdfab44e6f47814bdf6fe420bfc1a2583296b91d87"
+    },
+    {
+      "path": "fixtures.json",
+      "bytes": 6124,
+      "sha256": "31a33c52b4b0d9e14f799674eccc3dca6e8a98a6666bae85776e2794cfc8b059"
+    },
+    {
+      "path": "frozen.json",
+      "bytes": 1304,
+      "sha256": "6ca39eff72a453e888e21d1c9f69a434fa1ceb685c6fc6da2d6d0284f71b0764"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4962,
+      "sha256": "7e3811c6fc16b6a912bd62df7d32afcec591fd9ab5518105327389582263ec72"
+    },
+    {
+      "path": "review-notes.json",
+      "bytes": 6839,
+      "sha256": "fabf2ec0fda20f066ac79394c72ecb9d6e0b2844243a219b41ff3ff562a2cdc9"
+    }
+  ]
+}

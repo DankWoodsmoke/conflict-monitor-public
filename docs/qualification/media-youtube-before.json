@@ -1,0 +1,40 @@
+{
+  "checked_at": "2026-10-29T04:14:32.086Z",
+  "scope": "Isolated fresh headless Chrome context, production Media tab, explicit activation of recorded YouTube reference only",
+  "phase": "before_referrer_repair",
+  "base_origin": "http://127.0.0.1:5190",
+  "embed_requests": [
+    {
+      "host": "www.youtube-nocookie.com",
+      "path": "/embed/mk4vcHtawSo",
+      "referer": null
+    }
+  ],
+  "source_requirement": {
+    "url": "https://developers.google.com/youtube/terms/required-minimum-functionality#embedded-player-api-client-identity",
+    "summary": "YouTube embedded players require HTTP Referer identification; the recommended policy is strict-origin-when-cross-origin. Missing identification is Error 153."
+  },
+  "changes_to_product": false,
+  "playback_verified": false,
+  "iframe": {
+    "referrer_policy": "no-referrer",
+    "title": "Predictive History GT#16: PAX JUDAICA RISING"
+  },
+  "frame_snapshot": {
+    "body_text": "Video player configuration error\nVideo player configuration error\nError 153\nWatch video on YouTube\nLearn more",
+    "document_referrer": "",
+    "media": [
+      {
+        "current_time": 0,
+        "paused": true,
+        "ready_state": 0,
+        "duration": null,
+        "error_code": null
+      }
+    ]
+  },
+  "app_frame_status": [
+    "External frame received \u00b7 playback and live status unverifiedOpen source \u2197\u00d7"
+  ],
+  "status": "observed"
+}

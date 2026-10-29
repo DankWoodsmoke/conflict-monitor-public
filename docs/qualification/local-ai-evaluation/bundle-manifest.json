@@ -1,0 +1,71 @@
+{
+  "created_at": "2026-10-29T05:40:55.783991+00:00",
+  "scope": "Public synthetic evaluation evidence and pure replay; no private corpus/session/environment or real publisher article body",
+  "files": [
+    {
+      "path": "cpu-results.json",
+      "bytes": 27034,
+      "sha256": "f9e9c5f6e7ae18c654bee80846c5cba3e0cdb5fce1211b4423c1c65af22bc837"
+    },
+    {
+      "path": "development-probes.json",
+      "bytes": 3841,
+      "sha256": "97bfd045473dea7f267fb8629199d9b261aac5c12c83710e1b70f7f3521e9acc"
+    },
+    {
+      "path": "fixtures.json",
+      "bytes": 2110,
+      "sha256": "80dcaf62fb084530642a209c309d34cb04e199d6046d91c9e8c2f75da8135099"
+    },
+    {
+      "path": "frozen-evaluation.json",
+      "bytes": 3573,
+      "sha256": "07cd3f0993052573e2912392536ec83c86cc9fc88454b5df3cb19e640a451f48"
+    },
+    {
+      "path": "gpu-results.json",
+      "bytes": 38456,
+      "sha256": "c0301089f3480075ae76f8fc9cdb72e19ca2dd5d8466280054009628623021a9"
+    },
+    {
+      "path": "provenance.json",
+      "bytes": 1193,
+      "sha256": "6383eeed1e19706cf66243fb1993f7112d3a740061512e7fe7edf02db4b67873"
+    },
+    {
+      "path": "README.md",
+      "bytes": 6976,
+      "sha256": "eb58ba47801406870f26fd35b4b339f18dfcd8e7993731e6630d33a36f181caf"
+    },
+    {
+      "path": "replay.py",
+      "bytes": 13575,
+      "sha256": "9d10cf1030dff79590028ce5409bf29bf8748b1f0bf76e584616876fdbb42234"
+    },
+    {
+      "path": "request-profile.json",
+      "bytes": 734,
+      "sha256": "fecceb7435fa91d4e0aa598ae8355bbc58266ac6c98e4ff7b9959898a058c90e"
+    },
+    {
+      "path": "request-schema.json",
+      "bytes": 1819,
+      "sha256": "57c0de4f33bc5fa27b1a6c93c030ca3309cd3a9d2b436c7e7725f2c8c63fcb7a"
+    },
+    {
+      "path": "system-prompt.txt",
+      "bytes": 1216,
+      "sha256": "dd73ee0c4fc9b4e2d424bcbf5b76f0138f12f432e3837f43c21715567e899d95"
+    },
+    {
+      "path": "validator-replay.json",
+      "bytes": 2688,
+      "sha256": "84b2803711997069a193114c3f487a702c401c29cdbb5e3bd741f3e4355cd03b"
+    },
+    {
+      "path": "validator_snapshot.py",
+      "bytes": 4044,
+      "sha256": "cd8615603e9373fe5d3afa2d8bbd7b8f19699e33e2dde0f0f69a514077829788"
+    }
+  ]
+}

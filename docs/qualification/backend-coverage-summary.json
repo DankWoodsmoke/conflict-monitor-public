@@ -1,0 +1,23 @@
+{
+  "scope": "Windows backend unit/behavior suite; no excluded lines; does not include separately run browser/live pipeline checks",
+  "command": "python -m pytest --cov=app --cov-branch --cov-report=json -q",
+  "passed": 248,
+  "subtests_passed": 29,
+  "totals": {
+    "covered_lines": 2710,
+    "num_statements": 4338,
+    "percent_covered": 60.07529580494801,
+    "percent_covered_display": "60",
+    "missing_lines": 1628,
+    "excluded_lines": 0,
+    "percent_statements_covered": 62.47118487782388,
+    "percent_statements_covered_display": "62",
+    "num_branches": 1240,
+    "num_partial_branches": 195,
+    "covered_branches": 641,
+    "missing_branches": 599,
+    "percent_branches_covered": 51.693548387096776,
+    "percent_branches_covered_display": "52"
+  },
+  "exhaustive_line_verification": false
+}

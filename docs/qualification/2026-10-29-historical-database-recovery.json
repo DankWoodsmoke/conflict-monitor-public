@@ -1,0 +1,652 @@
+{
+  "recorded_at": "2026-10-29T09:30:41.470636+00:00",
+  "status": "PASS_ISOLATED_PRIVATE_HISTORICAL_RESTORE",
+  "scope": "Seven application tables preserved from the selected April archive into a separate stopped archival database; no active-pipeline merge.",
+  "original_archive": {
+    "bytes": 281863447,
+    "sha256": "31d04ebcda8ecf0be13a5b14eed5093892e7d4985957ff91fb45f8d97f9e2ec1",
+    "final_hash_unchanged": true
+  },
+  "compressed_sql": {
+    "name": "conflict_monitor_db.sql.gz",
+    "bytes": 211771511,
+    "sha256": "84e6ff04552f3ffbe5aadc1d567067c3a53524d256e1c1f1651523006ea19e47"
+  },
+  "decompressed_sql": {
+    "format": "plain_sql_candidate",
+    "bytes": 1036439928,
+    "sha256": "1ecf2aca2fd2eab11bd06b27e70b41a500623ed7b00c7cb5d9ce99a50800cf69",
+    "gzip_crc_eof_passed": true,
+    "physical_lines_inspected": 54377
+  },
+  "source_header_versions": {
+    "database_version": "16.4 (Debian 16.4-1.pgdg110+2)",
+    "pg_dump_version": "16.4 (Debian 16.4-1.pgdg110+2)",
+    "completion_comment": true
+  },
+  "static_review": {
+    "statements": 96,
+    "review_flags": {
+      "ownership_or_grant_change": 15,
+      "extension_load": 4
+    },
+    "select_routines": [
+      "pg_catalog.set_config",
+      "pg_catalog.setval"
+    ],
+    "psql_metacommands": {},
+    "unreviewed_constructs": [],
+    "limitations": "Pattern/schema review is not a complete SQL proof or malware certificate. Trusted extension loading and ownership changes remain explicit restore decisions. At that static-review stage SQL had not yet been executed; the subsequent isolated execution and exact round-trip are recorded below."
+  },
+  "isolated_target": {
+    "image": "sha256:1ac10b2551ba84ae05db8e7da477afcd0a3fede99bcb7705da2ee157390cb095",
+    "postgresql_version": "17.11 (Debian 17.11-1.pgdg13+2)",
+    "postgis_version": "3.6.4",
+    "extensions": [
+      {
+        "name": "fuzzystrmatch",
+        "version": "1.2"
+      },
+      {
+        "name": "plpgsql",
+        "version": "1.0"
+      },
+      {
+        "name": "postgis",
+        "version": "3.6.4"
+      },
+      {
+        "name": "postgis_tiger_geocoder",
+        "version": "3.6.4"
+      },
+      {
+        "name": "postgis_topology",
+        "version": "3.6.4"
+      }
+    ],
+    "uid": 999,
+    "capabilities_dropped": [
+      "ALL"
+    ],
+    "no_new_privileges": true,
+    "network": "none",
+    "published_ports": false,
+    "tcp_listen_addresses": "",
+    "connection_was_unix_socket": true,
+    "host_bind_mounts": false,
+    "production_credentials_loaded": false,
+    "readonly_rootfs": true,
+    "cpus": 2,
+    "memory_bytes": 2147483648,
+    "pids_limit": 256,
+    "old_dump_owner_is_nologin_nonsuperuser": true,
+    "container_stopped": true,
+    "dedicated_volume_preserved": true,
+    "pinned_repository_reference": "postgis/postgis:17-3.6@sha256:1ac10b2551ba84ae05db8e7da477afcd0a3fede99bcb7705da2ee157390cb095",
+    "image_identity_scope": "Recorded Docker image identity; pinned repository digest is given separately. Both were read from the local image inventory."
+  },
+  "validation": {
+    "gzip_crc_eof": true,
+    "restore_process_exit_code": 0,
+    "restore_stderr_bytes": 0,
+    "application_tables": 7,
+    "application_rows": 53715,
+    "full_field_copy_text_multisets_equal": true,
+    "field_value_normalization_applied": false,
+    "definition": "SHA256 of each exact PostgreSQL COPY text row excluding final LF; sorted hash:count lines aggregated with SHA256. No field/value normalization.",
+    "output_settings": {
+      "TimeZone": "UTC",
+      "DateStyle": "ISO, YMD",
+      "IntervalStyle": "postgres",
+      "extra_float_digits": 3,
+      "bytea_output": "hex"
+    },
+    "geometry_structural_checks": {
+      "nonnull": 19818,
+      "srid_not4326": 0,
+      "invalid": 0
+    },
+    "constraints": {
+      "invalid_indexes": 0,
+      "unvalidated_constraints": 0
+    }
+  },
+  "tables": {
+    "public.channel_checkpoints": {
+      "columns": [
+        {
+          "name": "channel_name",
+          "type": "character varying(255)"
+        },
+        {
+          "name": "last_message_id",
+          "type": "integer"
+        },
+        {
+          "name": "last_processed_at",
+          "type": "timestamp with time zone"
+        }
+      ],
+      "copy_column_order": [
+        "channel_name",
+        "last_message_id",
+        "last_processed_at"
+      ],
+      "rows": 7,
+      "all_escaped_field_bytes_equal": true,
+      "source_row_multiset_sha256": "a9d65f5e7007fc6235a0a02d958a7cc6df8be44c5c59e777f305987de75d5476",
+      "restored_row_multiset_sha256": "a9d65f5e7007fc6235a0a02d958a7cc6df8be44c5c59e777f305987de75d5476",
+      "missing_row_hash_occurrences": 0,
+      "extra_row_hash_occurrences": 0,
+      "stored_clock_bounds": {
+        "last_processed_at": {
+          "count": 7,
+          "min": "2026-03-28T05:54:27.759866+00:00",
+          "max": "2026-04-08T20:23:57.055711+00:00"
+        }
+      }
+    },
+    "public.cost_config": {
+      "columns": [
+        {
+          "name": "key",
+          "type": "character varying(80)"
+        },
+        {
+          "name": "value",
+          "type": "text"
+        }
+      ],
+      "copy_column_order": [
+        "key",
+        "value"
+      ],
+      "rows": 7,
+      "all_escaped_field_bytes_equal": true,
+      "source_row_multiset_sha256": "a28e18e34d4fb3fc86a90a94cf9f05b2e0d18f8db84089155fc3cd69cab7efce",
+      "restored_row_multiset_sha256": "a28e18e34d4fb3fc86a90a94cf9f05b2e0d18f8db84089155fc3cd69cab7efce",
+      "missing_row_hash_occurrences": 0,
+      "extra_row_hash_occurrences": 0,
+      "stored_clock_bounds": {}
+    },
+    "public.events": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "integer"
+        },
+        {
+          "name": "source",
+          "type": "character varying(50)"
+        },
+        {
+          "name": "channel_name",
+          "type": "character varying(255)"
+        },
+        {
+          "name": "raw_text",
+          "type": "text"
+        },
+        {
+          "name": "summary",
+          "type": "text"
+        },
+        {
+          "name": "event_type",
+          "type": "character varying(50)"
+        },
+        {
+          "name": "severity",
+          "type": "integer"
+        },
+        {
+          "name": "lat",
+          "type": "double precision"
+        },
+        {
+          "name": "lon",
+          "type": "double precision"
+        },
+        {
+          "name": "geometry",
+          "type": "public.geometry(Point,4326)"
+        },
+        {
+          "name": "timestamp",
+          "type": "timestamp with time zone"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone"
+        },
+        {
+          "name": "report_count",
+          "type": "integer"
+        },
+        {
+          "name": "reporting_channels",
+          "type": "text"
+        },
+        {
+          "name": "source_reliability",
+          "type": "integer"
+        },
+        {
+          "name": "location_name",
+          "type": "text"
+        },
+        {
+          "name": "telegram_message_id",
+          "type": "integer"
+        },
+        {
+          "name": "source_url",
+          "type": "text"
+        },
+        {
+          "name": "anomaly_score",
+          "type": "integer"
+        },
+        {
+          "name": "anomaly_analysis",
+          "type": "text"
+        },
+        {
+          "name": "confirmed_networks",
+          "type": "text"
+        }
+      ],
+      "copy_column_order": [
+        "id",
+        "source",
+        "channel_name",
+        "raw_text",
+        "summary",
+        "event_type",
+        "severity",
+        "lat",
+        "lon",
+        "geometry",
+        "timestamp",
+        "created_at",
+        "report_count",
+        "reporting_channels",
+        "source_reliability",
+        "location_name",
+        "telegram_message_id",
+        "source_url",
+        "anomaly_score",
+        "anomaly_analysis",
+        "confirmed_networks"
+      ],
+      "rows": 19818,
+      "all_escaped_field_bytes_equal": true,
+      "source_row_multiset_sha256": "c9aabcb1cd1d1a5a186c6bd2ee1ee8ad48c9c4e9670786a3a123ba0ee08b511a",
+      "restored_row_multiset_sha256": "c9aabcb1cd1d1a5a186c6bd2ee1ee8ad48c9c4e9670786a3a123ba0ee08b511a",
+      "missing_row_hash_occurrences": 0,
+      "extra_row_hash_occurrences": 0,
+      "stored_clock_bounds": {
+        "timestamp": {
+          "dated_rows": 19818,
+          "invalid_rows": 0,
+          "timezone_unspecified_rows": 0,
+          "min": "2011-07-09T11:32:40+00:00",
+          "max": "2026-04-08T22:25:36+00:00"
+        },
+        "created_at": {
+          "dated_rows": 19818,
+          "invalid_rows": 0,
+          "timezone_unspecified_rows": 0,
+          "min": "2026-03-20T08:26:20.447772+00:00",
+          "max": "2026-04-08T20:23:56.952264+00:00"
+        }
+      }
+    },
+    "public.intel_media": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "integer"
+        },
+        {
+          "name": "captured_at",
+          "type": "timestamp with time zone"
+        },
+        {
+          "name": "tweet_id",
+          "type": "character varying(30)"
+        },
+        {
+          "name": "source",
+          "type": "character varying(60)"
+        },
+        {
+          "name": "username",
+          "type": "character varying(60)"
+        },
+        {
+          "name": "image_url",
+          "type": "text"
+        },
+        {
+          "name": "thumb_url",
+          "type": "text"
+        },
+        {
+          "name": "media_type",
+          "type": "character varying(20)"
+        },
+        {
+          "name": "tweet_text",
+          "type": "text"
+        },
+        {
+          "name": "tweet_url",
+          "type": "text"
+        }
+      ],
+      "copy_column_order": [
+        "id",
+        "captured_at",
+        "tweet_id",
+        "source",
+        "username",
+        "image_url",
+        "thumb_url",
+        "media_type",
+        "tweet_text",
+        "tweet_url"
+      ],
+      "rows": 251,
+      "all_escaped_field_bytes_equal": true,
+      "source_row_multiset_sha256": "9875274dbc5969bf8cb7045bd6c1a6e60aabe538378b54132abc51b8971f0d42",
+      "restored_row_multiset_sha256": "9875274dbc5969bf8cb7045bd6c1a6e60aabe538378b54132abc51b8971f0d42",
+      "missing_row_hash_occurrences": 0,
+      "extra_row_hash_occurrences": 0,
+      "stored_clock_bounds": {
+        "captured_at": {
+          "count": 251,
+          "min": "2026-03-23T00:38:15.539044+00:00",
+          "max": "2026-04-05T01:00:04.356377+00:00"
+        }
+      }
+    },
+    "public.sitreps": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "integer"
+        },
+        {
+          "name": "generated_at",
+          "type": "timestamp with time zone"
+        },
+        {
+          "name": "trigger",
+          "type": "character varying(20)"
+        },
+        {
+          "name": "events_analyzed",
+          "type": "integer"
+        },
+        {
+          "name": "headline",
+          "type": "text"
+        },
+        {
+          "name": "situation",
+          "type": "text"
+        },
+        {
+          "name": "escalation_text",
+          "type": "text"
+        },
+        {
+          "name": "escalation_level",
+          "type": "character varying(20)"
+        },
+        {
+          "name": "economic_exposure",
+          "type": "text"
+        },
+        {
+          "name": "game_theory",
+          "type": "text"
+        },
+        {
+          "name": "historical_analogue",
+          "type": "text"
+        },
+        {
+          "name": "key_event_ids",
+          "type": "text"
+        },
+        {
+          "name": "raw_response",
+          "type": "text"
+        },
+        {
+          "name": "humanitarian_ground",
+          "type": "text"
+        },
+        {
+          "name": "escalation_score",
+          "type": "integer"
+        },
+        {
+          "name": "key_questions",
+          "type": "text"
+        }
+      ],
+      "copy_column_order": [
+        "id",
+        "generated_at",
+        "trigger",
+        "events_analyzed",
+        "headline",
+        "situation",
+        "escalation_text",
+        "escalation_level",
+        "economic_exposure",
+        "game_theory",
+        "historical_analogue",
+        "key_event_ids",
+        "raw_response",
+        "humanitarian_ground",
+        "escalation_score",
+        "key_questions"
+      ],
+      "rows": 112,
+      "all_escaped_field_bytes_equal": true,
+      "source_row_multiset_sha256": "c7963b859f41c42449bd2fa07654572b18f1332912caeb3b0bd4f312220d885c",
+      "restored_row_multiset_sha256": "c7963b859f41c42449bd2fa07654572b18f1332912caeb3b0bd4f312220d885c",
+      "missing_row_hash_occurrences": 0,
+      "extra_row_hash_occurrences": 0,
+      "stored_clock_bounds": {
+        "generated_at": {
+          "dated_rows": 112,
+          "invalid_rows": 0,
+          "timezone_unspecified_rows": 0,
+          "min": "2026-03-22T23:48:53.360918+00:00",
+          "max": "2026-04-08T19:46:55.161077+00:00"
+        }
+      }
+    },
+    "public.tracking_snapshots": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "integer"
+        },
+        {
+          "name": "timestamp",
+          "type": "timestamp with time zone"
+        },
+        {
+          "name": "aircraft",
+          "type": "jsonb"
+        },
+        {
+          "name": "vessels",
+          "type": "jsonb"
+        },
+        {
+          "name": "jamming_zones",
+          "type": "jsonb"
+        }
+      ],
+      "copy_column_order": [
+        "id",
+        "timestamp",
+        "aircraft",
+        "vessels",
+        "jamming_zones"
+      ],
+      "rows": 12361,
+      "all_escaped_field_bytes_equal": true,
+      "source_row_multiset_sha256": "751307ae35636f2bec70b52749a55c4bffb6255459a7b42110ead1f5059e50e8",
+      "restored_row_multiset_sha256": "751307ae35636f2bec70b52749a55c4bffb6255459a7b42110ead1f5059e50e8",
+      "missing_row_hash_occurrences": 0,
+      "extra_row_hash_occurrences": 0,
+      "stored_clock_bounds": {
+        "timestamp": {
+          "dated_rows": 12361,
+          "invalid_rows": 0,
+          "timezone_unspecified_rows": 0,
+          "min": "2026-03-22T16:31:43.421404+00:00",
+          "max": "2026-04-08T20:23:17.217967+00:00"
+        }
+      }
+    },
+    "public.usage_log": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "integer"
+        },
+        {
+          "name": "operation",
+          "type": "character varying(60)"
+        },
+        {
+          "name": "model",
+          "type": "character varying(100)"
+        },
+        {
+          "name": "input_tokens",
+          "type": "integer"
+        },
+        {
+          "name": "output_tokens",
+          "type": "integer"
+        },
+        {
+          "name": "cost_usd",
+          "type": "numeric(12,8)"
+        },
+        {
+          "name": "meta",
+          "type": "jsonb"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone"
+        }
+      ],
+      "copy_column_order": [
+        "id",
+        "operation",
+        "model",
+        "input_tokens",
+        "output_tokens",
+        "cost_usd",
+        "meta",
+        "created_at"
+      ],
+      "rows": 21159,
+      "all_escaped_field_bytes_equal": true,
+      "source_row_multiset_sha256": "777902465bfcdc6d5321a9e901011d2cd6edbb66c643db5a2a922e8e6d3d2688",
+      "restored_row_multiset_sha256": "777902465bfcdc6d5321a9e901011d2cd6edbb66c643db5a2a922e8e6d3d2688",
+      "missing_row_hash_occurrences": 0,
+      "extra_row_hash_occurrences": 0,
+      "stored_clock_bounds": {
+        "created_at": {
+          "dated_rows": 21159,
+          "invalid_rows": 0,
+          "timezone_unspecified_rows": 0,
+          "min": "2026-04-01T02:44:14.454122+00:00",
+          "max": "2026-04-08T20:23:56.949048+00:00"
+        }
+      }
+    }
+  },
+  "stored_source_prefix_counts": {
+    "stored_rss_x_prefix": 5382,
+    "stored_telegram_value": 10997,
+    "stored_rss_other_prefix": 3423,
+    "stored_satellite_prefix": 16
+  },
+  "source_prefix_interpretation": "Raw stored source-field prefixes only; rss_x may represent bridges. These counts do not verify transport, publisher/account identity, underlying platform, rights, independence or factual accuracy.",
+  "live_profile_identity_and_volume_unchanged": true,
+  "no_active_database_merge_or_app_migration": true,
+  "privacy": {
+    "report_bodies": false,
+    "source_urls": false,
+    "author_or_channel_names": false,
+    "credential_values": false,
+    "usage_cost_values": false,
+    "database_payload_bundled": false
+  },
+  "private_evidence_sha256": {
+    "static-review.json": "c7ac93f0aa055fc79cf03f3c73afd50338f865ca7202dda32fa33ff95b3d1d97",
+    "static-hazard-followup.json": "94ce10f7ab4acf0b7bdc67e7b2c0d4970465c6309520f3aebacda53e388c2921",
+    "source-copy-row-hashes.json": "1224d75180338071f6512a08115e85e10c0c47ea7daba5b51186d7589932eb0e",
+    "isolated-restore-receipt.json": "be8096b287dc7c8803a26749d0843cc48bae88493ced4b27382e89af75a2638c",
+    "source-prefix-summary.json": "1f8c1e5b567b4c41e6935d05e5ac8193e5147b13af21986d612e34a74cf56067"
+  },
+  "limitations": [
+    "Exact escaped-row equality proves the exercised archival preservation, not factual truth, publisher identity, independent confirmation or licensing.",
+    "Legacy model summaries, scores, coordinates and navigation/track interpretations remain unreviewed historical assertions.",
+    "Geometry validity/SRID checks establish structural consistency, not accurate real-world incident locations.",
+    "Source timestamps are stored publication/record metadata, not established incident times. Preserve old and anomalous clocks unchanged.",
+    "Original extension versions and source locale are not established by the dump header; current trusted extension installation is separately recorded.",
+    "No current-schema application migration, active-feed merge or historical UI integration was attempted.",
+    "The archive cannot recover unknown server writes after the backup.",
+    "The earlier98-event fresh candidate database upgrade was a separate operation and did not recover this historical archive."
+  ],
+  "stored_coordinate_metadata": {
+    "event_rows": 19818,
+    "geometry_decoded_points": 19818,
+    "geometry_parse_failures": 0,
+    "geometry_nonfinite": 0,
+    "geometry_out_of_geographic_range": 0,
+    "stored_unknown_sentinel_points": 5991,
+    "lat_lon_null_rows": 0,
+    "lat_lon_nonfinite_rows": 0,
+    "lat_lon_out_of_geographic_range_rows": 0,
+    "geometry_differs_from_lat_lon_exact_double": 0,
+    "point_lon_range": [
+      -157.9991492,
+      151.2082848
+    ],
+    "point_lat_range": [
+      -38.8973641,
+      77.6192349
+    ],
+    "field_lon_range": [
+      -157.9991492,
+      151.2082848
+    ],
+    "field_lat_range": [
+      -38.8973641,
+      77.6192349
+    ],
+    "sentinel_definition": {
+      "lat": -25,
+      "lon": 80,
+      "basis": "Explicit UNKNOWN_LAT/UNKNOWN_LON legacy code constants; identifies stored placeholder coordinates, not a real observed event."
+    },
+    "interpretation": "Geographic bounds and PostGIS point validity are structural only. Known unknown placeholders, inherited geocoding/model locations, unknown precision and source evidence remain unverified; no coordinate is changed.",
+    "duration_seconds": 0.156
+  }
+}

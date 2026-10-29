@@ -1,0 +1,104 @@
+{
+  "observed_at": "2026-10-29T08:00:25.466273+00:00",
+  "status": "PASS",
+  "scope": "Exact final immutable image fresh patched-PostGIS administrator/runtime-role service and actual SQL/TCP/WS/public-feed qualification",
+  "backend_image": "sha256:4202bfc7add922228c024623b1879ccec7eaf617c718d583b69568b440f90788",
+  "database_image": "postgis/postgis:17-3.6@sha256:1ac10b2551ba84ae05db8e7da477afcd0a3fede99bcb7705da2ee157390cb095",
+  "compose_checks": {
+    "actual_image_matches_qualified": true,
+    "actual_runtime_health_200": true,
+    "migrate_exited_successfully": true,
+    "migrate_has_no_http_ports": true,
+    "runtime_dsn_user_monitor": true,
+    "administrator_secret_absent_from_all_http_env_values": true,
+    "known_administrator_env_fields_blank": true,
+    "runtime_password_duplicate_env_blank": true,
+    "runtime_uvicorn_only": true
+  },
+  "runtime_permission_checks": {
+    "runtime_identity": true,
+    "no_administrative_flags": true,
+    "no_role_memberships": true,
+    "no_public_object_ownership": true,
+    "no_database_or_public_schema_ownership": true,
+    "migration_revision_readable": true,
+    "denied_create_public_table": true,
+    "denied_create_schema": true,
+    "denied_create_temporary_table": true,
+    "denied_alter_application_table": true,
+    "denied_truncate_application_table": true,
+    "denied_alter_migration_revision": true,
+    "denied_create_extension": true,
+    "denied_drop_application_table": true,
+    "denied_become_administrator": true,
+    "denied_change_session_authorization": true,
+    "denied_grant_administrator": true,
+    "denied_elevate_role": true,
+    "denied_read_authentication_catalog": true,
+    "ordinary_advisory_lock_available": true,
+    "sequence_usage_and_select_only": true
+  },
+  "pipeline_checks": {
+    "free_rss_to_postgis_tcp_api_and_websocket": "PASS",
+    "replay_and_immutable_unicode_revision": "PASS",
+    "undated_source_failure_is_persisted_not_fabricated": "PASS",
+    "free_telegram_processor_and_atomic_monotonic_checkpoint": "PASS",
+    "distinct_oversized_source_failure_identities_and_prefix_hashes": "PASS",
+    "real_sql_compound_timestamp_id_pagination": "PASS",
+    "creation_id_recovery_includes_old_dated_reports": "PASS",
+    "real_jsonb_snapshot_sampling_bound": "PASS",
+    "free_persistent_attributed_brief_no_risk_inference": "PASS",
+    "real_sql_legacy_json_abstention_and_missing_citation_disclosure": "PASS",
+    "paid_and_admin_operations_fail_closed": "PASS",
+    "bounded_public_rss_to_actual_database": "PASS",
+    "no_paid_usage_and_required_query_indexes": "PASS"
+  },
+  "pipeline_public_feed_requested": true,
+  "bootstrap_source_sha256": "33d913269f175e70ce9db64db27c9c80d0a1b1b2f949893e05ae3dcd4b9a9a21",
+  "live_ingestion_enabled": false,
+  "isolated_test_database_only": true,
+  "synthetic_rows_in_live_database": false,
+  "paid_model_calls": 0,
+  "limitations": [
+    "Fresh isolated qualification, not the final live data cutover or 31-source deployed collection proof.",
+    "No original credentials or original volumes are mounted.",
+    "Actual API runs as monitor; administrator is confined to exited migrate service."
+  ],
+  "source_receipts": [
+    {
+      "path": "Private pg17-final-image-qualification/qualification.json",
+      "sha256": "1c6cd86b0cde1f760b9c995ebe48982cc82624abbd3e4c498f6ce510f64e2ec0"
+    },
+    {
+      "path": "Private pg17-final-image-qualification/fresh-bootstrap.log",
+      "sha256": "e28b42a0a80c59a9a3cb744b073bf1123e8ef92f9570a995f97d0ca7f6a16eb2"
+    },
+    {
+      "path": "Private pg17-final-image-qualification/repeat-bootstrap.log",
+      "sha256": "e28b42a0a80c59a9a3cb744b073bf1123e8ef92f9570a995f97d0ca7f6a16eb2"
+    },
+    {
+      "path": "Private pg17-final-image-qualification/runtime-permissions.json",
+      "sha256": "176f3ff7298fd80222eb3ba0a5367435668c49867a8fb5c014a336f1fd029a2a"
+    },
+    {
+      "path": "Private pg17-final-image-qualification/runtime-postgis.log",
+      "sha256": "3ce9b8b749989f1fed8d75aa5574dfcaae93804241d7508ddeb9e01a77b3faf0"
+    },
+    {
+      "path": "Private pg17-final-image-qualification/runtime-pipeline-public-feed.log",
+      "sha256": "cc437547558b32eb4872b80be615239196a1fe89a56444412f3259664ba7febe"
+    }
+  ],
+  "commands": [
+    "docker compose --project-name cmonitor-final-role-qualification --env-file <private-qualification-env> -f docker-compose.yml -f <immutable-image-override> up -d --no-build backend",
+    "python -m app.bootstrap (fresh database; repeat verifies idempotence)",
+    "python tools/verify_database_role.py (runtime monitor; separate conflict_monitor_test)",
+    "python tools/verify_postgis.py (runtime monitor; separate conflict_monitor_test)",
+    "python tools/verify_live_pipeline.py --public-feed (runtime monitor; separate conflict_monitor_test)"
+  ],
+  "actual_pipeline_check_count": 13,
+  "runtime_permission_check_count": 21,
+  "compose_check_count": 9,
+  "raw_publisher_bodies_or_urls_included": false
+}

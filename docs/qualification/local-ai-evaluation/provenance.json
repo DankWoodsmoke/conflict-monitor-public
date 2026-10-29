@@ -1,0 +1,18 @@
+{
+  "curated_at": "2026-10-29T05:36:46.050995+00:00",
+  "data_origin": "All case text and golden expectations were authored for this project; fictional test material, not publisher reporting. No corpus, persona, environment, session, operator key or real article body is included.",
+  "system_sha256": "dd73ee0c4fc9b4e2d424bcbf5b76f0138f12f432e3837f43c21715567e899d95",
+  "fixture_sha256": "80dcaf62fb084530642a209c309d34cb04e199d6046d91c9e8c2f75da8135099",
+  "current_validator_function_sha256": "910e909ac1d09dc700382bb10091a1cae01329651bd5f820572a86bc9c5e1827",
+  "evaluated_cpu_validator_sha256": "f58a4ddd67a72d44047943525393d17b735bc710abf30a0a30490eb94b5510b8",
+  "formatter_replay_scope": "Ruff formatting and equivalent re.I to re.IGNORECASE changed validator source bytes; all9 CPU raw batches revalidated with identical decisions. The later GPU run used the current function hash.",
+  "runtime": {
+    "ollama_version": "0.40.11",
+    "python": "3.11 native Windows qualification",
+    "pydantic": "2.14.1",
+    "gpu": "NVIDIA GeForce RTX4070 12GiB"
+  },
+  "cpu_and_gpu_not_bit_identical": true,
+  "sample_count": 12,
+  "new_independent_gpu_validation_cases": 0
+}

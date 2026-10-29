@@ -1,0 +1,17 @@
+# Security and public deployment
+
+The public snapshot excludes original environment files, Telegram sessions, private keys, database dumps, raw logs, videos and Git history. Do not publish the original backup or working directory. The content scanner is a bounded check, not an exhaustive credential-clearance claim.
+
+Use new operator-owned credentials and restricted browser keys. Backend provider credentials belong on the server. The Google Maps browser key is intentionally used by the browser and should have HTTP-referrer/API restrictions and quotas; never substitute a server credential. The settings flow keeps session-entered keys in page memory. A deployment can explicitly set `GOOGLE_EARTH_ENABLED=true` and `GOOGLE_MAPS_BROWSER_KEY`; `/config` then intentionally delivers that public browser-restricted Maps key to clients. It never delivers the backend model, Telegram or administrative credentials.
+
+Live collection, paid synthesis and video generation are separate explicit opt-ins. Administrative writes fail closed when the server key is absent. Public read access does not authorize an unbounded paid call. Run behind TLS and apply deployment-specific request/connection limits; the local compose ports bind to loopback.
+
+The database and one-shot initializer use `monitor_admin`; ordinary HTTP workers use the separate non-owning `monitor` role. Runtime receives only modeled-table DML, sequence USAGE/SELECT and migration-revision SELECT. It cannot create databases, roles, schemas, temporary tables or extensions, change the revision, assume the administrator or own application objects. Administrator environment variables are explicitly blanked in the HTTP service. Database access remains private to the Compose network. See [upgrade/rollback](docs/DB_UPGRADE.md) before changing an existing installation; rollback restores the older snapshot and its older permission properties.
+
+Treat feed text and links as hostile input. Source text is data, never model instructions. Popup HTML is sanitized and external URLs require an allowed scheme. Structured model output and citation-ID membership are validated, while factual entailment remains unverified pending review.
+
+Native feed collection has bounded concurrency, response bytes, deadlines, quotas and retry backoff. Original text, publication clocks, failures and revisions are retained; retrieval does not refresh an old source clock. Optional local inference is single-job, bounded and loopback-only. Narrated video accepts selected source IDs, creates local cards/audio and fully validates an MP4 before atomic publication. The qualified local AI/video path excludes Telegram material without the required source permission; inherited paid/model engines do not share that complete guard and remain disabled and unqualified.
+
+The dated [OS security review](docs/OS_SECURITY_REVIEW.md) retains unresolved backend/database findings, vendor backport comparisons and frontend fixes. Python/npm advisory passes cover different inventories and do not clear OS packages, the Docker host, browser, GPU, builder stages or unknown vulnerabilities. [Dependency inventories](docs/qualification/software-inventory/README.md) distinguish all lockfile packages from the production dependency closure and bundled static assets. No blanket zero-vulnerability claim is made.
+
+Do not include keys, source raw logs or a database in a vulnerability report. Privately report the affected code, minimal synthetic reproduction and software version to the repository owner.

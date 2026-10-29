@@ -1,0 +1,176 @@
+{
+  "captured_at": "2026-10-29T08:48:38.716291+00:00",
+  "status": "EXACT_CURRENT_IMAGES_SCANNED_RESIDUAL_FINDINGS_RETAINED",
+  "scope": "Local immutable backend/frontend images only; scanner updates and external sources disabled, no registry auth, no image/source upload and no container runtime environment inspection. Not vulnerability or exploitability clearance.",
+  "scanner": {
+    "name": "Grype",
+    "version": "0.121.0",
+    "executable_sha256": "4f366a6f8ed46f97280e14ded6acb8711ac49744f99c09214f5e676f34a16ecb",
+    "release_url": "https://github.com/anchore/grype/releases/tag/v0.121.0",
+    "database_schema_version": "v6.1.10",
+    "database_built": "2026-10-28T06:23:30Z",
+    "database_valid": true,
+    "independent_sigstore_signature_verification": false
+  },
+  "backend": {
+    "captured_at": "2026-10-29T08:25:21.165208+00:00",
+    "image_id": "sha256:4202bfc7add922228c024623b1879ccec7eaf617c718d583b69568b440f90788",
+    "seconds": 19.063,
+    "raw_scan_sha256": "f25576c9a1f4190a975b31242605eef4fe03539d42478e7a577dfaa973228ab5",
+    "raw_scan_bytes": 3401707,
+    "private_receipt_sha256": "0576d6e3b076a0b232d3c00dc3cd62d4de8d1392815919327441a770359b099f",
+    "scanner_fail_on_high_exit_code": 2,
+    "match_records": 817,
+    "severity_counts": {
+      "Negligible": 168,
+      "High": 346,
+      "Critical": 14,
+      "Medium": 247,
+      "Low": 25,
+      "Unknown": 17
+    },
+    "fix_state_counts": {
+      "not-fixed": 184,
+      "": 31,
+      "fixed": 52,
+      "wont-fix": 550
+    },
+    "same_artifact_cve_version_severity_fix_multiset_as_prior_a57": true,
+    "new_matching_records": [],
+    "removed_matching_records": [],
+    "interpretation": "Raw high-severity threshold fails. Prior per-CVE distributor backport and limited exposure assessment remains separate; no ignore/suppression introduced. The linked finding projection retains the identical817records."
+  },
+  "frontend": {
+    "captured_at": "2026-10-29T08:45:18.910801+00:00",
+    "image_id": "sha256:cb2cc67e72d8c1fc67049c6b91d621ee2e31de0be3e3c4ccda4890a791e5422a",
+    "seconds": 4.281,
+    "raw_scan_sha256": "ff5ef30caeb690649cde0b18153af270ce98e4c3b26e4f970832c5cf5f369b63",
+    "raw_scan_bytes": 37462,
+    "private_receipt_sha256": "f5445c3bafae8e228f090b83b9511d86d975028418e409666eff59ab10071197",
+    "scanner_fail_on_high_exit_code": 0,
+    "match_records": 3,
+    "severity_counts": {
+      "Medium": 3
+    },
+    "remaining_records": [
+      {
+        "package": "busybox",
+        "version": "1.37.0-r31",
+        "type": "apk",
+        "id": "CVE-2025-60876",
+        "severity": "Medium",
+        "fix": {
+          "versions": [],
+          "state": ""
+        }
+      },
+      {
+        "package": "busybox-binsh",
+        "version": "1.37.0-r31",
+        "type": "apk",
+        "id": "CVE-2025-60876",
+        "severity": "Medium",
+        "fix": {
+          "versions": [],
+          "state": ""
+        }
+      },
+      {
+        "package": "ssl_client",
+        "version": "1.37.0-r31",
+        "type": "apk",
+        "id": "CVE-2025-60876",
+        "severity": "Medium",
+        "fix": {
+          "versions": [],
+          "state": ""
+        }
+      }
+    ],
+    "rootfs_layers": [
+      "sha256:75c137aedfb2760f88629236cb7b797630aed0c3d91d626d1d1bb694878fc2ba",
+      "sha256:347d70688a4f620ee434007bc3b622592c459d0c45cbc275d0c8c3db0d2cb3e5",
+      "sha256:0118eeeab20f23cb5712fe7b96dd0a3460b185c3f9fb0bdb59062a3972f5b9af",
+      "sha256:a027351c56d0ec60ff555693e0afdd9ac6536425c3a6cd70cfd99438c32cf33b",
+      "sha256:54733ab91a37b26f9dbcdebb53c37d88e967e1aca9e52984d231c7418c858dba",
+      "sha256:26fc657c345556a2c48a5cdaa66f5e31ea881a18184bc943ad42cc46e93d7139",
+      "sha256:6e2ae602f9d69418f36fd9c178e472fb6e6b468f6aadd3dbd759fcee552a7527",
+      "sha256:a617e334a194398d200a112e5d4a39c65aa720650fe0fae732bdb1d7d4fb53a0",
+      "sha256:06a85ef3304894dd8ec4162582365fd035ad50c64e58002d79e9084f4f18f1d8",
+      "sha256:a66b0783047be346aecaf882675839e595e5ca0ac998becf3eab7ac41829d0ee",
+      "sha256:c286dbad3d6186ce60cf23419d6662aa3e12d44e20a8f39a6645268f1469c102"
+    ],
+    "same_artifact_cve_version_severity_fix_multiset_as_prior_02ee": true,
+    "interpretation": "No High/Critical matching record in sampleddatabase. Three Medium BusyBox-family aliases remain with no listed fix; exact matching multiset unchanged from02ee; not zero-CVE clearance."
+  },
+  "finding_projection": "os-security-findings.json",
+  "database_scope": "Patched PostgreSQL/PostGIS immutable image assessment and actual role/restore qualification are separate. This repeat scans backend/frontend, not the database, host, Docker daemon, builder or browser.",
+  "limitations": [
+    "Scan records include duplicate aliases/generic CPE matches and are not unique CVEs or demonstrated exploitation.",
+    "Current package/backport comparisons do not detect unknown vulnerabilities or complete transitive input-flow analysis.",
+    "Metadata/signature provenance limits and vendor-open findings remain in OS_SECURITY_REVIEW.md."
+  ],
+  "previous_frontend_source_policy_binding": {
+    "captured_at": "2026-10-29T08:02:51.189567+00:00",
+    "image_id": "sha256:02ee906641f71d7b7dfe97803099bc5aeb380e97f4775c4da5fc2111203875f9",
+    "seconds": 4.016,
+    "raw_scan_sha256": "bb06c1a963f3d1f633e59c048eba4574aa4c427222f9104130cd044819f25249",
+    "raw_scan_bytes": 37475,
+    "private_receipt_sha256": "fd95b1be61adeeaa0f9b186fbd07459549bba4b1aaba3cbf168a8a9084fbdc3e",
+    "scanner_fail_on_high_exit_code": 0,
+    "match_records": 3,
+    "severity_counts": {
+      "Medium": 3
+    },
+    "remaining_records": [
+      {
+        "package": "busybox",
+        "version": "1.37.0-r31",
+        "type": "apk",
+        "id": "CVE-2025-60876",
+        "severity": "Medium",
+        "fix": {
+          "versions": [],
+          "state": ""
+        }
+      },
+      {
+        "package": "busybox-binsh",
+        "version": "1.37.0-r31",
+        "type": "apk",
+        "id": "CVE-2025-60876",
+        "severity": "Medium",
+        "fix": {
+          "versions": [],
+          "state": ""
+        }
+      },
+      {
+        "package": "ssl_client",
+        "version": "1.37.0-r31",
+        "type": "apk",
+        "id": "CVE-2025-60876",
+        "severity": "Medium",
+        "fix": {
+          "versions": [],
+          "state": ""
+        }
+      }
+    ],
+    "rootfs_layers": [
+      "sha256:75c137aedfb2760f88629236cb7b797630aed0c3d91d626d1d1bb694878fc2ba",
+      "sha256:347d70688a4f620ee434007bc3b622592c459d0c45cbc275d0c8c3db0d2cb3e5",
+      "sha256:0118eeeab20f23cb5712fe7b96dd0a3460b185c3f9fb0bdb59062a3972f5b9af",
+      "sha256:a027351c56d0ec60ff555693e0afdd9ac6536425c3a6cd70cfd99438c32cf33b",
+      "sha256:54733ab91a37b26f9dbcdebb53c37d88e967e1aca9e52984d231c7418c858dba",
+      "sha256:26fc657c345556a2c48a5cdaa66f5e31ea881a18184bc943ad42cc46e93d7139",
+      "sha256:6e2ae602f9d69418f36fd9c178e472fb6e6b468f6aadd3dbd759fcee552a7527",
+      "sha256:a617e334a194398d200a112e5d4a39c65aa720650fe0fae732bdb1d7d4fb53a0",
+      "sha256:06a85ef3304894dd8ec4162582365fd035ad50c64e58002d79e9084f4f18f1d8",
+      "sha256:a66b0783047be346aecaf882675839e595e5ca0ac998becf3eab7ac41829d0ee",
+      "sha256:58c9e37b65a8b2d6daf69d95f8756ee65a85df9e2271b4d6c311b325384a8d38"
+    ],
+    "interpretation": "No High/Critical matching record with the sampled database. Three Medium BusyBox-family aliases remain with no listed fixed version; not zero-CVE clearance.",
+    "scope": "Historical02eeimage before narrow layout/ALL-label repair; exact scan retained, no longer deployed."
+  }
+}

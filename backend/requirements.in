@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+sqlalchemy[asyncio]
+asyncpg
+geoalchemy2
+telethon
+anthropic
+alembic
+pydantic-settings
+shapely
+httpx
+websockets
+yfinance
+defusedxml
+Pillow
+piper-tts

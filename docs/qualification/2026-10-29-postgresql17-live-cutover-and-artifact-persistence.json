@@ -1,0 +1,225 @@
+{
+  "observed_at": "2026-10-29T08:34:09.566978+00:00",
+  "status": "PASS",
+  "scope": "Executed live logical cutover, new administrator/runtime role separation and old recorded artifact byte persistence before deliberate regeneration",
+  "versions": {
+    "source_pg": "17.5 (Debian 17.5-1.pgdg110+1)",
+    "target_pg": "17.11 (Debian 17.11-1.pgdg13+2)",
+    "source_postgis": "3.5.2",
+    "target_postgis": "3.6.4"
+  },
+  "images": {
+    "backend": "sha256:4202bfc7add922228c024623b1879ccec7eaf617c718d583b69568b440f90788",
+    "frontend": "sha256:02ee906641f71d7b7dfe97803099bc5aeb380e97f4775c4da5fc2111203875f9",
+    "database": "postgis/postgis:17-3.6@sha256:1ac10b2551ba84ae05db8e7da477afcd0a3fede99bcb7705da2ee157390cb095"
+  },
+  "new_database_volume": "cmonitor_live_pg17_36_20261029",
+  "preserved_old_database_volume": "cmonitor-live_pgdata",
+  "consistent_private_backup": {
+    "bytes": 975942,
+    "sha256": "de658012e21a91baa792288b506084f234220d9a29096e439dd12677a52cdcc8",
+    "publisher_bodies_or_credentials_distributed": false
+  },
+  "paused_source_table_counts": {
+    "events": 98,
+    "source_reports": 110,
+    "channel_checkpoints": 3,
+    "tracking_snapshots": 151,
+    "sitreps": 26,
+    "intel_media": 0,
+    "usage_log": 0,
+    "cost_config": 0,
+    "alembic_version": 1
+  },
+  "initial_restore_checks": {
+    "postgresql_17_11": true,
+    "postgis_3_6_4": true,
+    "all_application_rows_identical": true,
+    "raw_event_hashes_identical": true,
+    "receipt_hashes_identical": true,
+    "checkpoint_values_identical": true,
+    "all_index_definitions_identical": true,
+    "sequences_identical": true,
+    "geography_columns_consistent": true,
+    "fresh_collation_version_matches_runtime": true,
+    "restored_replay_sql_sampling_bound": true,
+    "restored_replay_shapes_and_time_order": true,
+    "source_digest_original_snapshot_sha_recomputed": true,
+    "source_digest_references_resolve": true,
+    "public_digest_risk_remains_unassessed": true,
+    "meter_geography_query_at_stored_point": true,
+    "all_indexes_valid": true
+  },
+  "restored_runtime_permissions": {
+    "status": "PASS",
+    "checks": {
+      "runtime_identity": true,
+      "no_admin_flags": true,
+      "no_memberships": true,
+      "no_public_object_ownership": true,
+      "application_tables_owned_by_admin_with_exact_dml_grants": true,
+      "application_sequences_usage_select_without_update": true,
+      "revision_select_without_update": true,
+      "no_database_create_or_temp": true,
+      "no_public_schema_create": true,
+      "database_owned_by_bootstrap_admin": true
+    },
+    "application_tables": 8,
+    "application_sequences": 5
+  },
+  "postcutover_full_row_preservation": {
+    "status": "PASS",
+    "checks": {
+      "events_all_preexisting_rows_identical": true,
+      "source_reports_all_preexisting_rows_identical": true,
+      "tracking_snapshots_all_preexisting_rows_identical": true,
+      "sitreps_all_preexisting_rows_identical": true,
+      "alembic_version_all_preexisting_rows_identical": true,
+      "runtime_monitor_without_admin_flags": true,
+      "actual_patched_sql_versions": true,
+      "fresh_collation_matches_runtime": true,
+      "no_paid_usage": true
+    },
+    "preexisting_rows_compared": {
+      "events": 98,
+      "source_reports": 110,
+      "tracking_snapshots": 151,
+      "sitreps": 26,
+      "alembic_version": 1
+    },
+    "versions": {
+      "postgresql": "17.11 (Debian 17.11-1.pgdg13+2)",
+      "postgis": "3.6.4"
+    }
+  },
+  "postcutover_raw_receipt_checkpoint_preservation": {
+    "status": "PASS",
+    "checks": {
+      "all_98_raw_hashes_preserved": true,
+      "all_110_receipt_content_hashes_preserved": true,
+      "all_final_paused_checkpoint_values_preserved_or_advanced": true
+    }
+  },
+  "postcutover_container_profile": {
+    "status": "PASS",
+    "checks": {
+      "all_three_exact_images": true,
+      "administrator_secret_absent_from_every_http_env_value": true,
+      "known_admin_env_fields_blank": true,
+      "new_external_pgdata_mounted": true,
+      "old_volume_still_exists": true,
+      "briefing_volume_preserved": true
+    },
+    "containers": [
+      {
+        "name": "/cmonitor-live-backend-1",
+        "image": "sha256:4202bfc7add922228c024623b1879ccec7eaf617c718d583b69568b440f90788",
+        "started_at": "2026-10-29T08:16:49.824386759Z"
+      },
+      {
+        "name": "/cmonitor-live-frontend-1",
+        "image": "sha256:02ee906641f71d7b7dfe97803099bc5aeb380e97f4775c4da5fc2111203875f9",
+        "started_at": "2026-10-29T08:16:55.553717474Z"
+      },
+      {
+        "name": "/cmonitor-live-db-1",
+        "image": "sha256:1ac10b2551ba84ae05db8e7da477afcd0a3fede99bcb7705da2ee157390cb095",
+        "started_at": "2026-10-29T08:16:42.490467249Z"
+      }
+    ]
+  },
+  "old_source55_artifact_persistence": {
+    "scope": "coordinated_database_upgrade_existing_data_and_local_artifact_persistence",
+    "status": "PASS",
+    "checks": {
+      "nonempty_existing_sources_and_receipts_captured": true,
+      "backend_start_changed": true,
+      "all_existing_event_raw_hashes_preserved": true,
+      "all_existing_source_receipt_hashes_preserved": true,
+      "checkpoints_preserved_or_advanced": true,
+      "video_name_full_sha_size_and_manifest_preserved": true,
+      "analysis_artifact_preserved": true,
+      "backend_matches_declared_upgrade_image": true
+    },
+    "before_at": "2026-10-29T07:08:21.157377+00:00",
+    "after_at": "2026-10-29T08:19:12.892838+00:00",
+    "backend_image": "sha256:4202bfc7add922228c024623b1879ccec7eaf617c718d583b69568b440f90788",
+    "declared_upgrade_image": "sha256:4202bfc7add922228c024623b1879ccec7eaf617c718d583b69568b440f90788",
+    "events_before": 85,
+    "events_after": 479,
+    "source_receipts_before": 96,
+    "source_receipts_after": 500,
+    "source_hash_map_before_sha256": "4d8c454d281692bf3d3f406304a470d1fcbabc60eb2eefee645e23655895d043",
+    "source_receipt_hash_map_before_sha256": "20419cf5ea08b7b6549120035ad5171abcdbf1717f487c45065863d9073dc8fd",
+    "usage_rows_before": 0,
+    "usage_rows_after": 0,
+    "video": {
+      "filename": "cba3069bc2c7300f5e13dc4f74173697.mp4",
+      "sha256": "cba3069bc2c7300f5e13dc4f741736977c7b1939f84fdc492923f138356eace7",
+      "bytes": 642513,
+      "manifest_sha256": "a86fd74d2029f34c8b654e17227271a08855911a196a33b7a7ed380e6c952327"
+    },
+    "limitations": [
+      "Byte persistence is not report truth, model correctness or listener audibility.",
+      "New provider ingestion is allowed; only previously observed IDs are required to remain unchanged.",
+      "Dynamic runtime/age/stale API fields are excluded from persisted artifact comparison.",
+      "This helper never performs the restart; operator coordination is required."
+    ]
+  },
+  "new_qualification_profile": "Base docker-compose.yml plus persistent private compose-pg17-volume.yml; exact images and new external database/original external briefing volumes",
+  "rollback_profile": "Standalone private compose-rollback.yml pins original images, old volume and old deployed environment; old volume retained",
+  "commands": [
+    "python artifacts/prepare-pg17-cutover.py --backend-image sha256:4202bfc7add922228c024623b1879ccec7eaf617c718d583b69568b440f90788 --frontend-image sha256:02ee906641f71d7b7dfe97803099bc5aeb380e97f4775c4da5fc2111203875f9",
+    "docker stop --time 30 cmonitor-pg17-final-staging-20261029 (coordinating root, before Compose mounts volume)",
+    "docker compose --project-name cmonitor-live --env-file <private-live-env> -f docker-compose.yml -f <private-final-volume-and-image-override> up -d --no-build (coordinating root)",
+    "Runtime SQL subset hashes compare every preexisting event/receipt/snapshot/brief/revision; allow new natural rows and checkpoint advancement",
+    "verify_restart_persistence.compare(..., expected_upgrade_image=<declared qualified backend image>)"
+  ],
+  "source_receipts": [
+    {
+      "path": "Private pg17-cutover/prepared.json",
+      "sha256": "a16d79cf5499dbe22bc4f57bfbd17850fdada6283cbc158abe6f4b446abd9b0a"
+    },
+    {
+      "path": "Private pg17-cutover/source-snapshot.json",
+      "sha256": "39c7eb10317dc5ae84ced6d142db2eb15f4d9e82b99242f8c04a570e1cc53585"
+    },
+    {
+      "path": "Private pg17-cutover/restored-snapshot.json",
+      "sha256": "224fbc91b48c82567f4a7d88e0a21bb6b7f84d988a29f084313861fc16e94487"
+    },
+    {
+      "path": "Private pg17-cutover/final-runtime-role-catalog.json",
+      "sha256": "d6219a0ebf6eb6f2314f1751912f11e0b8cd7880bdc8c927b48ad1687f08ed43"
+    },
+    {
+      "path": "Private pg17-cutover/api-artifact-persistence.json",
+      "sha256": "236bb7c2921990a2aad409272c9184b2c49eda582a3e29610097e49ef0c5b9d2"
+    },
+    {
+      "path": "Private pg17-cutover/postcutover-data-preservation.json",
+      "sha256": "baf8557154a9fdfe67db2d3b687e5e29839b067c89ad2212fb047f66968c4b96"
+    },
+    {
+      "path": "Private pg17-cutover/postcutover-source-cursor-hashes.json",
+      "sha256": "5f562d7bb148762fc8e2d07c2c161a42b58008f6df59d24ef3a4466fd5fa6a1a"
+    },
+    {
+      "path": "Private pg17-cutover/postcutover-container-profile.json",
+      "sha256": "0ee446f484f7882822ad5617392d41b69dcf3fe4dd60125acca24455086536fb"
+    }
+  ],
+  "old_recorded_file_backup": {
+    "private_receipt_sha256": "9d0f87338fff2b257221e020fa7b92a328f5fad8270525e41b04923b56ed74ad",
+    "files_preserved": 3,
+    "original_video_sha256": "cba3069bc2c7300f5e13dc4f741736977c7b1939f84fdc492923f138356eace7"
+  },
+  "limitations": [
+    "The coordinating root deliberately stopped writers; startup interruption occurred and zero-downtime is not claimed.",
+    "Administrator-owned restore and source byte equality do not establish source factual truth.",
+    "The original98-event/110-receipt snapshot is preserved; later natural collection is allowed to append records and advance checkpoint clocks.",
+    "Old source55 analysis/video equality was checked BEFORE explicitly authorized new generation; new generated bytes require their own receipt.",
+    "Rollback serves the old snapshot and earlier permission properties; post-cutover data is not automatically merged.",
+    "Final hour/provider/browser qualification is a separate in-progress observation, not completed by this receipt."
+  ]
+}

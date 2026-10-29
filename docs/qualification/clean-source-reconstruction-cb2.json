@@ -1,0 +1,332 @@
+{
+  "status": "PASS_FOR_BOUND_IMAGE_NOT_FINAL_PACKAGE",
+  "started_at": "2026-10-29T08:48:44.192667+00:00",
+  "finished_at": "2026-10-29T08:49:55.569252+00:00",
+  "tool_versions": {
+    "node": "v24.15.0",
+    "npm": "11.12.1"
+  },
+  "immutable_snapshot": {
+    "captured_at": "2026-10-29T08:48:52.472782+00:00",
+    "allowlisted_files": 296,
+    "content_findings": 0,
+    "zip_sha256": "42cb830678bcdd0f082ff57a26b5c5196df2aebfb74c954a65ef5f7ff01bab8e",
+    "source_manifest_sha256": "77d965e2fa19186feba68a73a69a9ccf71e89dcfe034988582a6f3eef95e9197",
+    "zip_crc": "PASS",
+    "safe_extract": "PASS",
+    "source_byte_equality": "PASS",
+    "excluded_private_paths_present": 0,
+    "markdown_changes_during_capture": [],
+    "qualification_scope": "Exact private snapshot, not final release package or publication. Documentation may continue changing after capture."
+  },
+  "source_manifest_scope": "296 exact allowlisted/scanned source files captured before later documentation/screenshot additions; not final release package manifest. Source/archive retained privately.",
+  "production_asset_binding": {
+    "container_id": "5d4b3a8d9e05747652c1ec6b84e14df0a2c8452595770c2cae446147b042cbd8",
+    "image_id": "sha256:cb2cc67e72d8c1fc67049c6b91d621ee2e31de0be3e3c4ccda4890a791e5422a",
+    "matching_distributable_files": 400,
+    "source_unchanged_by_build": true,
+    "exact_byte_equality": "PASS",
+    "extra_nginx_base_files_not_part_of_dist": [
+      "50x.html"
+    ]
+  },
+  "clean_environment": {
+    "no_inherited_provider_or_app_variables": true,
+    "new_empty_npm_cache": true,
+    "empty_npm_user_and_global_configs": true,
+    "no_prior_node_modules": true,
+    "private_environment_files_copied": false,
+    "base_os_path_temp_and_browser_detection_variables_only": true
+  },
+  "frontend_test_results": {
+    "unit_tests_passed": 149,
+    "test_files_passed": 15,
+    "browser_workspace_tests_passed": 4,
+    "skipped": 0,
+    "compatibility": "PASS",
+    "typescript_and_vite_build": "PASS"
+  },
+  "commands": [
+    {
+      "name": "npm-ci",
+      "command": [
+        "npm",
+        "ci",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "exit_code": 0,
+      "seconds": 10.687,
+      "private_log_sha256": "e7daa4cd236bc7519e6803524151bf2e1e359600956c1a296e0b416096507fa0"
+    },
+    {
+      "name": "frontend-tests",
+      "command": [
+        "npm",
+        "test"
+      ],
+      "exit_code": 0,
+      "seconds": 4.86,
+      "private_log_sha256": "1c954bd26149b714b59766df59db29c5d8387457da1b2fbccffa62ea75b1a356"
+    },
+    {
+      "name": "cesium-compatibility",
+      "command": [
+        "npm",
+        "run",
+        "test:compat"
+      ],
+      "exit_code": 0,
+      "seconds": 1.641,
+      "private_log_sha256": "9037e9a3dac8addc7c1213893ffa4cdf771602971a0c57e24fee02eaac66c478"
+    },
+    {
+      "name": "production-build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exit_code": 0,
+      "seconds": 4.265,
+      "private_log_sha256": "39823d4446c9befd867d89e53b0454262e1d42f047ece0dc01c5cb68d7370dc8"
+    },
+    {
+      "name": "copy-production-assets",
+      "command": [
+        "docker",
+        "cp",
+        "<current-frontend>:/usr/share/nginx/html",
+        "<private-qualification-output>"
+      ],
+      "exit_code": 0,
+      "seconds": 0.516,
+      "private_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "full-lock-npm-sbom",
+      "command": [
+        "npm",
+        "sbom",
+        "--package-lock-only",
+        "--sbom-format=cyclonedx"
+      ],
+      "exit_code": 0,
+      "seconds": 0.969,
+      "private_log_sha256": "c0847ad4622f2449a73a1811588728f8a3b262b2e6eb1278c183e7a52b7e5801"
+    },
+    {
+      "name": "keyless-synthetic-browser",
+      "command": [
+        "npm",
+        "run",
+        "test:browser"
+      ],
+      "exit_code": 0,
+      "seconds": 9.797,
+      "private_log_sha256": "7bb2041a13d93a4b2b9b30dfd10402dfda48c0a96652477b4c3ebff8a310fda8"
+    },
+    {
+      "name": "capture-clean-synthetic-screenshots",
+      "command": [
+        "node",
+        "<private-native-Playwright-capture-helper>",
+        "<clean-export-root>",
+        "<owned-loopback-preview>",
+        "<public-screenshot-directory>",
+        "<run-id>",
+        "<bound-image-id>"
+      ],
+      "exit_code": 0,
+      "seconds": 9.563,
+      "private_log_sha256": "21d89a568aa8ace8f77f684cfe84c6eaff77c52ea6a3e737323f1ef23d01db9a"
+    }
+  ],
+  "snapshot_corrected_tool_test_bindings": {
+    "tools/verify_local_generation.py": {
+      "path": "tools/verify_local_generation.py",
+      "bytes": 23174,
+      "sha256": "fe85760775668f19dd0e397e5331438b4c8e54987561fd769e46be847f4634d3"
+    },
+    "backend/tests/test_local_generation_verifier.py": {
+      "path": "backend/tests/test_local_generation_verifier.py",
+      "bytes": 5677,
+      "sha256": "42adc39530fd2aa63f91587e4cfe6bd94ff6c975812d2be7dd2e30e2e4a4b422"
+    },
+    "frontend/e2e/workspace.pw.ts": {
+      "path": "frontend/e2e/workspace.pw.ts",
+      "bytes": 7034,
+      "sha256": "b43f0230b504f7608ca625dc04f43fccbe9ad1214f2faa8f77f3d975c0fbce26"
+    }
+  },
+  "npm_sbom": {
+    "format": "CycloneDX",
+    "spec_version": "1.5",
+    "components": 174,
+    "lock_sha256": "43c8ffc1161d38c6b87b7afecda26f350012675ec35529c2677360379e9bc821",
+    "scope": "Unfiltered complete lock metadata, including dev/optional platform components. npm --omit=dev output previously omitted Cesium/DOMPurify and is not treated as complete; independent production closure is separately documented under docs/qualification/software-inventory. Not license clearance or runtime reachability proof."
+  },
+  "browser_scope": {
+    "origin": "http://127.0.0.1:50106",
+    "mode": "exported showcase fixtures; Chromium/desktop/portrait/landscape existing workspace tests",
+    "google_key_supplied": false,
+    "live_backend_or_original_private_files_used": false,
+    "other_helpers_or_ports_modified": false,
+    "tests": "Existing4 workspace tests; no new mirror assertions or test code."
+  },
+  "screenshots": {
+    "receipt": "../screenshots/clean-showcase-20261029T084844192667Z-receipt.json",
+    "status": "CAPTURED_AND_AGENT_VISUAL_REVIEWED",
+    "images": [
+      {
+        "file": "clean-showcase-earth-desktop-20261029T084844192667Z.png",
+        "bytes": 896501,
+        "sha256": "fb39a402dc681da1348a067a47ce984f83fedcf29928931ce333409f57d4982f",
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "device_scale_factor": 1,
+        "mode": "synthetic_showcase_fixed_clock",
+        "fixture_as_of": "2026-10-29T06:00:00Z",
+        "earth_provider": "Local bundled NASA Black Marble 2016 reference; Google disabled",
+        "earth_provider_status": "NASA Black Marble 2016 reference ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· no current satellite imagery",
+        "visible_credits": "NASA Earth Observatory ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· Black Marble 2016 reference",
+        "production_image_id": "sha256:cb2cc67e72d8c1fc67049c6b91d621ee2e31de0be3e3c4ccda4890a791e5422a",
+        "google_tiles_captured": false,
+        "real_publisher_report_body_captured": false,
+        "operator_key_supplied": false
+      },
+      {
+        "file": "clean-showcase-media-desktop-20261029T084844192667Z.png",
+        "bytes": 652877,
+        "sha256": "0ad6cbe2e376a8d089d384a84978a1c6d64c12b61294cca471ecaae3c2bd6f72",
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "device_scale_factor": 1,
+        "mode": "synthetic_showcase_fixed_clock",
+        "fixture_as_of": "2026-10-29T06:00:00Z",
+        "earth_provider": "Local bundled NASA Black Marble 2016 reference; Google disabled",
+        "earth_provider_status": "NASA Black Marble 2016 reference ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· no current satellite imagery",
+        "visible_credits": "NASA Earth Observatory ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· Black Marble 2016 reference",
+        "production_image_id": "sha256:cb2cc67e72d8c1fc67049c6b91d621ee2e31de0be3e3c4ccda4890a791e5422a",
+        "google_tiles_captured": false,
+        "real_publisher_report_body_captured": false,
+        "operator_key_supplied": false
+      },
+      {
+        "file": "clean-showcase-brief-desktop-20261029T084844192667Z.png",
+        "bytes": 702709,
+        "sha256": "1c765ba6351e8c6382c612603669a7618a4c51fa2e1426883c48313135b573d3",
+        "viewport": {
+          "width": 1440,
+          "height": 1000
+        },
+        "device_scale_factor": 1,
+        "mode": "synthetic_showcase_fixed_clock",
+        "fixture_as_of": "2026-10-29T06:00:00Z",
+        "earth_provider": "Local bundled NASA Black Marble 2016 reference; Google disabled",
+        "earth_provider_status": "NASA Black Marble 2016 reference ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· no current satellite imagery",
+        "visible_credits": "NASA Earth Observatory ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· Black Marble 2016 reference",
+        "production_image_id": "sha256:cb2cc67e72d8c1fc67049c6b91d621ee2e31de0be3e3c4ccda4890a791e5422a",
+        "google_tiles_captured": false,
+        "real_publisher_report_body_captured": false,
+        "operator_key_supplied": false
+      },
+      {
+        "file": "clean-showcase-earth-portrait390-20261029T084844192667Z.png",
+        "bytes": 257160,
+        "sha256": "b268b80ca45a84c942507bd2f65a02de4af9fb0e15083658e832f1a0bf8f31cf",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "device_scale_factor": 1,
+        "mode": "synthetic_showcase_fixed_clock",
+        "fixture_as_of": "2026-10-29T06:00:00Z",
+        "earth_provider": "Local bundled NASA Black Marble 2016 reference; Google disabled",
+        "earth_provider_status": "NASA Black Marble 2016 reference ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· no current satellite imagery",
+        "visible_credits": "NASA Earth Observatory ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· Black Marble 2016 reference",
+        "production_image_id": "sha256:cb2cc67e72d8c1fc67049c6b91d621ee2e31de0be3e3c4ccda4890a791e5422a",
+        "google_tiles_captured": false,
+        "real_publisher_report_body_captured": false,
+        "operator_key_supplied": false
+      }
+    ],
+    "method": "Native Playwright page.screenshot to file from the reconstructed static build; no editing or binary chunking.",
+    "scope": "UI illustration using only authored synthetic fixtures and bundled local reference imagery. No Google tiles, live backend, real source bodies, credentials, model/video execution or remote providers. Not a live-data or Google playback qualification.",
+    "network_policy": "All non-preview-origin requests aborted, including any external frames. No original repository/private files served.",
+    "visual_review": {
+      "status": "COORDINATING_AND_INDEPENDENT_AGENT_VISUAL_REVIEW_PASS",
+      "recorded_at": "2026-10-29T08:56:31.829838+00:00",
+      "method": "Both agents opened all4 actual nativePNG files using view_image. The coordinating agent explicitly approved the new public previews. No human acceptance or image editing is claimed.",
+      "targeted_findings": [
+        "390pxportrait legend is separate from full native NASA/Cesium credits, including wrapped reference text.",
+        "Desktop Media heading/source-caption clipping and overlap are resolved; content scrolls from the top.",
+        "Desktop Earth and Brief retain expected clearly labeled synthetic exercise content."
+      ],
+      "scope": "Visual confirmation for these static views, not functional, data-accuracy, live-provider, playback or complete accessibility proof."
+    }
+  },
+  "separate_live_google_runtime_receipt": "frontend-layout149-runtime.json",
+  "retained_prior_attempts": [
+    {
+      "snapshot_started_at": "2026-10-29T08:21:49.653297+00:00",
+      "outcome": "Fresh dependencies/unit/compat/build/asset binding passed; browser3/4 with obsolete accessible-name close selector. Failure retained; exact selector corrected without removing original panel/canvas assertions."
+    },
+    {
+      "snapshot_started_at": "2026-10-29T08:31:13.612408+00:00",
+      "outcome": "02ee reconstruction/unit/browser/asset binding PASS; subsequent visual review found portrait credit overlap and Media text clipping. Old previews/hashreceipts retained outside public export; current cb2 narrow repair qualified independently.",
+      "public_historical_receipt": "clean-source-reconstruction-02ee.json"
+    }
+  ],
+  "limitations": [
+    "Bound to frontend cb2cc67e and this exact snapshot; later application revisions require renewed image/source binding.",
+    "Documentation, the four native PNG files and this receipt were added/updated after capture, so the snapshot is not the final public package.",
+    "Snapshot ZIP hash is not a public release package hash or publication confirmation.",
+    "Keyless synthetic showcase evidence is separate from actual live-provider/Google Earth/MP4 qualification.",
+    "Agent visual review and automated checks do not establish human usability acceptance, complete accessibility, incident truth or functional coverage of every possible state.",
+    "Existing installed Chrome/runtime prerequisites and npm registry availability were used; this is not an airgapped bootstrap or whole supply-chain clearance."
+  ],
+  "private_receipt_sha256": "55bc2359b6c309bb41448c1d4e7314eb6e0ff3945b229afa888242f419fc0d56",
+  "tested_post_snapshot_tool_additions": [
+    {
+      "path": "tools/verify_native_touch.cjs",
+      "bytes": 12166,
+      "sha256": "b4cb5c762413752a5af4f867761e0f7d99860b6ef62fb7cc0724d22fc503ea28",
+      "scope": "Read-only native touch qualification helper, not a production application/build dependency. Independently rerun from this public path against unchanged cb2:9/9PASS; node syntax check and source scan pass.",
+      "separate_public_receipt": "2026-10-29-postgresql17-cb2-browser-mobile-touch.json"
+    }
+  ],
+  "post_snapshot_source_scope": "Later public documentation, screenshots, this receipt, the independently tested native-touch helper and the frozen release-gate/test repair are final-export additions or changes outside the296-file reconstruction snapshot. Final package current-byte/manifest verification is separate. The source-gate repair has its own targeted/full Linux proof; runtime application source/images and149-test/400asset frontend reconstruction remain unchanged.",
+  "tested_post_snapshot_tool_test_repairs": {
+    "recorded_at": "2026-10-29T09:53:42.136201+00:00",
+    "files": [
+      {
+        "path": "tools/release_gate.py",
+        "bytes": 6651,
+        "sha256": "ed9972c6e2eca800af8eda70330fe75afc170fc9e306f486cc0414d266a7ce13"
+      },
+      {
+        "path": "backend/tests/test_export_adversarial.py",
+        "bytes": 4743,
+        "sha256": "73f4c320b4ffa93ae135768f07cd2386eb9c717e8aeb9d5f85d4f02af90e7103"
+      }
+    ],
+    "change": "Explicit POSTGRES_PASSWORD,POSTGRES_APP_PASSWORD,PGPASSWORD scan coverage and six authored synthetic regressions; existing generic and placeholder rules retained. A future credential-assignment detection gap was reproduced; no actual leaked value was found.",
+    "targeted_export_tests_passed": 24,
+    "new_synthetic_regressions": 6,
+    "linux_full_suite": {
+      "image_id": "sha256:4202bfc7add922228c024623b1879ccec7eaf617c718d583b69568b440f90788",
+      "tests_passed": 574,
+      "subtests_passed": 29,
+      "skipped": 0,
+      "seconds": 17.84,
+      "receipt": "2026-10-29-postgresql17-linux-backend-574.json"
+    },
+    "privacy_gate_receipt": "2026-10-29-public-export-database-password-gate.json",
+    "runtime_app_or_image_changed": false
+  }
+}

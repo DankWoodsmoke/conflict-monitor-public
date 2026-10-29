@@ -1,0 +1,54 @@
+{
+  "checked_at": "2026-10-29 UTC",
+  "natural_earth_release": "v5.1.2",
+  "natural_earth_commit": "f1890d9f152c896d250a77557a5751a93d494776",
+  "assets": [
+    {
+      "path": "countries.json",
+      "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/f1890d9f152c896d250a77557a5751a93d494776/geojson/ne_110m_admin_0_boundary_lines_land.geojson",
+      "bytes": 340010,
+      "sha256": "d42479fd79552cca4eec7f85fcdca717a790d29ff06be7676f1af0568c6d3f7c",
+      "features": 331,
+      "vertices": 3108,
+      "geometry_types": [
+        "LineString",
+        "MultiLineString"
+      ],
+      "previous_sha256": "d8cec72f3b008717f4f42e43809bdd976368f17151216736286917d3f45a5568",
+      "matches_previous_except_terminal_whitespace": true,
+      "license": "Natural Earth public domain",
+      "license_url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/f1890d9f152c896d250a77557a5751a93d494776/LICENSE.md"
+    },
+    {
+      "path": "coastlines.json",
+      "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/f1890d9f152c896d250a77557a5751a93d494776/geojson/ne_110m_coastline.geojson",
+      "bytes": 139907,
+      "sha256": "851f581ff5ffb844deed8ae1a9ce22e3c4bb3d74fa342cadb5d8e39b41ae7c3c",
+      "features": 134,
+      "vertices": 5128,
+      "geometry_types": [
+        "LineString"
+      ],
+      "previous_sha256": "676178907dd5755ec9fe818c983398587b5f3f8748661433c426ddbc0538b189",
+      "matches_previous_except_terminal_whitespace": true,
+      "license": "Natural Earth public domain",
+      "license_url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/f1890d9f152c896d250a77557a5751a93d494776/LICENSE.md"
+    },
+    {
+      "path": "earth-night.jpg",
+      "url": "https://assets.science.nasa.gov/content/dam/science/esd/eo/images/imagerecords/144000/144898/BlackMarble_2016_01deg.jpg",
+      "bytes": 779638,
+      "sha256": "d87de751a264e4f8ff69c68de5dab9606daee87a6f15ae743c93200743bd7ec1",
+      "previous_sha256": "373e5a08c9f378a2ce6320214a613148e4b1e3946b3f39a516c9093b76cb7124",
+      "format": "JPEG",
+      "width": 3600,
+      "height": 1800,
+      "mode": "RGB",
+      "data_year": 2016,
+      "processing": "provider-supplied global composite; original JPEG bytes unchanged",
+      "license": "NASA media usage guidelines: government content generally not subject to US copyright; factual informational use, credit and no endorsement",
+      "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "credit": "NASA Earth Observatory image by Joshua Stevens, using Suomi NPP VIIRS data from Miguel Roman, NASA GSFC."
+    }
+  ]
+}

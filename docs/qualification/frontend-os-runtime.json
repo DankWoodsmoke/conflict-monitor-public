@@ -1,0 +1,150 @@
+{
+  "started_at": "2026-10-29T07:06:22.385271+00:00",
+  "completed_at": "2026-10-29T07:24:45.410760+00:00",
+  "before": [
+    {
+      "name": "/cmonitor-live-frontend-1",
+      "image": "sha256:709a0e93f58d9c14f417fa775f1c99573cdf6c0a54340508afd74e713d2ff270",
+      "started_at": "2026-10-29T06:41:20.173152001Z"
+    },
+    {
+      "name": "/cmonitor-live-backend-1",
+      "image": "sha256:a57a1426956f1b0ba5cab3452c810b85779928ece8176b93b4df678902b94990",
+      "started_at": "2026-10-29T05:46:04.718083708Z"
+    },
+    {
+      "name": "/cmonitor-live-db-1",
+      "image": "sha256:01a6a70e41e6c4467c8f55f6063555ed72db2d6662cd0d571040d42eadaeb6f6",
+      "started_at": "2026-10-29T03:42:32.860073712Z"
+    }
+  ],
+  "after": [
+    {
+      "name": "/cmonitor-live-frontend-1",
+      "image": "sha256:36ea69972eb3d50d1ead2419695300f282b34f0a1c0a6ddb2fcf6822862ea29a",
+      "started_at": "2026-10-29T07:06:29.189733218Z"
+    },
+    {
+      "name": "/cmonitor-live-backend-1",
+      "image": "sha256:a57a1426956f1b0ba5cab3452c810b85779928ece8176b93b4df678902b94990",
+      "started_at": "2026-10-29T05:46:04.718083708Z"
+    },
+    {
+      "name": "/cmonitor-live-db-1",
+      "image": "sha256:01a6a70e41e6c4467c8f55f6063555ed72db2d6662cd0d571040d42eadaeb6f6",
+      "started_at": "2026-10-29T03:42:32.860073712Z"
+    }
+  ],
+  "operation": "docker compose up --detach --no-deps --build frontend",
+  "backend_and_database_unchanged": true,
+  "frontend_recreated": true,
+  "asset_comparison": {
+    "against_qualified_receipt": "artifacts/private/os-security-audit/frontend-os-patch-qualification.json",
+    "qualified_receipt_sha256": "e8c0b4c2fd12609f5f9cd9f0871e6d72582a72d1037b2317adcf90d284d8fe11",
+    "expected_files_including_nginx_50x": 401,
+    "actual_files": 401,
+    "mismatches": [],
+    "extra_files": [],
+    "same_distributable_files": 400
+  },
+  "installed_packages": {
+    "brotli-libs": "1.2.1-r0",
+    "busybox": "1.37.0-r31",
+    "busybox-binsh": "1.37.0-r31",
+    "curl": "8.23.0-r0",
+    "libcurl": "8.23.0-r0",
+    "nginx": "1.31.8-r1",
+    "ssl_client": "1.37.0-r31"
+  },
+  "dockerfile_sha256": "3c7c1b1f50cf849546d0a8538600cdcfbda18e5132916ace05a799f425c616ef",
+  "rootfs_qualification_binding": {
+    "qualified_image": "sha256:fec33a04a0b75ac9ef0d185a3fd82b55823177d33f87c3411c97fb884f397f91",
+    "live_image": "sha256:36ea69972eb3d50d1ead2419695300f282b34f0a1c0a6ddb2fcf6822862ea29a",
+    "all_layers_identical": true,
+    "live_rootfs_layers": [
+      "sha256:75c137aedfb2760f88629236cb7b797630aed0c3d91d626d1d1bb694878fc2ba",
+      "sha256:347d70688a4f620ee434007bc3b622592c459d0c45cbc275d0c8c3db0d2cb3e5",
+      "sha256:0118eeeab20f23cb5712fe7b96dd0a3460b185c3f9fb0bdb59062a3972f5b9af",
+      "sha256:a027351c56d0ec60ff555693e0afdd9ac6536425c3a6cd70cfd99438c32cf33b",
+      "sha256:54733ab91a37b26f9dbcdebb53c37d88e967e1aca9e52984d231c7418c858dba",
+      "sha256:26fc657c345556a2c48a5cdaa66f5e31ea881a18184bc943ad42cc46e93d7139",
+      "sha256:6e2ae602f9d69418f36fd9c178e472fb6e6b468f6aadd3dbd759fcee552a7527",
+      "sha256:a617e334a194398d200a112e5d4a39c65aa720650fe0fae732bdb1d7d4fb53a0",
+      "sha256:06a85ef3304894dd8ec4162582365fd035ad50c64e58002d79e9084f4f18f1d8",
+      "sha256:a66b0783047be346aecaf882675839e595e5ca0ac998becf3eab7ac41829d0ee",
+      "sha256:1b46c9fa237e18f189e5937ec47280aa9b371a71b415675ed47f02aa081466d8"
+    ],
+    "scope": "Complete image filesystem identical; image index/metadata identity may differ. No finding suppression."
+  },
+  "nginx_configuration_exit_code": 0,
+  "scan_binding": {
+    "qualification_image": "sha256:fec33a04a0b75ac9ef0d185a3fd82b55823177d33f87c3411c97fb884f397f91",
+    "qualified_scan_raw_sha256": "348a11ee72c6c35aadcbdf01f7d58a2523f11bd1c706b32c51977aa860baff15",
+    "matches": 3,
+    "severity_counts": {
+      "Medium": 3
+    },
+    "remaining": [
+      {
+        "package": "busybox",
+        "version": "1.37.0-r31",
+        "type": "apk",
+        "id": "CVE-2025-60876",
+        "severity": "Medium",
+        "fix": {
+          "versions": [],
+          "state": ""
+        }
+      },
+      {
+        "package": "busybox-binsh",
+        "version": "1.37.0-r31",
+        "type": "apk",
+        "id": "CVE-2025-60876",
+        "severity": "Medium",
+        "fix": {
+          "versions": [],
+          "state": ""
+        }
+      },
+      {
+        "package": "ssl_client",
+        "version": "1.37.0-r31",
+        "type": "apk",
+        "id": "CVE-2025-60876",
+        "severity": "Medium",
+        "fix": {
+          "versions": [],
+          "state": ""
+        }
+      }
+    ],
+    "same_all_rootfs_layers": true,
+    "reason": "All11imagefilesystemlayersidenticaltoscannedqualification;actualpackageversionsand401staticfileschecked.",
+    "basis": "No new scanner run on the different image index: all11filesystemlayers match the scanned qualification image and runtime package/static-file comparisons passed."
+  },
+  "browser_requalification": {
+    "raw": "artifacts/accessibility-earth-final.json",
+    "image_id": "sha256:36ea69972eb3d50d1ead2419695300f282b34f0a1c0a6ddb2fcf6822862ea29a",
+    "completed_cases": 26,
+    "expected_cases": 26,
+    "violations": 0,
+    "manual_scenarios": 20,
+    "manual_failures": 0,
+    "manual_review_limits": [
+      {
+        "id": "color-contrast",
+        "case_occurrences": 23,
+        "node_occurrences": 694,
+        "unique_selectors": 124
+      },
+      {
+        "id": "label-content-name-mismatch",
+        "case_occurrences": 20,
+        "node_occurrences": 51,
+        "unique_selectors": 8
+      }
+    ]
+  },
+  "status": "FRONTEND_OS_RUNTIME_QUALIFIED_WITH_RETAINED_FINDINGS_AND_ACCESSIBILITY_LIMITS"
+}

@@ -1,0 +1,188 @@
+{
+  "observed_at": "2026-10-29T06:23:10.937089+00:00",
+  "scope": "Dated actual live local API/provider snapshot; read-only",
+  "health_http": 200,
+  "mode": "live",
+  "event_count": 76,
+  "event_source_counts": {
+    "rss_bbc_mideast": 20,
+    "rss_aljazeera": 17,
+    "rss_guardian_mideast": 20,
+    "satellite_firms": 2,
+    "telegram": 17
+  },
+  "classification_counts": {
+    "not_requested": 74,
+    "extracted": 2
+  },
+  "unscored_reports": 76,
+  "reports_with_nonnull_coordinate_pairs": 2,
+  "synthetic_or_qualification_source_count": 0,
+  "raw_event_hash_map_sha256": "42bc7f526497df12363542d122478cc300b411cf9938382df7e448ac4237432b",
+  "providers": {
+    "aircraft": {
+      "status": "ok",
+      "source": "adsb.lol",
+      "count": 200,
+      "last_attempt_at": "2026-10-29T06:22:59.410517Z",
+      "last_success_at": "2026-10-29T06:22:59.833403Z",
+      "cache_age_seconds": 11.3,
+      "error": null,
+      "regions": [
+        {
+          "id": "levant",
+          "label": "Eastern Mediterranean",
+          "radius_nm": 250,
+          "status": "ok",
+          "last_attempt_at": "2026-10-29T06:22:13.447961Z",
+          "last_success_at": "2026-10-29T06:22:13.447961Z",
+          "cache_age_seconds": 57.7,
+          "error": null
+        },
+        {
+          "id": "gulf",
+          "label": "Persian Gulf",
+          "radius_nm": 250,
+          "status": "ok",
+          "last_attempt_at": "2026-10-29T06:22:28.899163Z",
+          "last_success_at": "2026-10-29T06:22:28.899163Z",
+          "cache_age_seconds": 42.3,
+          "error": null
+        },
+        {
+          "id": "iran_iraq",
+          "label": "Iran / Iraq",
+          "radius_nm": 250,
+          "status": "ok",
+          "last_attempt_at": "2026-10-29T06:22:44.408466Z",
+          "last_success_at": "2026-10-29T06:22:44.408466Z",
+          "cache_age_seconds": 26.7,
+          "error": null
+        },
+        {
+          "id": "red_sea",
+          "label": "Red Sea",
+          "radius_nm": 250,
+          "status": "ok",
+          "last_attempt_at": "2026-10-29T06:22:59.833403Z",
+          "last_success_at": "2026-10-29T06:22:59.833403Z",
+          "cache_age_seconds": 11.3,
+          "error": null
+        }
+      ]
+    },
+    "maritime": {
+      "status": "ok",
+      "source": "aisstream",
+      "connected": true,
+      "count": 185,
+      "last_attempt_at": "2026-10-29T05:46:09.383651Z",
+      "last_message_at": "2026-10-29T06:23:10.302273Z",
+      "last_position_received_at": "2026-10-29T06:23:10.302273Z",
+      "cache_age_seconds": 0.9,
+      "error": null
+    },
+    "satellites": {
+      "status": "ok",
+      "source": "CelesTrak",
+      "record_count": 45,
+      "last_attempt_at": "2026-10-29T05:46:09.383217Z",
+      "last_success_at": "2026-10-29T05:46:09.383217Z",
+      "data_age_seconds": 2221.8,
+      "data_stale": false,
+      "error": null
+    },
+    "thermal_observations": {
+      "status": "ok",
+      "source": "VIIRS_NOAA20_NRT",
+      "last_attempt_at": "2026-10-29T05:47:39.387230+00:00",
+      "last_success_at": "2026-10-29T05:47:39.764990+00:00",
+      "cache_age_seconds": 2131.397499,
+      "observation_age_seconds": 26771.162489,
+      "observations_stale": false,
+      "observation_count": 342,
+      "error_type": null,
+      "association_truncated": false
+    },
+    "telegram": {
+      "status": "ok",
+      "mode": "reports",
+      "error_type": null,
+      "last_attempt_at": "2026-10-29T05:46:09.342061+00:00",
+      "last_success_at": "2026-10-29T06:21:12.315133+00:00",
+      "cache_age_seconds": 118.847476,
+      "publication_age_seconds": 241.162609,
+      "publication_stale": false,
+      "selected_channel_count": 3,
+      "channel_state_counts": {
+        "ok": 3
+      }
+    },
+    "rss": [
+      {
+        "last_attempt_at": "2026-10-29T06:21:16.440230+00:00",
+        "error_type": null,
+        "last_success_at": "2026-10-29T06:21:16.852552+00:00",
+        "status": "ok",
+        "source": "bbc_mideast",
+        "cache_age_seconds": 114.3099,
+        "publication_age_seconds": 35912.162452,
+        "publication_stale": false
+      },
+      {
+        "last_attempt_at": "2026-10-29T06:21:16.876471+00:00",
+        "error_type": null,
+        "last_success_at": "2026-10-29T06:21:17.111749+00:00",
+        "status": "ok",
+        "source": "aljazeera",
+        "cache_age_seconds": 114.050703,
+        "publication_age_seconds": 1302.162452,
+        "publication_stale": false
+      },
+      {
+        "last_attempt_at": "2026-10-29T06:21:17.125592+00:00",
+        "error_type": null,
+        "last_success_at": "2026-10-29T06:21:17.396743+00:00",
+        "status": "ok",
+        "source": "guardian_mideast",
+        "cache_age_seconds": 113.765709,
+        "publication_age_seconds": 536.162452,
+        "publication_stale": false
+      }
+    ]
+  },
+  "tracking": {
+    "aircraft": 200,
+    "vessels": 185,
+    "aircraft_with_unknown_observation_time": 0,
+    "vessels_with_unknown_observation_time": 0
+  },
+  "workers": {
+    "telegram": "running",
+    "aircraft": "running",
+    "satellites": "running",
+    "maritime": "running",
+    "rss": "running",
+    "source_digest": "running",
+    "snapshots": "running",
+    "match_review": "running",
+    "thermal_observations": "running",
+    "telegram_periodic": "running"
+  },
+  "publisher_bodies_urls_or_channel_handles_copied": false,
+  "command_scope": "GET /api/health, /api/status, /api/events?after_id=0&limit=500, /api/tracking/aircraft and /api/tracking/vessels; inspect task-owned container image/start identities",
+  "limitations": [
+    "This is a dated metadata snapshot, not sustained availability or factual verification.",
+    "Provider fetch/observation/publication clocks differ; unknown source times remain unknown.",
+    "Selected regional receiver coverage is partial and does not establish absence outside returned positions.",
+    "No source bodies, source URLs or private credential values are copied."
+  ],
+  "container_image_start_identities": [
+    "/cmonitor-live-backend-1|sha256:a57a1426956f1b0ba5cab3452c810b85779928ece8176b93b4df678902b94990|2026-10-29T05:46:04.718083708Z",
+    "/cmonitor-live-frontend-1|sha256:92f89b33c9c23db2a8795c28a9df74d539119a76ac4eabeb813e804dd8f95377|2026-10-29T06:02:12.135428458Z"
+  ],
+  "source_receipt": {
+    "local_receipt": "artifacts/live-provider-snapshot-2026-10-29T062310Z.json",
+    "sha256": "2587e84c5c61bf0b4c6a8491ad4f5ae53d9e66bf9cade2a393628ac1252d33f9"
+  }
+}

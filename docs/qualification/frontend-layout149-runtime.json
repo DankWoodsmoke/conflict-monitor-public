@@ -1,0 +1,251 @@
+{
+  "recorded_at": "2026-10-29T08:51:57.339509+00:00",
+  "scope": "frontend149_exact_runtime_accessibility_geometry_and_source55_recorded_playback",
+  "runtime": [
+    {
+      "name": "/cmonitor-live-frontend-1",
+      "image": "sha256:cb2cc67e72d8c1fc67049c6b91d621ee2e31de0be3e3c4ccda4890a791e5422a",
+      "started_at": "2026-10-29T08:47:10.635227757Z"
+    },
+    {
+      "name": "/cmonitor-live-backend-1",
+      "image": "sha256:4202bfc7add922228c024623b1879ccec7eaf617c718d583b69568b440f90788",
+      "started_at": "2026-10-29T08:16:49.824386759Z"
+    },
+    {
+      "name": "/cmonitor-live-db-1",
+      "image": "sha256:1ac10b2551ba84ae05db8e7da477afcd0a3fede99bcb7705da2ee157390cb095",
+      "started_at": "2026-10-29T08:16:42.490467249Z"
+    }
+  ],
+  "unit_tests": {
+    "passed": 149,
+    "failed": 0,
+    "skipped": 0,
+    "files": 15
+  },
+  "typescript_and_build": "passed",
+  "cesium_compatibility": "passed",
+  "npm_audit_vulnerabilities": 0,
+  "asset_binding": {
+    "files": 401,
+    "unchanged_vs_previous02ee": 396,
+    "changed_application_files": [
+      "assets/CesiumView-D6TewqfI.js",
+      "assets/index-B4Aow8D4.css",
+      "assets/index-DdE_V3Mj.js",
+      "assets/IntelMediaView-aOye9vVD.js",
+      "index.html"
+    ],
+    "same_os_and_nginx_layers_as02ee": true,
+    "installed_packages": {
+      "brotli-libs": "1.2.1-r0",
+      "busybox": "1.37.0-r31",
+      "curl": "8.23.0-r0",
+      "libcurl": "8.23.0-r0",
+      "nginx": "1.31.8-r1"
+    }
+  },
+  "accessibility": {
+    "states": 26,
+    "violations_all_impacts": 0,
+    "keyboard_scenarios": 20,
+    "keyboard_failures": 0,
+    "incomplete_rules": [
+      {
+        "id": "color-contrast",
+        "case_occurrences": 23,
+        "node_occurrences": 643,
+        "unique_selectors": 116
+      },
+      {
+        "id": "label-content-name-mismatch",
+        "case_occurrences": 20,
+        "node_occurrences": 51,
+        "unique_selectors": 8
+      }
+    ],
+    "certification": false
+  },
+  "native_google_attribution_geometry": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": "passed",
+      "attribution": {
+        "visible": true,
+        "inert": false,
+        "google_attribution_present": true,
+        "link_count": 2,
+        "clipped_elements": 0
+      },
+      "same_canvas_after_media": true,
+      "same_canvas_after_brief": true
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "status": "passed",
+      "attribution": {
+        "visible": true,
+        "inert": false,
+        "google_attribution_present": true,
+        "link_count": 2,
+        "clipped_elements": 0
+      },
+      "same_canvas_after_media": true,
+      "same_canvas_after_brief": true
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "status": "passed",
+      "attribution": {
+        "visible": true,
+        "inert": false,
+        "google_attribution_present": true,
+        "link_count": 2,
+        "clipped_elements": 0
+      },
+      "same_canvas_after_media": true,
+      "same_canvas_after_brief": true
+    }
+  ],
+  "actual_recorded_video": {
+    "sha256": "0932039e271f22c6afa7f25afab4fca9947b795b98ca567dde959c404d16470d",
+    "source_id": 55,
+    "generation_posts": 0,
+    "engines": [
+      {
+        "browser": "chromium",
+        "version": "156.0.8078.4",
+        "status": "passed",
+        "playback": {
+          "current_time": 1.520897,
+          "duration": 33.503337,
+          "paused": false,
+          "ready_state": 4,
+          "error": null,
+          "h264_aac_support": "probably"
+        },
+        "page_errors": []
+      },
+      {
+        "browser": "firefox",
+        "version": "157.0",
+        "status": "passed",
+        "playback": {
+          "current_time": 1.513625,
+          "duration": 33.477959,
+          "paused": false,
+          "ready_state": 4,
+          "error": null,
+          "h264_aac_support": "probably"
+        },
+        "page_errors": []
+      },
+      {
+        "browser": "webkit",
+        "version": "27.2",
+        "status": "passed",
+        "playback": {
+          "current_time": 1.5221249,
+          "duration": 33.504,
+          "paused": false,
+          "ready_state": 4,
+          "error": null,
+          "h264_aac_support": "probably"
+        },
+        "page_errors": []
+      }
+    ]
+  },
+  "source_files_sha256": {
+    "frontend/Dockerfile": "3c7c1b1f50cf849546d0a8538600cdcfbda18e5132916ace05a799f425c616ef",
+    "frontend/nginx.conf": "6aedc071f2b28270027e0055dbef949056fbf4e83a3ca1ca7e2d6354f2d8243f",
+    "frontend/package-lock.json": "43c8ffc1161d38c6b87b7afecda26f350012675ec35529c2677360379e9bc821",
+    "frontend/package.json": "1646c04535ac695c2c936e71f8e56a7c707675f4a6d5f97111a04f0dfacfb4d7",
+    "frontend/reference/manifest.json": "184faacaf67fb716b1b75ed586cd2b3c9fc3be57ef1869ccef9c18c75f8f26ec",
+    "frontend/src/App.tsx": "86dd9deffb21ef9e6b16110063051e234596a5cf2887dd272b27f64e9d0c5cd1",
+    "frontend/src/components/AboutPanel.tsx": "5ff52234b67b6b019ccbff3936da35ecab50359067f15107aba57f3366ac195e",
+    "frontend/src/components/CesiumView.tsx": "3b21021a3be864e9ce5bdb652b99cfa59daa3296c6651dc0bd93c354fe674a5b",
+    "frontend/src/components/EvidenceDetails.tsx": "20ac0dc8e612b6dc56e0eda77cdb1fa5f3ef763243aff57d04583ca0ee67edc0",
+    "frontend/src/components/Header.tsx": "9690de70d827d535c29a37a10e8cc267432f4b130cd676d7d5a6110eb9416dc4",
+    "frontend/src/components/IntelMediaView.tsx": "04140c93622a72e3da0d7d796c203ae5adb2b06e4c33dfddbb4b7860cbbc7422",
+    "frontend/src/components/LiveFeed.tsx": "fb6905de84e281cf4b0ec4e4aaf5417bf44de7e60855a244b2c1d071d95ed80d",
+    "frontend/src/components/LocalBriefingPanel.tsx": "ba99510670e8b45df0be5ed9871d3bb35abe2b20a66418646214a75087454f62",
+    "frontend/src/components/MarketStrip.tsx": "3cbbd5296aa1aa8cb809292f7132a4e0470513b8b0f1de9643c2ee446ef5f17f",
+    "frontend/src/components/MediaFrame.tsx": "2e444db7e0d6e625d4152e7144571d85f2f3c16aae4cfb0a44dc6747e25c6e3e",
+    "frontend/src/components/SettingsPanel.tsx": "d153340a9566934052b21539dfdc2b34f74d207b19dfc6234b8476930db53c61",
+    "frontend/src/components/ShowcaseBar.tsx": "8487cca412c734140608be6c9982b8bdb770d0f8018139f0ffae066d351edc40",
+    "frontend/src/components/SourceStatus.tsx": "40d3aa5233634f0b1eea50489e28256107143d522c0bc05f29bec54d3e315b92",
+    "frontend/src/components/TimelineScrubber.tsx": "0eb5ac59c4700f2eb0545328b12662e601604baf84b8b51ef56dd1ab79be460c",
+    "frontend/src/components/live-data.test.tsx": "62aef2c0a7bd3be4bd2d9ed56023b2150063b88ba67f05fcbcf34c76249c475c",
+    "frontend/src/components/local-briefing.test.tsx": "1e8f93907c8e74b2d269809cd1ec2d0f854af425312c31883f61c4ff0a96fac1",
+    "frontend/src/components/media-integrity.test.tsx": "8fb21e6e04cf446587347441f3625b0358590d7ed86734dc2eae63da2ccb7b5c",
+    "frontend/src/components/navigation.test.tsx": "40b6ef8ba074a0e6aa528ed74928490a94c33ed406a08f650bf5909239b4b393",
+    "frontend/src/components/timeline.test.tsx": "3281f1814d9119e9e86ed479b2a0fd2929656a50e0ab0a48ee9cd2be3d6c6535",
+    "frontend/src/hooks/useArrayPoll.ts": "91924ae2cac28bb93df1bb69dda56fa8543a6d54ed858d69621984be217d24b8",
+    "frontend/src/hooks/useEarthProvider.test.tsx": "519bb79a4bde18b3ebb2108baa3d1d34efd7ce9e3192c5f8a10d62b0d439b2b3",
+    "frontend/src/hooks/useEarthProvider.ts": "64ed8c9c339939a4c7509958b6b7a3f3e8734086094c847290b88b4858577dbb",
+    "frontend/src/hooks/useEventStream.test.tsx": "68c8d10004bbe7570b159028c70946d58bddb298ebd50563665ba43ad4c20d33",
+    "frontend/src/hooks/useEventStream.ts": "a5c0d1f473d5a960deebffe892084d095946e9effeebd587571e12965384819a",
+    "frontend/src/hooks/useModalFocus.ts": "1a3797dff537f75a34d1c57778bc989374c145e5a7969010f631d838319d73b1",
+    "frontend/src/hooks/useTracking.test.tsx": "022eab4df176dda1c91baf3cdeb32bef5f45a00dea73e5f9f5211b5f0e30f36e",
+    "frontend/src/hooks/useTracking.ts": "ec2cc7ae2503c019944217ca6695e92976b8ae8efe445c2f0976754ad9965608",
+    "frontend/src/hooks/useWorkspacePanelFocus.test.tsx": "0635ea8ff4852ba3f5f4a16e8e743f6d686d49c2d3ca783cbc29dd2f4ef7498b",
+    "frontend/src/hooks/useWorkspacePanelFocus.ts": "c5f84f25ab86f8691f432fab86ca25ece396c731705cb177321ecd57d7554035",
+    "frontend/src/lib/api.ts": "ba16569743b55d0651ab8c3876f1742f83ec3b2080fe3b6996aa8f0943a1956c",
+    "frontend/src/lib/brief.ts": "02c81222f09355249f59830993c069b47c09104d36553a372ba54ffbeff4d30b",
+    "frontend/src/lib/cesium-compat.test.ts": "5cf41f7736807b8e3221316af59882a264da7bd761a928388222890337002e7e",
+    "frontend/src/lib/clock.ts": "261838373adbdd325f69d4a6490396163f831fce5f886e0cf2fa8e53e6434d84",
+    "frontend/src/lib/earth.test.ts": "303d879c98c052b9ed1c2e6dc6599dbeb8583c5fad3254c84477f58504329e7a",
+    "frontend/src/lib/earth.ts": "ee6ae5b555c29a79b7c5abde7d8a9d08af31583119adb82701ae4818d8ac6cf1",
+    "frontend/src/lib/earthReference.ts": "4bd8af450cdc2c1bee222685f5e5cc29fbee216a618b737bd9082a210f10f3fa",
+    "frontend/src/lib/earthScene.ts": "2ffeeb2c9e16b54de96c037ba3617aa1b5a3585075c5fdd97623928e368dfe10",
+    "frontend/src/lib/events.ts": "44f81c688a72f7759ed48d0ca65a04adfd8d7f9f68b46d0efcb976f2f4564394",
+    "frontend/src/lib/history.test.ts": "bb6bece46ed342559a39df32fd5600df6954e719da3697f5fd9dd379a568db2d",
+    "frontend/src/lib/history.ts": "7504742b825925d28852440e3f3c90c5e9d400f3c467f4e723b786248a756910",
+    "frontend/src/lib/html.ts": "8ba01e13d1f4d6a79d477d205a042374a58df6536498acb231b41c7fa86474a5",
+    "frontend/src/lib/release.test.ts": "56a70102a13935e5a1a7caff8149673b3462e3dbb663b416b911a62e8449417c",
+    "frontend/src/lib/reportPresentation.test.ts": "41a67faf37b145b59b0c4ef8ae069aaf13e19c4389d0ef259c2785c0554d3451",
+    "frontend/src/lib/reportPresentation.ts": "d97e9e831961e656fd5c93a9fd9f50118c1ea52bd1af12b7d7a5ea4921bd0fd9",
+    "frontend/src/lib/runtime.ts": "b380ce55f86df3dc3234ecffd32fe4f83bc211cb8817da80391fe8131e838e62",
+    "frontend/src/lib/showcase.ts": "439f2d7fa5fd9874ca61d0a490fe10ae1154e8f75921b1542a234d905fc75b62",
+    "frontend/src/lib/workspace.ts": "e4d06f22d91958ec66a849bfb353404feb6c9814f5b6e7326b2fccaefcb56544",
+    "frontend/src/main.tsx": "c0f853e1752a5008f32e72109d1d42a3e7f5dbbc1f53a552c5db9dd7051ed10a",
+    "frontend/src/styles/earth.css": "e91a9b2007c72ed0b23955ae34b956295e91b248863c58f9152126c57391329a",
+    "frontend/src/styles/globals.css": "62a254f7d757925eb319f43cac86b190f3936594b764149411e8a5e1e324336a",
+    "frontend/src/types/event.ts": "4b775b04e8b3003cf5dea23ac2d817d06b762dd2fcefe8c7cdead929c3cb286a",
+    "frontend/src/utils/verification.ts": "cf659c9deb3ea13005b5cf503d695a29fd216aec7252f667be95b0b21c580e16",
+    "frontend/src/vite-env.d.ts": "dcbd0163d3cdbd353edd7c98993651ab2f2af05557a18d4251c5e7606728121d",
+    "frontend/src/workspace-accessibility.test.tsx": "b8c516ef5e6e972ec838861c05729b981ea045b3c8f40957c0b5b6851f5781ed",
+    "frontend/tools/patch-cesium.mjs": "a26138541b7cc7a1acb1899b790c05345fcf058f7b3d3d87ff5e975224edde5e",
+    "frontend/tsconfig.json": "2f1dcad519529f9b151cade7b86950e8f83ed131c873207ef2957084ba9e40ff",
+    "frontend/vite.config.ts": "1dea1673093a9495cca5c12408d29e03964ffb42abea307e79dcc0ac556e8c15",
+    "frontend/vitest.config.ts": "712d4f61ca5b4d968dfb1c1e6bf93c85345e32231feac79445b979c770d0f16b"
+  },
+  "receipt_sha256": {
+    "artifacts/preview-layout-frontend-image.json": "a6bb600e5000d0d788f5ace6d843a538742afef9141448a95619e45edd408ead",
+    "artifacts/preview-layout-frontend-tests.json": "3a8efc492bf58cf30c589984de2a32dbc161c6418c9f71b4094eeb8813d5636d",
+    "artifacts/preview-layout-build.txt": "146aa41b9ac3196c95a9c6434687789d8c3623fea5f678b760ce70fa20d96a23",
+    "artifacts/preview-layout-compat.txt": "b3da72e4cbd652f32a8a8d519a1e008594dcd39902f36af2e7727c5546e78770",
+    "artifacts/preview-layout-npm-audit.json": "d0cf4531ee48ba9d7fc066ad1a8913347f308ffb4d81e5413e0f2d892930ca9d",
+    "artifacts/accessibility-earth-final.json": "8852da8b7ad47fc59f6f4252849781ae7a43fa172140b6a8233cba18c3105d82",
+    "artifacts/preview-layout-google-cb2.json": "10f4b66f4cf6f01f33fcbe0edafae688b1f67429734e6cfab97384eb6ab9d6ff",
+    "artifacts/browser-pg17-new55-cb2/receipt.json": "e1d5aa5f3cbde23dcd0cb45f0763c500733716294fe7dd6e558ed6fb9da16597"
+  },
+  "limitations": [
+    "Automated browser/viewport and bounded keyboard sampling; not WCAG certification, physical-device qualification or a screen-reader audit.",
+    "Incomplete contrast and symbolic-control checks are retained and are not counted as passes.",
+    "Native playback sampled advancing media time; independent full decode/ASR proofs are separate and do not establish source truth.",
+    "External iframe response does not establish programme playback, channel identity or live observation.",
+    "npm audit excludes OS, database, builder, browser and host vulnerabilities. Current exact-image OS scan retains three Medium BusyBox aliases with no listed fix."
+  ]
+}

@@ -1,0 +1,662 @@
+{
+  "observed_at": "2026-10-29T09:03:32.057843+00:00",
+  "status": "PASS",
+  "scope": "Actual final149 production UI browser viewport/workflow and native-touch emulation",
+  "images": {
+    "frontend": "sha256:cb2cc67e72d8c1fc67049c6b91d621ee2e31de0be3e3c4ccda4890a791e5422a",
+    "backend": "sha256:4202bfc7add922228c024623b1879ccec7eaf617c718d583b69568b440f90788",
+    "database": "sha256:1ac10b2551ba84ae05db8e7da477afcd0a3fede99bcb7705da2ee157390cb095"
+  },
+  "database_volume": "cmonitor_live_pg17_36_20261029",
+  "mobile_matrix": {
+    "passed": 12,
+    "failed_or_unavailable": 0,
+    "viewports": [
+      [
+        320,
+        740
+      ],
+      [
+        390,
+        844
+      ],
+      [
+        768,
+        1024
+      ],
+      [
+        844,
+        390
+      ]
+    ],
+    "cases": [
+      {
+        "browser": "chromium",
+        "version": "156.0.8078.4",
+        "viewport": {
+          "width": 320,
+          "height": 740
+        },
+        "status": "passed",
+        "checks": [
+          "actual_google_tiles_connected_with_attribution",
+          "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+          "coordinate_bounds_and_zero_position",
+          "last_known_position_count_and_optional_aging_visibility_control",
+          "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+          "actual_four_region_aircraft_cache_available"
+        ],
+        "page_errors": [],
+        "layout": {
+          "width": 320,
+          "scrollWidth": 320,
+          "height": 740,
+          "scrollHeight": 740
+        },
+        "position_counts": {
+          "enabled": 389,
+          "visible": 389,
+          "last_known": 242
+        },
+        "aircraft_coverage": {
+          "status": "ok",
+          "source": "adsb.lol",
+          "count": 192,
+          "region_count": 4
+        },
+        "google_provider_end_state": "ready",
+        "seconds": 4.627
+      },
+      {
+        "browser": "chromium",
+        "version": "156.0.8078.4",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "status": "passed",
+        "checks": [
+          "actual_google_tiles_connected_with_attribution",
+          "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+          "coordinate_bounds_and_zero_position",
+          "actual_farside_positions_hidden_and_region_restores_visible_hemisphere",
+          "last_known_position_count_and_optional_aging_visibility_control",
+          "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+          "actual_four_region_aircraft_cache_available"
+        ],
+        "page_errors": [],
+        "layout": {
+          "width": 390,
+          "scrollWidth": 390,
+          "height": 844,
+          "scrollHeight": 844
+        },
+        "position_counts": {
+          "enabled": 388,
+          "visible": 388,
+          "last_known": 238
+        },
+        "aircraft_coverage": {
+          "status": "ok",
+          "source": "adsb.lol",
+          "count": 192,
+          "region_count": 4
+        },
+        "google_provider_end_state": "ready",
+        "seconds": 7.696
+      },
+      {
+        "browser": "chromium",
+        "version": "156.0.8078.4",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "status": "passed",
+        "checks": [
+          "actual_google_tiles_connected_with_attribution",
+          "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+          "coordinate_bounds_and_zero_position",
+          "last_known_position_count_and_optional_aging_visibility_control",
+          "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+          "actual_four_region_aircraft_cache_available"
+        ],
+        "page_errors": [],
+        "layout": {
+          "width": 768,
+          "scrollWidth": 768,
+          "height": 1024,
+          "scrollHeight": 1024
+        },
+        "position_counts": {
+          "enabled": 387,
+          "visible": 387,
+          "last_known": 237
+        },
+        "aircraft_coverage": {
+          "status": "ok",
+          "source": "adsb.lol",
+          "count": 192,
+          "region_count": 4
+        },
+        "google_provider_end_state": "ready",
+        "seconds": 5.754
+      },
+      {
+        "browser": "chromium",
+        "version": "156.0.8078.4",
+        "viewport": {
+          "width": 844,
+          "height": 390
+        },
+        "status": "passed",
+        "checks": [
+          "actual_google_tiles_connected_with_attribution",
+          "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+          "coordinate_bounds_and_zero_position",
+          "last_known_position_count_and_optional_aging_visibility_control",
+          "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+          "actual_four_region_aircraft_cache_available"
+        ],
+        "page_errors": [],
+        "layout": {
+          "width": 844,
+          "scrollWidth": 844,
+          "height": 390,
+          "scrollHeight": 390
+        },
+        "position_counts": {
+          "enabled": 387,
+          "visible": 387,
+          "last_known": 244
+        },
+        "aircraft_coverage": {
+          "status": "ok",
+          "source": "adsb.lol",
+          "count": 188,
+          "region_count": 4
+        },
+        "google_provider_end_state": "ready",
+        "seconds": 4.218
+      },
+      {
+        "browser": "firefox",
+        "version": "157.0",
+        "viewport": {
+          "width": 320,
+          "height": 740
+        },
+        "status": "passed",
+        "checks": [
+          "actual_google_tiles_connected_with_attribution",
+          "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+          "coordinate_bounds_and_zero_position",
+          "last_known_position_count_and_optional_aging_visibility_control",
+          "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+          "actual_four_region_aircraft_cache_available"
+        ],
+        "page_errors": [],
+        "layout": {
+          "width": 320,
+          "scrollWidth": 320,
+          "height": 740,
+          "scrollHeight": 740
+        },
+        "position_counts": {
+          "enabled": 383,
+          "visible": 383,
+          "last_known": 147
+        },
+        "aircraft_coverage": {
+          "status": "ok",
+          "source": "adsb.lol",
+          "count": 188,
+          "region_count": 4
+        },
+        "google_provider_end_state": "ready",
+        "seconds": 5.032
+      },
+      {
+        "browser": "firefox",
+        "version": "157.0",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "status": "passed",
+        "checks": [
+          "actual_google_tiles_connected_with_attribution",
+          "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+          "coordinate_bounds_and_zero_position",
+          "actual_farside_positions_hidden_and_region_restores_visible_hemisphere",
+          "last_known_position_count_and_optional_aging_visibility_control",
+          "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+          "actual_four_region_aircraft_cache_available"
+        ],
+        "page_errors": [],
+        "layout": {
+          "width": 390,
+          "scrollWidth": 390,
+          "height": 844,
+          "scrollHeight": 844
+        },
+        "position_counts": {
+          "enabled": 385,
+          "visible": 385,
+          "last_known": 147
+        },
+        "aircraft_coverage": {
+          "status": "ok",
+          "source": "adsb.lol",
+          "count": 188,
+          "region_count": 4
+        },
+        "google_provider_end_state": "ready",
+        "seconds": 5.54
+      },
+      {
+        "browser": "firefox",
+        "version": "157.0",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "status": "passed",
+        "checks": [
+          "actual_google_tiles_connected_with_attribution",
+          "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+          "coordinate_bounds_and_zero_position",
+          "last_known_position_count_and_optional_aging_visibility_control",
+          "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+          "actual_four_region_aircraft_cache_available"
+        ],
+        "page_errors": [],
+        "layout": {
+          "width": 768,
+          "scrollWidth": 768,
+          "height": 1024,
+          "scrollHeight": 1024
+        },
+        "position_counts": {
+          "enabled": 385,
+          "visible": 385,
+          "last_known": 144
+        },
+        "aircraft_coverage": {
+          "status": "ok",
+          "source": "adsb.lol",
+          "count": 188,
+          "region_count": 4
+        },
+        "google_provider_end_state": "ready",
+        "seconds": 4.553
+      },
+      {
+        "browser": "firefox",
+        "version": "157.0",
+        "viewport": {
+          "width": 844,
+          "height": 390
+        },
+        "status": "passed",
+        "checks": [
+          "actual_google_tiles_connected_with_attribution",
+          "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+          "coordinate_bounds_and_zero_position",
+          "last_known_position_count_and_optional_aging_visibility_control",
+          "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+          "actual_four_region_aircraft_cache_available"
+        ],
+        "page_errors": [],
+        "layout": {
+          "width": 844,
+          "scrollWidth": 844,
+          "height": 390,
+          "scrollHeight": 390
+        },
+        "position_counts": {
+          "enabled": 385,
+          "visible": 385,
+          "last_known": 144
+        },
+        "aircraft_coverage": {
+          "status": "ok",
+          "source": "adsb.lol",
+          "count": 188,
+          "region_count": 4
+        },
+        "google_provider_end_state": "ready",
+        "seconds": 6.087
+      },
+      {
+        "browser": "webkit",
+        "version": "27.2",
+        "viewport": {
+          "width": 320,
+          "height": 740
+        },
+        "status": "passed",
+        "checks": [
+          "actual_google_tiles_connected_with_attribution",
+          "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+          "coordinate_bounds_and_zero_position",
+          "last_known_position_count_and_optional_aging_visibility_control",
+          "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+          "actual_four_region_aircraft_cache_available"
+        ],
+        "page_errors": [],
+        "layout": {
+          "width": 320,
+          "scrollWidth": 320,
+          "height": 740,
+          "scrollHeight": 740
+        },
+        "position_counts": {
+          "enabled": 385,
+          "visible": 385,
+          "last_known": 152
+        },
+        "aircraft_coverage": {
+          "status": "ok",
+          "source": "adsb.lol",
+          "count": 188,
+          "region_count": 4
+        },
+        "google_provider_end_state": "ready",
+        "seconds": 4.899
+      },
+      {
+        "browser": "webkit",
+        "version": "27.2",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "status": "passed",
+        "checks": [
+          "actual_google_tiles_connected_with_attribution",
+          "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+          "coordinate_bounds_and_zero_position",
+          "actual_farside_positions_hidden_and_region_restores_visible_hemisphere",
+          "last_known_position_count_and_optional_aging_visibility_control",
+          "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+          "actual_four_region_aircraft_cache_available"
+        ],
+        "page_errors": [],
+        "layout": {
+          "width": 390,
+          "scrollWidth": 390,
+          "height": 844,
+          "scrollHeight": 844
+        },
+        "position_counts": {
+          "enabled": 385,
+          "visible": 385,
+          "last_known": 219
+        },
+        "aircraft_coverage": {
+          "status": "ok",
+          "source": "adsb.lol",
+          "count": 188,
+          "region_count": 4
+        },
+        "google_provider_end_state": "ready",
+        "seconds": 6.307
+      },
+      {
+        "browser": "webkit",
+        "version": "27.2",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "status": "passed",
+        "checks": [
+          "actual_google_tiles_connected_with_attribution",
+          "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+          "coordinate_bounds_and_zero_position",
+          "last_known_position_count_and_optional_aging_visibility_control",
+          "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+          "actual_four_region_aircraft_cache_available"
+        ],
+        "page_errors": [],
+        "layout": {
+          "width": 768,
+          "scrollWidth": 768,
+          "height": 1024,
+          "scrollHeight": 1024
+        },
+        "position_counts": {
+          "enabled": 384,
+          "visible": 384,
+          "last_known": 228
+        },
+        "aircraft_coverage": {
+          "status": "ok",
+          "source": "adsb.lol",
+          "count": 188,
+          "region_count": 4
+        },
+        "google_provider_end_state": "ready",
+        "seconds": 5.28
+      },
+      {
+        "browser": "webkit",
+        "version": "27.2",
+        "viewport": {
+          "width": 844,
+          "height": 390
+        },
+        "status": "passed",
+        "checks": [
+          "actual_google_tiles_connected_with_attribution",
+          "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+          "coordinate_bounds_and_zero_position",
+          "last_known_position_count_and_optional_aging_visibility_control",
+          "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+          "actual_four_region_aircraft_cache_available"
+        ],
+        "page_errors": [],
+        "layout": {
+          "width": 844,
+          "scrollWidth": 844,
+          "height": 390,
+          "scrollHeight": 390
+        },
+        "position_counts": {
+          "enabled": 383,
+          "visible": 383,
+          "last_known": 250
+        },
+        "aircraft_coverage": {
+          "status": "ok",
+          "source": "adsb.lol",
+          "count": 183,
+          "region_count": 4
+        },
+        "google_provider_end_state": "ready",
+        "seconds": 5.641
+      }
+    ]
+  },
+  "live_google_workflows": {
+    "stats": {
+      "startTime": "2026-10-29T08:53:54.175Z",
+      "duration": 18714.03,
+      "expected": 4,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "tests": [
+      {
+        "title": "reports, persistent Earth and both workspace panels remain usable",
+        "expected_status": "passed",
+        "results": [
+          {
+            "status": "passed",
+            "duration_ms": 6351
+          }
+        ]
+      },
+      {
+        "title": "provider health and settings support keyboard dismissal",
+        "expected_status": "passed",
+        "results": [
+          {
+            "status": "passed",
+            "duration_ms": 3232
+          }
+        ]
+      },
+      {
+        "title": "portrait and landscape navigation and dialogs fit emulated viewports",
+        "expected_status": "passed",
+        "results": [
+          {
+            "status": "passed",
+            "duration_ms": 4362
+          }
+        ]
+      },
+      {
+        "title": "old Map and 3D links open the single Earth workspace",
+        "expected_status": "passed",
+        "results": [
+          {
+            "status": "passed",
+            "duration_ms": 1328
+          }
+        ]
+      }
+    ],
+    "CM_LIVE": "1",
+    "CM_EXPECT_GOOGLE": "1",
+    "CM_GOOGLE_KEY": "explicitly removed; provider configured through actual server /config",
+    "key_injection": false
+  },
+  "native_touch": {
+    "started_at": "2026-10-29T09:00:00.072Z",
+    "scope": "Chromium desktop touch emulation with actual touchscreen taps and native CDP gestures",
+    "checks": [
+      "actual_touchscreen_taps_all_three_tabs_preserve_canvas",
+      "touch_camera_zoom_changes_observed_height",
+      "touch_layers_and_last_known_toggle",
+      "touch_settings_open_and_close",
+      "native_touch_pinch_changes_observed_camera_height",
+      "native_touch_pan_changes_actual_position_hemisphere_viewport",
+      "touch_region_restores_visible_hemisphere",
+      "native_touch_scroll_moves_report_list",
+      "portrait_to_landscape_preserves_canvas_and_fits_viewport"
+    ],
+    "findings": [],
+    "incomplete": [],
+    "limitations": [
+      "This is not a physical Android or iOS device.",
+      "Native pan acceptance alone is not a measured viewport change; the probe requires a large real-position hemisphere-mask change.",
+      "A successful touch interaction is not long-term GPU or provider reliability evidence."
+    ],
+    "browser": {
+      "name": "chromium",
+      "version": "156.0.8078.4",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "hasTouch": true
+    },
+    "camera_tap_zoom": {
+      "before_meters": 4800000,
+      "after_meters": 3100000
+    },
+    "native_pinch": {
+      "accepted": true,
+      "before_meters": 3100000,
+      "after_meters": 2300000
+    },
+    "native_pan": {
+      "command_accepted": true,
+      "before": {
+        "enabled": 370,
+        "visible": 335
+      },
+      "after": {
+        "enabled": 370,
+        "visible": 0
+      },
+      "large_hemisphere_mask_change_measured": true,
+      "exact_camera_center_measured": false
+    },
+    "feed_scroll": {
+      "method": "Input.dispatchTouchEvent",
+      "before": 0,
+      "after": 165
+    },
+    "landscape_layout": {
+      "width": 844,
+      "scroll_width": 844
+    },
+    "ended_at": "2026-10-29T09:00:12.808Z",
+    "status": "PASS"
+  },
+  "commands": [
+    "CM_MOBILE_OUTPUT=artifacts/<fresh-directory> node tools/verify_mobile_earth.cjs",
+    "CM_BASE_URL=http://127.0.0.1:5190 CM_LIVE=1 CM_EXPECT_GOOGLE=1 npx playwright test --reporter=json (frontend directory; CM_GOOGLE_KEY unset)",
+    "CM_BASE_URL=http://127.0.0.1:5190 CM_TOUCH_OUTPUT=artifacts/<fresh-directory> node tools/verify_native_touch.cjs"
+  ],
+  "source_receipts": [
+    {
+      "path": "artifacts/mobile-earth-pg17-cb2-final/receipt.json",
+      "sha256": "2795deae8eba6de4bc20a662d00f6d5dbc5ab9cc5d6b5cb99281d853eb28911a"
+    },
+    {
+      "path": "artifacts/browser-cb2-live-final.json",
+      "sha256": "bcc59769344db76754bb35bc84f5033249fd869d58514d14bec26d86773eadeb"
+    },
+    {
+      "path": "artifacts/native-touch-public-cb2-final/receipt.json",
+      "sha256": "1e200361f53a5b83ff2479d6f64a4a6fd45e2b9d53699c04f3091a0714389491"
+    },
+    {
+      "path": "artifacts/pg17-cb2-final-profile.json",
+      "sha256": "8912814e9553c81ecdcd87f59fe456652cc8a3cc2c0947bd16323cf9d6604da0"
+    }
+  ],
+  "source_files": [
+    {
+      "path": "tools/verify_mobile_earth.cjs",
+      "sha256": "43cbadb14770df69d96b61b02ca88b04a7d8d61ae04fdef64ca9cde08714ee7d"
+    },
+    {
+      "path": "tools/verify_native_touch.cjs",
+      "sha256": "b4cb5c762413752a5af4f867761e0f7d99860b6ef62fb7cc0724d22fc503ea28"
+    },
+    {
+      "path": "frontend/e2e/workspace.pw.ts",
+      "sha256": "b43f0230b504f7608ca625dc04f43fccbe9ad1214f2faa8f77f3d975c0fbce26"
+    }
+  ],
+  "related_receipts": [
+    "frontend-layout149-runtime.json"
+  ],
+  "prior_attempts_preserved": [
+    {
+      "scope": "Earlier showcase selector attempt had old close-control name and did not set live/Google flags; it is not promoted to production qualification.",
+      "private_path": "pg17-e2e-selector-before"
+    },
+    {
+      "scope": "Prior02ee touch probe experimentally accepted synthesizeScrollGesture but did not scroll; isolated fixture showed that runtime limitation. Native touchStart/move/end then scrolled the actual feed.",
+      "raw_receipt_sha256": "9699d7a95ae6a10a691ba50cbab8b45812d5d0699da192712c95ba15046f4e9c",
+      "protocol_fixture_sha256": "62cb3eff273d8c16f3727e56bfc60ce130240d48fd7ee487e269b0e7132d85ca",
+      "actual_feed_diagnosis_sha256": "9a6913f146589b3d170a447eacf3e55d57724f4c361359c529c3cd45074ef8e8"
+    }
+  ],
+  "limitations": [
+    "Desktop Chromium/Firefox/WebKit with viewport/touch emulation are not physical Android/iOS/Safari-device qualification.",
+    "Native touches are browser input through touchscreen.tap and CDP, not JavaScript DOM click/camera/scroll state mutation.",
+    "The public touch harness passed again after relocation; only its header wording differs from the earlier private tested source.",
+    "Exact camera center is not exposed; pan outcome is measured through actual hemisphere-mask change with unchanged enabled position count. Pinch requires settled observed camera height changes.",
+    "Source truth, imagery acquisition dates, global aircraft coverage, external stream live status and listener audibility are not certified.",
+    "The separate60min service and30min browser observations are still in progress at this receipt timestamp."
+  ]
+}

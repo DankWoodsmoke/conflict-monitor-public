@@ -1,0 +1,34 @@
+{
+  "observed_at": "2026-10-29T05:58:01.683231+00:00",
+  "before_calls": {
+    "production_local_ai_state": "idle",
+    "production_video_state": "idle",
+    "owned_runtime_active_models": 0
+  },
+  "model_version": "0.40.11",
+  "mid_run_observation": {
+    "model": "qwen3.5:4b",
+    "digest": "d8b0f5e9760cd1682034f292d7ef72ec46f432149be0df7574bf2d6e92e38c04",
+    "size_vram": 0,
+    "interpretation": "CPU-only model residency observed while request active"
+  },
+  "after_calls": {
+    "owned_runtime_active_models": 0
+  },
+  "inference_execution": {
+    "requests": 6,
+    "total_seconds": 211.062,
+    "all_results_saved": true,
+    "process_exit_code": 1,
+    "terminal_failure": "UnicodeEncodeError printing multilingual final summary to Windows cp1252 after cpu-results.json was saved. All six requests completed; no retry was issued."
+  },
+  "offline_replay": {
+    "process_exit_code": 0,
+    "new_model_calls": 0,
+    "python_io_encoding": "utf-8",
+    "checks": "Frozen hashes, all6 original batch decisions, all recorded metrics, exact codepoint/UTF16 spans and null coordinates/severity recomputed."
+  },
+  "model_digest_matches_frozen_expected": true,
+  "paid_api_calls": 0,
+  "app_service_configuration_changes": 0
+}

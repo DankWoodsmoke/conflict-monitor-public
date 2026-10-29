@@ -1,0 +1,36 @@
+{
+  "captured_at": "2026-10-29T08:57:17.967178+00:00",
+  "scope": "Observed software metadata and current-image byte binding; no legal clearance or final package claim.",
+  "files": [
+    {
+      "path": "backend-current-image-binding.json",
+      "bytes": 1093,
+      "sha256": "76858f309626b9a7f4e4871f0d619716248301dc84b1b4f32bd028ebfafc1271"
+    },
+    {
+      "path": "backend-python-license-inventory.json",
+      "bytes": 68946,
+      "sha256": "90480cf0b4ff81e3652c77e6fd4cbd2ade7c513203aeeed4835e765f6f75c412"
+    },
+    {
+      "path": "frontend-full-lock-sbom.cdx.json",
+      "bytes": 172501,
+      "sha256": "9f73410393746d0674c413045b865d0bc55d63e69cbeed08eb413a984032b410"
+    },
+    {
+      "path": "frontend-production-lock-graph.json",
+      "bytes": 19974,
+      "sha256": "487cbf2813e695b55329f926513f20c243283d7c2b2a159935f891d72732786e"
+    },
+    {
+      "path": "inventory-scope.json",
+      "bytes": 2737,
+      "sha256": "f882c04b7f885b23ed913219515db4da12d0539cd1511e1e355b48cb0225a9a7"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4351,
+      "sha256": "0fefbfd21aa128769969758d9d324e740afdb9e7e714473d5468360df4d3d560"
+    }
+  ]
+}

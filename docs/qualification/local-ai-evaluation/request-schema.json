@@ -1,0 +1,83 @@
+{
+  "$defs": {
+    "ExtractedReport": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "exclusiveMinimum": 0,
+          "title": "Id",
+          "type": "integer"
+        },
+        "relevance": {
+          "enum": [
+            "relevant",
+            "not_relevant",
+            "uncertain"
+          ],
+          "title": "Relevance",
+          "type": "string"
+        },
+        "stance": {
+          "enum": [
+            "reported",
+            "denied",
+            "uncertain"
+          ],
+          "title": "Stance",
+          "type": "string"
+        },
+        "place_mentions": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 6,
+          "title": "Place Mentions",
+          "type": "array"
+        },
+        "actor_mentions": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 6,
+          "title": "Actor Mentions",
+          "type": "array"
+        },
+        "quantity_mentions": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 6,
+          "title": "Quantity Mentions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "relevance",
+        "stance",
+        "place_mentions",
+        "actor_mentions",
+        "quantity_mentions"
+      ],
+      "title": "ExtractedReport",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "reports": {
+      "items": {
+        "$ref": "#/$defs/ExtractedReport"
+      },
+      "maxItems": 8,
+      "minItems": 1,
+      "title": "Reports",
+      "type": "array"
+    }
+  },
+  "required": [
+    "reports"
+  ],
+  "title": "Extraction",
+  "type": "object"
+}

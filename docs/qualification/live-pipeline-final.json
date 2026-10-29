@@ -1,0 +1,27 @@
+{
+  "scope": "isolated_qualification_database",
+  "run_id": "388bb60d3bb5",
+  "checks": {
+    "free_rss_to_postgis_tcp_api_and_websocket": "PASS",
+    "replay_and_immutable_unicode_revision": "PASS",
+    "undated_source_failure_is_persisted_not_fabricated": "PASS",
+    "free_telegram_processor_and_atomic_monotonic_checkpoint": "PASS",
+    "distinct_oversized_source_failure_identities_and_prefix_hashes": "PASS",
+    "real_sql_compound_timestamp_id_pagination": "PASS",
+    "creation_id_recovery_includes_old_dated_reports": "PASS",
+    "real_jsonb_snapshot_sampling_bound": "PASS",
+    "free_persistent_attributed_brief_no_risk_inference": "PASS",
+    "paid_and_admin_operations_fail_closed": "PASS",
+    "bounded_public_rss_to_actual_database": "PASS",
+    "no_paid_usage_and_required_query_indexes": "PASS"
+  },
+  "public_feed_requested": true,
+  "model_calls": 0,
+  "public_feed": {
+    "source": "bbc_mideast",
+    "persisted_records": 2,
+    "classification": "not_requested"
+  },
+  "status": "PASS",
+  "qualification_fixture_boundary": "Synthetic persistence and TCP/WebSocket fixtures live only in the isolated qualification database; public RSS is explicitly bounded."
+}

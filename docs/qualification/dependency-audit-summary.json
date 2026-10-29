@@ -1,0 +1,13 @@
+{
+  "scope": "Installed Python production-image packages and locked npm tree; database advisory coverage is not an exhaustive OS/base-image audit",
+  "python_package_count": 66,
+  "python_known_advisories": 0,
+  "npm": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  }
+}

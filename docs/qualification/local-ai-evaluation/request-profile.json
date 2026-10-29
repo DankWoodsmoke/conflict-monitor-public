@@ -1,0 +1,28 @@
+{
+  "format_source": "request-schema.json",
+  "schema_capture_scope": "Current unchanged Extraction definition captured for this public bundle; initial CPU freeze recorded prompt/validator/fixture hashes separately",
+  "stream": false,
+  "think": false,
+  "keep_alive": 0,
+  "options": {
+    "temperature": 0,
+    "seed": 42,
+    "num_ctx": 8192,
+    "num_predict": 1400,
+    "num_gpu": 0,
+    "num_thread": 4
+  },
+  "gpu_options_difference": {
+    "num_gpu": 99
+  },
+  "batch_size": 4,
+  "snapshot_fields": [
+    "id",
+    "text",
+    "source"
+  ],
+  "snapshot_source": "synthetic_heldout_fixture",
+  "input_role": "untrusted_reports",
+  "response_limit_bytes": 64000,
+  "inventory_limit_bytes": 200000
+}

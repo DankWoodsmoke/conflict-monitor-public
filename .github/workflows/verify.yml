@@ -1,0 +1,75 @@
+name: Verify release candidate
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run test:compat
+      - run: npm test
+      - run: npm run build
+      - run: npm audit --audit-level=moderate
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgis/postgis:17-3.6@sha256:1ac10b2551ba84ae05db8e7da477afcd0a3fede99bcb7705da2ee157390cb095
+        env:
+          POSTGRES_DB: conflict_monitor_test
+          POSTGRES_USER: monitor_admin
+          POSTGRES_PASSWORD: fixture_only_ci
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -h 127.0.0.1 -U monitor_admin -d conflict_monitor_test"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+    env:
+      DATABASE_URL: postgresql+asyncpg://monitor_admin:fixture_only_ci@127.0.0.1:5432/conflict_monitor_test
+      LIVE_INGESTION_ENABLED: 'false'
+      DEMO_MODE: 'false'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: backend/requirements-dev.txt
+      - run: python -m pip install --upgrade pip setuptools
+      - run: pip install -r backend/requirements-dev.txt
+      - run: python -m ruff check --select E9,F63,F7,F82 backend tools
+      - run: python -m pytest -q
+        working-directory: backend
+      - name: Generate isolated runtime password
+        run: |
+          python - <<'PY'
+          import os, secrets
+          fixture_runtime_secret = secrets.token_hex(32)
+          print('::add-mask::' + fixture_runtime_secret)
+          with open(os.environ['GITHUB_ENV'], 'a', encoding='utf8') as output:
+              output.write('POSTGRES_APP_PASSWORD=' + fixture_runtime_secret + '\n')
+          PY
+      - run: python -m app.bootstrap
+        working-directory: backend
+      - name: Use restricted runtime login for integration gates
+        run: |
+          python - <<'PY'
+          import os
+          fixture_runtime_secret = os.environ['POSTGRES_APP_PASSWORD']
+          with open(os.environ['GITHUB_ENV'], 'a', encoding='utf8') as output:
+              output.write('DATABASE_URL=postgresql+asyncpg://monitor:' + fixture_runtime_secret + '@127.0.0.1:5432/conflict_monitor_test\n')
+          PY
+      - run: python tools/verify_database_role.py
+      - run: python tools/verify_postgis.py
+      - run: python tools/verify_live_pipeline.py
+      - run: python tools/release_gate.py --scan-only
+      - run: pip-audit

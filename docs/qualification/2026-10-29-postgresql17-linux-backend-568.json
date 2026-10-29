@@ -1,0 +1,532 @@
+{
+  "scope": "Exact frozen Linux backend image unit/behavior suite; actual DB/provider qualification is separate",
+  "image_id": "sha256:4202bfc7add922228c024623b1879ccec7eaf617c718d583b69568b440f90788",
+  "platform": "linux/amd64",
+  "configured_user": "monitor",
+  "started_at": "2026-10-29T07:59:11.225001+00:00",
+  "finished_at": "2026-10-29T07:59:48.231666+00:00",
+  "test_wall_seconds": 18.563,
+  "pytest_summary": "568 passed, 29 subtests passed in 16.70s",
+  "passed": 568,
+  "subtests_passed": 29,
+  "test_user_uid": 10001,
+  "cpu_limit": 2,
+  "memory_limit_bytes": 2147483648,
+  "junit": {
+    "testcases": 568,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "deployed_source_comparison": {
+    "files_compared": 58,
+    "mismatches": []
+  },
+  "source_unchanged_during_execution": true,
+  "source_manifest_sha256": "4b29df7370e3ea3379314c8368be5efc33e1979ab03399a032e865393abca174",
+  "production_package_versions_changed_by_test_install": [],
+  "external_network_disconnected_before_tests": true,
+  "audit_online_phase_after_tests": true,
+  "qualification_container_removed": true,
+  "production_audit": {
+    "exit_code": 0,
+    "packages": 71,
+    "advisories": 0,
+    "skipped_packages": [],
+    "report": "artifacts/linux-pg17-backend-final-production-audit.json",
+    "report_sha256": "84b3d012903162cca523ad58dbfb4bc32c96ba775b2358f569b392d4ca1ffdeb"
+  },
+  "qualification_environment_audit": {
+    "exit_code": 0,
+    "packages": 98,
+    "advisories": 0,
+    "skipped_packages": [],
+    "report": "artifacts/linux-pg17-backend-final-qualification-audit.json",
+    "report_sha256": "a976d59044e2c877dce731ee2e1a263ba61714fb2db3df9582052ad589117710"
+  },
+  "status": "PASS",
+  "source_manifest": [
+    {
+      "path": "backend/alembic/env.py",
+      "sha256": "c89e6dcbb5c09ef20f1d2afb1bd6d457cfebef46be6df1f401d4e6bef74ca0b9"
+    },
+    {
+      "path": "backend/alembic/script.py.mako",
+      "sha256": "bb5dcfc20bec9feb580c41fcfc90bb28b1c744eae18168b0fa32434e47ab3599"
+    },
+    {
+      "path": "backend/alembic/versions/0001_public_baseline.py",
+      "sha256": "5389e3a82ce309f87cc013fb7fe8533545fee81a21985861e91a7587486e147b"
+    },
+    {
+      "path": "backend/alembic/versions/0002_query_indexes.py",
+      "sha256": "ef694093df2af0539294fdf0f37a92c48e646c0b9764437b9e9662ee3badd850"
+    },
+    {
+      "path": "backend/alembic/versions/0003_geography_index.py",
+      "sha256": "5de0ec53bfe9209dd0b0d928968e05c2ee18a1e2af4571a81e43cc0f65f1d6a4"
+    },
+    {
+      "path": "backend/alembic.ini",
+      "sha256": "44de24a56d0081bdc5366fa6557c61889bf301afc1f38cfed04b31076f6cec2e"
+    },
+    {
+      "path": "backend/app/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "backend/app/auth.py",
+      "sha256": "014f756714305d4769d4e7204110ec7d6857e7960fb415139c1c980d67c1a6df"
+    },
+    {
+      "path": "backend/app/bootstrap.py",
+      "sha256": "33d913269f175e70ce9db64db27c9c80d0a1b1b2f949893e05ae3dcd4b9a9a21"
+    },
+    {
+      "path": "backend/app/config.py",
+      "sha256": "c5d7282da1f7957eed74a7ad7325fdc02d2c42d76c62442740251b9f12aa8939"
+    },
+    {
+      "path": "backend/app/db.py",
+      "sha256": "7ad1a5f541fbd5cf38e675f31b90590fa677df4045a1ccd09632966dba7554ba"
+    },
+    {
+      "path": "backend/app/main.py",
+      "sha256": "178b21e5159c1106d040f69fb92e0a9c0a85330303ab32fd8b593ecd2ddd993e"
+    },
+    {
+      "path": "backend/app/models.py",
+      "sha256": "a4af45349a9fe57f19e88ddfe66d7680070df8ebd0b71dfb71359e7bd07d589f"
+    },
+    {
+      "path": "backend/app/routes/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "backend/app/routes/briefing.py",
+      "sha256": "e2bfc92e9a21399b5f0f429f68bec29a7a5a3f07f0ce50c72f984f3c0e161b7a"
+    },
+    {
+      "path": "backend/app/routes/channels.py",
+      "sha256": "9e402e8a1495b02a58b7dc10d5d8acb9b64334a485c7f814b7e9019001305929"
+    },
+    {
+      "path": "backend/app/routes/costs.py",
+      "sha256": "b00e11edb2fe3a6172deb621d6c025f69c8a88e6a614bdd9ad01e18c6365ed10"
+    },
+    {
+      "path": "backend/app/routes/events.py",
+      "sha256": "83481fb9a38192d8a60013dc9c6add360f4d7325843c0f83a63e8e217c649e26"
+    },
+    {
+      "path": "backend/app/routes/market.py",
+      "sha256": "349bf80faf076b263fde0af3dd59759f5cb416717dfaeda68beddbfb49aeae1d"
+    },
+    {
+      "path": "backend/app/routes/media.py",
+      "sha256": "fd182a1583a44ac6aee9e320f18b889b19f9fb2e3a756f472b1c717a16890532"
+    },
+    {
+      "path": "backend/app/routes/sitreps.py",
+      "sha256": "e04827ded84a96bcc15d19de9e5a1c7d00b4dda3bcee9883c68f3e9eb506b4b4"
+    },
+    {
+      "path": "backend/app/routes/tracking.py",
+      "sha256": "3daa2bda8b58156707686992d324b51b1a05a9ae29f8eea2f35b995ac7069a07"
+    },
+    {
+      "path": "backend/app/routes/user_auth.py",
+      "sha256": "e9e26d62cde95690d25c3fe2c7a29df34fc858d6c7507eb56098e4514ec8c882"
+    },
+    {
+      "path": "backend/app/routes/ws.py",
+      "sha256": "687e3fb39fa19b256c3dff369b37836783d96c1648e9bd2176a5ccce1ce44ad4"
+    },
+    {
+      "path": "backend/app/schemas.py",
+      "sha256": "34a4121d8b5ed3febc9b5ba894028d98a742b2e20e865809093d8b047bd34c5b"
+    },
+    {
+      "path": "backend/app/scripts/import_osint_data.py",
+      "sha256": "31b6f4e85c3eccb4b49974fae4da2587e69f745aa1086f360b50875119dbac48"
+    },
+    {
+      "path": "backend/app/security.py",
+      "sha256": "e1219356d094ebc24bb5e6a693098521d2ba23e2d289c1b6ad272852e6adf4ca"
+    },
+    {
+      "path": "backend/app/seed_channels.py",
+      "sha256": "8cd8dd4c7ca67211df2a5b746375170b2db0fb26715f189eb28062313effe5e6"
+    },
+    {
+      "path": "backend/app/services/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "backend/app/services/anomaly.py",
+      "sha256": "3e806756e9e507df7fd080fb223fac65d5d3c910044d706a4b710f1b46c3fa81"
+    },
+    {
+      "path": "backend/app/services/briefing_video.py",
+      "sha256": "0e24fd667b433a3b0c7797f8ebf1b6f759e1f73459df76539943f4b282188b56"
+    },
+    {
+      "path": "backend/app/services/broadcaster.py",
+      "sha256": "720bc3b237874fdd42316b7da4e982d381eef229ed26cabc011f0333cb35b86f"
+    },
+    {
+      "path": "backend/app/services/classifier.py",
+      "sha256": "ccbf2b1d2d78ad1a5c174ce23edb52e19ce8c510754852221cfcc5d620e4f509"
+    },
+    {
+      "path": "backend/app/services/dedup.py",
+      "sha256": "ef97b60b41107f2eda69fb75add64f3f56df08ce4d3c25bddf1088dd31b6097c"
+    },
+    {
+      "path": "backend/app/services/demo.py",
+      "sha256": "69a10c545a789ee114ce8411f3e770e25b3c1493138af99f1325245f67e09d4b"
+    },
+    {
+      "path": "backend/app/services/evidence.py",
+      "sha256": "c458019e0b514837065b94f646112da7c2dc3839a19b4c87458428e96d198ed4"
+    },
+    {
+      "path": "backend/app/services/geocoder.py",
+      "sha256": "72892bd5ff17ecca1195bb5a2f272c16db3b0cd2f1f3353acb30df0fb4821383"
+    },
+    {
+      "path": "backend/app/services/ingest_ledger.py",
+      "sha256": "b0002194799280469e714bc03f250424fa94d9eaac82e612840ddfce2124a989"
+    },
+    {
+      "path": "backend/app/services/local_briefing.py",
+      "sha256": "79ab45d5ba7fc70d45838d28671b37e443796d38fa10e5b92d43bf2dc55a95cb"
+    },
+    {
+      "path": "backend/app/services/maritime.py",
+      "sha256": "66c9dadd2b6181362661d99fcda549dfe4fff1df4a8355794385fe5e14e2bcf8"
+    },
+    {
+      "path": "backend/app/services/news_feeds.py",
+      "sha256": "8f013e57c9b3688555f2c8eea2521cf5f163603c5e1ac3f7443e11f56a09e904"
+    },
+    {
+      "path": "backend/app/services/opensky.py",
+      "sha256": "21ee5cae4c90e410f919b1f19937549a6004662574d256ed9fa09ff181e85f7f"
+    },
+    {
+      "path": "backend/app/services/predictive_history.py",
+      "sha256": "5c8c8e185c6744e122bddff41302d8c97ba66bbbc8e72a56efefe279a6d67c4a"
+    },
+    {
+      "path": "backend/app/services/retro_matcher.py",
+      "sha256": "a6ddeafa14d0f7aae871496cd7b08da2f54209476fda5b0ff38734aff3b926a3"
+    },
+    {
+      "path": "backend/app/services/runtime.py",
+      "sha256": "2b0f7585c62997a02df4c5c922f550fe97eb94a3916697fcd092b175eb560130"
+    },
+    {
+      "path": "backend/app/services/satellite_firms.py",
+      "sha256": "787b2015f9d794aa54e240acb57de265b54da329f7603b574eede020623ca8ed"
+    },
+    {
+      "path": "backend/app/services/satellites.py",
+      "sha256": "4b8b5ebcb9f5104a56c71c863651e05ca0350c5fec3d71cf579cf30f6518b314"
+    },
+    {
+      "path": "backend/app/services/sitrep_contract.py",
+      "sha256": "237a5fa2d6425bb01930af0145bac590e5f94b5670a2654d7059852c7bb032be"
+    },
+    {
+      "path": "backend/app/services/sitrep_generator.py",
+      "sha256": "b4874ae7fad0a286961b9d3588bbf292c24871d90ebca7c3467970e2c84f57de"
+    },
+    {
+      "path": "backend/app/services/snapshots.py",
+      "sha256": "4beb9e6e9aeeddd8a6a676a2d3b4f383ff73a6d275e5d6d32fe1dc46d6725354"
+    },
+    {
+      "path": "backend/app/services/source_catalog.py",
+      "sha256": "67ff4717545b476868edc21111e51f79c7e07c02e8aae80b1108c5ea82ef0440"
+    },
+    {
+      "path": "backend/app/services/source_digest.py",
+      "sha256": "c70c50aacb19e7f3b637fe4880f48b0e83491a038b85d759e2aac94479b2a4c6"
+    },
+    {
+      "path": "backend/app/services/telegram.py",
+      "sha256": "49ad867f174ac9bdd2eee295958c74f3c53426b06be1ecbdf953bcd8d3711e83"
+    },
+    {
+      "path": "backend/app/services/tracking_contract.py",
+      "sha256": "71fe77f0a58ea345fec2e86be809701926f5ae070f7af9e50b8c9ed88aa9d207"
+    },
+    {
+      "path": "backend/app/services/verification.py",
+      "sha256": "9a4a8f9863d9fb1a384d8cfc0a88cec1ec9ae001ef8c617a0bb789a995569243"
+    },
+    {
+      "path": "backend/app/workers/__init__.py",
+      "sha256": "23861ce3bd0bc164a9ec0094976169f66c9c35f7d5d7efdd5247c5f031dd2a4e"
+    },
+    {
+      "path": "backend/app/workers/piper_speech.py",
+      "sha256": "6755ca3c8f39520cafff0e2c489fe9880be619db2ca9a9d7a786bb6b77639ecb"
+    },
+    {
+      "path": "backend/Dockerfile",
+      "sha256": "70d99b7bae56d46a42d7574b4b679b4a6e4466a919aacd560caf716b9b4910f6"
+    },
+    {
+      "path": "backend/pytest.ini",
+      "sha256": "465106e36b84ec97e2dca7ef7b2aa38cdafb967e85fbe43ce42c301af7b969a0"
+    },
+    {
+      "path": "backend/requirements-dev.txt",
+      "sha256": "a00237582d88a53ddeee1f486b3553f5bf33f464350a2611af5e4968f1ce77a1"
+    },
+    {
+      "path": "backend/requirements.txt",
+      "sha256": "b7871cb72ddbee2a1b808cc3afc1a090f5e64e9f640849d91da0a4067fbba8fa"
+    },
+    {
+      "path": "backend/tests/fixtures/local_ai_holdout.json",
+      "sha256": "80dcaf62fb084530642a209c309d34cb04e199d6046d91c9e8c2f75da8135099"
+    },
+    {
+      "path": "backend/tests/test_admin_evidence_boundaries.py",
+      "sha256": "d955eb619cf8ce599ef5ebe7c810c21bacd77af3b0145dea162d5dbb238414a7"
+    },
+    {
+      "path": "backend/tests/test_admin_geo_counts.py",
+      "sha256": "4b4b501724bf8bccf93a9aaf96ba0c2b6104696eef2faf81824bea61aac26ab8"
+    },
+    {
+      "path": "backend/tests/test_admin_request_validation.py",
+      "sha256": "43d80e5b24b72ab57c378f0bf9918237f05a0ea52eef1b5c993771155c39049d"
+    },
+    {
+      "path": "backend/tests/test_admin_retention_review_edges.py",
+      "sha256": "5e11037be0c18fdb618cb9b8dbbb4c54d761f1c1d5a23f762fdc56c68ad3f288"
+    },
+    {
+      "path": "backend/tests/test_aircraft_coverage.py",
+      "sha256": "e493eaf20ef5e8b38540d86c7a13a2c41c11bdde9bcf577066fbfb98d7ffd102"
+    },
+    {
+      "path": "backend/tests/test_api_lifecycle.py",
+      "sha256": "6785e2bff04be4fb3ac3e64587dc52da3b7eb07ffb2bf18bea6edfbb10706ab1"
+    },
+    {
+      "path": "backend/tests/test_baseline_migration.py",
+      "sha256": "19a77e8c4683eb9440d389275e6f2a619dbf2d5d19dd46ef8d8279cf3d08ad60"
+    },
+    {
+      "path": "backend/tests/test_brief_history_routes.py",
+      "sha256": "a89c6d106da514e8665c090974b620b0e568d73bdbf2745bc070b37e289df6d4"
+    },
+    {
+      "path": "backend/tests/test_brief_legacy_bounds.py",
+      "sha256": "2da89ae97c2f56b1886000133c82191c31bccac4406b3e0006f117b0f39511da"
+    },
+    {
+      "path": "backend/tests/test_channel_metadata_status.py",
+      "sha256": "04c2682e0a1b123a8202453bf5a41d7d7e7a259955a2592694993bf9062dc2f4"
+    },
+    {
+      "path": "backend/tests/test_database_bootstrap.py",
+      "sha256": "d5999a0581daaaae6313ef6537a7422bb3490064bd9e2df96e6468dcf89f8143"
+    },
+    {
+      "path": "backend/tests/test_dedup_boundaries.py",
+      "sha256": "af587233288f690321f8045b11ca380d7536270a6635b9af3d10defe84ecedbd"
+    },
+    {
+      "path": "backend/tests/test_digest_persistence_edges.py",
+      "sha256": "b2787c15cc673c99f0fe228210a8828ee146e66a8338152a15a9bb9b7590d568"
+    },
+    {
+      "path": "backend/tests/test_empty_api_contract.py",
+      "sha256": "a2120a24d701649901a79f36f00d4d047caf1197ff746b0841bb6c7a5b9e5d5a"
+    },
+    {
+      "path": "backend/tests/test_event_reference_imagery.py",
+      "sha256": "fd7c0c2d635f11ace4d8c5620298d3246c3d4c26b61df76c76efaae03598562e"
+    },
+    {
+      "path": "backend/tests/test_evidence_integrity.py",
+      "sha256": "52757637cf58b66c47633ca1c9f96a1625190086ccd6e301174a6e471a24ce90"
+    },
+    {
+      "path": "backend/tests/test_export_adversarial.py",
+      "sha256": "9a8694d7b47dcfd61c41b1c2ad86bbcc027d8413877f4e0d29458876a4ba07fa"
+    },
+    {
+      "path": "backend/tests/test_feed_runtime_boundaries.py",
+      "sha256": "56812029718b2de8736fed5bc853f7a74d687e67857f549ce907adc158983e03"
+    },
+    {
+      "path": "backend/tests/test_firms_runtime.py",
+      "sha256": "7fe2dd5c066f613ef083f0f9876e425a62a879963ef07b032d3a3b3956c1e931"
+    },
+    {
+      "path": "backend/tests/test_free_rss.py",
+      "sha256": "1c612383f7b2d39e4fcc1f7064edd85899894790b8d593a959be388e8f5e995d"
+    },
+    {
+      "path": "backend/tests/test_free_telegram.py",
+      "sha256": "6301a5ad97f8fae022e6fe8c0e0964df6cc3112b97adc397ade6ceb8929c1463"
+    },
+    {
+      "path": "backend/tests/test_ingestion_integration.py",
+      "sha256": "890012adb1c7e574161b5705cc950107cdd079bb1e78b18fde4b176402dfdffd"
+    },
+    {
+      "path": "backend/tests/test_ledger_truncated_identity.py",
+      "sha256": "b0cdfe54bc72a037e569eba30c31d4eb046a64091fb882da7e6e85f9c59635d6"
+    },
+    {
+      "path": "backend/tests/test_local_briefing.py",
+      "sha256": "e3653b110c6111c1621bd7e05497112abd83f5a12ada11f578578e66b0d7265e"
+    },
+    {
+      "path": "backend/tests/test_local_generation_verifier.py",
+      "sha256": "5843e7cc662172bdb5a993e1d99514d2bf76366640531056e075ecb92916a7eb"
+    },
+    {
+      "path": "backend/tests/test_maritime_runtime.py",
+      "sha256": "893cf94c1574e1cee14d351dac242760428bf58fef00860cd2a6ccbd1cb3210b"
+    },
+    {
+      "path": "backend/tests/test_public_export.py",
+      "sha256": "f74033aecf1f7ae77ecbf0c315258eaf9d3fd6d2a8ed115b00f3f2f2c70f1511"
+    },
+    {
+      "path": "backend/tests/test_release_safety.py",
+      "sha256": "b884c57d012ad062dd032a8366c62af08f69104a81eba707f54c2a45f7bbb1c5"
+    },
+    {
+      "path": "backend/tests/test_restart_verifier.py",
+      "sha256": "77ba98e2c718057befa597fc048952f27d337402d059c210ed0b095509023189"
+    },
+    {
+      "path": "backend/tests/test_retro_runtime.py",
+      "sha256": "326a0b5646b7fed9a0a24518c46655b9f205c99c611f1bed4f67d1ff280fb6ee"
+    },
+    {
+      "path": "backend/tests/test_rss_scheduler.py",
+      "sha256": "97009e9448662f0a91e0449e79c7974592e7077b1f9fd5222864187c1c72828c"
+    },
+    {
+      "path": "backend/tests/test_runtime_delivery.py",
+      "sha256": "5d397b10686cd1df5eaa299bf01598b70582e347de02337627d833eee94dba59"
+    },
+    {
+      "path": "backend/tests/test_runtime_restarts.py",
+      "sha256": "478118fbab53bb8145afef71ba7eaf4a530430f5eb48992e4fdf0f69ebed398a"
+    },
+    {
+      "path": "backend/tests/test_satellites.py",
+      "sha256": "88a088d0ed9ffa4cda512a07555693f47740d5733403f3f28d6913c81791efd7"
+    },
+    {
+      "path": "backend/tests/test_sitrep.py",
+      "sha256": "1eb5e34f9724d5643a2cbfdfb46da39bf3bc507b061b8ecbe1825040d90225d5"
+    },
+    {
+      "path": "backend/tests/test_snapshot_persistence.py",
+      "sha256": "001c8a3b22389ad3b6ea43ba5fc2f4e92c13a49154396a7c6e01ef38d5a8a11c"
+    },
+    {
+      "path": "backend/tests/test_soak_verifier.py",
+      "sha256": "682a6565a8e06106712ea918cbf08c69424d9559cbad604b575d4d52e8bd39b4"
+    },
+    {
+      "path": "backend/tests/test_socket_boundary.py",
+      "sha256": "b95ba2073cffe7b7a5f1c6ab35d6ba531a04691662d67a5537f3bf2b07e3fbb8"
+    },
+    {
+      "path": "backend/tests/test_source_digest.py",
+      "sha256": "bdf96a86a503108cb684a50f8d4ab3ab9282ff1281a9d7f342d42a9a4a9a31fd"
+    },
+    {
+      "path": "backend/tests/test_source_eligibility.py",
+      "sha256": "0693d18508d447a782411e53492c77443753d92478c5a7e9c3ec30ce9e4ca53f"
+    },
+    {
+      "path": "backend/tests/test_telegram_lifecycle.py",
+      "sha256": "2429acc8acc0119e2646a68297450a86071acef1e4f3c80fd51e1b93fb7de86d"
+    },
+    {
+      "path": "backend/tests/test_telegram_runtime_edges.py",
+      "sha256": "065a13e5d2d9f5a47eb0fd02d78d42dbcd71a20a98a0c379d8e8d167fcd287db"
+    },
+    {
+      "path": "backend/tests/test_tracking_freshness.py",
+      "sha256": "1db057dbfab2b8ce19e19c00705b63a6bd9158a5feb8005bb1a03e0e4caed25a"
+    },
+    {
+      "path": "tools/live_soak.py",
+      "sha256": "e47988b453e8ce48363e0ec198539fb1071022ac89cc3208b1e35621e385c771"
+    },
+    {
+      "path": "tools/release_gate.py",
+      "sha256": "fc7f2118f46efbb6a43337bda71cd782ffcf0fc4792f75c873d2947203152962"
+    },
+    {
+      "path": "tools/summarize_live_soak.py",
+      "sha256": "28cb7685d59cdb426ed406e13c95a317317131119d2917c430ad3a8b3af74430"
+    },
+    {
+      "path": "tools/verify_database_role.py",
+      "sha256": "21aa3272bd79e46cad6d92ee2c2800b171bd022e84616c62ed7eacf8a462067e"
+    },
+    {
+      "path": "tools/verify_live_pipeline.py",
+      "sha256": "70f479108d200596106af42da1b49386337a134eec08e804c2689483cfdecb9c"
+    },
+    {
+      "path": "tools/verify_local_generation.py",
+      "sha256": "15a35a74c0b38dfe0d65d12eb81e2c25324e702e0efb114878b0ba189f82369f"
+    },
+    {
+      "path": "tools/verify_postgis.py",
+      "sha256": "cabbe87659fa9ccfd8a85fda1fcdcec24501c5d44ea0fd372015dd09b7dde93e"
+    },
+    {
+      "path": "tools/verify_restart_persistence.py",
+      "sha256": "a794b0fbe041f0ef92f1181d09145785a022302d30898770cb364fc8434d82c4"
+    }
+  ],
+  "commands": [
+    "docker build --tag conflict-monitor-qualified-backend:20261029-pg17 --file backend/Dockerfile backend",
+    "python artifacts/run-linux-pg17-final.py --image sha256:4202bfc7add922228c024623b1879ccec7eaf617c718d583b69568b440f90788",
+    "python -m pytest -q -rA -p no:cacheprovider --junitxml=/tmp/result.xml (uid10001, disconnected disposable container)"
+  ],
+  "source_receipts": [
+    {
+      "path": "artifacts/linux-pg17-backend-final.json",
+      "sha256": "aed48b898c7f7564f21bece6677850e19c986ad86c5063a28f8449f4f5b87636"
+    },
+    {
+      "path": "artifacts/linux-pg17-backend-final.log",
+      "sha256": "51a06fb261ef82a30201b8ae37107d1e443c04e9e930b5bb689206cfff5e1e45"
+    },
+    {
+      "path": "artifacts/linux-pg17-backend-final.xml",
+      "sha256": "b6b4b8dd14134f916d092586d64b6c7a6e4a63b42f601a9fad2b85367dddcbf5"
+    },
+    {
+      "path": "artifacts/run-linux-pg17-final.py",
+      "sha256": "94bd02c4f02d647a00f6541e6af605e4fa1053d4a05389f2d167f3c388dcf609"
+    }
+  ],
+  "limitations": [
+    "Unit/behavior suite; actual patched PostGIS/provider/TCP/WebSocket qualification has a separate receipt.",
+    "No live credentials, database volumes or private artifacts were mounted.",
+    "Production Python-package and qualification-environment audits are distinct from OS/native package applicability and do not imply a vulnerability-free image.",
+    "Online advisory lookups occurred only after the network-isolated test phase.",
+    "GitHub CI has not been inferred from local Linux execution."
+  ]
+}

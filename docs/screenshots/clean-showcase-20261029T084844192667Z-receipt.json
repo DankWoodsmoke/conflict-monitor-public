@@ -1,0 +1,86 @@
+{
+  "captured_at": "2026-10-29T08:49:53.689Z",
+  "method": "Native Playwright page.screenshot to file from the reconstructed static build; no editing or binary chunking.",
+  "status": "CAPTURED_AWAITING_HUMAN_VISUAL_REVIEW",
+  "scope": "UI illustration using only authored synthetic fixtures and bundled local reference imagery. No Google tiles, live backend, real source bodies, credentials, model/video execution or remote providers. Not a live-data or Google playback qualification.",
+  "network_policy": "All non-preview-origin requests aborted, including any external frames. No original repository/private files served.",
+  "blocked_external_hosts": [],
+  "images": [
+    {
+      "file": "clean-showcase-earth-desktop-20261029T084844192667Z.png",
+      "bytes": 896501,
+      "sha256": "fb39a402dc681da1348a067a47ce984f83fedcf29928931ce333409f57d4982f",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "device_scale_factor": 1,
+      "mode": "synthetic_showcase_fixed_clock",
+      "fixture_as_of": "2026-10-29T06:00:00Z",
+      "earth_provider": "Local bundled NASA Black Marble 2016 reference; Google disabled",
+      "earth_provider_status": "NASA Black Marble 2016 reference · no current satellite imagery",
+      "visible_credits": "NASA Earth Observatory · Black Marble 2016 reference",
+      "production_image_id": "sha256:cb2cc67e72d8c1fc67049c6b91d621ee2e31de0be3e3c4ccda4890a791e5422a",
+      "google_tiles_captured": false,
+      "real_publisher_report_body_captured": false,
+      "operator_key_supplied": false
+    },
+    {
+      "file": "clean-showcase-media-desktop-20261029T084844192667Z.png",
+      "bytes": 652877,
+      "sha256": "0ad6cbe2e376a8d089d384a84978a1c6d64c12b61294cca471ecaae3c2bd6f72",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "device_scale_factor": 1,
+      "mode": "synthetic_showcase_fixed_clock",
+      "fixture_as_of": "2026-10-29T06:00:00Z",
+      "earth_provider": "Local bundled NASA Black Marble 2016 reference; Google disabled",
+      "earth_provider_status": "NASA Black Marble 2016 reference · no current satellite imagery",
+      "visible_credits": "NASA Earth Observatory · Black Marble 2016 reference",
+      "production_image_id": "sha256:cb2cc67e72d8c1fc67049c6b91d621ee2e31de0be3e3c4ccda4890a791e5422a",
+      "google_tiles_captured": false,
+      "real_publisher_report_body_captured": false,
+      "operator_key_supplied": false
+    },
+    {
+      "file": "clean-showcase-brief-desktop-20261029T084844192667Z.png",
+      "bytes": 702709,
+      "sha256": "1c765ba6351e8c6382c612603669a7618a4c51fa2e1426883c48313135b573d3",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "device_scale_factor": 1,
+      "mode": "synthetic_showcase_fixed_clock",
+      "fixture_as_of": "2026-10-29T06:00:00Z",
+      "earth_provider": "Local bundled NASA Black Marble 2016 reference; Google disabled",
+      "earth_provider_status": "NASA Black Marble 2016 reference · no current satellite imagery",
+      "visible_credits": "NASA Earth Observatory · Black Marble 2016 reference",
+      "production_image_id": "sha256:cb2cc67e72d8c1fc67049c6b91d621ee2e31de0be3e3c4ccda4890a791e5422a",
+      "google_tiles_captured": false,
+      "real_publisher_report_body_captured": false,
+      "operator_key_supplied": false
+    },
+    {
+      "file": "clean-showcase-earth-portrait390-20261029T084844192667Z.png",
+      "bytes": 257160,
+      "sha256": "b268b80ca45a84c942507bd2f65a02de4af9fb0e15083658e832f1a0bf8f31cf",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "device_scale_factor": 1,
+      "mode": "synthetic_showcase_fixed_clock",
+      "fixture_as_of": "2026-10-29T06:00:00Z",
+      "earth_provider": "Local bundled NASA Black Marble 2016 reference; Google disabled",
+      "earth_provider_status": "NASA Black Marble 2016 reference · no current satellite imagery",
+      "visible_credits": "NASA Earth Observatory · Black Marble 2016 reference",
+      "production_image_id": "sha256:cb2cc67e72d8c1fc67049c6b91d621ee2e31de0be3e3c4ccda4890a791e5422a",
+      "google_tiles_captured": false,
+      "real_publisher_report_body_captured": false,
+      "operator_key_supplied": false
+    }
+  ]
+}

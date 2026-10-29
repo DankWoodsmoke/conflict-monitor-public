@@ -1,0 +1,32 @@
+{
+  "recorded_at": "2026-10-29T06:00:47.703670+00:00",
+  "backend_image": "sha256:a57a1426956f1b0ba5cab3452c810b85779928ece8176b93b4df678902b94990",
+  "production": {
+    "packages": 71,
+    "known_advisories": 0,
+    "skipped_packages": [],
+    "receipt": {
+      "local_receipt": "artifacts/linux-earth-backend-463-production-audit.json",
+      "sha256": "84b3d012903162cca523ad58dbfb4bc32c96ba775b2358f569b392d4ca1ffdeb",
+      "last_written_at_utc": "2026-10-29T05:49:03.204352+00:00"
+    },
+    "scope": "Exact production package inventory captured before installing test tools"
+  },
+  "full_qualification_environment": {
+    "packages": 98,
+    "known_advisories": 0,
+    "skipped_packages": [],
+    "receipt": {
+      "local_receipt": "artifacts/linux-earth-backend-463-dev-audit.json",
+      "sha256": "a976d59044e2c877dce731ee2e1a263ba61714fb2db3df9582052ad589117710",
+      "last_written_at_utc": "2026-10-29T05:53:49.664358+00:00"
+    },
+    "package_inventory_sha256": "d5ab697c6ce706a166938e916c4404d0471dc5e2ea72189d6bb6de2130173a0e",
+    "command": "python -m pip_audit --no-deps --disable-pip --progress-spinner off --format json --requirement [captured installed package inventory]",
+    "scope": "Actual Linux inventory after exact dev dependency installation; advisory lookup ran separately online after offline tests and removal of the test container"
+  },
+  "limitations": [
+    "Zero returned known advisories is not exhaustive security or supply-chain clearance.",
+    "Production and dev/test environments are separate measurements."
+  ]
+}

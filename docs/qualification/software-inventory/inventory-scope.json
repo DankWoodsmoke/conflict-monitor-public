@@ -1,0 +1,36 @@
+{
+  "captured_at": "2026-10-29T06:12:16.998111+00:00",
+  "status": "METADATA_INVENTORY_NOT_LICENSE_CLEARANCE",
+  "package_lock_sha256": "43c8ffc1161d38c6b87b7afecda26f350012675ec35529c2677360379e9bc821",
+  "npm_cli_version": "11.12.1",
+  "full_unfiltered_cyclonedx_components": 174,
+  "independent_production_reachable_locations": 33,
+  "global_non_dev_locations": 33,
+  "selection_disagreements": [],
+  "npm_omit_dev_limitation": {
+    "commands": [
+      "npm sbom --omit=dev --package-lock-only --sbom-format=cyclonedx",
+      "npm sbom --omit=dev --sbom-format=cyclonedx"
+    ],
+    "components": 3,
+    "direct_production_dependencies_omitted": [
+      "cesium",
+      "dompurify"
+    ],
+    "conclusion": "This raw npm omit-dev output is incomplete. Retained privately and not advertised as a complete production SBOM. The full unfiltered official SBOM and independently traversed production closure are separate evidence."
+  },
+  "backend_image_id": "sha256:a57a1426956f1b0ba5cab3452c810b85779928ece8176b93b4df678902b94990",
+  "backend_python_distributions": 71,
+  "frontend_asset_binding_scope": "Current cb2 clean reconstruction from296scanned immutable public source files passed149unit/4keylessbrowser/compat/build, and all400distassets match deployedimage bytes. Four native synthetic/NASA-reference previews passed independent/coordinating-agent visual review. Separate actual Google runtime receipt, provider truth, human acceptance, OS/dependency inventory and final release manifest retain their own scopes. Earlier02ee visual-defect previews/failure logs are archived outside final public gallery.",
+  "private_environment_or_persona_included": false,
+  "backend_packages_with_dist_info_license_files": 69,
+  "backend_packages_with_any_registered_license_notice_files": 70,
+  "backend_license_location_correction": "Initial69 count covered .dist-info only. ONNX Runtime also ships LICENSE and ThirdPartyNotices.txt outside .dist-info; therefore70/71 distributions have registered license/notice files under this broader check. Flatbuffers25.12.19 has Apache2.0 metadata but no matching registered file; this inventory is not legal clearance.",
+  "current_backend_image_binding": "backend-current-image-binding.json",
+  "current_backend_image_id": "sha256:4202bfc7add922228c024623b1879ccec7eaf617c718d583b69568b440f90788",
+  "current_backend_metadata_and_license_bytes_match": true,
+  "current_backend_license_notice_records_verified": 184,
+  "current_backend_license_notice_bytes_hashed": 1086277,
+  "current_frontend_image_id": "sha256:cb2cc67e72d8c1fc67049c6b91d621ee2e31de0be3e3c4ccda4890a791e5422a",
+  "current_frontend_clean_receipt": "../clean-source-reconstruction-cb2.json"
+}

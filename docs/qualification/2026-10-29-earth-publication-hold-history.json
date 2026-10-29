@@ -1,0 +1,41 @@
+{
+  "recorded_at": "2026-10-29T06:15:05.084783+00:00",
+  "scope": "Historical publication hold after broader optional-surface verification",
+  "frontend_image": "sha256:92f89b33c9c23db2a8795c28a9df74d539119a76ac4eabeb813e804dd8f95377",
+  "publication_state": "Not published; no final qualification asserted for this image",
+  "prior_checks": {
+    "default_accessibility_states": 15,
+    "automated_violations": 0,
+    "manual_focus_scenarios": 12,
+    "manual_focus_failures": 0,
+    "mobile_viewport_engine_cases_passed": 12
+  },
+  "broader_findings": [
+    "Unscored reports were labeled high priority and numeric zero was shown as a score in optional Media panels.",
+    "Thermal sensor reports were categorized as RSS and inherited network metadata could produce a green confirmation indicator.",
+    "Empty/unavailable optional briefing states could remain in loading, and the expanded briefing modal had a focus defect."
+  ],
+  "decision": "Preserve prior image-bound evidence and perform a consolidated accuracy/usability repair. Repeat qualification on the repaired image; earlier passing defaults are not promoted to coverage of untested optional states.",
+  "source_receipts": [
+    {
+      "local_receipt": "artifacts/history-92f-before-truth/accessibility-earth-final-summary.json",
+      "sha256": "544d826edd01f4d41e5b048410754cfbecd39e1fe84e3a91f69be8c58eaf9aa6"
+    },
+    {
+      "local_receipt": "artifacts/history-92f-before-truth/receipt.json",
+      "sha256": "590991fef2d64d20ad0c77483970a60b9f172dcb8eda4960372dac8b65c459e7"
+    },
+    {
+      "local_receipt": "artifacts/history-92f-before-truth/optional-surfaces-final.json",
+      "sha256": "d9f3a7aac5911d08affd0bbd571efdf650d0917dfba71f3760067cc65f17a4c5"
+    },
+    {
+      "local_receipt": "artifacts/history-92f-before-truth/optional-surfaces-state-checks.json",
+      "sha256": "df371271c005182599c50863f1f95a8036917dd0595e3c17bb276855c8dee46e"
+    }
+  ],
+  "limits": [
+    "No publisher bodies, source URLs or keys are copied here.",
+    "Automated accessibility and passing selected workflows do not establish content truth, complete usability or WCAG conformance."
+  ]
+}

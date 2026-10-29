@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "scope": "isolated_qualification_database",
+  "run_id": "60373f06f5cd",
+  "checks": {
+    "free_rss_to_postgis_tcp_api_and_websocket": "PASS",
+    "replay_and_immutable_unicode_revision": "PASS",
+    "undated_source_failure_is_persisted_not_fabricated": "PASS",
+    "free_telegram_processor_and_atomic_monotonic_checkpoint": "PASS",
+    "distinct_oversized_source_failure_identities_and_prefix_hashes": "PASS",
+    "real_sql_compound_timestamp_id_pagination": "PASS",
+    "creation_id_recovery_includes_old_dated_reports": "PASS",
+    "real_jsonb_snapshot_sampling_bound": "PASS",
+    "free_persistent_attributed_brief_no_risk_inference": "PASS",
+    "real_sql_legacy_json_abstention_and_missing_citation_disclosure": "PASS",
+    "paid_and_admin_operations_fail_closed": "PASS",
+    "bounded_public_rss_to_actual_database": "PASS",
+    "no_paid_usage_and_required_query_indexes": "PASS"
+  },
+  "check_count": 13,
+  "public_feed": {
+    "source": "bbc_mideast",
+    "persisted_records": 2,
+    "selected_current_urls_matched": true,
+    "rejected_items": 0,
+    "classification": "not_requested"
+  },
+  "publisher_urls_or_bodies_copied": false,
+  "model_calls": 0,
+  "command": "python -m coverage run --append --branch --source=app ../tools/verify_live_pipeline.py --public-feed",
+  "cwd": "backend",
+  "database_profile": "Isolated conflict_monitor_test on PostgreSQL 17 / PostGIS 3.5; no live/display database writes",
+  "receipt": {
+    "local_receipt": "artifacts/live-pipeline-463-final.log",
+    "sha256": "40412d2e1378d0ee6fca0282f8e3e527530d6420862b0915f5927fddf9a6ca02",
+    "last_written_at_utc": "2026-10-29T05:54:42.681528+00:00"
+  },
+  "verifier_source_sha256": "ad236d4d6ac997066478c5fee43b8fd628a9341d38ae12e5628065674f546c0f",
+  "limitations": [
+    "Synthetic qualification rows remain isolated from the live/display database.",
+    "The bounded BBC feed is actual public HTTP data; selected current URLs were matched to persisted records, not unrelated old database rows.",
+    "Telegram processor/checkpoint assertions here use fixtures, not a network-authentication claim. Production Telegram status is recorded separately.",
+    "This does not establish publisher truth, corroboration or incident coordinates."
+  ]
+}

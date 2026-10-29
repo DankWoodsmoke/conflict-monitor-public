@@ -1,0 +1,51 @@
+{
+  "checked_at": "2026-10-29T04:02:22.643088+00:00",
+  "mode": "live",
+  "source_counts": [
+    {
+      "source": "rss_aljazeera",
+      "n": 14
+    },
+    {
+      "source": "rss_bbc_mideast",
+      "n": 20
+    },
+    {
+      "source": "rss_guardian_mideast",
+      "n": 19
+    },
+    {
+      "source": "satellite_firms",
+      "n": 2
+    },
+    {
+      "source": "telegram",
+      "n": 9
+    }
+  ],
+  "rss_status": {
+    "bbc_mideast": "ok",
+    "aljazeera": "ok",
+    "guardian_mideast": "ok"
+  },
+  "telegram_status": "ok",
+  "aircraft_count": 3,
+  "vessel_count": 88,
+  "orbit_count": 45,
+  "firms_status": "ok",
+  "firms_observations": 342,
+  "workers": {
+    "telegram": "running",
+    "aircraft": "running",
+    "satellites": "running",
+    "maritime": "running",
+    "rss": "running",
+    "source_digest": "running",
+    "snapshots": "running",
+    "match_review": "running",
+    "thermal_observations": "running",
+    "telegram_periodic": "running"
+  },
+  "synthetic_rows_in_live_database": 0,
+  "synthetic_row_check": "SQL source labels and qualification-fixture text check"
+}

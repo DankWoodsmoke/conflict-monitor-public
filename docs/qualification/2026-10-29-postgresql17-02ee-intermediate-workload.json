@@ -1,0 +1,104 @@
+{
+  "recorded_at": "2026-10-29T09:42:05.283556+00:00",
+  "status": "INTERRUPTED_INTERMEDIATE_NOT_FINAL",
+  "scope": "Prior02ee frontend bounded coexistence observation; retained after additional visual correctness repairs",
+  "server_observation": {
+    "started_at": "2026-10-29T08:20:44.149237+00:00",
+    "last_sample_at": "2026-10-29T08:47:14.825557+00:00",
+    "last_sample_elapsed_seconds": 1590.77,
+    "samples": 54,
+    "http_requests": 432,
+    "http_errors": 0,
+    "integrity_findings": 0,
+    "raw_hash_changes": 0,
+    "websocket_messages": 207,
+    "websocket_disconnects": 1,
+    "sql_checks": 6,
+    "clean_end_recorded": false
+  },
+  "browser_observation": {
+    "started_at": "2026-10-29T08:22:01.823Z",
+    "last_sample_elapsed_seconds": 1478.148,
+    "samples": 50,
+    "findings": 0,
+    "clean_end_recorded": false
+  },
+  "actual_generation_workload": {
+    "receipts": [
+      {
+        "receipt": "postgresql17-local-generation-production-prior-20261029T082324869242.json",
+        "status": "FAIL",
+        "started_at": "2026-10-29T08:21:13.029261+00:00",
+        "ended_at": "2026-10-29T08:21:13.093845+00:00",
+        "checks_recorded": 3,
+        "sha256": "b31ecd20520b7efeb94170bc6745735d5e32e96f2e8a047f853123ad1b906920"
+      },
+      {
+        "receipt": "postgresql17-local-generation-production-prior-20261029T082550147290.json",
+        "status": "FAIL",
+        "started_at": "2026-10-29T08:23:02.409041+00:00",
+        "ended_at": "2026-10-29T08:23:24.868669+00:00",
+        "checks_recorded": 9,
+        "sha256": "92fdb835c5a8e91ee0c85485e2c89f5669238116733520e611ac0a25f423ac5d"
+      },
+      {
+        "receipt": "postgresql17-local-generation-production.json",
+        "status": "PASS",
+        "started_at": "2026-10-29T08:25:03.667322+00:00",
+        "ended_at": "2026-10-29T08:25:50.147290+00:00",
+        "checks_recorded": 24,
+        "sha256": "daa319f2997484b55d1c994fad50536f85420df07b91cd7102b47d5757bfe573"
+      }
+    ],
+    "successful_application_ai_jobs": 2,
+    "successful_narrated_video_jobs": 1,
+    "interpretation": [
+      "First verifier attempt failed its response-size guard before any generation POST.",
+      "Second attempt completed one actual AI job but failed an obsolete verifier metadata/hash expectation; raw failure retained.",
+      "The final corrected verifier completed another AI job and one video job,24checks PASS.",
+      "These jobs overlap this prior02ee observation; finalcb2 hour is not claimed to include new inference/video generation."
+    ]
+  },
+  "stop_marker": {
+    "recorded_at": "2026-10-29T08:49:59.575476+00:00",
+    "scope": "Prior02ee frontend bounded observation; interrupted before replacement frontend qualification",
+    "controller_exit_code": 1,
+    "clean_observer_end_recorded": false,
+    "last_sample_elapsed_seconds": 1590.77,
+    "last_summary_sha256": "8ed7780ee16679a5b3927424b2d99499cd40f7145d19109221efdd7afafc3d45",
+    "final_hour_qualified": false
+  },
+  "replacement_final_profile": "cb2 frontend; fresh one-hour and thirty-minute observers started separately, without inherited elapsed time",
+  "source_receipts": [
+    {
+      "path": "artifacts/earth-pg17-final-soak/summary.json",
+      "sha256": "8ed7780ee16679a5b3927424b2d99499cd40f7145d19109221efdd7afafc3d45"
+    },
+    {
+      "path": "artifacts/earth-pg17-final-soak/samples.jsonl",
+      "sha256": "d6443d11fc65636238ba7654c4792f60a7f5da2e7f10a7ce13c7e603e934bce2"
+    },
+    {
+      "path": "artifacts/earth-pg17-final-soak/websocket.jsonl",
+      "sha256": "cdc422887699eb111a74d1b78857fbf9a1d6bc29b26ebe975c384e423a31c1c1"
+    },
+    {
+      "path": "artifacts/earth-pg17-final-soak/segments.jsonl",
+      "sha256": "4e935f49e0135aa7de1ba37f622c9e19462cf4edd915d653f68d31608858d51a"
+    },
+    {
+      "path": "artifacts/earth-pg17-final-soak/intermediate-profile-stop.json",
+      "sha256": "9330ab9113697529247dd177e3459a189ca034ec29c31fa1bd82aa177f9541e6"
+    },
+    {
+      "path": "artifacts/browser-lifecycle-pg17-final/summary.json",
+      "sha256": "3a85b56b697d360b69cff50d13a7ceccaf3794c52d3bd9b97452758d065c0004"
+    }
+  ],
+  "limitations": [
+    "No one-hour or thirty-minute qualification is claimed for these interrupted observers.",
+    "Controller interruption did not write normal observer end markers; original progress files remain unchanged.",
+    "The old UI was superseded for real label/credit/Media layout fixes; its passing subsets are not promoted to the final UI.",
+    "Coexistence observations do not certify source truth, global coverage, sustained load capacity or physical devices."
+  ]
+}

@@ -1,0 +1,276 @@
+{
+  "created_at": "2026-10-29T05:58:01.665717+00:00",
+  "scope": "Post hoc deterministic replay of saved synthetic raw responses; no new model calls or changed gold expectations. Single-row diagnostics do not replace original atomic batch decisions.",
+  "batch_rejection_notes": [
+    {
+      "ids": [
+        201,
+        202,
+        203,
+        204
+      ],
+      "recorded_batch_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "ids": [
+        205,
+        206,
+        207,
+        208
+      ],
+      "recorded_batch_gate": "rejected",
+      "replayed_error": "Model mention splits a source token"
+    },
+    {
+      "ids": [
+        209,
+        210,
+        211,
+        212
+      ],
+      "recorded_batch_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "ids": [
+        213,
+        214,
+        215,
+        216
+      ],
+      "recorded_batch_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "ids": [
+        217,
+        218,
+        219,
+        220
+      ],
+      "recorded_batch_gate": "rejected",
+      "replayed_error": "Model discarded an explicit conflict-related topic"
+    },
+    {
+      "ids": [
+        221,
+        222,
+        223,
+        224
+      ],
+      "recorded_batch_gate": "accepted",
+      "replayed_error": null
+    }
+  ],
+  "single_row_gate_diagnostics": [
+    {
+      "id": 201,
+      "single_row_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "id": 202,
+      "single_row_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "id": 203,
+      "single_row_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "id": 204,
+      "single_row_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "id": 205,
+      "single_row_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "id": 206,
+      "single_row_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "id": 207,
+      "single_row_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "id": 208,
+      "single_row_gate": "rejected",
+      "replayed_error": "Model mention splits a source token"
+    },
+    {
+      "id": 209,
+      "single_row_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "id": 210,
+      "single_row_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "id": 211,
+      "single_row_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "id": 212,
+      "single_row_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "id": 213,
+      "single_row_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "id": 214,
+      "single_row_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "id": 215,
+      "single_row_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "id": 216,
+      "single_row_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "id": 217,
+      "single_row_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "id": 218,
+      "single_row_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "id": 219,
+      "single_row_gate": "rejected",
+      "replayed_error": "Model discarded an explicit conflict-related topic"
+    },
+    {
+      "id": 220,
+      "single_row_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "id": 221,
+      "single_row_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "id": 222,
+      "single_row_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "id": 223,
+      "single_row_gate": "accepted",
+      "replayed_error": null
+    },
+    {
+      "id": 224,
+      "single_row_gate": "accepted",
+      "replayed_error": null
+    }
+  ],
+  "actor_diagnostic": {
+    "frozen_exact_string_successes": 3,
+    "frozen_exact_string_total": 12,
+    "posthoc_literal_containment_successes": 9,
+    "posthoc_literal_containment_total": 12,
+    "limitation": "Containment is a transparent prefix/granularity diagnostic, not semantic entailment or a replacement score.",
+    "rows": [
+      {
+        "id": 201,
+        "expected": "ministry",
+        "literal_contained_in_an_actor_span": true
+      },
+      {
+        "id": 202,
+        "expected": "Red Cross",
+        "literal_contained_in_an_actor_span": true
+      },
+      {
+        "id": 206,
+        "expected": "الجيش",
+        "literal_contained_in_an_actor_span": true
+      },
+      {
+        "id": 207,
+        "expected": "Cruz Roja",
+        "literal_contained_in_an_actor_span": true
+      },
+      {
+        "id": 208,
+        "expected": "警方",
+        "literal_contained_in_an_actor_span": false
+      },
+      {
+        "id": 210,
+        "expected": "defence ministry",
+        "literal_contained_in_an_actor_span": false
+      },
+      {
+        "id": 215,
+        "expected": "town council",
+        "literal_contained_in_an_actor_span": true
+      },
+      {
+        "id": 216,
+        "expected": "UN",
+        "literal_contained_in_an_actor_span": true
+      },
+      {
+        "id": 217,
+        "expected": "monitoring office",
+        "literal_contained_in_an_actor_span": true
+      },
+      {
+        "id": 221,
+        "expected": "ministère",
+        "literal_contained_in_an_actor_span": true
+      },
+      {
+        "id": 222,
+        "expected": "Emergency workers",
+        "literal_contained_in_an_actor_span": true
+      },
+      {
+        "id": 223,
+        "expected": "U.N.",
+        "literal_contained_in_an_actor_span": false
+      }
+    ]
+  },
+  "case218_instruction_quantity": {
+    "original_batch_accepted": false,
+    "raw_quantity_mentions": [
+      "9000"
+    ],
+    "single_row_replay_accepted": true,
+    "interpretation": "9000 is literally present inside a malicious embedded instruction. Literal span checks prove substring only, not evidentiary role, casualty count or truth. No such value mutated any Event; no model coordinates or severity accepted."
+  },
+  "source_bindings": {
+    "fixture_sha256": "31a33c52b4b0d9e14f799674eccc3dca6e8a98a6666bae85776e2794cfc8b059",
+    "system_sha256": "dd73ee0c4fc9b4e2d424bcbf5b76f0138f12f432e3837f43c21715567e899d95",
+    "validator_function_sha256": "910e909ac1d09dc700382bb10091a1cae01329651bd5f820572a86bc9c5e1827",
+    "current_application_local_briefing_module_sha256": "5548c18ded06142f6427b8d94e180d5db9ca3fb910791893a33ad45737402391",
+    "frozen_evaluation_dependencies": "frozen.json"
+  },
+  "paid_api_calls": 0,
+  "request_seconds": 211.062,
+  "retries": 0,
+  "prompt_or_app_changes_after_freeze": 0
+}

@@ -1,0 +1,452 @@
+{
+  "source": "April 8, 2026 source archive recovered from local full backup",
+  "archive_sha256": "31d04ebcda8ecf0be13a5b14eed5093892e7d4985957ff91fb45f8d97f9e2ec1",
+  "authority": "Historical backup; live server unreachable. Not asserted latest.",
+  "files": [
+    {
+      "path": ".env.example",
+      "bytes": 740,
+      "sha256": "428277ae7bbf3e97fabe2bd390649c09164904131a55438ef12cc278287b44af"
+    },
+    {
+      "path": "sitrep_video.py",
+      "bytes": 104460,
+      "sha256": "050f96bb3112ebd89a83969086ac1c43edf7040d3dde935a6a8f3e9d1c428015"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 95,
+      "sha256": "54765e9702e404e5b9b9395e4b72d5830bbc40de6e290df907cd29a47fae0f3f"
+    },
+    {
+      "path": "frontend/vite.config.ts",
+      "bytes": 721,
+      "sha256": "090a454fb69bf98920233957d88258c45707cd1d02941e028e29999315de1e0f"
+    },
+    {
+      "path": "frontend/package-lock.json",
+      "bytes": 117739,
+      "sha256": "a23fc34016e2bc05ddae3321b8cc54a5dcd106637652bb1742e7cde3f211ede9"
+    },
+    {
+      "path": "frontend/public/textures/coastlines.json",
+      "bytes": 139908,
+      "sha256": "676178907dd5755ec9fe818c983398587b5f3f8748661433c426ddbc0538b189"
+    },
+    {
+      "path": "frontend/public/textures/earth-night.jpg",
+      "bytes": 794479,
+      "sha256": "373e5a08c9f378a2ce6320214a613148e4b1e3946b3f39a516c9093b76cb7124"
+    },
+    {
+      "path": "frontend/public/textures/countries.json",
+      "bytes": 340011,
+      "sha256": "d8cec72f3b008717f4f42e43809bdd976368f17151216736286917d3f45a5568"
+    },
+    {
+      "path": "frontend/src/main.tsx",
+      "bytes": 250,
+      "sha256": "0b8d6d0e1780abffd32630eee273b83502d703ebd36f8a392a7150493996f19c"
+    },
+    {
+      "path": "frontend/src/utils/verification.ts",
+      "bytes": 4149,
+      "sha256": "82aaac3fd3471e58d0b5614b999922734b08b9c84fbef0c5fe96e981a9053b62"
+    },
+    {
+      "path": "frontend/src/types/event.ts",
+      "bytes": 1109,
+      "sha256": "84bd7a754577f15af7c8d60fdfc47309aef29bc5218177ac03f08789c19faf08"
+    },
+    {
+      "path": "frontend/src/styles/globals.css",
+      "bytes": 16316,
+      "sha256": "79bbafa6ad446fe96c11fff96614e46330318618e7a5f845fb8229da3813a4b7"
+    },
+    {
+      "path": "frontend/src/components/AccuracyLayer.tsx",
+      "bytes": 4075,
+      "sha256": "5f303a719519c24dbd5f311bf35654140669e06fa7a80a251122b1b33da5fea4"
+    },
+    {
+      "path": "frontend/src/components/AboutPanel.tsx",
+      "bytes": 23040,
+      "sha256": "4a5c541baee2a32d071fade7bdd628a3b1fce4b212647d65ef0ad5def2a6e826"
+    },
+    {
+      "path": "frontend/src/components/TimelineScrubber.tsx",
+      "bytes": 27508,
+      "sha256": "2933c2d06fb32adf37f01364e28633020e16b7ca273d1dc8ffc39d99c190af80"
+    },
+    {
+      "path": "frontend/src/components/SignalPanel.tsx",
+      "bytes": 9951,
+      "sha256": "3c2628ddc967aef1cdbf1d4a9a48593e40479b87d94acce9fdbf9b978ceb5f15"
+    },
+    {
+      "path": "frontend/src/components/AlertPanel.tsx",
+      "bytes": 8366,
+      "sha256": "991a912d299e1ed11b887edcefea44ae35c357b1b2f1fe57df34c3cf6ac47906"
+    },
+    {
+      "path": "frontend/src/components/LiveFeed.tsx",
+      "bytes": 39802,
+      "sha256": "306a2c4f8cadcab29d6d00c6dfa46a39e5614dbaec5bda6aae46be54ab74739e"
+    },
+    {
+      "path": "frontend/src/components/MarketStrip.tsx",
+      "bytes": 7793,
+      "sha256": "3a9a13f46205d6b0b60b66006d2c39406156b694d58b4d5584301c6d9338824b"
+    },
+    {
+      "path": "frontend/src/components/Header.tsx",
+      "bytes": 26203,
+      "sha256": "0f1de970c62c761c13b0846c7e22e851e021f38d92970c1c3316438c339225dc"
+    },
+    {
+      "path": "frontend/src/components/MapPanel.tsx",
+      "bytes": 88215,
+      "sha256": "0f01b32bf3f2a6c7a7a285abb84d49052a4474062ab03b41780495ef7ca6aa0f"
+    },
+    {
+      "path": "frontend/src/components/EscalationGauge.tsx",
+      "bytes": 12876,
+      "sha256": "664e25f83ad9b4e774b3da96959fe184e7315848a2f73087cc525ad7278b5ddd"
+    },
+    {
+      "path": "frontend/src/components/CesiumView.tsx",
+      "bytes": 28119,
+      "sha256": "10bffc7f0e8854649d9270327889fd5443a4e52a4321d89916b60bee08a34373"
+    },
+    {
+      "path": "frontend/src/components/GlobeView.tsx",
+      "bytes": 19773,
+      "sha256": "54af99c8060c198d6f14319a84dc1ad8da2cbfd3b192b5985c8c6e18e25d5d1d"
+    },
+    {
+      "path": "frontend/src/components/IntelPulsePanel.tsx",
+      "bytes": 23429,
+      "sha256": "c8a54aabeaa5abf3f2baacae457dd6c894c120c3a7ea3df326d4906914c3d825"
+    },
+    {
+      "path": "frontend/src/components/SettingsPanel.tsx",
+      "bytes": 38774,
+      "sha256": "04cd64997776f76d1b9a74737bd53d4845eb2b3592cdcddfbad6b5a20f8be732"
+    },
+    {
+      "path": "frontend/src/components/AircraftLayer.tsx",
+      "bytes": 34606,
+      "sha256": "0150c4f237bce1aebe1262ab26360419e524dcefdc7987171fd8daca6925341b"
+    },
+    {
+      "path": "frontend/src/components/StrategicPulseBar.tsx",
+      "bytes": 57869,
+      "sha256": "7c0645e609ef0bf7eda3439c49c1388dae6166a8a9e36681368d3745060fdc1d"
+    },
+    {
+      "path": "frontend/src/components/IntelMediaView.tsx",
+      "bytes": 34573,
+      "sha256": "aa41be5a82250d11894c8e41af3b0657a10ebfa26909142ad9d85c485a5a2a9b"
+    },
+    {
+      "path": "frontend/src/App.tsx",
+      "bytes": 66047,
+      "sha256": "96d250a532c47246a0414b6e3fd8ce9bffb4b1e0e7fbb0776bef809b1b006d2c"
+    },
+    {
+      "path": "frontend/src/StrategicPulseBar.tsx",
+      "bytes": 58199,
+      "sha256": "c466b6ee93d1aa62471d708bb1a7819254482fd05d22f862da77a8c4bd217d53"
+    },
+    {
+      "path": "frontend/src/vite-env.d.ts",
+      "bytes": 171,
+      "sha256": "dcbd0163d3cdbd353edd7c98993651ab2f2af05557a18d4251c5e7606728121d"
+    },
+    {
+      "path": "frontend/src/hooks/useTracking.ts",
+      "bytes": 8295,
+      "sha256": "ce7de274b55f606c89d79b96a36fb721a04892f35cce2c11abc83fb128a1559b"
+    },
+    {
+      "path": "frontend/src/hooks/useEventStream.ts",
+      "bytes": 6633,
+      "sha256": "49ea5834bd68245681554cf44f3f2495f431d3f4cc7c305c59d05c6a0f413bdc"
+    },
+    {
+      "path": "frontend/index.html",
+      "bytes": 711,
+      "sha256": "c4255bd82a727decb88ed2b8c0d7e4b894ddb860024daf5c970a1f2464fdb468"
+    },
+    {
+      "path": "frontend/tsconfig.json",
+      "bytes": 578,
+      "sha256": "2f1dcad519529f9b151cade7b86950e8f83ed131c873207ef2957084ba9e40ff"
+    },
+    {
+      "path": "frontend/Dockerfile",
+      "bytes": 176,
+      "sha256": "66107c8c36aa19e095c470842cf161b475fc253c73d1b8d011810df9a2197919"
+    },
+    {
+      "path": "frontend/.dockerignore",
+      "bytes": 31,
+      "sha256": "6136a1daf683a5879b5bee16bfe6303d23e05dc8fc69d23ba241bb3f087f62d4"
+    },
+    {
+      "path": "frontend/package.json",
+      "bytes": 826,
+      "sha256": "2dfcd88b0bd04845b7917576f8dbcda61ed668cb88809700b9fc9aa06b150279"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1093,
+      "sha256": "401c8041bc48e71d0a814deb5541aa1f89adbe3871a0eb9ff96ed1de0064df78"
+    },
+    {
+      "path": "docker-compose.yml",
+      "bytes": 1609,
+      "sha256": "4032b20d1fdc2bfa12c2088baa8a5cdc1fec26facbfda691ed7b052886a03e2f"
+    },
+    {
+      "path": "telegram-auth.bat",
+      "bytes": 1304,
+      "sha256": "d550ba1fae74e5ee56adab425df730d9fab6fb406b0f0b7c5a3a749557712c22"
+    },
+    {
+      "path": "telegram-auth.ps1",
+      "bytes": 2776,
+      "sha256": "c9ad50b315fe1318335b3cc819e74e985f040fc544ee6537a13f5ae598a5d029"
+    },
+    {
+      "path": "README.md",
+      "bytes": 8019,
+      "sha256": "cce4c6774f743cd359232df0e7bec3b96ab2e7a1ee075a48212daa544ba27a59"
+    },
+    {
+      "path": "gen_video_cron.sh",
+      "bytes": 1734,
+      "sha256": "c1007fe252ba4bf696299afa42aecd26f066081469b81975892b2318627a08de"
+    },
+    {
+      "path": "backend/alembic/env.py",
+      "bytes": 1444,
+      "sha256": "c89e6dcbb5c09ef20f1d2afb1bd6d457cfebef46be6df1f401d4e6bef74ca0b9"
+    },
+    {
+      "path": "backend/alembic/script.py.mako",
+      "bytes": 679,
+      "sha256": "bb5dcfc20bec9feb580c41fcfc90bb28b1c744eae18168b0fa32434e47ab3599"
+    },
+    {
+      "path": "backend/alembic.ini",
+      "bytes": 620,
+      "sha256": "a09a578bf0a317aef16197d29f45e0c859a70d8353679eaec0efd9879ea0e67f"
+    },
+    {
+      "path": "backend/requirements.txt",
+      "bytes": 258,
+      "sha256": "0e65b526a2269861c5b633c676c295f5b971a1e5b4f617e82fa28306d9cc8c78"
+    },
+    {
+      "path": "backend/Dockerfile",
+      "bytes": 423,
+      "sha256": "5d4392d7bbb2ada23380d03b9bab70bbda8709d0b2cbe1c82fef564797be9eee"
+    },
+    {
+      "path": "backend/app/routes/market.py",
+      "bytes": 7115,
+      "sha256": "e1807ab4aad12754ed229948233d6716bedc959f73a639d0aa4d9e454eb5a3c7"
+    },
+    {
+      "path": "backend/app/routes/events.py",
+      "bytes": 27380,
+      "sha256": "e410dc6276c59c8ba4a8725a29113b6943f40db0fbebdf81ace0889cbc6122a4"
+    },
+    {
+      "path": "backend/app/routes/tracking.py",
+      "bytes": 1519,
+      "sha256": "3cd97754c69efefe7f1d195cb164d95cad39b573e3611ae3fd2cbad85e14a4c2"
+    },
+    {
+      "path": "backend/app/routes/costs.py",
+      "bytes": 5812,
+      "sha256": "78a9b8df9582b467609fe9adb6c79d43afc115194de422e2c653208b59e77e05"
+    },
+    {
+      "path": "backend/app/routes/media.py",
+      "bytes": 1199,
+      "sha256": "e048253feea85001d99ffd860f3efde5e043512557dc8baa684ab7e4197770ce"
+    },
+    {
+      "path": "backend/app/routes/sitreps.py",
+      "bytes": 5567,
+      "sha256": "529254e52741f04f890f73d16b4351a845d6c6d7a1490ed0109632bf55bb4db8"
+    },
+    {
+      "path": "backend/app/routes/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "backend/app/routes/ws.py",
+      "bytes": 542,
+      "sha256": "63d992f500a4809ffcd21f7d44b46de16cf8417854df37b2e12d4570a059f8c7"
+    },
+    {
+      "path": "backend/app/routes/user_auth.py",
+      "bytes": 9209,
+      "sha256": "e9e26d62cde95690d25c3fe2c7a29df34fc858d6c7507eb56098e4514ec8c882"
+    },
+    {
+      "path": "backend/app/routes/channels.py",
+      "bytes": 867,
+      "sha256": "931bb279ce50f1939f60f43b804c68e6577ce040124785cd1813ea917d17d8bd"
+    },
+    {
+      "path": "backend/app/services/broadcaster.py",
+      "bytes": 1190,
+      "sha256": "7581fcfeda584894e5cf2d03940ba9246737d700bad0dd6b11cb393e0bb9326c"
+    },
+    {
+      "path": "backend/app/services/maritime.py",
+      "bytes": 11464,
+      "sha256": "ad1781b13b9b2f3250021d8ad889dc70a2253b88e7a72acf562afcc6edb692ba"
+    },
+    {
+      "path": "backend/app/services/dedup.py",
+      "bytes": 7504,
+      "sha256": "89ccfce3db6a1dc35a567a42f27e7933532412df2758790d00db283d52eb33b6"
+    },
+    {
+      "path": "backend/app/services/retro_matcher.py",
+      "bytes": 8226,
+      "sha256": "13ad20910cced18c9be53c497f00cc2815dcb4283d2183604f0ed2f31d5b83ca"
+    },
+    {
+      "path": "backend/app/services/classifier.py",
+      "bytes": 18858,
+      "sha256": "379f8fb7c069fe8a82dd01668aa544a229fcdfb83305235880c74804312cf142"
+    },
+    {
+      "path": "backend/app/services/verification.py",
+      "bytes": 11428,
+      "sha256": "3a99cd479cdd48f5739691813c286e0a395f942c7319616c0c965a0f051ee3ab"
+    },
+    {
+      "path": "backend/app/services/demo.py",
+      "bytes": 30523,
+      "sha256": "69a10c545a789ee114ce8411f3e770e25b3c1493138af99f1325245f67e09d4b"
+    },
+    {
+      "path": "backend/app/services/telegram.py",
+      "bytes": 19347,
+      "sha256": "a1a00243366297bcc7fceb15834d02ffbddf0348eaadb16c3253e40b53756a97"
+    },
+    {
+      "path": "backend/app/services/snapshots.py",
+      "bytes": 6641,
+      "sha256": "4620eb06d806a19323503a391c90ba66e7258e08a4cf33876bf8bb04f49fa9ae"
+    },
+    {
+      "path": "backend/app/services/satellites.py",
+      "bytes": 2260,
+      "sha256": "97117ed0ce8fb1eaa7aa4723fc894865656966495814582765a3d9d13c6f3887"
+    },
+    {
+      "path": "backend/app/services/predictive_history.py",
+      "bytes": 15531,
+      "sha256": "4773c89f75e934b65f22cbbb05b66a521e121a1b9a89184df77c6dca763edae4"
+    },
+    {
+      "path": "backend/app/services/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "backend/app/services/opensky.py",
+      "bytes": 12060,
+      "sha256": "5dbd26d8e4f84029432388d327cef107dd78c38dde11f3cc965572c4d7590d1e"
+    },
+    {
+      "path": "backend/app/services/news_feeds.py",
+      "bytes": 47498,
+      "sha256": "e93fcf3095a93ed838b4d1891449f0adff28f2b77e251b0fee9269d6f0e4dd1b"
+    },
+    {
+      "path": "backend/app/services/geocoder.py",
+      "bytes": 52233,
+      "sha256": "c73578dbad32824bb4a6dd090a7b1f75636d3bf0cbe81d97ad91788c3e7f7b7e"
+    },
+    {
+      "path": "backend/app/services/anomaly.py",
+      "bytes": 1378,
+      "sha256": "3e806756e9e507df7fd080fb223fac65d5d3c910044d706a4b710f1b46c3fa81"
+    },
+    {
+      "path": "backend/app/services/sitrep_generator.py",
+      "bytes": 35112,
+      "sha256": "7c01fb02ad1b76fde5b1a18f94563a142f8a04c58b61c3d025bde728416be4eb"
+    },
+    {
+      "path": "backend/app/services/satellite_firms.py",
+      "bytes": 27203,
+      "sha256": "24e08cf9fa27b3d20c985258391fcd7b16ee79f4d83b0c56f4d28a8ffc607d30"
+    },
+    {
+      "path": "backend/app/models.py",
+      "bytes": 5882,
+      "sha256": "20d34f7be82fa35469c6b3bf10336f65e3c081b39ea1c31f2dda2bf0a30d1161"
+    },
+    {
+      "path": "backend/app/seed_channels.py",
+      "bytes": 25874,
+      "sha256": "02df1fc0d6f057755de1eb1f4729b2864b6e999985f62a5ad45ecaf24d49f7ab"
+    },
+    {
+      "path": "backend/app/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "backend/app/auth.py",
+      "bytes": 5250,
+      "sha256": "014f756714305d4769d4e7204110ec7d6857e7960fb415139c1c980d67c1a6df"
+    },
+    {
+      "path": "backend/app/config.py",
+      "bytes": 1397,
+      "sha256": "aeef11cf3b110e740685acd124a118fca4687a79aff4cbafa4017e5f052062cd"
+    },
+    {
+      "path": "backend/app/main.py",
+      "bytes": 9901,
+      "sha256": "f73256caf6d86929cf2a5b0be9ab60007251d7a49acc0783af1e73fd665e487d"
+    },
+    {
+      "path": "backend/app/db.py",
+      "bytes": 517,
+      "sha256": "7ad1a5f541fbd5cf38e675f31b90590fa677df4045a1ccd09632966dba7554ba"
+    },
+    {
+      "path": "backend/app/schemas.py",
+      "bytes": 1044,
+      "sha256": "e538e9d8b5abe79a14debe9e828895d7fa1f006ef83965607b82fcae2c349a4c"
+    },
+    {
+      "path": "backend/app/scripts/import_osint_data.py",
+      "bytes": 9697,
+      "sha256": "7b1ff0d5769b5fcd9acbfa953ee0f24c7298b6f336cdf031ec4224e39722e4c7"
+    }
+  ],
+  "excluded_count": 444,
+  "excluded_categories": [
+    "environment files",
+    "Telegram sessions",
+    "database dump",
+    "videos and logs",
+    "compiled output",
+    "old backups",
+    "git history"
+  ]
+}

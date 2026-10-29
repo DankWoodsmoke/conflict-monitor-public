@@ -1,0 +1,68 @@
+{
+  "recorded_at": "2026-10-29T06:00:47.727340+00:00",
+  "coverage_tool": "7.17.0",
+  "branch_coverage": true,
+  "host_python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+  "unit_only": {
+    "tests": 463,
+    "subtests": 29,
+    "seconds": 17.02,
+    "command": "python -m coverage run --branch --source=app -m pytest tests -q",
+    "cwd": "backend",
+    "totals": {
+      "covered_lines": 3518,
+      "num_statements": 4927,
+      "percent_covered": 68.58039215686274,
+      "percent_covered_display": "69",
+      "missing_lines": 1409,
+      "excluded_lines": 0,
+      "percent_statements_covered": 71.40247615181651,
+      "percent_statements_covered_display": "71",
+      "num_branches": 1448,
+      "num_partial_branches": 222,
+      "covered_branches": 854,
+      "missing_branches": 594,
+      "percent_branches_covered": 58.97790055248619,
+      "percent_branches_covered_display": "59"
+    },
+    "receipt": {
+      "local_receipt": "artifacts/backend-coverage-unit-463.json",
+      "sha256": "85005a1bf6d61a0c2867c903b6c4a4efcb6cb0c353e5d07ccb634a6996a34851",
+      "last_written_at_utc": "2026-10-29T05:49:07.014721+00:00"
+    }
+  },
+  "unit_plus_real_postgis_tcp_pipeline": {
+    "unit_tests": 463,
+    "subtests": 29,
+    "additional_pipeline_checks": 13,
+    "command": "python -m coverage run --append --branch --source=app ../tools/verify_live_pipeline.py --public-feed",
+    "cwd": "backend",
+    "totals": {
+      "covered_lines": 3536,
+      "num_statements": 4927,
+      "percent_covered": 69.05098039215686,
+      "percent_covered_display": "69",
+      "missing_lines": 1391,
+      "excluded_lines": 0,
+      "percent_statements_covered": 71.76781002638522,
+      "percent_statements_covered_display": "72",
+      "num_branches": 1448,
+      "num_partial_branches": 218,
+      "covered_branches": 866,
+      "missing_branches": 582,
+      "percent_branches_covered": 59.806629834254146,
+      "percent_branches_covered_display": "60"
+    },
+    "receipt": {
+      "local_receipt": "artifacts/backend-coverage-463-plus-pipeline.json",
+      "sha256": "d73c96c737e8d273273007edf0f4374d0a84f66a1880c552fbee3020d7046249",
+      "last_written_at_utc": "2026-10-29T05:54:44.702955+00:00"
+    }
+  },
+  "excluded_lines": 0,
+  "limitations": [
+    "Coverage measures executed Python lines/branches, not semantic or factual correctness.",
+    "Combined coverage is separate from unit-only coverage and from exact-image Linux unit execution.",
+    "Legacy/demo/interactive/optional paths remain uncovered; no every-line or 100 percent claim is made."
+  ]
+}

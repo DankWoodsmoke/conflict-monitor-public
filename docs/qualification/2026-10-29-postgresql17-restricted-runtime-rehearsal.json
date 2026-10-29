@@ -1,0 +1,186 @@
+{
+  "observed_at": "2026-10-29T07:39:35.753878+00:00",
+  "status": "PASS",
+  "scope": "Private source restore into isolated patched PG with distinct migration/runtime roles",
+  "database_image": "postgis/postgis:17-3.6@sha256:1ac10b2551ba84ae05db8e7da477afcd0a3fede99bcb7705da2ee157390cb095",
+  "backend_image": "sha256:2195170d0c567f774ef56fe7146d947ea55374b43dc7a084f6f052c0139d2f4e",
+  "versions": {
+    "postgresql": "17.11 (Debian 17.11-1.pgdg13+2)",
+    "postgis": "3.6.4"
+  },
+  "roles": {
+    "bootstrap_and_migrations": "monitor_admin",
+    "runtime": "monitor",
+    "runtime_admin_flags": false,
+    "runtime_role_memberships": 0,
+    "runtime_object_ownership": 0,
+    "runtime_grants": [
+      "SELECT/INSERT/UPDATE/DELETE on modeled application tables",
+      "USAGE/SELECT on application sequences",
+      "SELECT on Alembic revision",
+      "USAGE on public schema",
+      "CONNECT on application database"
+    ],
+    "administrator_serves_http": false
+  },
+  "compose_checks": {
+    "actual_http_health_200": true,
+    "runtime_dsn_identity_monitor": true,
+    "admin_secret_absent_from_every_http_environment_value": true,
+    "known_administrator_variables_blank": true,
+    "duplicate_app_password_variable_blank": true,
+    "uvicorn_only_http_command": true,
+    "actual_unknown_role_blocks_initializer": true,
+    "bootstrap_failure_output_has_no_secrets": true
+  },
+  "restore_checks": {
+    "all_nine_table_counts_and_row_hashes": true,
+    "event_raw_hashes": true,
+    "receipt_hashes": true,
+    "checkpoints": true,
+    "sequences": true,
+    "all_index_definitions": true,
+    "fresh_collation_matches_runtime": true,
+    "patched_versions": true,
+    "restored_replay_sql_sampling_bound": true,
+    "restored_replay_shapes_and_time_order": true,
+    "source_digest_original_snapshot_sha_recomputed": true,
+    "source_digest_references_resolve": true,
+    "public_digest_risk_remains_unassessed": true,
+    "meter_geography_query_at_stored_point": true,
+    "all_indexes_valid": true,
+    "restored_runtime_api_healthy": true
+  },
+  "actual_runtime_permissions": {
+    "runtime_identity": true,
+    "no_administrative_flags": true,
+    "no_role_memberships": true,
+    "no_public_object_ownership": true,
+    "no_database_or_public_schema_ownership": true,
+    "migration_revision_readable": true,
+    "denied_create_public_table": true,
+    "denied_create_schema": true,
+    "denied_create_temporary_table": true,
+    "denied_alter_application_table": true,
+    "denied_truncate_application_table": true,
+    "denied_alter_migration_revision": true,
+    "denied_create_extension": true,
+    "denied_drop_application_table": true,
+    "denied_become_administrator": true,
+    "denied_change_session_authorization": true,
+    "denied_grant_administrator": true,
+    "denied_elevate_role": true,
+    "denied_read_authentication_catalog": true,
+    "ordinary_advisory_lock_available": true,
+    "sequence_usage_and_select_only": true
+  },
+  "application_table_counts": {
+    "events": 79,
+    "source_reports": 89,
+    "channel_checkpoints": 3,
+    "tracking_snapshots": 108,
+    "sitreps": 14,
+    "intel_media": 0,
+    "usage_log": 0,
+    "cost_config": 0,
+    "alembic_version": 1
+  },
+  "actual_tcp_websocket_pipeline": {
+    "checks": 12,
+    "status": "PASS",
+    "public_feed_requested": false,
+    "paid_calls": 0
+  },
+  "bootstrap_repeated_idempotently": true,
+  "unknown_role_rejected_in_actual_database": true,
+  "isolated_api_live_ingestion": false,
+  "live_cutover_performed": false,
+  "old_live_volume_untouched": true,
+  "commands": [
+    "docker compose --project-name cmonitor-role-qualification --env-file <private-qualification-env> -f docker-compose.yml -f <private-image-override> up -d --build backend",
+    "python -m app.bootstrap (dedicated administrator, fresh qualification database; repeated)",
+    "python tools/verify_database_role.py (restricted runtime, separate conflict_monitor_test)",
+    "python tools/verify_postgis.py (restricted runtime, separate conflict_monitor_test)",
+    "python tools/verify_live_pipeline.py (restricted runtime, separate conflict_monitor_test)",
+    "pg_restore --no-owner --no-acl --exit-on-error (private consistent source dump, new database owned by monitor_admin)",
+    "python -m app.bootstrap (administrator grants runtime after restored schema)",
+    "read-only full row/hash/index/sequence/replay/digest checks through runtime monitor"
+  ],
+  "source_receipts": [
+    {
+      "path": "Private pg17-role-qualification/qualification-final.json",
+      "sha256": "4f36e5269aac336be1484aa7c8cf1702455c5ac14c65f3a7a9b0df81b09ca5fe"
+    },
+    {
+      "path": "Private pg17-role-qualification/runtime-permissions-final.json",
+      "sha256": "176f3ff7298fd80222eb3ba0a5367435668c49867a8fb5c014a336f1fd029a2a"
+    },
+    {
+      "path": "Private pg17-role-qualification/fresh-bootstrap.log",
+      "sha256": "e28b42a0a80c59a9a3cb744b073bf1123e8ef92f9570a995f97d0ca7f6a16eb2"
+    },
+    {
+      "path": "Private pg17-role-qualification/repeat-bootstrap.log",
+      "sha256": "e28b42a0a80c59a9a3cb744b073bf1123e8ef92f9570a995f97d0ca7f6a16eb2"
+    },
+    {
+      "path": "Private pg17-role-qualification/runtime-postgis.log",
+      "sha256": "3ce9b8b749989f1fed8d75aa5574dfcaae93804241d7508ddeb9e01a77b3faf0"
+    },
+    {
+      "path": "Private pg17-role-qualification/runtime-pipeline-portable.log",
+      "sha256": "7a3e3ccd62670e2b6207af627940198974db6b662cf0f2d62794042bed7b7525"
+    },
+    {
+      "path": "Private pg17-role-qualification/restored-runtime-metadata.json",
+      "sha256": "3cba004ba7672bc4b1bf4124311e6b4c2a142e62b54b3a058f6fa0d0752f6788"
+    },
+    {
+      "path": "Private pg17-role-qualification/restored-runtime-service-checks.json",
+      "sha256": "00d6cdeffcd3b8c6cf1a63a08d081360d102d0a05d9e0381d9ed95edd9f3441a"
+    },
+    {
+      "path": "Private pg17-role-qualification/unknown-role-startup-blocked.log",
+      "sha256": "9fe91f9907ad3f0212241c8b6a76353bd27f33bedb1c4f56a00495511df399d2"
+    }
+  ],
+  "source_files": [
+    {
+      "path": "backend/app/bootstrap.py",
+      "sha256": "33d913269f175e70ce9db64db27c9c80d0a1b1b2f949893e05ae3dcd4b9a9a21"
+    },
+    {
+      "path": "backend/tests/test_database_bootstrap.py",
+      "sha256": "d5999a0581daaaae6313ef6537a7422bb3490064bd9e2df96e6468dcf89f8143"
+    },
+    {
+      "path": "tools/verify_database_role.py",
+      "sha256": "21aa3272bd79e46cad6d92ee2c2800b171bd022e84616c62ed7eacf8a462067e"
+    },
+    {
+      "path": "tools/verify_live_pipeline.py",
+      "sha256": "70f479108d200596106af42da1b49386337a134eec08e804c2689483cfdecb9c"
+    },
+    {
+      "path": "docker-compose.yml",
+      "sha256": "510ef20065987e9d389909f1324191d43b43bcd66785c54394ca870c29e495b0"
+    },
+    {
+      "path": ".github/workflows/verify.yml",
+      "sha256": "879184486cbb40a0df5fa1ca321dac9e72bb1ec0037a9dd5731ceabda80c3739"
+    }
+  ],
+  "limitations": [
+    "Isolated intermediate-source role/restore qualification; completed expanded-RSS source and final image require separate qualification.",
+    "The previous live database remains PostgreSQL 17.5/PostGIS 3.5.2 in this receipt; no live switch occurred.",
+    "The initial Linux TCP verifier failed a decoder-status-only portability assertion; its failed log is retained privately. The corrected invariant still requires an empty rejected result and separately tests truly malformed JSON.",
+    "PostgreSQL catalog visibility and ordinary public PostGIS/advisory-lock calls remain available; this is not a function allowlist or a universal sandbox.",
+    "Migration initialization is intentionally privileged and must stay separate from HTTP workers.",
+    "GitHub-hosted CI has not been inferred from these local checks."
+  ],
+  "count_correction": {
+    "observed_at": "2026-10-29T07:57:06.093616+00:00",
+    "reason": "Earlier summary assumed the public-feed profile count; actual raw receipt has public_feed_requested=false and twelve checks. Raw log is unchanged. Final-image qualification explicitly includes --public-feed.",
+    "actual_count": 12
+  }
+}

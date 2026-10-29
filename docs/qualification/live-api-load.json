@@ -1,0 +1,10 @@
+{
+  "scope": "bounded loopback API concurrency sample, not Internet or sustained production capacity",
+  "requests": 140,
+  "concurrency": 10,
+  "errors": [],
+  "p50_ms": 23.93,
+  "p95_ms": 85.19,
+  "max_ms": 124.82,
+  "all_required_responses_200": true
+}

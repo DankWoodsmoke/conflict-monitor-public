@@ -1,0 +1,146 @@
+{
+  "observed_at": "2026-10-29T09:25:52.374093+00:00",
+  "status": "PASS",
+  "scope": "Final149 bounded Chromium browser lifecycle and separate actual-time browser-memory market sparkline check",
+  "browser_lifecycle": {
+    "started_at": "2026-10-29T08:50:16.928Z",
+    "scope": "bounded_chromium_browser_lifecycle",
+    "requested_seconds": 1800,
+    "samples": 60,
+    "findings": 0,
+    "generation_posts": 0,
+    "page_errors": [],
+    "status": "completed_sample",
+    "limitations": [
+      "Desktop Chromium at1440x1000 is not a physical device or cross-engine long soak.",
+      "Sampled heap/DOM counters do not prove an absence of memory leaks.",
+      "Source truth, imagery capture dates and listener audibility are not certified."
+    ],
+    "version": "156.0.8078.4",
+    "elapsed_seconds": 1800.282,
+    "ended_at": "2026-10-29T09:20:17.210Z"
+  },
+  "workspace_sample_counts": {
+    "earth": 20,
+    "local_analysis": 20,
+    "narrated_briefing": 20
+  },
+  "all_samples_google_ready_and_one_same_canvas": true,
+  "resource_counters": {
+    "heap.JSHeapUsedSize": {
+      "samples": 60,
+      "first": 75044424,
+      "last": 85326064,
+      "min": 61976872,
+      "max": 104192988,
+      "natural_decreases": 33
+    },
+    "heap.JSHeapTotalSize": {
+      "samples": 60,
+      "first": 129273856,
+      "last": 132468736,
+      "min": 102322176,
+      "max": 151343104,
+      "natural_decreases": 30
+    },
+    "dom.documents": {
+      "samples": 60,
+      "first": 6,
+      "last": 11,
+      "min": 5,
+      "max": 17,
+      "natural_decreases": 2
+    },
+    "dom.nodes": {
+      "samples": 60,
+      "first": 27521,
+      "last": 1128,
+      "min": 1060,
+      "max": 29074,
+      "natural_decreases": 39
+    },
+    "dom.jsEventListeners": {
+      "samples": 60,
+      "first": 1674,
+      "last": 329,
+      "min": 289,
+      "max": 6172,
+      "natural_decreases": 20
+    }
+  },
+  "end_container_identities": [
+    {
+      "name": "/cmonitor-live-backend-1",
+      "image": "sha256:4202bfc7add922228c024623b1879ccec7eaf617c718d583b69568b440f90788",
+      "started_at": "2026-10-29T08:16:49.824386759Z"
+    },
+    {
+      "name": "/cmonitor-live-frontend-1",
+      "image": "sha256:cb2cc67e72d8c1fc67049c6b91d621ee2e31de0be3e3c4ccda4890a791e5422a",
+      "started_at": "2026-10-29T08:47:10.635227757Z"
+    },
+    {
+      "name": "/cmonitor-live-db-1",
+      "image": "sha256:1ac10b2551ba84ae05db8e7da477afcd0a3fede99bcb7705da2ee157390cb095",
+      "started_at": "2026-10-29T08:16:42.490467249Z"
+    }
+  ],
+  "container_images_and_starts_unchanged": true,
+  "market_sparklines": {
+    "status": "PASS",
+    "started_at": "2026-10-29T09:12:20.351Z",
+    "ended_at": "2026-10-29T09:19:20.706Z",
+    "elapsed_seconds": 420.355,
+    "samples": 14,
+    "initial_svg_count": 0,
+    "last_svg_count": 9,
+    "last_polyline_point_counts": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "actual_elapsed_accumulation_observed": true,
+    "generation_posts": 0,
+    "raw_prices_stored": false
+  },
+  "commands": [
+    "CM_BROWSER_OUTPUT=artifacts/<fresh-dir> CM_BROWSER_SECONDS=1800 node tools/observe_browser_lifecycle.cjs",
+    "Separate1440x1000 context kept open420 real seconds; inspect only .market-strip-wrap SVG/polyline counts every30s; no clock/data changes"
+  ],
+  "source_receipts": [
+    {
+      "path": "artifacts/browser-lifecycle-pg17-cb2-final/summary.json",
+      "sha256": "697bf55a3a69750189694a995c7a7d1dc7e34e023071678ab7ea611d42cda1e8"
+    },
+    {
+      "path": "artifacts/browser-lifecycle-pg17-cb2-final/samples.jsonl",
+      "sha256": "a257e3ffe8e40ebd1319c353018f77fcee1892643596a644f9e625a957e88e9a"
+    },
+    {
+      "path": "artifacts/market-sparklines-cb2.json",
+      "sha256": "71d214808d1017454f1fc20291b5be5a9c11701331925e200d2715e27be941bc"
+    },
+    {
+      "path": "artifacts/observe-market-sparklines.cjs",
+      "sha256": "e8afadca37ce720e665e6b5fff606ab718c3daf0ab870d45bc863a11dfa33997"
+    },
+    {
+      "path": "artifacts/pg17-cb2-final-profile.json",
+      "sha256": "8912814e9553c81ecdcd87f59fe456652cc8a3cc2c0947bd16323cf9d6604da0"
+    }
+  ],
+  "source_tool_sha256": "4a43452d78148b9b28cfde3a3abfab2baeda794cd88c6159f6bb39210d7316d7",
+  "limitations": [
+    "Desktop Chromium156 at1440x1000 is not a physical-device or cross-engine thirty-minute soak.",
+    "Heap/DOM samples do not prove absence of memory leaks. Growth, collection and panel/data caches are reported without a leak-free claim.",
+    "No local analyze/video generation POST requests were observed; only the specific local briefing endpoints were counted.",
+    "Market charts accumulate up to20 browser-memory samples at five-minute polling; this check does not qualify the separate historical-market API or source quote accuracy.",
+    "The server one-hour observation is still in progress and has its own completion gate."
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "installed_distributions": 71,
+  "baseline_distributions": 71,
+  "license_notice_file_records_verified": 184,
+  "license_notice_bytes_hashed": 1086277,
+  "changes": [],
+  "match": true,
+  "captured_at": "2026-10-29T08:29:53.005580+00:00",
+  "image_id": "sha256:4202bfc7add922228c024623b1879ccec7eaf617c718d583b69568b440f90788",
+  "baseline_image_id": "sha256:a57a1426956f1b0ba5cab3452c810b85779928ece8176b93b4df678902b94990",
+  "baseline_public_inventory": "backend-python-license-inventory.json",
+  "baseline_private_metadata_sha256": "d48318637a1467d1e58478f50774bdaa4452e84b7132156997a40956551831eb",
+  "baseline_outside_metadata_sha256": "ae5d98e3ea77f7d01ae27a423fb24c9c1bce07ea3efd6759bc4caa1de0a459f5",
+  "scope": "Read-only importlib.metadata package-name/version/license-field enumeration plus SHA256 of the previously inventoried installed license/notice files, including registered package files outside dist-info. No application import, network/provider call or environment read. Metadata/file equality is not legal compatibility or redistribution clearance."
+}

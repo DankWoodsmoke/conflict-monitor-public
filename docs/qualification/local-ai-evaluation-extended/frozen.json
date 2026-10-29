@@ -1,0 +1,19 @@
+{
+  "frozen_at": "2026-10-29T05:51:18.668965+00:00",
+  "case_count": 24,
+  "authoring": "New fictional case text and researcher-authored expectations frozen before model calls; no publisher text/private corpus/persona. No prompt tuning/retries/app changes.",
+  "calls": 6,
+  "batch_size": 4,
+  "model": "qwen3.5:4b",
+  "model_digest_expected": "d8b0f5e9760cd1682034f292d7ef72ec46f432149be0df7574bf2d6e92e38c04",
+  "execution_profile": "CPU num_gpu0 num_thread4 keep_alive0; unchanged public request profile.",
+  "files": {
+    "fixtures.json": "31a33c52b4b0d9e14f799674eccc3dca6e8a98a6666bae85776e2794cfc8b059",
+    "evaluate.py": "44deae3eac5353ed4c790226b3016b7486be2c8847934dfeb0ab2154580a0c50",
+    "../local-ai-evaluation/replay.py": "9d10cf1030dff79590028ce5409bf29bf8748b1f0bf76e584616876fdbb42234",
+    "../local-ai-evaluation/system-prompt.txt": "dd73ee0c4fc9b4e2d424bcbf5b76f0138f12f432e3837f43c21715567e899d95",
+    "../local-ai-evaluation/request-profile.json": "fecceb7435fa91d4e0aa598ae8355bbc58266ac6c98e4ff7b9959898a058c90e",
+    "../local-ai-evaluation/request-schema.json": "57c0de4f33bc5fa27b1a6c93c030ca3309cd3a9d2b436c7e7725f2c8c63fcb7a",
+    "../local-ai-evaluation/validator_snapshot.py": "cd8615603e9373fe5d3afa2d8bbd7b8f19699e33e2dde0f0f69a514077829788"
+  }
+}

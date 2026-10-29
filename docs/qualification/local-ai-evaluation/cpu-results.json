@@ -1,0 +1,856 @@
+{
+  "frozen": {
+    "frozen_before_model_calls_at": "2026-10-29T04:50:45.839397+00:00",
+    "fixture_sha256": "80dcaf62fb084530642a209c309d34cb04e199d6046d91c9e8c2f75da8135099",
+    "system_sha256": "dd73ee0c4fc9b4e2d424bcbf5b76f0138f12f432e3837f43c21715567e899d95",
+    "validator_sha256": "f58a4ddd67a72d44047943525393d17b735bc710abf30a0a30490eb94b5510b8",
+    "case_count": 12,
+    "classification": "separate_unseen_multilingual_adversarial_sample_after_prompt_freeze; initial three probes are tuning only"
+  },
+  "results": [
+    {
+      "model": "qwen3.5:4b",
+      "cpu_only": true,
+      "batches": [
+        {
+          "ids": [
+            101,
+            102,
+            103,
+            104
+          ],
+          "response_bytes": 959,
+          "response_sha256": "5667dd5990ebe4516d7ad9d0723d0f352e324cc04a49393b51e0459bb53a1d7f",
+          "done": true,
+          "done_reason": "stop",
+          "eval_count": 141,
+          "raw_model_content": "{\"reports\":[{\"id\":101,\"relevance\":\"relevant\",\"stance\":\"denied\",\"place_mentions\":[\"Homs\"],\"actor_mentions\":[\"the army\"],\"quantity_mentions\":[]},{\"id\":102,\"relevance\":\"relevant\",\"stance\":\"reported\",\"place_mentions\":[\"Kharkiv\"],\"actor_mentions\":[\"A hospital\"],\"quantity_mentions\":[\"12 to 18\"]},{\"id\":103,\"relevance\":\"relevant\",\"stance\":\"uncertain\",\"place_mentions\":[\"Erbil\"],\"actor_mentions\":[],\"quantity_mentions\":[]},{\"id\":104,\"relevance\":\"not_relevant\",\"stance\":\"reported\",\"place_mentions\":[\"Valencia\"],\"actor_mentions\":[],\"quantity_mentions\":[]}]}",
+          "production_gate": "rejected",
+          "error_type": "ValueError",
+          "reason": "Model mention is not an exact source span",
+          "seconds": 26.703
+        },
+        {
+          "ids": [
+            105,
+            106,
+            107,
+            108
+          ],
+          "response_bytes": 940,
+          "response_sha256": "de7b2061ed2415168bde461b6cab6926dc6237113a8b505cd88f18697e1bf6c7",
+          "done": true,
+          "done_reason": "stop",
+          "eval_count": 132,
+          "raw_model_content": "{\"reports\":[{\"id\":105,\"relevance\":\"relevant\",\"stance\":\"denied\",\"place_mentions\":[\"دمشق\"],\"actor_mentions\":[\"الجيش\"],\"quantity_mentions\":[]},{\"id\":106,\"relevance\":\"relevant\",\"stance\":\"denied\",\"place_mentions\":[\"Bagdad\"],\"actor_mentions\":[],\"quantity_mentions\":[]},{\"id\":107,\"relevance\":\"relevant\",\"stance\":\"uncertain\",\"place_mentions\":[\"Jordan\",\"Paris\"],\"actor_mentions\":[],\"quantity_mentions\":[]},{\"id\":108,\"relevance\":\"relevant\",\"stance\":\"uncertain\",\"place_mentions\":[\"Haifa\"],\"actor_mentions\":[],\"quantity_mentions\":[]}]}",
+          "production_gate": "accepted",
+          "accepted_ids": [
+            105,
+            106,
+            107,
+            108
+          ],
+          "seconds": 25.593
+        },
+        {
+          "ids": [
+            109,
+            110,
+            111,
+            112
+          ],
+          "response_bytes": 959,
+          "response_sha256": "8b5b2c3c8d7500454b96265540afea0e9c95946c27a3a46c218cda86c214c5e5",
+          "done": true,
+          "done_reason": "stop",
+          "eval_count": 143,
+          "raw_model_content": "{\"reports\":[{\"id\":109,\"relevance\":\"relevant\",\"stance\":\"uncertain\",\"place_mentions\":[],\"actor_mentions\":[\"Aid workers\"],\"quantity_mentions\":[]},{\"id\":110,\"relevance\":\"relevant\",\"stance\":\"denied\",\"place_mentions\":[\"Kyiv\"],\"actor_mentions\":[\"NATO\"],\"quantity_mentions\":[\"500\"]},{\"id\":111,\"relevance\":\"not_relevant\",\"stance\":\"uncertain\",\"place_mentions\":[],\"actor_mentions\":[],\"quantity_mentions\":[]},{\"id\":112,\"relevance\":\"relevant\",\"stance\":\"uncertain\",\"place_mentions\":[\"Goma\"],\"actor_mentions\":[\"Local rescuers\"],\"quantity_mentions\":[\"7 and 11\"]}]}",
+          "production_gate": "accepted",
+          "accepted_ids": [
+            109,
+            110,
+            111,
+            112
+          ],
+          "seconds": 28.282
+        }
+      ],
+      "raw_predictions": [
+        {
+          "id": 101,
+          "relevance": "relevant",
+          "stance": "denied",
+          "place_mentions": [
+            "Homs"
+          ],
+          "actor_mentions": [
+            "the army"
+          ],
+          "quantity_mentions": []
+        },
+        {
+          "id": 102,
+          "relevance": "relevant",
+          "stance": "reported",
+          "place_mentions": [
+            "Kharkiv"
+          ],
+          "actor_mentions": [
+            "A hospital"
+          ],
+          "quantity_mentions": [
+            "12 to 18"
+          ]
+        },
+        {
+          "id": 103,
+          "relevance": "relevant",
+          "stance": "uncertain",
+          "place_mentions": [
+            "Erbil"
+          ],
+          "actor_mentions": [],
+          "quantity_mentions": []
+        },
+        {
+          "id": 104,
+          "relevance": "not_relevant",
+          "stance": "reported",
+          "place_mentions": [
+            "Valencia"
+          ],
+          "actor_mentions": [],
+          "quantity_mentions": []
+        },
+        {
+          "id": 105,
+          "relevance": "relevant",
+          "stance": "denied",
+          "place_mentions": [
+            "دمشق"
+          ],
+          "actor_mentions": [
+            "الجيش"
+          ],
+          "quantity_mentions": []
+        },
+        {
+          "id": 106,
+          "relevance": "relevant",
+          "stance": "denied",
+          "place_mentions": [
+            "Bagdad"
+          ],
+          "actor_mentions": [],
+          "quantity_mentions": []
+        },
+        {
+          "id": 107,
+          "relevance": "relevant",
+          "stance": "uncertain",
+          "place_mentions": [
+            "Jordan",
+            "Paris"
+          ],
+          "actor_mentions": [],
+          "quantity_mentions": []
+        },
+        {
+          "id": 108,
+          "relevance": "relevant",
+          "stance": "uncertain",
+          "place_mentions": [
+            "Haifa"
+          ],
+          "actor_mentions": [],
+          "quantity_mentions": []
+        },
+        {
+          "id": 109,
+          "relevance": "relevant",
+          "stance": "uncertain",
+          "place_mentions": [],
+          "actor_mentions": [
+            "Aid workers"
+          ],
+          "quantity_mentions": []
+        },
+        {
+          "id": 110,
+          "relevance": "relevant",
+          "stance": "denied",
+          "place_mentions": [
+            "Kyiv"
+          ],
+          "actor_mentions": [
+            "NATO"
+          ],
+          "quantity_mentions": [
+            "500"
+          ]
+        },
+        {
+          "id": 111,
+          "relevance": "not_relevant",
+          "stance": "uncertain",
+          "place_mentions": [],
+          "actor_mentions": [],
+          "quantity_mentions": []
+        },
+        {
+          "id": 112,
+          "relevance": "relevant",
+          "stance": "uncertain",
+          "place_mentions": [
+            "Goma"
+          ],
+          "actor_mentions": [
+            "Local rescuers"
+          ],
+          "quantity_mentions": [
+            "7 and 11"
+          ]
+        }
+      ],
+      "frozen_fixture_sha256": "80dcaf62fb084530642a209c309d34cb04e199d6046d91c9e8c2f75da8135099",
+      "system_sha256": "dd73ee0c4fc9b4e2d424bcbf5b76f0138f12f432e3837f43c21715567e899d95",
+      "model_digest": "d8b0f5e9760cd1682034f292d7ef72ec46f432149be0df7574bf2d6e92e38c04",
+      "metrics": {
+        "relevance": {
+          "correct": 11,
+          "total": 12,
+          "by_label": {
+            "relevant": {
+              "tp": 10,
+              "fp": 0,
+              "fn": 0,
+              "precision": 1.0,
+              "recall": 1.0
+            },
+            "not_relevant": {
+              "tp": 1,
+              "fp": 1,
+              "fn": 0,
+              "precision": 0.5,
+              "recall": 1.0
+            },
+            "uncertain": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 1,
+              "precision": null,
+              "recall": 0.0
+            }
+          },
+          "abstentions": 0
+        },
+        "stance": {
+          "correct": 11,
+          "total": 12,
+          "by_label": {
+            "reported": {
+              "tp": 2,
+              "fp": 0,
+              "fn": 0,
+              "precision": 1.0,
+              "recall": 1.0
+            },
+            "denied": {
+              "tp": 4,
+              "fp": 0,
+              "fn": 1,
+              "precision": 1.0,
+              "recall": 0.8
+            },
+            "uncertain": {
+              "tp": 5,
+              "fp": 1,
+              "fn": 0,
+              "precision": 0.8333333333333334,
+              "recall": 1.0
+            }
+          },
+          "abstentions": 6
+        },
+        "places": {
+          "tp": 10,
+          "fp": 1,
+          "fn": 0,
+          "precision": 0.9090909090909091,
+          "recall": 1.0
+        },
+        "required_actor_cases": [
+          {
+            "id": 107,
+            "expected": "Jordan",
+            "found": false
+          },
+          {
+            "id": 110,
+            "expected": "NATO",
+            "found": true
+          }
+        ],
+        "quantity_range_cases": [
+          {
+            "id": 102,
+            "expected_numbers": [
+              "12",
+              "18"
+            ],
+            "all_found": true
+          },
+          {
+            "id": 110,
+            "expected_numbers": [
+              "500"
+            ],
+            "all_found": true
+          },
+          {
+            "id": 112,
+            "expected_numbers": [
+              "7",
+              "11"
+            ],
+            "all_found": true
+          }
+        ]
+      },
+      "rejected_batches": 1,
+      "accepted_reports": 8,
+      "seconds": 80.578
+    },
+    {
+      "model": "qwen3:8b",
+      "cpu_only": true,
+      "batches": [
+        {
+          "ids": [
+            101,
+            102,
+            103,
+            104
+          ],
+          "response_bytes": 989,
+          "response_sha256": "ba14179438652dbb32f587638f433576a8c89ce61c6388be906b298903a93283",
+          "done": true,
+          "done_reason": "stop",
+          "eval_count": 182,
+          "raw_model_content": "{\"reports\": [{\"id\": 101, \"relevance\": \"relevant\", \"stance\": \"denied\", \"place_mentions\": [\"Homs\"], \"actor_mentions\": [\"army\"], \"quantity_mentions\": []}, {\"id\": 102, \"relevance\": \"relevant\", \"stance\": \"reported\", \"place_mentions\": [\"Kharkiv\"], \"actor_mentions\": [\"hospital\"], \"quantity_mentions\": [\"12 to 18\"]}, {\"id\": 103, \"relevance\": \"relevant\", \"stance\": \"uncertain\", \"place_mentions\": [\"Erbil\"], \"actor_mentions\": [], \"quantity_mentions\": []}, {\"id\": 104, \"relevance\": \"not_relevant\", \"stance\": \"uncertain\", \"place_mentions\": [], \"actor_mentions\": [], \"quantity_mentions\": []}]}",
+          "production_gate": "accepted",
+          "accepted_ids": [
+            101,
+            102,
+            103,
+            104
+          ],
+          "seconds": 60.016
+        },
+        {
+          "ids": [
+            105,
+            106,
+            107,
+            108
+          ],
+          "response_bytes": 1003,
+          "response_sha256": "e53b21527888f1c34da0c795029172346e638a2a2c496dd958f846cff96aadac",
+          "done": true,
+          "done_reason": "stop",
+          "eval_count": 178,
+          "raw_model_content": "{\"reports\": [{\"id\": 105, \"relevance\": \"relevant\", \"stance\": \"denied\", \"place_mentions\": [\"دمشق\"], \"actor_mentions\": [\"الجيش\"], \"quantity_mentions\": []}, {\"id\": 106, \"relevance\": \"relevant\", \"stance\": \"denied\", \"place_mentions\": [\"Bagdad\"], \"actor_mentions\": [\"El ministerio\"], \"quantity_mentions\": []}, {\"id\": 107, \"relevance\": \"relevant\", \"stance\": \"reported\", \"place_mentions\": [\"Paris\"], \"actor_mentions\": [\"Jordan\"], \"quantity_mentions\": []}, {\"id\": 108, \"relevance\": \"relevant\", \"stance\": \"uncertain\", \"place_mentions\": [\"Haifa\"], \"actor_mentions\": [], \"quantity_mentions\": []}]}",
+          "production_gate": "rejected",
+          "error_type": "ValueError",
+          "reason": "Model omitted explicit uncertainty or negation",
+          "seconds": 52.984
+        },
+        {
+          "ids": [
+            109,
+            110,
+            111,
+            112
+          ],
+          "response_bytes": 1242,
+          "response_sha256": "022ee312bd80b696f729da91b6a81fee20120f9e7e208fad9c7b67a354e3e68a",
+          "done": true,
+          "done_reason": "stop",
+          "eval_count": 228,
+          "raw_model_content": "{\n  \"reports\": [\n    {\n      \"id\": 109,\n      \"relevance\": \"not_relevant\",\n      \"stance\": \"reported\",\n      \"place_mentions\": [],\n      \"actor_mentions\": [\"Aid workers\"],\n      \"quantity_mentions\": []\n    },\n    {\n      \"id\": 110,\n      \"relevance\": \"relevant\",\n      \"stance\": \"denied\",\n      \"place_mentions\": [\"Kyiv\"],\n      \"actor_mentions\": [\"Officials\"],\n      \"quantity_mentions\": [\"500\"]\n    },\n    {\n      \"id\": 111,\n      \"relevance\": \"not_relevant\",\n      \"stance\": \"uncertain\",\n      \"place_mentions\": [],\n      \"actor_mentions\": [],\n      \"quantity_mentions\": []\n    },\n    {\n      \"id\": 112,\n      \"relevance\": \"relevant\",\n      \"stance\": \"uncertain\",\n      \"place_mentions\": [\"Goma\"],\n      \"actor_mentions\": [\"Local rescuers\"],\n      \"quantity_mentions\": [\"7\", \"11\"]\n    }\n  ]\n}",
+          "production_gate": "accepted",
+          "accepted_ids": [
+            109,
+            110,
+            111,
+            112
+          ],
+          "seconds": 52.985
+        }
+      ],
+      "raw_predictions": [
+        {
+          "id": 101,
+          "relevance": "relevant",
+          "stance": "denied",
+          "place_mentions": [
+            "Homs"
+          ],
+          "actor_mentions": [
+            "army"
+          ],
+          "quantity_mentions": []
+        },
+        {
+          "id": 102,
+          "relevance": "relevant",
+          "stance": "reported",
+          "place_mentions": [
+            "Kharkiv"
+          ],
+          "actor_mentions": [
+            "hospital"
+          ],
+          "quantity_mentions": [
+            "12 to 18"
+          ]
+        },
+        {
+          "id": 103,
+          "relevance": "relevant",
+          "stance": "uncertain",
+          "place_mentions": [
+            "Erbil"
+          ],
+          "actor_mentions": [],
+          "quantity_mentions": []
+        },
+        {
+          "id": 104,
+          "relevance": "not_relevant",
+          "stance": "uncertain",
+          "place_mentions": [],
+          "actor_mentions": [],
+          "quantity_mentions": []
+        },
+        {
+          "id": 105,
+          "relevance": "relevant",
+          "stance": "denied",
+          "place_mentions": [
+            "دمشق"
+          ],
+          "actor_mentions": [
+            "الجيش"
+          ],
+          "quantity_mentions": []
+        },
+        {
+          "id": 106,
+          "relevance": "relevant",
+          "stance": "denied",
+          "place_mentions": [
+            "Bagdad"
+          ],
+          "actor_mentions": [
+            "El ministerio"
+          ],
+          "quantity_mentions": []
+        },
+        {
+          "id": 107,
+          "relevance": "relevant",
+          "stance": "reported",
+          "place_mentions": [
+            "Paris"
+          ],
+          "actor_mentions": [
+            "Jordan"
+          ],
+          "quantity_mentions": []
+        },
+        {
+          "id": 108,
+          "relevance": "relevant",
+          "stance": "uncertain",
+          "place_mentions": [
+            "Haifa"
+          ],
+          "actor_mentions": [],
+          "quantity_mentions": []
+        },
+        {
+          "id": 109,
+          "relevance": "not_relevant",
+          "stance": "reported",
+          "place_mentions": [],
+          "actor_mentions": [
+            "Aid workers"
+          ],
+          "quantity_mentions": []
+        },
+        {
+          "id": 110,
+          "relevance": "relevant",
+          "stance": "denied",
+          "place_mentions": [
+            "Kyiv"
+          ],
+          "actor_mentions": [
+            "Officials"
+          ],
+          "quantity_mentions": [
+            "500"
+          ]
+        },
+        {
+          "id": 111,
+          "relevance": "not_relevant",
+          "stance": "uncertain",
+          "place_mentions": [],
+          "actor_mentions": [],
+          "quantity_mentions": []
+        },
+        {
+          "id": 112,
+          "relevance": "relevant",
+          "stance": "uncertain",
+          "place_mentions": [
+            "Goma"
+          ],
+          "actor_mentions": [
+            "Local rescuers"
+          ],
+          "quantity_mentions": [
+            "7",
+            "11"
+          ]
+        }
+      ],
+      "frozen_fixture_sha256": "80dcaf62fb084530642a209c309d34cb04e199d6046d91c9e8c2f75da8135099",
+      "system_sha256": "dd73ee0c4fc9b4e2d424bcbf5b76f0138f12f432e3837f43c21715567e899d95",
+      "model_digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+      "metrics": {
+        "relevance": {
+          "correct": 10,
+          "total": 12,
+          "by_label": {
+            "relevant": {
+              "tp": 9,
+              "fp": 0,
+              "fn": 1,
+              "precision": 1.0,
+              "recall": 0.9
+            },
+            "not_relevant": {
+              "tp": 1,
+              "fp": 2,
+              "fn": 0,
+              "precision": 0.3333333333333333,
+              "recall": 1.0
+            },
+            "uncertain": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 1,
+              "precision": null,
+              "recall": 0.0
+            }
+          },
+          "abstentions": 0
+        },
+        "stance": {
+          "correct": 9,
+          "total": 12,
+          "by_label": {
+            "reported": {
+              "tp": 1,
+              "fp": 2,
+              "fn": 1,
+              "precision": 0.3333333333333333,
+              "recall": 0.5
+            },
+            "denied": {
+              "tp": 4,
+              "fp": 0,
+              "fn": 1,
+              "precision": 1.0,
+              "recall": 0.8
+            },
+            "uncertain": {
+              "tp": 4,
+              "fp": 1,
+              "fn": 1,
+              "precision": 0.8,
+              "recall": 0.8
+            }
+          },
+          "abstentions": 5
+        },
+        "places": {
+          "tp": 9,
+          "fp": 0,
+          "fn": 1,
+          "precision": 1.0,
+          "recall": 0.9
+        },
+        "required_actor_cases": [
+          {
+            "id": 107,
+            "expected": "Jordan",
+            "found": true
+          },
+          {
+            "id": 110,
+            "expected": "NATO",
+            "found": false
+          }
+        ],
+        "quantity_range_cases": [
+          {
+            "id": 102,
+            "expected_numbers": [
+              "12",
+              "18"
+            ],
+            "all_found": true
+          },
+          {
+            "id": 110,
+            "expected_numbers": [
+              "500"
+            ],
+            "all_found": true
+          },
+          {
+            "id": 112,
+            "expected_numbers": [
+              "7",
+              "11"
+            ],
+            "all_found": true
+          }
+        ]
+      },
+      "rejected_batches": 1,
+      "accepted_reports": 8,
+      "seconds": 165.985
+    },
+    {
+      "model": "qwen3:0.6b",
+      "cpu_only": true,
+      "batches": [
+        {
+          "ids": [
+            101,
+            102,
+            103,
+            104
+          ],
+          "response_bytes": 532,
+          "response_sha256": "5cf08c13308c294e805373cd486a7727012939e01f950c44a667daefda75ccce",
+          "done": true,
+          "done_reason": "stop",
+          "eval_count": 83,
+          "raw_model_content": "{\"reports\": [{\"id\": 104, \"relevance\": \"not_relevant\", \"stance\": \"uncertain\", \"place_mentions\": [],\"actor_mentions\": [],\"quantity_mentions\": []} ]\n\n    \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t}",
+          "production_gate": "rejected",
+          "error_type": "ValueError",
+          "reason": "Model changed or omitted source identities",
+          "seconds": 4.188
+        },
+        {
+          "ids": [
+            105,
+            106,
+            107,
+            108
+          ],
+          "response_bytes": 509,
+          "response_sha256": "a0a5f7c4d559ac708c3bf9a9b29cf00af2a728c79b5420eeef1ac9c6cdb7f431",
+          "done": true,
+          "done_reason": "stop",
+          "eval_count": 68,
+          "raw_model_content": "{\"reports\": [{\"id\": 106, \"relevance\": \"uncertain\",\"stance\": \"uncertain\",\"place_mentions\": [ \"un \" ],\"actor_mentions\": [ \" \" ],\"quantity_mentions\": [ \" \" ]} ]}",
+          "production_gate": "rejected",
+          "error_type": "ValueError",
+          "reason": "Model changed or omitted source identities",
+          "seconds": 3.609
+        },
+        {
+          "ids": [
+            109,
+            110,
+            111,
+            112
+          ],
+          "response_bytes": 711,
+          "response_sha256": "7b53b404a3c3770ff6c503106a1c21c549d6223b09e6f5ae9d180f3eed30a9ab",
+          "done": true,
+          "done_reason": "stop",
+          "eval_count": 131,
+          "raw_model_content": "{\"reports\": [{\"id\": 110, \"relevance\": \"relevant\", \"stance\": \"reported\", \"place_mentions\": [\"no\", \"unconfirmed\", \"unrelevant\"],\"actor_mentions\": [\"no\", \"author_who_who\", \"author_who_mentioned_123\", \"author_who_mentioned_123\", \"author_who_mentioned_123\", \"author_who_mentioned_123\"],\"quantity_mentions\": [\"no\", \"unconfirmed\", \"unrelevant\"]} ]}",
+          "production_gate": "rejected",
+          "error_type": "ValueError",
+          "reason": "Model changed or omitted source identities",
+          "seconds": 5.359
+        }
+      ],
+      "raw_predictions": [
+        {
+          "id": 104,
+          "relevance": "not_relevant",
+          "stance": "uncertain",
+          "place_mentions": [],
+          "actor_mentions": [],
+          "quantity_mentions": []
+        },
+        {
+          "id": 106,
+          "relevance": "uncertain",
+          "stance": "uncertain",
+          "place_mentions": [
+            "un "
+          ],
+          "actor_mentions": [
+            " "
+          ],
+          "quantity_mentions": [
+            " "
+          ]
+        },
+        {
+          "id": 110,
+          "relevance": "relevant",
+          "stance": "reported",
+          "place_mentions": [
+            "no",
+            "unconfirmed",
+            "unrelevant"
+          ],
+          "actor_mentions": [
+            "no",
+            "author_who_who",
+            "author_who_mentioned_123",
+            "author_who_mentioned_123",
+            "author_who_mentioned_123",
+            "author_who_mentioned_123"
+          ],
+          "quantity_mentions": [
+            "no",
+            "unconfirmed",
+            "unrelevant"
+          ]
+        }
+      ],
+      "frozen_fixture_sha256": "80dcaf62fb084530642a209c309d34cb04e199d6046d91c9e8c2f75da8135099",
+      "system_sha256": "dd73ee0c4fc9b4e2d424bcbf5b76f0138f12f432e3837f43c21715567e899d95",
+      "model_digest": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+      "metrics": {
+        "relevance": {
+          "correct": 2,
+          "total": 12,
+          "by_label": {
+            "relevant": {
+              "tp": 1,
+              "fp": 0,
+              "fn": 9,
+              "precision": 1.0,
+              "recall": 0.1
+            },
+            "not_relevant": {
+              "tp": 1,
+              "fp": 0,
+              "fn": 0,
+              "precision": 1.0,
+              "recall": 1.0
+            },
+            "uncertain": {
+              "tp": 0,
+              "fp": 1,
+              "fn": 1,
+              "precision": 0.0,
+              "recall": 0.0
+            }
+          },
+          "abstentions": 1
+        },
+        "stance": {
+          "correct": 0,
+          "total": 12,
+          "by_label": {
+            "reported": {
+              "tp": 0,
+              "fp": 1,
+              "fn": 2,
+              "precision": 0.0,
+              "recall": 0.0
+            },
+            "denied": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 5,
+              "precision": null,
+              "recall": 0.0
+            },
+            "uncertain": {
+              "tp": 0,
+              "fp": 2,
+              "fn": 5,
+              "precision": 0.0,
+              "recall": 0.0
+            }
+          },
+          "abstentions": 2
+        },
+        "places": {
+          "tp": 0,
+          "fp": 4,
+          "fn": 10,
+          "precision": 0.0,
+          "recall": 0.0
+        },
+        "required_actor_cases": [
+          {
+            "id": 107,
+            "expected": "Jordan",
+            "found": false
+          },
+          {
+            "id": 110,
+            "expected": "NATO",
+            "found": false
+          }
+        ],
+        "quantity_range_cases": [
+          {
+            "id": 102,
+            "expected_numbers": [
+              "12",
+              "18"
+            ],
+            "all_found": false
+          },
+          {
+            "id": 110,
+            "expected_numbers": [
+              "500"
+            ],
+            "all_found": false
+          },
+          {
+            "id": 112,
+            "expected_numbers": [
+              "7",
+              "11"
+            ],
+            "all_found": false
+          }
+        ]
+      },
+      "rejected_batches": 3,
+      "accepted_reports": 0,
+      "seconds": 13.155999999999999
+    }
+  ],
+  "scope_limit": "12-case sample, not calibrated general accuracy; rejected batches never publish; all source content is synthetic"
+}

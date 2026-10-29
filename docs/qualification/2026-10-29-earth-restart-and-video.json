@@ -1,0 +1,48 @@
+{
+  "scope": "coordinated_backend_restart_existing_data_and_local_artifact_persistence",
+  "status": "PASS",
+  "checks": {
+    "nonempty_existing_sources_and_receipts_captured": true,
+    "backend_start_changed": true,
+    "backend_image_unchanged": true,
+    "all_existing_event_raw_hashes_preserved": true,
+    "all_existing_source_receipt_hashes_preserved": true,
+    "checkpoints_preserved_or_advanced": true,
+    "video_name_full_sha_size_and_manifest_preserved": true,
+    "analysis_artifact_preserved": true
+  },
+  "before_at": "2026-10-29T05:44:21.600270+00:00",
+  "after_at": "2026-10-29T05:46:24.923428+00:00",
+  "backend_image": "sha256:a57a1426956f1b0ba5cab3452c810b85779928ece8176b93b4df678902b94990",
+  "events_before": 68,
+  "events_after": 68,
+  "source_receipts_before": 71,
+  "source_receipts_after": 73,
+  "source_hash_map_before_sha256": "89794855d82643e11cba1ccd0802a085403a5f19cae56402bbf729eb3e219540",
+  "source_receipt_hash_map_before_sha256": "0e975cdc02f120ad1ef376a3c8fa6bace3fc7f80086ff20b5c3f95cfbe185db7",
+  "usage_rows_before": 0,
+  "usage_rows_after": 0,
+  "video": {
+    "filename": "cba3069bc2c7300f5e13dc4f74173697.mp4",
+    "sha256": "cba3069bc2c7300f5e13dc4f741736977c7b1939f84fdc492923f138356eace7",
+    "bytes": 642513,
+    "manifest_sha256": "a86fd74d2029f34c8b654e17227271a08855911a196a33b7a7ed380e6c952327"
+  },
+  "limitations": [
+    "Byte persistence is not report truth, model correctness or listener audibility.",
+    "New provider ingestion is allowed; only previously observed IDs are required to remain unchanged.",
+    "Dynamic runtime/age/stale API fields are excluded from persisted artifact comparison.",
+    "This helper never performs the restart; operator coordination is required."
+  ],
+  "receipt": {
+    "local_receipt": "artifacts/restart-earth-verified.json",
+    "sha256": "fdfbe209c2da736aa680954817ef132321edf7019dbd662c733f58747252e3ad",
+    "last_written_at_utc": "2026-10-29T05:46:24.930234+00:00"
+  },
+  "before_snapshot_sha256": "e8f8f369ed16ff637a7b62ea63a0bf07293ba4bfbdc0c9a77d1fe0b96f89a72d",
+  "capture_command": "python tools/verify_restart_persistence.py --output [fresh before snapshot]",
+  "verification_command": "python tools/verify_restart_persistence.py --before [before snapshot] --output [fresh after comparison]",
+  "verifier_source_sha256": "e7b5d22cade4debe09eb5c1f9191e4e61426ca4bd21a815c21ec34b80647b64e",
+  "restart_execution": "Root explicitly restarted only the task-owned backend between snapshots; helper never restarts a container.",
+  "startup_transition": "A root immediate readiness probe during startup failed; this receipt does not claim zero interruption."
+}

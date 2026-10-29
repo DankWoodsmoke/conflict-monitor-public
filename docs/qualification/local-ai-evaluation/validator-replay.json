@@ -1,0 +1,118 @@
+{
+  "checked_at": "2026-10-29T04:58:26.769340+00:00",
+  "system_sha256": "dd73ee0c4fc9b4e2d424bcbf5b76f0138f12f432e3837f43c21715567e899d95",
+  "evaluated_validator_sha256": "f58a4ddd67a72d44047943525393d17b735bc710abf30a0a30490eb94b5510b8",
+  "current_validator_sha256": "910e909ac1d09dc700382bb10091a1cae01329651bd5f820572a86bc9c5e1827",
+  "post_evaluation_changes": "Ruff formatting and re.I to equivalent re.IGNORECASE alias only; no prompt/schema/validator behavior tuning from heldout results",
+  "all_decisions_equal": true,
+  "decisions": [
+    {
+      "model": "qwen3.5:4b",
+      "ids": [
+        101,
+        102,
+        103,
+        104
+      ],
+      "evaluated_decision": "rejected",
+      "current_validator_decision": "rejected",
+      "equal": true
+    },
+    {
+      "model": "qwen3.5:4b",
+      "ids": [
+        105,
+        106,
+        107,
+        108
+      ],
+      "evaluated_decision": "accepted",
+      "current_validator_decision": "accepted",
+      "equal": true
+    },
+    {
+      "model": "qwen3.5:4b",
+      "ids": [
+        109,
+        110,
+        111,
+        112
+      ],
+      "evaluated_decision": "accepted",
+      "current_validator_decision": "accepted",
+      "equal": true
+    },
+    {
+      "model": "qwen3:8b",
+      "ids": [
+        101,
+        102,
+        103,
+        104
+      ],
+      "evaluated_decision": "accepted",
+      "current_validator_decision": "accepted",
+      "equal": true
+    },
+    {
+      "model": "qwen3:8b",
+      "ids": [
+        105,
+        106,
+        107,
+        108
+      ],
+      "evaluated_decision": "rejected",
+      "current_validator_decision": "rejected",
+      "equal": true
+    },
+    {
+      "model": "qwen3:8b",
+      "ids": [
+        109,
+        110,
+        111,
+        112
+      ],
+      "evaluated_decision": "accepted",
+      "current_validator_decision": "accepted",
+      "equal": true
+    },
+    {
+      "model": "qwen3:0.6b",
+      "ids": [
+        101,
+        102,
+        103,
+        104
+      ],
+      "evaluated_decision": "rejected",
+      "current_validator_decision": "rejected",
+      "equal": true
+    },
+    {
+      "model": "qwen3:0.6b",
+      "ids": [
+        105,
+        106,
+        107,
+        108
+      ],
+      "evaluated_decision": "rejected",
+      "current_validator_decision": "rejected",
+      "equal": true
+    },
+    {
+      "model": "qwen3:0.6b",
+      "ids": [
+        109,
+        110,
+        111,
+        112
+      ],
+      "evaluated_decision": "rejected",
+      "current_validator_decision": "rejected",
+      "equal": true
+    }
+  ]
+}

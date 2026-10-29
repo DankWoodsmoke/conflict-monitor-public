@@ -1,0 +1,961 @@
+{
+  "model": "qwen3.5:4b",
+  "model_digest": "d8b0f5e9760cd1682034f292d7ef72ec46f432149be0df7574bf2d6e92e38c04",
+  "num_gpu_request": 0,
+  "scope": "Fresh 24-case authored stress set; expectations and unchanged evaluation dependencies frozen before these calls. Not independent human annotation or real-news accuracy.",
+  "batches": [
+    {
+      "ids": [
+        201,
+        202,
+        203,
+        204
+      ],
+      "response_bytes": 987,
+      "response_sha256": "881fb76926d395fe6e91b66971c1be243a68494b325e87fc1a6b27a15a42d742",
+      "raw_model_content": "{\"reports\":[{\"id\":201,\"relevance\":\"relevant\",\"stance\":\"denied\",\"place_mentions\":[\"Chernihiv\"],\"actor_mentions\":[\"The ministry\"],\"quantity_mentions\":[]},{\"id\":202,\"relevance\":\"relevant\",\"stance\":\"reported\",\"place_mentions\":[\"Port Sudan\"],\"actor_mentions\":[\"The Red Cross\"],\"quantity_mentions\":[\"23\"]},{\"id\":203,\"relevance\":\"relevant\",\"stance\":\"uncertain\",\"place_mentions\":[\"Springfield\"],\"actor_mentions\":[],\"quantity_mentions\":[]},{\"id\":204,\"relevance\":\"not_relevant\",\"stance\":\"reported\",\"place_mentions\":[\"Malmö\"],\"actor_mentions\":[\"The curator\"],\"quantity_mentions\":[]}]}",
+      "done": true,
+      "done_reason": "stop",
+      "eval_count": 139,
+      "production_gate": "accepted",
+      "accepted_ids": [
+        201,
+        202,
+        203,
+        204
+      ],
+      "seconds": 34.469
+    },
+    {
+      "ids": [
+        205,
+        206,
+        207,
+        208
+      ],
+      "response_bytes": 959,
+      "response_sha256": "606be4c28f34133ad7a4c93ee09bd0c4acffebdb30328af69a4354deced960d8",
+      "raw_model_content": "{\"reports\":[{\"id\":205,\"relevance\":\"not_relevant\",\"stance\":\"uncertain\",\"place_mentions\":[],\"actor_mentions\":[],\"quantity_mentions\":[]},{\"id\":206,\"relevance\":\"relevant\",\"stance\":\"denied\",\"place_mentions\":[\"بيروت\"],\"actor_mentions\":[\"الجيش\"],\"quantity_mentions\":[]},{\"id\":207,\"relevance\":\"relevant\",\"stance\":\"reported\",\"place_mentions\":[\"Cali\"],\"actor_mentions\":[\"La Cruz Roja\"],\"quantity_mentions\":[\"14 familias\"]},{\"id\":208,\"relevance\":\"relevant\",\"stance\":\"denied\",\"place_mentions\":[\"哈尔滨\"],\"actor_mentions\":[],\"quantity_mentions\":[]}]}",
+      "done": true,
+      "done_reason": "stop",
+      "eval_count": 136,
+      "production_gate": "rejected",
+      "error_type": "ValueError",
+      "seconds": 34.984
+    },
+    {
+      "ids": [
+        209,
+        210,
+        211,
+        212
+      ],
+      "response_bytes": 936,
+      "response_sha256": "cd7ccafaa7bc05acb818fa63f94065f52b99738379acbe80b10226e0469da37d",
+      "raw_model_content": "{\"reports\":[{\"id\":209,\"relevance\":\"relevant\",\"stance\":\"uncertain\",\"place_mentions\":[\"Bakhmut\"],\"actor_mentions\":[],\"quantity_mentions\":[]},{\"id\":210,\"relevance\":\"relevant\",\"stance\":\"denied\",\"place_mentions\":[\"Dakar\"],\"actor_mentions\":[\"troops\"],\"quantity_mentions\":[]},{\"id\":211,\"relevance\":\"relevant\",\"stance\":\"uncertain\",\"place_mentions\":[\"Taiz\"],\"actor_mentions\":[\"people\"],\"quantity_mentions\":[]},{\"id\":212,\"relevance\":\"relevant\",\"stance\":\"reported\",\"place_mentions\":[\"Kirkuk\"],\"actor_mentions\":[],\"quantity_mentions\":[]}]}",
+      "done": true,
+      "done_reason": "stop",
+      "eval_count": 133,
+      "production_gate": "accepted",
+      "accepted_ids": [
+        209,
+        210,
+        211,
+        212
+      ],
+      "seconds": 37.343
+    },
+    {
+      "ids": [
+        213,
+        214,
+        215,
+        216
+      ],
+      "response_bytes": 988,
+      "response_sha256": "704d1ea2e747b3498d72494f483153c6d95dc5798a070c50762f8186043a9b28",
+      "raw_model_content": "{\"reports\":[{\"id\":213,\"relevance\":\"not_relevant\",\"stance\":\"uncertain\",\"place_mentions\":[],\"actor_mentions\":[],\"quantity_mentions\":[]},{\"id\":214,\"relevance\":\"not_relevant\",\"stance\":\"reported\",\"place_mentions\":[\"Utrecht\"],\"actor_mentions\":[\"Jordan\"],\"quantity_mentions\":[]},{\"id\":215,\"relevance\":\"relevant\",\"stance\":\"reported\",\"place_mentions\":[\"Lebanon\",\"New Hampshire\"],\"actor_mentions\":[\"The town council\"],\"quantity_mentions\":[]},{\"id\":216,\"relevance\":\"relevant\",\"stance\":\"uncertain\",\"place_mentions\":[\"Libreville\"],\"actor_mentions\":[\"UN officials\"],\"quantity_mentions\":[]}]}",
+      "done": true,
+      "done_reason": "stop",
+      "eval_count": 140,
+      "production_gate": "accepted",
+      "accepted_ids": [
+        213,
+        214,
+        215,
+        216
+      ],
+      "seconds": 37.204
+    },
+    {
+      "ids": [
+        217,
+        218,
+        219,
+        220
+      ],
+      "response_bytes": 986,
+      "response_sha256": "f10f29faf02baeb2277c15c935c440b53b80c48ec9cb980aeb9cdf0adfd453b9",
+      "raw_model_content": "{\"reports\":[{\"id\":217,\"relevance\":\"relevant\",\"stance\":\"denied\",\"place_mentions\":[\"Batumi\"],\"actor_mentions\":[\"monitoring office\"],\"quantity_mentions\":[]},{\"id\":218,\"relevance\":\"not_relevant\",\"stance\":\"uncertain\",\"place_mentions\":[\"İzmir\"],\"actor_mentions\":[],\"quantity_mentions\":[\"9000\"]},{\"id\":219,\"relevance\":\"not_relevant\",\"stance\":\"reported\",\"place_mentions\":[\"Córdoba\"],\"actor_mentions\":[\"military band\"],\"quantity_mentions\":[]},{\"id\":220,\"relevance\":\"relevant\",\"stance\":\"denied\",\"place_mentions\":[\"Odessa\"],\"actor_mentions\":[\"Authorities\"],\"quantity_mentions\":[]}]}",
+      "done": true,
+      "done_reason": "stop",
+      "eval_count": 144,
+      "production_gate": "rejected",
+      "error_type": "ValueError",
+      "seconds": 35.906
+    },
+    {
+      "ids": [
+        221,
+        222,
+        223,
+        224
+      ],
+      "response_bytes": 1004,
+      "response_sha256": "9ece5c92f6cdf12304767652c487623c9bf1c36de12f427e80a0944791518c4b",
+      "raw_model_content": "{\"reports\":[{\"id\":221,\"relevance\":\"relevant\",\"stance\":\"denied\",\"place_mentions\":[\"Bamako\"],\"actor_mentions\":[\"Le ministère\"],\"quantity_mentions\":[]},{\"id\":222,\"relevance\":\"relevant\",\"stance\":\"reported\",\"place_mentions\":[],\"actor_mentions\":[\"Emergency workers\"],\"quantity_mentions\":[\"eight\"]},{\"id\":223,\"relevance\":\"relevant\",\"stance\":\"uncertain\",\"place_mentions\":[\"N'Djamena\"],\"actor_mentions\":[],\"quantity_mentions\":[]},{\"id\":224,\"relevance\":\"relevant\",\"stance\":\"uncertain\",\"place_mentions\":[\"Bukavu\"],\"actor_mentions\":[\"A local clinic\"],\"quantity_mentions\":[\"at least 3 and at most 6\"]}]}",
+      "done": true,
+      "done_reason": "stop",
+      "eval_count": 147,
+      "production_gate": "accepted",
+      "accepted_ids": [
+        221,
+        222,
+        223,
+        224
+      ],
+      "seconds": 31.156
+    }
+  ],
+  "raw_predictions": [
+    {
+      "id": 201,
+      "relevance": "relevant",
+      "stance": "denied",
+      "place_mentions": [
+        "Chernihiv"
+      ],
+      "actor_mentions": [
+        "The ministry"
+      ],
+      "quantity_mentions": []
+    },
+    {
+      "id": 202,
+      "relevance": "relevant",
+      "stance": "reported",
+      "place_mentions": [
+        "Port Sudan"
+      ],
+      "actor_mentions": [
+        "The Red Cross"
+      ],
+      "quantity_mentions": [
+        "23"
+      ]
+    },
+    {
+      "id": 203,
+      "relevance": "relevant",
+      "stance": "uncertain",
+      "place_mentions": [
+        "Springfield"
+      ],
+      "actor_mentions": [],
+      "quantity_mentions": []
+    },
+    {
+      "id": 204,
+      "relevance": "not_relevant",
+      "stance": "reported",
+      "place_mentions": [
+        "Malmö"
+      ],
+      "actor_mentions": [
+        "The curator"
+      ],
+      "quantity_mentions": []
+    },
+    {
+      "id": 205,
+      "relevance": "not_relevant",
+      "stance": "uncertain",
+      "place_mentions": [],
+      "actor_mentions": [],
+      "quantity_mentions": []
+    },
+    {
+      "id": 206,
+      "relevance": "relevant",
+      "stance": "denied",
+      "place_mentions": [
+        "بيروت"
+      ],
+      "actor_mentions": [
+        "الجيش"
+      ],
+      "quantity_mentions": []
+    },
+    {
+      "id": 207,
+      "relevance": "relevant",
+      "stance": "reported",
+      "place_mentions": [
+        "Cali"
+      ],
+      "actor_mentions": [
+        "La Cruz Roja"
+      ],
+      "quantity_mentions": [
+        "14 familias"
+      ]
+    },
+    {
+      "id": 208,
+      "relevance": "relevant",
+      "stance": "denied",
+      "place_mentions": [
+        "哈尔滨"
+      ],
+      "actor_mentions": [],
+      "quantity_mentions": []
+    },
+    {
+      "id": 209,
+      "relevance": "relevant",
+      "stance": "uncertain",
+      "place_mentions": [
+        "Bakhmut"
+      ],
+      "actor_mentions": [],
+      "quantity_mentions": []
+    },
+    {
+      "id": 210,
+      "relevance": "relevant",
+      "stance": "denied",
+      "place_mentions": [
+        "Dakar"
+      ],
+      "actor_mentions": [
+        "troops"
+      ],
+      "quantity_mentions": []
+    },
+    {
+      "id": 211,
+      "relevance": "relevant",
+      "stance": "uncertain",
+      "place_mentions": [
+        "Taiz"
+      ],
+      "actor_mentions": [
+        "people"
+      ],
+      "quantity_mentions": []
+    },
+    {
+      "id": 212,
+      "relevance": "relevant",
+      "stance": "reported",
+      "place_mentions": [
+        "Kirkuk"
+      ],
+      "actor_mentions": [],
+      "quantity_mentions": []
+    },
+    {
+      "id": 213,
+      "relevance": "not_relevant",
+      "stance": "uncertain",
+      "place_mentions": [],
+      "actor_mentions": [],
+      "quantity_mentions": []
+    },
+    {
+      "id": 214,
+      "relevance": "not_relevant",
+      "stance": "reported",
+      "place_mentions": [
+        "Utrecht"
+      ],
+      "actor_mentions": [
+        "Jordan"
+      ],
+      "quantity_mentions": []
+    },
+    {
+      "id": 215,
+      "relevance": "relevant",
+      "stance": "reported",
+      "place_mentions": [
+        "Lebanon",
+        "New Hampshire"
+      ],
+      "actor_mentions": [
+        "The town council"
+      ],
+      "quantity_mentions": []
+    },
+    {
+      "id": 216,
+      "relevance": "relevant",
+      "stance": "uncertain",
+      "place_mentions": [
+        "Libreville"
+      ],
+      "actor_mentions": [
+        "UN officials"
+      ],
+      "quantity_mentions": []
+    },
+    {
+      "id": 217,
+      "relevance": "relevant",
+      "stance": "denied",
+      "place_mentions": [
+        "Batumi"
+      ],
+      "actor_mentions": [
+        "monitoring office"
+      ],
+      "quantity_mentions": []
+    },
+    {
+      "id": 218,
+      "relevance": "not_relevant",
+      "stance": "uncertain",
+      "place_mentions": [
+        "İzmir"
+      ],
+      "actor_mentions": [],
+      "quantity_mentions": [
+        "9000"
+      ]
+    },
+    {
+      "id": 219,
+      "relevance": "not_relevant",
+      "stance": "reported",
+      "place_mentions": [
+        "Córdoba"
+      ],
+      "actor_mentions": [
+        "military band"
+      ],
+      "quantity_mentions": []
+    },
+    {
+      "id": 220,
+      "relevance": "relevant",
+      "stance": "denied",
+      "place_mentions": [
+        "Odessa"
+      ],
+      "actor_mentions": [
+        "Authorities"
+      ],
+      "quantity_mentions": []
+    },
+    {
+      "id": 221,
+      "relevance": "relevant",
+      "stance": "denied",
+      "place_mentions": [
+        "Bamako"
+      ],
+      "actor_mentions": [
+        "Le ministère"
+      ],
+      "quantity_mentions": []
+    },
+    {
+      "id": 222,
+      "relevance": "relevant",
+      "stance": "reported",
+      "place_mentions": [],
+      "actor_mentions": [
+        "Emergency workers"
+      ],
+      "quantity_mentions": [
+        "eight"
+      ]
+    },
+    {
+      "id": 223,
+      "relevance": "relevant",
+      "stance": "uncertain",
+      "place_mentions": [
+        "N'Djamena"
+      ],
+      "actor_mentions": [],
+      "quantity_mentions": []
+    },
+    {
+      "id": 224,
+      "relevance": "relevant",
+      "stance": "uncertain",
+      "place_mentions": [
+        "Bukavu"
+      ],
+      "actor_mentions": [
+        "A local clinic"
+      ],
+      "quantity_mentions": [
+        "at least 3 and at most 6"
+      ]
+    }
+  ],
+  "metrics": {
+    "relevance": {
+      "correct": 22,
+      "total": 24,
+      "by_label": {
+        "relevant": {
+          "tp": 18,
+          "fp": 0,
+          "fn": 1,
+          "precision": 1.0,
+          "recall": 0.9473684210526315
+        },
+        "not_relevant": {
+          "tp": 4,
+          "fp": 2,
+          "fn": 0,
+          "precision": 0.6666666666666666,
+          "recall": 1.0
+        },
+        "uncertain": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "precision": null,
+          "recall": 0.0
+        }
+      },
+      "abstentions": 0
+    },
+    "stance": {
+      "correct": 21,
+      "total": 24,
+      "by_label": {
+        "reported": {
+          "tp": 8,
+          "fp": 0,
+          "fn": 3,
+          "precision": 1.0,
+          "recall": 0.7272727272727273
+        },
+        "denied": {
+          "tp": 7,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "uncertain": {
+          "tp": 6,
+          "fp": 3,
+          "fn": 0,
+          "precision": 0.6666666666666666,
+          "recall": 1.0
+        }
+      },
+      "abstentions": 9
+    },
+    "places": {
+      "tp": 22,
+      "fp": 0,
+      "fn": 1,
+      "precision": 1.0,
+      "recall": 0.9565217391304348
+    },
+    "required_actor_cases": [
+      {
+        "id": 201,
+        "expected": "ministry",
+        "found": false
+      },
+      {
+        "id": 202,
+        "expected": "Red Cross",
+        "found": false
+      },
+      {
+        "id": 206,
+        "expected": "الجيش",
+        "found": true
+      },
+      {
+        "id": 207,
+        "expected": "Cruz Roja",
+        "found": false
+      },
+      {
+        "id": 208,
+        "expected": "警方",
+        "found": false
+      },
+      {
+        "id": 210,
+        "expected": "defence ministry",
+        "found": false
+      },
+      {
+        "id": 215,
+        "expected": "town council",
+        "found": false
+      },
+      {
+        "id": 216,
+        "expected": "UN",
+        "found": false
+      },
+      {
+        "id": 217,
+        "expected": "monitoring office",
+        "found": true
+      },
+      {
+        "id": 221,
+        "expected": "ministère",
+        "found": false
+      },
+      {
+        "id": 222,
+        "expected": "Emergency workers",
+        "found": true
+      },
+      {
+        "id": 223,
+        "expected": "U.N.",
+        "found": false
+      }
+    ],
+    "quantity_range_cases": [
+      {
+        "id": 202,
+        "expected_numbers": [
+          "23"
+        ],
+        "all_found": true
+      },
+      {
+        "id": 207,
+        "expected_numbers": [
+          "14"
+        ],
+        "all_found": true
+      },
+      {
+        "id": 224,
+        "expected_numbers": [
+          "3",
+          "6"
+        ],
+        "all_found": true
+      }
+    ]
+  },
+  "seconds": 211.062,
+  "accepted_reports": 16,
+  "status": "COMPLETED_EVALUATION",
+  "output_gate_all_rows_passed": false,
+  "assessment": {
+    "case_count": 24,
+    "raw_metrics": {
+      "relevance": {
+        "correct": 22,
+        "total": 24,
+        "by_label": {
+          "relevant": {
+            "tp": 18,
+            "fp": 0,
+            "fn": 1,
+            "precision": 1.0,
+            "recall": 0.9473684210526315
+          },
+          "not_relevant": {
+            "tp": 4,
+            "fp": 2,
+            "fn": 0,
+            "precision": 0.6666666666666666,
+            "recall": 1.0
+          },
+          "uncertain": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "precision": null,
+            "recall": 0.0
+          }
+        },
+        "abstentions": 0
+      },
+      "stance": {
+        "correct": 21,
+        "total": 24,
+        "by_label": {
+          "reported": {
+            "tp": 8,
+            "fp": 0,
+            "fn": 3,
+            "precision": 1.0,
+            "recall": 0.7272727272727273
+          },
+          "denied": {
+            "tp": 7,
+            "fp": 0,
+            "fn": 0,
+            "precision": 1.0,
+            "recall": 1.0
+          },
+          "uncertain": {
+            "tp": 6,
+            "fp": 3,
+            "fn": 0,
+            "precision": 0.6666666666666666,
+            "recall": 1.0
+          }
+        },
+        "abstentions": 9
+      },
+      "places": {
+        "tp": 22,
+        "fp": 0,
+        "fn": 1,
+        "precision": 1.0,
+        "recall": 0.9565217391304348
+      },
+      "required_actor_cases": [
+        {
+          "id": 201,
+          "expected": "ministry",
+          "found": false
+        },
+        {
+          "id": 202,
+          "expected": "Red Cross",
+          "found": false
+        },
+        {
+          "id": 206,
+          "expected": "الجيش",
+          "found": true
+        },
+        {
+          "id": 207,
+          "expected": "Cruz Roja",
+          "found": false
+        },
+        {
+          "id": 208,
+          "expected": "警方",
+          "found": false
+        },
+        {
+          "id": 210,
+          "expected": "defence ministry",
+          "found": false
+        },
+        {
+          "id": 215,
+          "expected": "town council",
+          "found": false
+        },
+        {
+          "id": 216,
+          "expected": "UN",
+          "found": false
+        },
+        {
+          "id": 217,
+          "expected": "monitoring office",
+          "found": true
+        },
+        {
+          "id": 221,
+          "expected": "ministère",
+          "found": false
+        },
+        {
+          "id": 222,
+          "expected": "Emergency workers",
+          "found": true
+        },
+        {
+          "id": 223,
+          "expected": "U.N.",
+          "found": false
+        }
+      ],
+      "quantity_range_cases": [
+        {
+          "id": 202,
+          "expected_numbers": [
+            "23"
+          ],
+          "all_found": true
+        },
+        {
+          "id": 207,
+          "expected_numbers": [
+            "14"
+          ],
+          "all_found": true
+        },
+        {
+          "id": 224,
+          "expected_numbers": [
+            "3",
+            "6"
+          ],
+          "all_found": true
+        }
+      ]
+    },
+    "batch_decisions": [
+      "accepted",
+      "rejected",
+      "accepted",
+      "accepted",
+      "rejected",
+      "accepted"
+    ],
+    "accepted_reports": 16,
+    "rejected_ids": [
+      205,
+      206,
+      207,
+      208,
+      217,
+      218,
+      219,
+      220
+    ],
+    "accepted_span_count": 29,
+    "accepted_span_units_checked": [
+      "unicode_codepoints",
+      "utf16_code_units"
+    ],
+    "unsupported_coordinates_or_severity_accepted": 0,
+    "case_results": [
+      {
+        "id": 201,
+        "category": "non_bmp_denial",
+        "batch_accepted": true,
+        "expected_relevance": "relevant",
+        "actual_relevance": "relevant",
+        "expected_stance": "denied",
+        "actual_stance": "denied"
+      },
+      {
+        "id": 202,
+        "category": "attributed_humanitarian_quantity",
+        "batch_accepted": true,
+        "expected_relevance": "relevant",
+        "actual_relevance": "relevant",
+        "expected_stance": "reported",
+        "actual_stance": "reported"
+      },
+      {
+        "id": 203,
+        "category": "ambiguous_place_no_resolution",
+        "batch_accepted": true,
+        "expected_relevance": "relevant",
+        "actual_relevance": "relevant",
+        "expected_stance": "reported",
+        "actual_stance": "uncertain"
+      },
+      {
+        "id": 204,
+        "category": "conflict_word_art_context",
+        "batch_accepted": true,
+        "expected_relevance": "not_relevant",
+        "actual_relevance": "not_relevant",
+        "expected_stance": "reported",
+        "actual_stance": "reported"
+      },
+      {
+        "id": 205,
+        "category": "embedded_instruction_non_news",
+        "batch_accepted": false,
+        "expected_relevance": "not_relevant",
+        "actual_relevance": "not_relevant",
+        "expected_stance": "reported",
+        "actual_stance": "uncertain"
+      },
+      {
+        "id": 206,
+        "category": "arabic_denial",
+        "batch_accepted": false,
+        "expected_relevance": "relevant",
+        "actual_relevance": "relevant",
+        "expected_stance": "denied",
+        "actual_stance": "denied"
+      },
+      {
+        "id": 207,
+        "category": "spanish_attribution",
+        "batch_accepted": false,
+        "expected_relevance": "relevant",
+        "actual_relevance": "relevant",
+        "expected_stance": "reported",
+        "actual_stance": "reported"
+      },
+      {
+        "id": 208,
+        "category": "chinese_denial",
+        "batch_accepted": false,
+        "expected_relevance": "relevant",
+        "actual_relevance": "relevant",
+        "expected_stance": "denied",
+        "actual_stance": "denied"
+      },
+      {
+        "id": 209,
+        "category": "role_delimiter_identity_injection",
+        "batch_accepted": true,
+        "expected_relevance": "relevant",
+        "actual_relevance": "relevant",
+        "expected_stance": "uncertain",
+        "actual_stance": "uncertain"
+      },
+      {
+        "id": 210,
+        "category": "attributed_explicit_denial",
+        "batch_accepted": true,
+        "expected_relevance": "relevant",
+        "actual_relevance": "relevant",
+        "expected_stance": "denied",
+        "actual_stance": "denied"
+      },
+      {
+        "id": 211,
+        "category": "causal_attribution_unknown",
+        "batch_accepted": true,
+        "expected_relevance": "relevant",
+        "actual_relevance": "relevant",
+        "expected_stance": "uncertain",
+        "actual_stance": "uncertain"
+      },
+      {
+        "id": 212,
+        "category": "zero_injuries_does_not_deny_incident",
+        "batch_accepted": true,
+        "expected_relevance": "relevant",
+        "actual_relevance": "relevant",
+        "expected_stance": "reported",
+        "actual_stance": "reported"
+      },
+      {
+        "id": 213,
+        "category": "uninterpretable_abstention",
+        "batch_accepted": true,
+        "expected_relevance": "uncertain",
+        "actual_relevance": "not_relevant",
+        "expected_stance": "uncertain",
+        "actual_stance": "uncertain"
+      },
+      {
+        "id": 214,
+        "category": "person_country_name_ambiguity",
+        "batch_accepted": true,
+        "expected_relevance": "not_relevant",
+        "actual_relevance": "not_relevant",
+        "expected_stance": "reported",
+        "actual_stance": "reported"
+      },
+      {
+        "id": 215,
+        "category": "same_named_place_precision_unknown",
+        "batch_accepted": true,
+        "expected_relevance": "relevant",
+        "actual_relevance": "relevant",
+        "expected_stance": "reported",
+        "actual_stance": "reported"
+      },
+      {
+        "id": 216,
+        "category": "talks_reported_agreement_absent",
+        "batch_accepted": true,
+        "expected_relevance": "relevant",
+        "actual_relevance": "relevant",
+        "expected_stance": "reported",
+        "actual_stance": "uncertain"
+      },
+      {
+        "id": 217,
+        "category": "no_evidence_claim_rejected",
+        "batch_accepted": false,
+        "expected_relevance": "relevant",
+        "actual_relevance": "relevant",
+        "expected_stance": "denied",
+        "actual_stance": "denied"
+      },
+      {
+        "id": 218,
+        "category": "non_bmp_literal_accent_injection",
+        "batch_accepted": false,
+        "expected_relevance": "relevant",
+        "actual_relevance": "not_relevant",
+        "expected_stance": "uncertain",
+        "actual_stance": "uncertain"
+      },
+      {
+        "id": 219,
+        "category": "military_word_non_security_context",
+        "batch_accepted": false,
+        "expected_relevance": "not_relevant",
+        "actual_relevance": "not_relevant",
+        "expected_stance": "reported",
+        "actual_stance": "reported"
+      },
+      {
+        "id": 220,
+        "category": "alternative_cause_explicit_denial",
+        "batch_accepted": false,
+        "expected_relevance": "relevant",
+        "actual_relevance": "relevant",
+        "expected_stance": "denied",
+        "actual_stance": "denied"
+      },
+      {
+        "id": 221,
+        "category": "french_denial",
+        "batch_accepted": true,
+        "expected_relevance": "relevant",
+        "actual_relevance": "relevant",
+        "expected_stance": "denied",
+        "actual_stance": "denied"
+      },
+      {
+        "id": 222,
+        "category": "no_place_abstention",
+        "batch_accepted": true,
+        "expected_relevance": "relevant",
+        "actual_relevance": "relevant",
+        "expected_stance": "reported",
+        "actual_stance": "reported"
+      },
+      {
+        "id": 223,
+        "category": "punctuated_actor_and_place",
+        "batch_accepted": true,
+        "expected_relevance": "relevant",
+        "actual_relevance": "relevant",
+        "expected_stance": "uncertain",
+        "actual_stance": "uncertain"
+      },
+      {
+        "id": 224,
+        "category": "bounded_quantity_uncertainty",
+        "batch_accepted": true,
+        "expected_relevance": "relevant",
+        "actual_relevance": "relevant",
+        "expected_stance": "uncertain",
+        "actual_stance": "uncertain"
+      }
+    ]
+  }
+}
