@@ -6,12 +6,35 @@ set -eu
 version=9.0.2
 archive_sha256=8c3850283eb25fa026482078a04051e0be17347b09ef81a0849bec15a96e002e
 key_fingerprint=FCF986EA15E6E293A5644F10B4322F04D67658D8
+
+# Three bounded GET attempts tolerate transient transport/HTTP failures. TLS
+# verification, redirect/protocol errors and permanent HTTP failures fail closed.
+# Per-file upper bounds: 3 * max-time + 1s + 2s (363s archive; 93s each metadata).
+fetch() {
+    fetch_target=$1 fetch_seconds=$2 fetch_size=$3 fetch_url=$4
+    fetch_attempt=1
+    while :; do
+        if fetch_status=$(curl --fail --location --proto '=https' --proto-redir '=https' --max-redirs 3 --tlsv1.2 --connect-timeout 15 --max-time "$fetch_seconds" --max-filesize "$fetch_size" --write-out '%{http_code}' -o "$fetch_target" "$fetch_url"); then
+            return 0
+        else
+            fetch_exit=$?
+        fi
+        case "$fetch_exit:$fetch_status" in
+            5:*|6:*|7:*|18:*|28:*|35:*|52:*|55:*|56:*|92:*|22:408|22:429|22:500|22:502|22:503|22:504|22:522|22:524) ;;
+            *) return "$fetch_exit" ;;
+        esac
+        [ "$fetch_attempt" -lt 3 ] || return "$fetch_exit"
+        sleep "$fetch_attempt"
+        fetch_attempt=$((fetch_attempt + 1))
+    done
+}
+
 mkdir -p /build /opt/ffmpeg/share/source
 cd /build
-curl --fail --location --proto '=https' --tlsv1.2 --connect-timeout 15 --max-time 120 --max-filesize 30000000 -o ffmpeg.tar.xz "https://ffmpeg.org/releases/ffmpeg-${version}.tar.xz"
+fetch ffmpeg.tar.xz 120 30000000 "https://ffmpeg.org/releases/ffmpeg-${version}.tar.xz"
 printf '%s  ffmpeg.tar.xz\n' "$archive_sha256" | sha256sum -c -
-curl --fail --location --proto '=https' --tlsv1.2 --connect-timeout 15 --max-time 30 --max-filesize 20000 -o ffmpeg.tar.xz.asc "https://ffmpeg.org/releases/ffmpeg-${version}.tar.xz.asc"
-curl --fail --location --proto '=https' --tlsv1.2 --connect-timeout 15 --max-time 30 --max-filesize 50000 -o ffmpeg-devel.asc https://ffmpeg.org/ffmpeg-devel.asc
+fetch ffmpeg.tar.xz.asc 30 20000 "https://ffmpeg.org/releases/ffmpeg-${version}.tar.xz.asc"
+fetch ffmpeg-devel.asc 30 50000 https://ffmpeg.org/ffmpeg-devel.asc
 mkdir -m 700 /build/gnupg
 gpg --batch --homedir /build/gnupg --no-auto-key-retrieve --import ffmpeg-devel.asc
 gpg --batch --homedir /build/gnupg --no-auto-key-retrieve --status-fd 1 --verify ffmpeg.tar.xz.asc ffmpeg.tar.xz > signature.status

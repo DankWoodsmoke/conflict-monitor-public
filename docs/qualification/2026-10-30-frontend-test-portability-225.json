@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-30T04:27:47.290203+00:00",
+  "scope": "Authorized test-only hosted-runner portability correction; no runtime replacement",
+  "result": "PASS",
+  "unit_tests": {
+    "passed": 225,
+    "failed": 0,
+    "skipped": 0,
+    "files": 21,
+    "typescript_and_vite_build": "passed",
+    "cesium_compatibility": "passed",
+    "hosted_ci_status": "pending rerun; local results are not a hosted-CI pass"
+  },
+  "test_delta": {
+    "path": "frontend/src/workspace-accessibility.test.tsx",
+    "previous_sha256": "2511f64f5c86885c49ea571d9a249fb6772b91d56b5b1173700e3a59eb1e1a0d",
+    "current_sha256": "06fd769ecb7b9a8ad3e9f884239dafa0ce09bae6537e945307455a86c71847df",
+    "modified_at": "2026-10-30T04:23:05.544908Z",
+    "method": "Separate count/name0,1,99,100 boundaries from a two-card modal keyboard/closed-details/scroll/swipe/rotation regression. Every original assertion retained.",
+    "timeout_increased": false,
+    "retry_added": false,
+    "test_skipped": false,
+    "product_source_changed": false
+  },
+  "images": {
+    "observed_admitted_runtime": "sha256:b6e6bc17ba236fd46c6f7f64e3bb4efb0da2c0dfb7797b14668bdd888123b998",
+    "admitted_started_at": "2026-10-30T04:11:24.510599334Z",
+    "fresh_public225_test_source_build": "sha256:075501f5385abc17b68e49780dafff0ed07e49395923424bf9893483563315c1",
+    "same_image_id": false,
+    "exact_inspected_field_equality": {
+      "RootFS": true,
+      "Config": true,
+      "Os": true,
+      "Architecture": true,
+      "Variant": true
+    },
+    "identical_uncompressed_layer_diff_ids": [
+      "sha256:75c137aedfb2760f88629236cb7b797630aed0c3d91d626d1d1bb694878fc2ba",
+      "sha256:347d70688a4f620ee434007bc3b622592c459d0c45cbc275d0c8c3db0d2cb3e5",
+      "sha256:0118eeeab20f23cb5712fe7b96dd0a3460b185c3f9fb0bdb59062a3972f5b9af",
+      "sha256:a027351c56d0ec60ff555693e0afdd9ac6536425c3a6cd70cfd99438c32cf33b",
+      "sha256:54733ab91a37b26f9dbcdebb53c37d88e967e1aca9e52984d231c7418c858dba",
+      "sha256:26fc657c345556a2c48a5cdaa66f5e31ea881a18184bc943ad42cc46e93d7139",
+      "sha256:6e2ae602f9d69418f36fd9c178e472fb6e6b468f6aadd3dbd759fcee552a7527",
+      "sha256:a617e334a194398d200a112e5d4a39c65aa720650fe0fae732bdb1d7d4fb53a0",
+      "sha256:06a85ef3304894dd8ec4162582365fd035ad50c64e58002d79e9084f4f18f1d8",
+      "sha256:13cd1552e1b4bb5a6d7663712316da1b1f3636108cf98724dfbabe0e7221bed7",
+      "sha256:3cdfa3b9dfb0a836a85893d7775ca1a3dd0102ed94c3b3667c724b5a4a4be742"
+    ],
+    "runtime_config_canonical_sha256": "12cbab74c5fbb2f91d35a95e3977a5de9494a00ccfd0dfcf5943daad14c78037",
+    "platform": {
+      "os": "linux",
+      "architecture": "amd64",
+      "variant": null
+    },
+    "runtime_replaced": false
+  },
+  "static_equivalence": {
+    "independent_local_dist_and_direct_live_http_files": 402,
+    "direct_http_bytes": 17218939,
+    "all_402_equal_admitted224_local_assets": true,
+    "all_402_equal_actual_b6e6_http_bytes": true,
+    "root_build_receipt_static_files_including_nginx_50x": 403,
+    "all11_rootfs_layer_identities_and_runtime_config_independently_equal": true
+  },
+  "evidence_hashes": {
+    "preserved224_source_freeze": "44d3870dac52feb5d6cbe80db2c8ded8dfb5d29e86b236dc45ba56f3d75cbd97",
+    "test_only225_source_freeze": "d3e8baac60a005a33c13c3ae0d4e8984fecf658f087213f15006ecfef94c5b3d",
+    "root_runtime_equivalence_receipt": "b41f66518c2a17cc0d655c55a873402f7bf665c7450e5ef875d7df69b1f53f8f",
+    "fresh_public225_build_receipt": "dbdce1e99e3efa78120cd9c18cc2014c403e0687c3cf8540de26481f8b941bea"
+  },
+  "limits": [
+    "The rebuilt075501 image has not run the genuine observation duration. Different image IDs are not substituted for the actual admittedb6e6 service.",
+    "Exact RootFS diff-ID/config equality plus byte checks establishes runtime equivalence for this test-only change; it is not source truth, a universal security clearance or a new long-session pass.",
+    "The running183-minute browser observer and server gates remain pending at this receipt time. No time is carried over or reset by the test-only edit."
+  ]
+}

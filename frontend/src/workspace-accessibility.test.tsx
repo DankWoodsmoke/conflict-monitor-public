@@ -20,9 +20,8 @@ function briefResponses(recording=false){
  window.history.replaceState(null,"","/?view=sitrep");
 }
 describe("application landmarks",()=>{
- it("keeps the visible mobile Feed count in its accessible name and owns its modal keyboard focus without hijacking report-list scroll gestures",async()=>{
+ it("keeps the visible mobile Feed count in its accessible name at zero, one,99 and100 reports",async()=>{
   const width=window.innerWidth,height=window.innerHeight;Object.defineProperty(window,'innerWidth',{configurable:true,value:390});Object.defineProperty(window,'innerHeight',{configurable:true,value:844});
-  vi.spyOn(HTMLElement.prototype,'getClientRects').mockReturnValue([{width:100,height:44}] as any);
   try{
    const base=buildShowcase(Date.now()).events[0];
    for(const count of [0,1,99,100]){
@@ -30,6 +29,18 @@ describe("application landmarks",()=>{
     await act(async()=>root.render(<App/>));const opener=host.querySelector<HTMLButtonElement>('.feed-fab')!;
     const visibleLabel='Feed'+(host.querySelector('.mobile-feed-count')?.textContent||'');expect(opener.getAttribute('aria-label')!.toLowerCase()).toContain(visibleLabel.toLowerCase());
    }
+  }finally{Object.defineProperty(window,'innerWidth',{configurable:true,value:width});Object.defineProperty(window,'innerHeight',{configurable:true,value:height});}
+ });
+ it("owns mobile Feed modal keyboard focus and closed-details tab order without hijacking report-list scroll gestures",async()=>{
+  const width=window.innerWidth,height=window.innerHeight;Object.defineProperty(window,'innerWidth',{configurable:true,value:390});Object.defineProperty(window,'innerHeight',{configurable:true,value:844});
+  vi.spyOn(HTMLElement.prototype,'getClientRects').mockReturnValue([{width:100,height:44}] as any);
+  try{
+   // Two real-shaped cards retain nested closed-details focus coverage. Count
+   // boundaries are independent above; avoid100-card JSDOM rebuilds on every
+   // modal open while running the complete hosted suite on a small runner.
+   const base=buildShowcase(Date.now()).events[0];
+   vi.mocked(useEventStream).mockReturnValue({events:[{...base,id:1},{...base,id:2}],isConnected:true,loadFullHistory:vi.fn(),historyStatus:'idle',recoveryStatus:'idle',historyTruncated:false,historyStart:null} as any);
+   await act(async()=>root.render(<App/>));
    const opener=host.querySelector<HTMLButtonElement>('.feed-fab')!,canvas=host.querySelector('canvas');opener.focus();await act(async()=>opener.click());
    const dialog=host.querySelector<HTMLElement>('[role="dialog"][aria-label="Report feed"]')!;expect(dialog.getAttribute('aria-modal')).toBe('true');
    const close=dialog.querySelector<HTMLButtonElement>('[aria-label="Close report feed"]')!;expect(document.activeElement).toBe(close);expect(opener.closest('[inert]')).not.toBeNull();

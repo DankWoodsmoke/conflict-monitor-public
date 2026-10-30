@@ -331,14 +331,14 @@
       "sha256": "6755ca3c8f39520cafff0e2c489fe9880be619db2ca9a9d7a786bb6b77639ecb"
     },
     {
-      "bytes": 2346,
+      "bytes": 3066,
       "path": "backend/container/README.md",
-      "sha256": "3e1f368fdeb901a222ef851c3f9a42dbddd624b0530771657c954719b3812c7b"
+      "sha256": "a2c687e411325e9e108f1e0a3fb9f9d3665d3778f1b5559634d435a8c92beb67"
     },
     {
-      "bytes": 2757,
+      "bytes": 3519,
       "path": "backend/container/build_ffmpeg.sh",
-      "sha256": "66b3d3b6afaf9273c40350505e648b5c36376b7d3329a38afb30e7c87802508d"
+      "sha256": "5a884d5204e38eeb19705b1a12f2f3a57d99bd0ac0c28ccc24fa51f800e5e46b"
     },
     {
       "bytes": 113,
@@ -656,9 +656,9 @@
       "sha256": "be0e079b800ede0a46cbc1e63818340fdfcbc03eedc0a723163872f243cc84a6"
     },
     {
-      "bytes": 21276,
+      "bytes": 22057,
       "path": "docs/OS_SECURITY_REVIEW.md",
-      "sha256": "3f0aaf487c82b0be292869b41cba828f967f7a1201c573d0556f52ac898ef62e"
+      "sha256": "4c7f5656325c9163311e9e6382e3b74db64a6a37cd71fd4af193917d7ae5d4fe"
     },
     {
       "bytes": 5169,
@@ -861,9 +861,19 @@
       "sha256": "f3f893c210358e558fe056b8fa03286a963087a43cdced214acdee11efdab18a"
     },
     {
+      "bytes": 4158,
+      "path": "docs/qualification/2026-10-30-frontend-test-portability-225.json",
+      "sha256": "6e9f15861c70ea1d4d4040279f763314a8bfe42084a3a219bf92b725a1b1b0bb"
+    },
+    {
       "bytes": 17844,
       "path": "docs/qualification/2026-10-30-gosu-go-binary-review.json",
       "sha256": "151f2cfe70737ea84631a192310eceac697887d5c36c6e3bb8ef18a671f3a7ee"
+    },
+    {
+      "bytes": 4897,
+      "path": "docs/qualification/2026-10-30-rc2-build-fetch-retry.json",
+      "sha256": "5a8bdd2d9e89254a613a0ba18cd1bdde795ea886bb8e482815772ec7fdb14b1b"
     },
     {
       "bytes": 4256,
@@ -1651,9 +1661,9 @@
       "sha256": "dcbd0163d3cdbd353edd7c98993651ab2f2af05557a18d4251c5e7606728121d"
     },
     {
-      "bytes": 17393,
+      "bytes": 18416,
       "path": "frontend/src/workspace-accessibility.test.tsx",
-      "sha256": "2511f64f5c86885c49ea571d9a249fb6772b91d56b5b1173700e3a59eb1e1a0d"
+      "sha256": "06fd769ecb7b9a8ad3e9f884239dafa0ce09bae6537e945307455a86c71847df"
     },
     {
       "bytes": 3711,
