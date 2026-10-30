@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { SHOWCASE } from "../lib/runtime";
+import { version } from "../../package.json";
 
 const STORAGE_KEY="cm_seen_methods_v2";
 const tabs=["Overview","Evidence & sources","Deployment"] as const;
@@ -25,7 +26,7 @@ export function AboutPanel({onClose}:{onClose:()=>void}) {
   },[]);
   return <div className="methods-backdrop" onClick={e=>{if(e.target===e.currentTarget)close();}}>
     <div className="methods-dialog" ref={dialog} role="dialog" aria-modal="true" aria-labelledby="methods-title" tabIndex={-1}>
-      <header role="presentation"><span className="tour-kicker">CONFLICT MONITOR / RELEASE CANDIDATE</span><button onClick={close} aria-label="Close about and methodology">×</button><h1 id="methods-title">Evidence in context.</h1><p>Reports, spatial context, media and situation analysis in one inspectable workspace.</p></header>
+      <header role="presentation"><span className="tour-kicker">CONFLICT MONITOR / {version}</span><button onClick={close} aria-label="Close about and methodology">×</button><h1 id="methods-title">Evidence in context.</h1><p>Reports, spatial context, media and situation analysis in one inspectable workspace.</p></header>
       <nav aria-label="About sections">{tabs.map(t=><button key={t} onClick={()=>setTab(t)} aria-pressed={tab===t}>{t}</button>)}</nav>
       <div className="methods-body" role="region" aria-label={`Methods content — ${tab}`} tabIndex={0}>
         {tab==="Overview"&&<><h2>One Earth workspace</h2><div className="methods-grid">{[

@@ -1,0 +1,255 @@
+{
+  "checked_at": "2026-10-30T02:23:56.382757+00:00",
+  "scope": "Actual fresh shipped Compose profile in a separate Docker Desktop Linux qualification project, orchestrated from Windows; hosted Actions execution remains separate",
+  "status": "PASS_LOCAL_PREFLIGHT",
+  "project": "cmonitor-ci-20261030-0210",
+  "all_three_runtime_images_built_from_current_source": true,
+  "private_personal_env_or_provider_keys_used": false,
+  "synthetic_only_sql_tcp_websocket_gates": [
+    {
+      "gate": "verify_database_role.py",
+      "exit_code": 0,
+      "seconds": 0.781
+    },
+    {
+      "gate": "verify_postgis.py",
+      "exit_code": 0,
+      "seconds": 3.391
+    },
+    {
+      "gate": "verify_live_pipeline.py",
+      "exit_code": 0,
+      "seconds": 4.453
+    }
+  ],
+  "container_boundary": {
+    "checked_at": "2026-10-30T02:23:56.223434+00:00",
+    "scope": "Actual PID1 and Docker boundary of an isolated shipped Compose qualification profile",
+    "status": "PASS",
+    "services": [
+      {
+        "service": "frontend",
+        "image_id": "sha256:d1b62f724b592bf79791236d1411276c216c8b5400b48e4c088aabde650e5238",
+        "checks": {
+          "owned_project": true,
+          "expected_service": true,
+          "running_healthy": true,
+          "no_new_privileges_policy": true,
+          "all_default_capabilities_dropped": true,
+          "pid1_effective_capabilities_zero": true,
+          "pid1_no_new_privileges": true,
+          "pid1_expected_uid": true,
+          "not_privileged": true,
+          "no_publish_all_ports": true,
+          "loopback_only_published_ports": true,
+          "no_added_capabilities": true,
+          "readonly_rootfs": true
+        }
+      },
+      {
+        "service": "backend",
+        "image_id": "sha256:9e1374f54ee44f0c7ba03e1cea5f7052dece69b0242ab5a3bc12cd1b39381bca",
+        "checks": {
+          "owned_project": true,
+          "expected_service": true,
+          "running_healthy": true,
+          "no_new_privileges_policy": true,
+          "all_default_capabilities_dropped": true,
+          "pid1_effective_capabilities_zero": true,
+          "pid1_no_new_privileges": true,
+          "pid1_expected_uid": true,
+          "not_privileged": true,
+          "no_publish_all_ports": true,
+          "loopback_only_published_ports": true,
+          "no_added_capabilities": true,
+          "bootstrap_environment_explicitly_blank": true,
+          "collectors_demo_and_models_explicitly_disabled": true,
+          "restricted_test_dsn": true
+        }
+      },
+      {
+        "service": "db",
+        "image_id": "sha256:3765e56ccb1dc6c926a9fddfada602078dc0ab3c25aecfe4ed66320c730f6b1d",
+        "checks": {
+          "owned_project": true,
+          "expected_service": true,
+          "running_healthy": true,
+          "no_new_privileges_policy": true,
+          "all_default_capabilities_dropped": true,
+          "pid1_effective_capabilities_zero": true,
+          "pid1_no_new_privileges": true,
+          "pid1_expected_uid": true,
+          "not_privileged": true,
+          "no_publish_all_ports": true,
+          "no_database_published_ports": true,
+          "readonly_rootfs": true,
+          "isolated_test_database": true,
+          "proj_network_off": true
+        }
+      }
+    ],
+    "packaged_application_source_binding": {
+      "files": 56,
+      "mismatches": [],
+      "all_bytes_equal": true
+    },
+    "environment_values_exported": false,
+    "mutations_or_cleanup_performed": false,
+    "limits": [
+      "Configuration/process observations are not proof of container escape resistance, a host audit or all future process behavior.",
+      "Database entrypoint initialization capabilities are distinct from its observed nonroot PID1 effective capability set."
+    ]
+  },
+  "http_headers": {
+    "checked_at": "2026-10-30T02:19:27.272171+00:00",
+    "scope": "Actual built loopback HTML, hashed script, frontend/API errors and proxied/direct API response headers",
+    "status": "PASS",
+    "cases": [
+      {
+        "case": "html",
+        "status": 200,
+        "checks": {
+          "expected_status": true,
+          "nosniff": true,
+          "referrer_policy": true,
+          "sameorigin_frame_policy": true,
+          "html_revalidated_or_not_stored": true
+        }
+      },
+      {
+        "case": "hashed_asset",
+        "status": 200,
+        "checks": {
+          "expected_status": true,
+          "nosniff": true,
+          "referrer_policy": true,
+          "sameorigin_frame_policy": true,
+          "hashed_asset_immutable_year": true
+        }
+      },
+      {
+        "case": "missing_asset",
+        "status": 404,
+        "checks": {
+          "expected_status": true,
+          "nosniff": true,
+          "referrer_policy": true,
+          "sameorigin_frame_policy": true,
+          "missing_asset_not_immutable": true
+        }
+      },
+      {
+        "case": "proxied_health",
+        "status": 200,
+        "checks": {
+          "expected_status": true,
+          "nosniff": true,
+          "referrer_policy": true,
+          "sameorigin_frame_policy": true,
+          "api_not_stored": true
+        }
+      },
+      {
+        "case": "proxied_404",
+        "status": 404,
+        "checks": {
+          "expected_status": true,
+          "nosniff": true,
+          "referrer_policy": true,
+          "sameorigin_frame_policy": true,
+          "api_not_stored": true
+        }
+      },
+      {
+        "case": "direct_health",
+        "status": 200,
+        "checks": {
+          "expected_status": true,
+          "nosniff": true,
+          "referrer_policy": true,
+          "api_not_stored": true
+        }
+      },
+      {
+        "case": "direct_404",
+        "status": 404,
+        "checks": {
+          "expected_status": true,
+          "nosniff": true,
+          "referrer_policy": true,
+          "api_not_stored": true
+        }
+      }
+    ],
+    "html_sha256": "8e4d4071b192be083b303c9d1ad2a4ff7d7a5fb40122b233fed35236ffc9c852",
+    "redirects_followed": 0,
+    "provider_or_generation_requests": 0,
+    "limits": [
+      "This checks the declared local header/cache policy, not TLS/HSTS, CSP completeness, every endpoint or arbitrary deployment security.",
+      "An absent cache lifetime on the missing asset is not a claim that all intermediaries will never cache an error."
+    ]
+  },
+  "guard_tests": {
+    "passed": 16,
+    "skipped": 0,
+    "scope": "URL/project/privilege/secret/wildcard-port/missing-health/readonly regressions, real redirect/body bounds and actual output-flood child cleanup"
+  },
+  "source_hashes": [
+    {
+      "path": ".github/workflows/verify.yml",
+      "sha256": "138787bf99ee412cac1209e42bb9813dcbdcd35e53a0a5059a5caac5dd041405"
+    },
+    {
+      "path": "tools/verify_http_headers.py",
+      "sha256": "3be27e3fc23751138e5a57772f233638b23ec77d0dd72ce99a8c0998593b3641"
+    },
+    {
+      "path": "tools/verify_container_boundary.py",
+      "sha256": "c061a340e1eee42e8348b4efae6506419391ad62c29c834d8a8130059969fe01"
+    },
+    {
+      "path": "backend/tests/test_container_qualification.py",
+      "sha256": "94e282bd2e715f18dbcdc33f8723874bcb5de39b21c414de8188323c1afa6ec1"
+    },
+    {
+      "path": "docker-compose.yml",
+      "sha256": "288f2d2b76987ec51c3eedd1f4a3ab0986cd8e244b7f69711f68a7d44d53329f"
+    }
+  ],
+  "report_fixture_value_scan_matches": 0,
+  "hosted_new_ci_job_execution": "pending_not_inferred_from_local_preflight",
+  "limits": [
+    "Host orchestration was Windows; runtime containers and packaged application were Linux. No hosted Ubuntu runner pass is claimed before Actions executes.",
+    "Container identity and headers are bounded observations, not host/container-escape/TLS/CSP/all-endpoint clearance.",
+    "The test database contains only authored synthetic qualification fixtures and is not an original/display database."
+  ],
+  "job_scoped_cleanup": {
+    "checked_at": "2026-10-30T02:24:55.683461+00:00",
+    "project": "cmonitor-ci-20261030-0210",
+    "exit_code": 0,
+    "job_owned_containers_removed": 4,
+    "job_owned_volumes_removed": 2,
+    "remaining_job_containers": 0,
+    "remaining_job_volumes": 0,
+    "other_project_targets_or_filesystem_deletion_used": false
+  },
+  "workflow_validation": {
+    "checked_at": "2026-10-30T02:34:35.761229+00:00",
+    "workflow_sha256": "138787bf99ee412cac1209e42bb9813dcbdcd35e53a0a5059a5caac5dd041405",
+    "actual_final_fixture_step_executed": true,
+    "new_fixture_was_not_started_as_a_container_project": true,
+    "overlay_bytes_equal_to_full_runtime_preflight": true,
+    "test_dsn_and_secret_blank_schema_validated": true,
+    "github_env_export_validated": true,
+    "bash_n_all_run_blocks": 25,
+    "python_heredocs_compiled": 4,
+    "actionlint": {
+      "version": "1.7.12",
+      "exit_code": 0,
+      "actual_validation_receipt_sha256": "2ab703257b9f8514b59578f79d58b1510d5ec0bf598dbb1e37c525c8c1ff35ee"
+    },
+    "runner_context_fix_basis": "https://docs.github.com/en/actions/reference/workflows-and-actions/contexts#context-availability",
+    "hosted_actions_status": "pending_not_inferred_from_local_execution"
+  },
+  "retained_prior_preflight_sha256": "1a74075117af6fe7e90ffa1163b2e0f0e5fb78f1b073b302a0064bf04a62332e"
+}

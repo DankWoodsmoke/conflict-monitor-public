@@ -1,0 +1,137 @@
+{
+  "version": "0.2.0-rc.2",
+  "status": "PASS_OFFLINE_BUILD_FETCH_REPAIR_PENDING_HOSTED_BUILD",
+  "scope": "Build-only bounded fetch resilience; no running image, application, compilation flags or observers changed",
+  "source_sha256": "5a884d5204e38eeb19705b1a12f2f3a57d99bd0ac0c28ccc24fa51f800e5e46b",
+  "checked_at": "2026-10-30T04:30:08.571667+00:00",
+  "raw_offline_receipt_sha256": "d84a0c06c7365f085db519468c0d68d016c068b0392f6bec8eb71896b9d3f0ff",
+  "unchanged_authenticity": {
+    "source_version": "9.0.2",
+    "archive_sha256": "8c3850283eb25fa026482078a04051e0be17347b09ef81a0849bec15a96e002e",
+    "signing_fingerprint": "FCF986EA15E6E293A5644F10B4322F04D67658D8",
+    "official_https_origins_only": true,
+    "signature_and_fingerprint_gates_retained": true,
+    "entire_extract_compile_install_license_tail_equal_to_initial_commit": true,
+    "baseline_source_commit": "8fe75ff91880c94de993cf297064a85f0a62b8a6"
+  },
+  "retry_policy": {
+    "attempts_per_file": 3,
+    "connect_seconds_per_attempt": 15,
+    "redirects_per_attempt": 3,
+    "archive_seconds_per_attempt": 120,
+    "signature_and_key_seconds_per_attempt": 30,
+    "backoff_seconds_per_file": 3,
+    "archive_max_transfer_sleep_seconds": 363,
+    "signature_or_key_max_transfer_sleep_seconds": 93
+  },
+  "byte_caps_per_attempt": {
+    "archive": 30000000,
+    "signature": 20000,
+    "key": 50000
+  },
+  "cases": [
+    {
+      "case": "transient_then_success",
+      "status": "PASS_EXPECTED_OUTCOME",
+      "exit_code": 0,
+      "fetch_calls": 5,
+      "backoff_seconds": [
+        "1",
+        "2"
+      ],
+      "actual_original_signature_validated": true
+    },
+    {
+      "case": "transport_exhaustion",
+      "status": "PASS_EXPECTED_OUTCOME",
+      "exit_code": 28,
+      "fetch_calls": 3,
+      "backoff_seconds": [
+        "1",
+        "2"
+      ],
+      "actual_original_signature_validated": false
+    },
+    {
+      "case": "permanent_404",
+      "status": "PASS_EXPECTED_OUTCOME",
+      "exit_code": 22,
+      "fetch_calls": 1,
+      "backoff_seconds": [],
+      "actual_original_signature_validated": false
+    },
+    {
+      "case": "certificate_failure",
+      "status": "PASS_EXPECTED_OUTCOME",
+      "exit_code": 60,
+      "fetch_calls": 1,
+      "backoff_seconds": [],
+      "actual_original_signature_validated": false
+    },
+    {
+      "case": "http_503_then_success",
+      "status": "PASS_EXPECTED_OUTCOME",
+      "exit_code": 0,
+      "fetch_calls": 4,
+      "backoff_seconds": [
+        "1"
+      ],
+      "actual_original_signature_validated": true
+    },
+    {
+      "case": "hash_mismatch",
+      "status": "PASS_EXPECTED_OUTCOME",
+      "exit_code": 1,
+      "fetch_calls": 1,
+      "backoff_seconds": [],
+      "actual_original_signature_validated": false
+    },
+    {
+      "case": "signature_mismatch",
+      "status": "PASS_EXPECTED_OUTCOME",
+      "exit_code": 2,
+      "fetch_calls": 3,
+      "backoff_seconds": [],
+      "actual_original_signature_validated": false
+    },
+    {
+      "case": "wrong_expected_fingerprint",
+      "status": "PASS_EXPECTED_OUTCOME",
+      "exit_code": 1,
+      "fetch_calls": 3,
+      "backoff_seconds": [],
+      "actual_original_signature_validated": true
+    }
+  ],
+  "execution": {
+    "existing_linux_image": "sha256:41cb1c25b977ecfc413e5fc14540ad997a2412ea4fefa47d4bc9289177dfb79b",
+    "network": "none",
+    "read_only_root": true,
+    "capabilities_dropped": true,
+    "no_new_privileges": true,
+    "mock_transport": true,
+    "real_sha_pgp_checks": true,
+    "shell_syntax_exit_code": 0
+  },
+  "retained_hosted_failures": [
+    {
+      "run": 41002034434,
+      "head": "8fe75ff91880c94de993cf297064a85f0a62b8a6",
+      "url": "https://github.com/DankWoodsmoke/conflict-monitor-public/actions/runs/41002034434",
+      "custom_job_log_sha256": "fa0554082340eba49441086a5a8a7248bdbf42bf8da60fb5b3d4df6003b070c0",
+      "failure": "FFmpeg source fetch connection timed out after15seconds; custom runtime gates skipped."
+    },
+    {
+      "run": 41002063268,
+      "head": "8fe75ff91880c94de993cf297064a85f0a62b8a6",
+      "url": "https://github.com/DankWoodsmoke/conflict-monitor-public/actions/runs/41002063268",
+      "custom_job_log_sha256": "60f65ed24a781f8b1e49c3c9809d7daa1ac4f8ff48964119f47b519b51c351ed",
+      "failure": "FFmpeg fetch TLS connection reset (curl35); custom runtime gates skipped."
+    }
+  ],
+  "limits": [
+    "Offline mock transport does not prove real upstream availability or a new successful hosted image build.",
+    "Original failed hosted runs and earlier Windows-specific harness startup issues remain retained; no failure was converted into a pass.",
+    "Running backend application/media bytes remain unchanged; no new compiled-image equivalence is inferred."
+  ]
+}

@@ -1,6 +1,7 @@
-import {useEffect,useRef,useState,type CSSProperties} from "react";
+import {useEffect,useMemo,useRef,useState,type CSSProperties} from "react";
 import {apiFetch} from "../lib/api";
 import {API_BASE,SHOWCASE} from "../lib/runtime";
+import {parseCaptionPlan,prepareBriefingCaptions,type CaptionPlan} from "../lib/briefingCaptions";
 
 type Mode="analysis"|"video"|"all";
 type Job="analyze"|"video";
@@ -13,7 +14,7 @@ interface Report {id:number;source:string;published_at:string;source_url:string;
 interface Analysis {status:string;generated_at?:string;stale?:boolean;reports:Report[];
  provenance?:{model?:string;model_digest?:string};semantic_entailment?:string}
 interface Video {status:string;filename?:string;generated_at?:string;stale?:boolean;duration_seconds?:number;
- sources?:Array<{id:number;source:string;source_url:string;published_at:string}>;sha256?:string}
+ sources?:Array<{id:number;source:string;source_url:string;published_at:string}>;sha256?:string;segments?:unknown;validation?:unknown}
 interface Props {eventIds?:number[];operatorKey?:string;onConfigureOperator?:()=>void;mode?:Mode}
 
 const box:CSSProperties={border:"1px solid #28434e",borderRadius:8,padding:14,background:"#0b1720",minWidth:0};
@@ -52,6 +53,54 @@ function videoResult(value:unknown):Video {
   !Array.isArray(v.sources)||v.sources.length<1||v.sources.length>4||
   !v.sources.every(s=>s&&Number.isSafeInteger(s.id)&&s.id>0&&typeof s.source==="string"))throw Error("Invalid video manifest");
  return v;
+}
+
+/** A content-keyed child keeps ordinary polling out of the media lifecycle. */
+function CaptionedVideo({video,src,onError,onLoadedMetadata}:{video:Video;src:string;onError:()=>void;onLoadedMetadata:()=>void}){
+ const plan=useMemo(()=>parseCaptionPlan(video),[video]);
+ const identity=plan?.identity||"";
+ const [resource,setResource]=useState<{identity:string;status:"ready"|"unavailable";url?:string;plan?:CaptionPlan;reason?:string}>({identity:"",status:"unavailable"});
+ const [showing,setShowing]=useState(true),[trackError,setTrackError]=useState(false),[pausedHint,setPausedHint]=useState(false);
+ const media=useRef<HTMLVideoElement|null>(null),track=useRef<HTMLTrackElement|null>(null),wanted=useRef(true),ownedResource=useRef("");
+ useEffect(()=>{
+  if(!plan)return;
+  let cancelled=false,ownedUrl="";
+  void prepareBriefingCaptions(plan).then(result=>{
+   if(cancelled)return;
+   if(result.status!=="ready"){setResource({identity,status:"unavailable",reason:result.reason});return;}
+   try{
+    ownedUrl=URL.createObjectURL(new Blob([result.vtt],{type:"text/vtt;charset=utf-8"}));
+    ownedResource.current=ownedUrl;setResource({identity,status:"ready",url:ownedUrl,plan:result.plan});
+   }catch{setResource({identity,status:"unavailable",reason:"browser"});}
+  });
+  return()=>{cancelled=true;if(ownedUrl){if(ownedResource.current===ownedUrl)ownedResource.current="";URL.revokeObjectURL(ownedUrl);}};
+  // Identity includes every consumed text, timing, digest and artifact field,
+  // but excludes polling clocks. A fresh equivalent JSON object changes none.
+ },[identity]);
+ const ready=!!identity&&resource.identity===identity&&resource.status==="ready"&&!!resource.url&&ownedResource.current===resource.url;
+ const url=ready?resource.url:undefined;
+ useEffect(()=>{
+  setTrackError(false);
+  if(!url)return;
+  const element=track.current,tracks=media.current?.textTracks;
+  const initialise=()=>{if(element?.track){element.track.mode=wanted.current?"showing":"disabled";setShowing(wanted.current);}};
+  const sync=()=>{if(element?.track){const enabled=element.track.mode==="showing",changed=enabled!==wanted.current;wanted.current=enabled;setShowing(enabled);if(!enabled)setPausedHint(false);else if(changed)setPausedHint(!!media.current?.paused);}};
+  const failed=(event:Event)=>{event.stopPropagation();setTrackError(true);};
+  initialise();element?.addEventListener("load",initialise);element?.addEventListener("error",failed);tracks?.addEventListener?.("change",sync);
+  return()=>{element?.removeEventListener("load",initialise);element?.removeEventListener("error",failed);tracks?.removeEventListener?.("change",sync);};
+ },[url]);
+ const toggle=()=>{const enabled=!showing;wanted.current=enabled;if(track.current?.track)track.current.track.mode=enabled?"showing":"disabled";setShowing(enabled);setPausedHint(enabled&&!!media.current?.paused);};
+ return <>
+  <video ref={media} controls playsInline preload="metadata" style={{width:"100%",maxHeight:"55vh",background:"#050c12",borderRadius:5}} src={src} onError={event=>{if(event.target===event.currentTarget)onError();}} onLoadedMetadata={onLoadedMetadata} onPlaying={()=>setPausedHint(false)} aria-label="Narrated attributed source briefing">
+   {url?<track key={identity} ref={track} kind="captions" srcLang="en" label="Source narration (segment timing)" src={url} default/>:null}
+  </video>
+  {ready?<>
+   <div style={{display:"flex",gap:10,alignItems:"center",flexWrap:"wrap"}}><button style={button} onClick={toggle} disabled={trackError} aria-pressed={showing}>{showing?"Hide captions":"Show captions"}</button><span>Captions follow source-card audio segments; they are not word aligned.</span></div>
+   {pausedHint&&!trackError?<p role="status" style={{margin:0,fontSize:12,color:"#9db5bb"}}>If captions do not appear while paused, resume playback to show them.</p>:null}
+   {trackError?<p role="status">The caption track could not be loaded. The narration transcript remains available below.</p>:null}
+   <details><summary style={{cursor:"pointer",minHeight:44}}>Narration transcript</summary><div role="region" aria-label="Complete narration transcript" tabIndex={0} style={{maxHeight:"min(40vh,22rem)",overflowY:"auto",overflowWrap:"anywhere"}}><ol>{resource.plan?.segments.map((segment,index)=><li key={index}><p style={{whiteSpace:"pre-wrap"}}>{segment.text}</p></li>)}</ol></div></details>
+  </>:<p role="status">{identity&&resource.identity!==identity?"Checking captions and transcript…":resource.identity===identity&&resource.reason==="crypto"?"Captions and transcript unavailable: this browser cannot verify caption metadata.":"Captions and transcript unavailable for this video."}</p>}
+ </>;
 }
 
 /** Free operator-triggered work; viewing never starts a model or media process. */
@@ -144,7 +193,7 @@ export function LocalBriefingPanel({eventIds=[],operatorKey="",onConfigureOperat
    {video?.status==="source_permission_required"?<p role="status">Source permission required · this narrated video is withheld pending eligibility review. The stored file was preserved.</p>:null}
    {src?<>
     <p>{video?.stale?<strong style={{color:"#f5bb7b"}}>STALE VIDEO · </strong>:null}Generated {date(video?.generated_at)}{typeof video?.duration_seconds==="number"?` · ${Math.round(video.duration_seconds)} seconds`:""}</p>
-    <video key={src} controls playsInline preload="metadata" style={{width:"100%",maxHeight:"55vh",background:"#050c12",borderRadius:5}} src={src} onError={()=>setMediaError(true)} onLoadedMetadata={()=>setMediaError(false)} aria-label="Narrated attributed source briefing"/>
+    <CaptionedVideo key={src} video={video!} src={src} onError={()=>setMediaError(true)} onLoadedMetadata={()=>setMediaError(false)}/>
     {mediaError?<p role="status">The completed video could not be played. Refresh the artifact or check provider health; no substitute video was loaded.</p>:null}
     <details><summary>Video source references</summary>{video?.sources?.slice(0,4).map(s=><p key={s.id}>[src:{s.id}] {s.source} · {date(s.published_at)} {sourceUrl(s.source_url)?<a href={sourceUrl(s.source_url)} target="_blank" rel="noopener noreferrer">Publisher source ↗</a>:null}</p>)}<p style={{overflowWrap:"anywhere"}}>SHA-256: {video?.sha256||"Unavailable"}</p></details>
    </>:<p>No validated narrated video yet. A failed render never substitutes a demonstration or an incomplete file.</p>}

@@ -1,0 +1,146 @@
+{
+  "version": "0.2.0-rc.2",
+  "status": "EXACT_SPAN_TRIAGE_AND_ENGINE_BYTE_GATES_QUALIFIED",
+  "checked_at": "2026-10-30T05:23:52.442556+00:00",
+  "scope": "Private final-export scanner helper hardening; no application/runtime or Git changes. This is one exact allowlisted snapshot, not the future release archive.",
+  "prior_helper_sha256": "e9d73725932d66f5f43fb6def8a020a28191e3b48f213b86f6bc545d6caf4011",
+  "fixed_private_helper_sha256": "79fad2fc512a991e7abc250e0bc38dda9757060301a4d06ea8fd34410c7ccb4b",
+  "private_regression_script_sha256": "26fbcf10299f7e61be2526f617e42f1e2c72a1cfffe1f7fcedb3df3b50163bd5",
+  "private_regression_receipt_sha256": "c6678bff7ec2a70997d39dc01a44d76c46d6fbc049d3a444d4d7f1805fc39f7e",
+  "regressions": {
+    "passed": 31,
+    "old_line_only_false_accept_reproduced": true,
+    "new_same_line_unrelated_match_remains_unresolved": true,
+    "actual_five_preserved_known_findings_replayed": 5,
+    "scanner_network_runtime_calls": 0,
+    "cases": [
+      "Exact span, token and reconstructed redacted-match binding",
+      "Wrong/missing/boolean columns, multiline, decoder tags and extra unrelated context remain unresolved",
+      "Duplicate JSON keys, stale hashes and large-fragment uncertainty remain unresolved",
+      "LF, CRLF, first-line and non-ASCII byte-offset checks",
+      "Missing, rounded, duplicate and differing engine byte counters do not qualify coverage"
+    ]
+  },
+  "independent_review": {
+    "result": "PASS",
+    "pure_checks_reported": 22,
+    "actual_snapshot_files_and_hashes_rechecked": 364,
+    "additional_scanner_calls": 0
+  },
+  "pinned_engine": {
+    "name": "Gitleaks",
+    "version": "8.30.1",
+    "binary_sha256": "17157e2ee8b76fc8b1d8bee607a250e34b8a8023c8bc81822d4b5ee4d78fcb7c",
+    "official_default_config_sha256": "e163e53b9e7e8a8511e77271e2b323ed057759542a6d988258afe3a1fa329caf",
+    "supplemental_lockfile_config_sha256": "148df8c9e99f282c0e19af8edaeb49137154b68b70bff2219205a761e9c75db2",
+    "rules": 222,
+    "new_ignores_or_value_allowlists": false
+  },
+  "span_convention_primary_sources": [
+    "https://github.com/gitleaks/gitleaks/blob/v8.30.1/detect/location.go",
+    "https://github.com/gitleaks/gitleaks/blob/v8.30.1/sources/file.go"
+  ],
+  "snapshot": {
+    "started_at": "2026-10-30T05:22:04.105262+00:00",
+    "ended_at": "2026-10-30T05:22:08.177880+00:00",
+    "source_file_count": 364,
+    "source_bytes": 13118103,
+    "canonical_source_manifest_sha256": "e52d576c24fe2bcae20e94868e533c6063357e07e6ff5d6821f8c0cb02abda4f",
+    "source_and_snapshot_stable": true
+  },
+  "directory_scan": {
+    "raw_exit_code": 1,
+    "raw_findings": 5,
+    "expected_eligible_source_bytes": 5565952,
+    "engine_reported_scan_bytes": 5565952,
+    "exact_engine_byte_coverage": true,
+    "redacted_report_sha256": "c782d35c8ccc31bf16bd69986c3a5ae816308a8095272af29fa20c816696a55f"
+  },
+  "lockfile_scan": {
+    "raw_exit_code": 0,
+    "raw_findings": 0,
+    "expected_eligible_source_bytes": 86621,
+    "engine_reported_scan_bytes": 86621,
+    "exact_engine_byte_coverage": true,
+    "redacted_report_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+  },
+  "retained_findings": [
+    {
+      "rule_id": "generic-api-key",
+      "file": "backend/container/build_ffmpeg.sh",
+      "start_line": 8,
+      "end_line": 8,
+      "start_column": 2,
+      "end_column": 57,
+      "classification": "public_dependency_release_signing_fingerprint"
+    },
+    {
+      "rule_id": "generic-api-key",
+      "file": "docs/qualification/2026-10-30-rc2-linux-backend-597-export-rebind.json",
+      "start_line": 26,
+      "end_line": 26,
+      "start_column": 21,
+      "end_column": 110,
+      "classification": "recomputed_public_source_file_sha256",
+      "source_reference": "backend/tests/test_api_lifecycle.py"
+    },
+    {
+      "rule_id": "generic-api-key",
+      "file": "docs/qualification/2026-10-30-rc2-linux-backend-597-export-rebind.json",
+      "start_line": 35,
+      "end_line": 35,
+      "start_column": 21,
+      "end_column": 115,
+      "classification": "recomputed_public_source_file_sha256",
+      "source_reference": "backend/tests/test_empty_api_contract.py"
+    },
+    {
+      "rule_id": "generic-api-key",
+      "file": "docs/qualification/frontend-production-final.json",
+      "start_line": 64,
+      "end_line": 64,
+      "start_column": 24,
+      "end_column": 98,
+      "classification": "recomputed_public_source_file_sha256",
+      "source_reference": "frontend/src/lib/api.ts"
+    },
+    {
+      "rule_id": "generic-api-key",
+      "file": "docs/qualification/frontend-layout149-runtime.json",
+      "start_line": 204,
+      "end_line": 204,
+      "start_column": 24,
+      "end_column": 98,
+      "classification": "recomputed_public_source_file_sha256",
+      "source_reference": "frontend/src/lib/api.ts"
+    }
+  ],
+  "raw_findings": 5,
+  "retained_known_noncredential_matches": 5,
+  "unresolved_matches": 0,
+  "logging": {
+    "new_log_level": "info",
+    "debug_or_decoder_debug_markers_observed_in_new_logs": false,
+    "json_report_secret_fields_redacted": true,
+    "arbitrary_log_or_match_context_redaction_guaranteed": false,
+    "all_raw_reports_logs_remain_private": true,
+    "historical_debug_log_redaction_claims_corrected": true,
+    "each_private_stderr_bytes": 81
+  },
+  "private_smoke_summary_sha256": "15c24b20c410e1db1a3d38a3c256acc9d708e66b85f3ab2ea283c0dd11bf3165",
+  "private_source_manifest_file_sha256": "54aa0d65e802b03db27d6a307ed2c41a4748e8c40b4879fd869b100acbef2ff2",
+  "historical_receipts": [
+    "2026-10-30-rc2-public-source-gitleaks.json",
+    "2026-10-30-rc2-public-lockfile-gitleaks.json"
+  ],
+  "limits": [
+    "Original scanner exits/findings are retained, including directory exit1; this is not a zero-findings engine result.",
+    "Default upstream path/value/rule allowlists remain active; only the supplemental lockfile path exclusion is removed for that one-file pass. Eleven raster files remain outside this scanner coverage.",
+    "Automatic triage is limited to exact plain single-line spans in files smaller than100,000bytes. Encoded, chunked, ambiguous or unknown matches remain unresolved for human review.",
+    "Exact scanned-byte reconciliation is required separately in each pass; a missing, rounded, duplicated or differing byte counter makes the helper incomplete and nonzero.",
+    "Historical DEBUG log filenames containing redacted were not a guarantee: decoder source fragments were observed. Logs remain private; INFO reduces that exposure without promising blanket log redaction.",
+    "The private summary retains finding context and must never be copied wholesale into a public receipt; only selective metadata is projected here.",
+    "No private environments/backups/original history/GOOL input, credential verification requests, uploads or runtime changes were used.",
+    "This new receipt is outside its own input snapshot. Final release-source changes require another exact snapshot run and separate archive-byte comparison. This is not exhaustive secret clearance."
+  ]
+}

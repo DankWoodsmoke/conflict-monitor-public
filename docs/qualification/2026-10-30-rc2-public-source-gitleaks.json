@@ -1,0 +1,211 @@
+{
+  "version": "0.2.0-rc.2",
+  "status": "SCANNED_FIVE_RETAINED_NONCREDENTIAL_MATCHES",
+  "scope": "Independent maintained-rule/entropy scan of one exact allowlisted public-source snapshot; no private environments, original history, backups or GOOL input",
+  "started_at": "2026-10-30T04:56:26.497904+00:00",
+  "ended_at": "2026-10-30T04:56:30.257948+00:00",
+  "tool": {
+    "name": "Gitleaks",
+    "version": "8.30.1",
+    "official_latest_release": "https://github.com/gitleaks/gitleaks/releases/tag/v8.30.1",
+    "published_at": "2026-03-21T02:17:58Z",
+    "release_immutable": false,
+    "archive_sha256": "d29144deff3a68aa93ced33dddf84b7fdc26070add4aa0f4513094c8332afc4e",
+    "binary_sha256": "17157e2ee8b76fc8b1d8bee607a250e34b8a8023c8bc81822d4b5ee4d78fcb7c",
+    "published_checksum_and_official_api_asset_digest_match": true,
+    "checksums_sha256": "061476c21adaf5441516f96f185c1a4706a83cd6329b9b38762271b3d4a52fae",
+    "signature_assets_published": false,
+    "signature_or_attestation_cryptographically_verified": false,
+    "provenance_limit": "Official HTTPS release checksums and API asset digests agree; no detached signature/Sigstore artifact was supplied by this release. This is not an independent signing-root guarantee.",
+    "release_metadata_sha256": "1c464d39504bb9c91f1ee6a608f314dc1536db331dd59c5e2222754147de774d",
+    "official_build_recipe": "https://github.com/gitleaks/gitleaks/blob/v8.30.1/.goreleaser.yml",
+    "build_recipe_sha256": "1e6a76e13378b4ad215b423411ee6b1732f04c82224fbed4dcdb20b99eab9717"
+  },
+  "source_binding": {
+    "snapshot_files": 362,
+    "snapshot_bytes": 13102402,
+    "canonical_source_manifest_sha256": "6293c6a62ec6e7e86bab3f2d0dc8d3e0012eb00eed0daa7535643c4c826dffdb",
+    "source_unchanged_through_scan": true,
+    "snapshot_unchanged": true,
+    "original_git_history_scanned": false,
+    "snapshot_contains_git_history": false,
+    "this_receipt_is_not_part_of_its_own_input_snapshot": true
+  },
+  "configuration": {
+    "official_tagged_config": "https://github.com/gitleaks/gitleaks/blob/v8.30.1/config/gitleaks.toml",
+    "sha256": "e163e53b9e7e8a8511e77271e2b323ed057759542a6d988258afe3a1fa329caf",
+    "enabled_rule_count": 222,
+    "default_global_path_pattern_count": 25,
+    "default_global_value_regex_count": 13,
+    "default_global_stopword_count": 2,
+    "rules_with_upstream_allowlists": [
+      "aws-access-token",
+      "curl-auth-user",
+      "gcp-api-key",
+      "generic-api-key",
+      "github-app-token",
+      "github-pat",
+      "kubernetes-secret-yaml",
+      "nuget-config-password",
+      "vault-service-token"
+    ],
+    "custom_ignores_or_baseline_added": false,
+    "inline_allow_comments_disabled": true,
+    "redaction_percent": 100,
+    "decode_depth": 5,
+    "archive_depth": 0,
+    "file_size_cap_mebibytes": 16,
+    "maximum_input_file_bytes": 2308163,
+    "size_based_exclusions": 0,
+    "command_timeout_seconds": 120,
+    "gomaxprocs": 2
+  },
+  "actual_coverage": {
+    "default_path_excluded_files": [
+      {
+        "path": "docs/screenshots/clean-showcase-brief-desktop-20261029T084844192667Z.png",
+        "bytes": 702709
+      },
+      {
+        "path": "docs/screenshots/clean-showcase-earth-desktop-20261029T084844192667Z.png",
+        "bytes": 896501
+      },
+      {
+        "path": "docs/screenshots/clean-showcase-earth-portrait390-20261029T084844192667Z.png",
+        "bytes": 257160
+      },
+      {
+        "path": "docs/screenshots/clean-showcase-media-desktop-20261029T084844192667Z.png",
+        "bytes": 652877
+      },
+      {
+        "path": "docs/screenshots/may2004-showcase-brief-desktop-20261030T001722Z.png",
+        "bytes": 458635
+      },
+      {
+        "path": "docs/screenshots/may2004-showcase-earth-desktop-20261030T001722Z.png",
+        "bytes": 530205
+      },
+      {
+        "path": "docs/screenshots/may2004-showcase-earth-portrait390-20261030T001722Z.png",
+        "bytes": 169348
+      },
+      {
+        "path": "docs/screenshots/may2004-showcase-media-desktop-20261030T001722Z.png",
+        "bytes": 397911
+      },
+      {
+        "path": "frontend/package-lock.json",
+        "bytes": 86621
+      },
+      {
+        "path": "frontend/public/textures/earth-day-2048.jpg",
+        "bytes": 312383
+      },
+      {
+        "path": "frontend/public/textures/earth-day.jpg",
+        "bytes": 2308163
+      },
+      {
+        "path": "frontend/public/textures/earth-night.jpg",
+        "bytes": 779638
+      }
+    ],
+    "default_path_excluded_count": 12,
+    "default_path_excluded_bytes": 7552151,
+    "eligible_after_global_path_exclusions": 350,
+    "engine_reported_scan_bytes": 5550251,
+    "eligible_byte_sum_equals_engine_reported_bytes": true,
+    "all_default_excluded_basenames_confirmed_in_private_skip_logs": true,
+    "fixtures_not_globally_excluded_by_path": true,
+    "upstream_rule_specific_value_allowlists_still_apply": true
+  },
+  "results": {
+    "raw_exit_code": 1,
+    "raw_finding_count": 5,
+    "matched_rule_ids": [
+      "generic-api-key"
+    ],
+    "retained_manually_triaged_noncredential_matches": 5,
+    "confirmed_credentials": 0,
+    "unresolved_matches": 0,
+    "findings": [
+      {
+        "rule_id": "generic-api-key",
+        "file": "backend/container/build_ffmpeg.sh",
+        "start_line": 8,
+        "end_line": 8,
+        "classification": "public_dependency_release_signing_fingerprint",
+        "basis": "Public FFmpeg release-signing key identifier, not a private key or service credential; its PGP role is independently recorded in the signed-source build qualification."
+      },
+      {
+        "rule_id": "generic-api-key",
+        "file": "docs/qualification/2026-10-30-rc2-linux-backend-597-export-rebind.json",
+        "start_line": 26,
+        "end_line": 26,
+        "classification": "public_source_file_sha256",
+        "basis": "Declared source-file hash exactly recomputes from the scanned public snapshot.",
+        "source_reference": "backend/tests/test_api_lifecycle.py",
+        "recomputed_hash_matches": true
+      },
+      {
+        "rule_id": "generic-api-key",
+        "file": "docs/qualification/2026-10-30-rc2-linux-backend-597-export-rebind.json",
+        "start_line": 35,
+        "end_line": 35,
+        "classification": "public_source_file_sha256",
+        "basis": "Declared source-file hash exactly recomputes from the scanned public snapshot.",
+        "source_reference": "backend/tests/test_empty_api_contract.py",
+        "recomputed_hash_matches": true
+      },
+      {
+        "rule_id": "generic-api-key",
+        "file": "docs/qualification/frontend-layout149-runtime.json",
+        "start_line": 204,
+        "end_line": 204,
+        "classification": "public_source_file_sha256",
+        "basis": "Declared source-file hash exactly recomputes from the scanned public snapshot.",
+        "source_reference": "frontend/src/lib/api.ts",
+        "recomputed_hash_matches": true
+      },
+      {
+        "rule_id": "generic-api-key",
+        "file": "docs/qualification/frontend-production-final.json",
+        "start_line": 64,
+        "end_line": 64,
+        "classification": "public_source_file_sha256",
+        "basis": "Declared source-file hash exactly recomputes from the scanned public snapshot.",
+        "source_reference": "frontend/src/lib/api.ts",
+        "recomputed_hash_matches": true
+      }
+    ],
+    "raw_report_sha256": "c3ff6d98835518594cd9cd4cf434178b8991ce0b00f94b2b6f2af11301a27d59",
+    "raw_stderr_sha256": "8af227d61624fde9e310ec2d84ae68d723b68aca87486ddbdf691425122c3dd5",
+    "all_report_secret_fields_redacted": true,
+    "finding_values_omitted_from_public_projection": true
+  },
+  "limits": [
+    "This is independent regex/entropy rule coverage, not exhaustive secret clearance or proof against unknown/encoded credentials.",
+    "The upstream default config excludes the listed lockfile and raster images, and retains its own value/rule allowlists; those bytes are not counted as Gitleaks-cleared.",
+    "No discovered value was tested against a remote provider, and no source/report was uploaded. Tool metadata/archive downloads preceded the local scan.",
+    "Only the frozen public snapshot was scanned in directory mode; private environments/backups, original history, browser stores and unrelated repositories were not read by this scanner.",
+    "The raw five-detection exit remains1 and was not converted to a scanner zero-findings pass. No ignore was added to hide findings.",
+    "Subsequent documentation/final packaging changes require their own byte/known-value checks; this receipt does not certify the future archive.",
+    "Historical DEBUG logs may contain unredacted decoder source fragments despite --redact=100; no raw log is public. Later helpers use INFO and keep logs private without a blanket redaction claim."
+  ],
+  "private_log_scope": {
+    "historical_log_level": "debug",
+    "json_report_secret_fields_redacted": true,
+    "log_text_guaranteed_redacted": false,
+    "debug_decoder_source_fragments_observed": true,
+    "raw_logs_kept_private_and_not_published": true,
+    "subsequent_private_helper_log_level": "info",
+    "scope_correction": "The historical .redacted.log filenames do not guarantee log redaction. The redaction assertion applies only to JSON report Secret fields; decoder-debug output can contain source fragments."
+  },
+  "triage_followup": {
+    "original_five_manual_classifications_retained": true,
+    "prior_reusable_line_only_triage_generalization_rejected": true,
+    "reason": "A separate synthetic same-line unrelated finding could inherit the first public-hash classification. Exact finding columns, source spans and redacted-match/literal binding are required for subsequent automated triage.",
+    "actual_five_preserved_findings_replayed_with_exact_span_binding": 5
+  }
+}

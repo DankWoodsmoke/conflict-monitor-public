@@ -1,0 +1,805 @@
+{
+  "checked_at": "2026-10-30T02:00:50.809385+00:00",
+  "scope": "Read-only independent symbol-mode analysis of the exact official gosu1.20 binary present in the final database candidate; no exploitability or whole-runtime clearance",
+  "database_candidate_image_sha256": "fc61b5645ca9a0115ef9a4fab2f0a3b35006c90a05d5511c5c010786da75ba65",
+  "binary_sha256": "b1892636c281590f34bc63c1118f058cd9de66c4ea463772e3909672d8b302ac",
+  "binary_bytes": 1774474,
+  "binary_reported_version": "1.20",
+  "binary_build_metadata": {
+    "go": "go1.24.6",
+    "module": "github.com/tianon/gosu",
+    "module_version": "v1.20.0",
+    "dependencies": [
+      {
+        "module": "github.com/moby/sys/user",
+        "version": "v0.4.1"
+      },
+      {
+        "module": "golang.org/x/sys",
+        "version": "v0.1.0"
+      }
+    ],
+    "CGO_ENABLED": "0"
+  },
+  "tool": {
+    "sdk_image": "golang:1.27-alpine@sha256:bff16a94c0b4b6d9642581e2a3aa81beb3edb940b2f5a3aac1d22c6a68cb7747",
+    "tool_module": "golang.org/x/vuln@v1.9.0",
+    "tool_binary_sha256": "5cd0095b7ecd227146979d283b04781374254d9a317901513a210f106f46ddcd",
+    "mode": "binary",
+    "exit_code": 0,
+    "elapsed_seconds": 4.625,
+    "raw_sha256": "0b83d673ca2ceb30e281ca3b771a8cbf4665eede5836c3ad24694288c7b90d32",
+    "telemetry": "off",
+    "network_scope": "Read-only Go vulnerability database metadata queries only; no source/binary upload; no system/PATH/runtime-service changes"
+  },
+  "actual_scanner_config": {
+    "protocol_version": "v1.0.0",
+    "scanner_name": "govulncheck",
+    "scanner_version": "v1.9.0",
+    "db": "https://vuln.go.dev",
+    "db_last_modified": "2026-10-27T21:16:18Z",
+    "scan_level": "symbol",
+    "scan_mode": "binary"
+  },
+  "finding_message_counts": {
+    "module": 63,
+    "package": 3,
+    "affected_symbol": 0,
+    "total": 66,
+    "distinct_advisory_ids": 58
+  },
+  "findings_all_levels_retained": [
+    {
+      "level": "module",
+      "osv": "GO-2025-4006",
+      "fixed_version": "v1.24.8",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2025-4007",
+      "fixed_version": "v1.24.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2025-4008",
+      "fixed_version": "v1.24.8",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2025-4009",
+      "fixed_version": "v1.24.8",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2025-4010",
+      "fixed_version": "v1.24.8",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2025-4011",
+      "fixed_version": "v1.24.8",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2025-4012",
+      "fixed_version": "v1.24.8",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2025-4013",
+      "fixed_version": "v1.24.8",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2025-4014",
+      "fixed_version": "v1.24.8",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2025-4015",
+      "fixed_version": "v1.24.8",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2025-4155",
+      "fixed_version": "v1.24.11",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2025-4175",
+      "fixed_version": "v1.24.11",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-4337",
+      "fixed_version": "v1.24.13",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-4340",
+      "fixed_version": "v1.24.12",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-4341",
+      "fixed_version": "v1.24.12",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-4342",
+      "fixed_version": "v1.24.12",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-4601",
+      "fixed_version": "v1.25.8",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-4602",
+      "fixed_version": "v1.25.8",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-4603",
+      "fixed_version": "v1.25.8",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-4864",
+      "fixed_version": "v1.25.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-4865",
+      "fixed_version": "v1.25.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-4869",
+      "fixed_version": "v1.25.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-4870",
+      "fixed_version": "v1.25.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-4918",
+      "fixed_version": "v1.25.10",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-4946",
+      "fixed_version": "v1.25.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-4947",
+      "fixed_version": "v1.25.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-4970",
+      "fixed_version": "v1.25.12",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-4971",
+      "fixed_version": "v1.25.10",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-4976",
+      "fixed_version": "v1.25.10",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-4977",
+      "fixed_version": "v1.25.10",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-4980",
+      "fixed_version": "v1.25.10",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-4981",
+      "fixed_version": "v1.25.10",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-4982",
+      "fixed_version": "v1.25.10",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-4986",
+      "fixed_version": "v1.25.10",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-5026",
+      "fixed_version": "v1.25.13",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-5037",
+      "fixed_version": "v1.25.11",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-5038",
+      "fixed_version": "v1.25.11",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-5039",
+      "fixed_version": "v1.25.11",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-5856",
+      "fixed_version": "v1.25.12",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-5972",
+      "fixed_version": "v1.25.13",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6088",
+      "fixed_version": "v1.25.13",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6089",
+      "fixed_version": "v1.25.13",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6090",
+      "fixed_version": "v1.25.13",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6091",
+      "fixed_version": "v1.25.13",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6218",
+      "fixed_version": "v1.25.13",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6599",
+      "fixed_version": "v1.26.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6600",
+      "fixed_version": "v1.26.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6603",
+      "fixed_version": "v1.26.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6603",
+      "fixed_version": "v1.26.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6605",
+      "fixed_version": "v1.26.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6607",
+      "fixed_version": "v1.26.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6608",
+      "fixed_version": "v1.26.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6609",
+      "fixed_version": "v1.26.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6610",
+      "fixed_version": "v1.26.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6610",
+      "fixed_version": "v1.26.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6611",
+      "fixed_version": "v1.26.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6611",
+      "fixed_version": "v1.26.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6612",
+      "fixed_version": "v1.26.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6612",
+      "fixed_version": "v1.26.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6613",
+      "fixed_version": "v1.26.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6617",
+      "fixed_version": "v1.26.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6617",
+      "fixed_version": "v1.26.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "module",
+      "osv": "GO-2026-6809",
+      "fixed_version": "v1.26.10",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6"
+        }
+      ]
+    },
+    {
+      "level": "package",
+      "osv": "GO-2026-4864",
+      "fixed_version": "v1.25.9",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6",
+          "package": "internal/syscall/unix"
+        }
+      ]
+    },
+    {
+      "level": "package",
+      "osv": "GO-2026-4602",
+      "fixed_version": "v1.25.8",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6",
+          "package": "os"
+        }
+      ]
+    },
+    {
+      "level": "package",
+      "osv": "GO-2026-4970",
+      "fixed_version": "v1.25.12",
+      "trace": [
+        {
+          "module": "stdlib",
+          "version": "v1.24.6",
+          "package": "os"
+        }
+      ]
+    }
+  ],
+  "stderr_bytes": 0,
+  "status": "SCOPED_ANALYSIS_COMPLETED_WITH_MODULE_AND_PACKAGE_FINDINGS_RETAINED",
+  "limits": [
+    "Exit0 alone is not evidence of zero findings: all66 actual module/package finding messages are retained.",
+    "No known affected symbol was identified by this binary-mode tool snapshot. This is not a runtime exploit test, full call graph or proof of no vulnerabilities.",
+    "The obsolete Go compiler version is recorded. Module-level version findings do not establish that vulnerable functions are included or called.",
+    "The Go database last-modified timestamp is retained as returned by the tool. It does not cover unknown vulnerabilities or replace package/OS/host review.",
+    "Only a stock program binary was mounted; no production data, private environment, original corpus, model/GPU service or source tree was accessed."
+  ],
+  "evidence_hashes": [
+    {
+      "scope": "Full actual Go JSON message stream",
+      "sha256": "0b83d673ca2ceb30e281ca3b771a8cbf4665eede5836c3ad24694288c7b90d32"
+    },
+    {
+      "scope": "Exact Go module/build metadata",
+      "sha256": "2ca71f59d1aca1e44d4f4ee56a9762070f7eb65aa1df3ede2f36f966c20cc0b3"
+    },
+    {
+      "scope": "Pinned official tool source/module compilation",
+      "sha256": "6929aa004f0c825fc8a002eb7c52ef2768d6c5172b98b2e05f171e88e7728ea5"
+    }
+  ]
+}

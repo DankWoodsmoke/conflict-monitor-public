@@ -1,15 +1,26 @@
 # Fresh, isolated installation. Keep live collection disabled until configured.
 services:
   db:
-    image: postgis/postgis:17-3.6@sha256:1ac10b2551ba84ae05db8e7da477afcd0a3fede99bcb7705da2ee157390cb095
+    build: ./tools/postgis
+    image: conflict-monitor-postgis:0.2.0-rc.2
+    pull_policy: build
+    read_only: true
+    cap_drop: [ALL]
+    # Only initialization needs these; the PostgreSQL server drops to UID 999.
+    cap_add: [CHOWN, DAC_OVERRIDE, FOWNER, SETGID, SETUID]
+    security_opt: [no-new-privileges:true]
+    tmpfs:
+      - /tmp:mode=1777
+      - /var/run/postgresql:uid=999,gid=999,mode=3775
     environment:
       POSTGRES_USER: monitor_admin
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set a new POSTGRES_PASSWORD in .env}
       POSTGRES_DB: conflict_monitor
+      PROJ_NETWORK: "OFF"
     volumes:
-      # A new volume deliberately prevents a silent Bullseye -> Trixie data-directory reuse.
+      # A new volume prevents silently mounting an earlier profile's data directory.
       # Existing installations must follow docs/DB_UPGRADE.md before starting this profile.
-      - pgdata17_36:/var/lib/postgresql/data
+      - pgdata17_36_secure:/var/lib/postgresql/data
     healthcheck:
       test: [CMD-SHELL, "pg_isready -h 127.0.0.1 -U monitor_admin -d conflict_monitor"]
       interval: 5s
@@ -17,6 +28,8 @@ services:
       retries: 20
   migrate:
     build: ./backend
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
     environment:
       DATABASE_URL: postgresql+asyncpg://monitor_admin:${POSTGRES_PASSWORD}@db:5432/conflict_monitor
       POSTGRES_APP_PASSWORD: ${POSTGRES_APP_PASSWORD:?Set a separate new 64-character hex POSTGRES_APP_PASSWORD in .env}
@@ -29,6 +42,8 @@ services:
     restart: "no"
   backend:
     build: ./backend
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
     env_file: ${CONFLICT_ENV_FILE:-.env}
     environment:
       DATABASE_URL: postgresql+asyncpg://monitor:${POSTGRES_APP_PASSWORD}@db:5432/conflict_monitor
@@ -60,11 +75,18 @@ services:
   frontend:
     build:
       context: ./frontend
+    user: "101:101"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs:
+      - /var/cache/nginx:uid=101,gid=101,mode=0700
+      - /var/run:uid=101,gid=101,mode=0700
     ports:
       - "127.0.0.1:${FRONTEND_PORT:-5173}:80"
     depends_on:
       backend:
         condition: service_healthy
 volumes:
-  pgdata17_36:
+  pgdata17_36_secure:
   briefing_data:

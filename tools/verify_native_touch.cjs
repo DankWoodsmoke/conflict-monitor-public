@@ -106,22 +106,34 @@ async function stableHeight(page) {
       receipt.checks.push('native_touch_pinch_changes_observed_camera_height');
     } catch (error) { receipt.incomplete.push({ type: 'native_pinch', error: safe(error.message) }); }
     try {
-      await showEarthNavigation(page);
-      await tap(page, page.getByRole('button', { name: 'Globe', exact: true }));
-      await page.waitForFunction(() => /1[5-9]\.\d Mm|2\d\.\d Mm/.test(document.querySelector('.earth-navigation small')?.textContent || ''), null, { timeout: 8000 });
-      await stableHeight(page);
-      await hideEarthNavigation(page);
       const counts = () => page.locator('.earth-coverage').evaluate(node => ({
         enabled: Number(node.getAttribute('data-position-count')), visible: Number(node.getAttribute('data-visible-count')) }));
-      const beforePan = await counts(); let afterPan = beforePan;
+      const attempts = [];
       let measured = false;
       for (let attempt = 0; attempt < 3; attempt++) {
+        // Each bounded gesture needs its own real reset and fresh baseline:
+        // live positions can expire while an earlier attempt is in progress.
+        // Never compare later gestures with a stale first-attempt inventory.
+        await showEarthNavigation(page);
+        await tap(page, page.getByRole('button', { name: 'Region', exact: true }));
+        await stableHeight(page);
+        await tap(page, page.getByRole('button', { name: 'Globe', exact: true }));
+        await page.waitForFunction(() => /1[5-9]\.\d Mm|2\d\.\d Mm/.test(document.querySelector('.earth-navigation small')?.textContent || ''), null, { timeout: 8000 });
+        await stableHeight(page);
+        await hideEarthNavigation(page);
+        const beforePan = await counts();
+        const started = Date.now();
         await cdp.send('Input.synthesizeScrollGesture', { x: canvasBox.x + canvasBox.width / 2,
           y: canvasBox.y + canvasBox.height / 2, xDistance: 180, yDistance: 0, speed: 220, gestureSourceType: 'touch' });
-        await page.waitForTimeout(700); afterPan = await counts();
-        if (beforePan.visible >= 4 && afterPan.enabled === beforePan.enabled && afterPan.visible <= Math.floor(beforePan.visible / 4)) { measured = true; break; }
+        await page.waitForTimeout(700);
+        const afterPan = await counts();
+        measured = beforePan.visible >= 4 && afterPan.enabled === beforePan.enabled && afterPan.visible <= Math.floor(beforePan.visible / 4);
+        attempts.push({ attempt: attempt + 1, real_region_and_globe_reset: true, before: beforePan, after: afterPan,
+          elapsed_ms: Date.now() - started, inventory_unchanged: afterPan.enabled === beforePan.enabled,
+          large_hemisphere_mask_change_measured: measured });
+        if (measured) break;
       }
-      receipt.native_pan = { command_accepted: true, before: beforePan, after: afterPan,
+      receipt.native_pan = { command_accepted: true, attempts,
         large_hemisphere_mask_change_measured: measured, exact_camera_center_measured: false };
       if (measured) receipt.checks.push('native_touch_pan_changes_actual_position_hemisphere_viewport');
       else receipt.incomplete.push({ type: 'native_pan_outcome', reason: 'Native commands accepted, but a sufficiently large viewport-mask change with unchanged position count was not observed.' });
@@ -152,12 +164,29 @@ async function stableHeight(page) {
     await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
     await page.waitForFunction(before => Math.max(...[...document.querySelectorAll('.feed-sheet *')].map(node => Number(node.scrollTop) || 0), 0) > before + 20, beforeScroll, { timeout: 6000 });
     receipt.feed_scroll = { method: 'Input.dispatchTouchEvent', before: beforeScroll, after: await page.locator('.feed-sheet').evaluate(sheet => Math.max(...[...sheet.querySelectorAll('*')].map(node => Number(node.scrollTop) || 0), 0)) };
+    await page.waitForTimeout(350);
+    const reverseBefore=await page.locator('.feed-sheet').evaluate(sheet=>Math.max(...[...sheet.querySelectorAll('*')].map(node=>Number(node.scrollTop)||0),0));
+    const reverseY=box.y+box.height*.25;
+    await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:touchX,y:reverseY}]});
+    for(let step=1;step<=12;step++){
+      await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:touchX,y:reverseY+step*10}]});
+      await page.waitForTimeout(16);
+    }
+    await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+    assert(await page.locator('.feed-sheet').isVisible(),'A report-list scroll gesture dismissed its modal');
+    await page.waitForFunction(before=>Math.max(...[...document.querySelectorAll('.feed-sheet *')].map(node=>Number(node.scrollTop)||0),0)<before-10,reverseBefore,{timeout:6000});
+    receipt.feed_scroll.reverse={before:reverseBefore,after:await page.locator('.feed-sheet').evaluate(sheet=>Math.max(...[...sheet.querySelectorAll('*')].map(node=>Number(node.scrollTop)||0),0)),sheet_remained_open:true};
     receipt.checks.push('native_touch_scroll_moves_report_list');
     await page.setViewportSize({ width: 844, height: 390 });
     await page.locator('.feed-sheet').waitFor({ state: 'hidden' });
     await sameCanvas(page, canvas);
     const layout = await page.evaluate(() => ({ width: innerWidth, scroll_width: document.documentElement.scrollWidth }));
     assert(layout.scroll_width <= layout.width + 1); receipt.landscape_layout = layout;
+    assert(await page.locator('.mobile-bottom-nav [aria-pressed="true"]').evaluate(node=>node===document.activeElement),'Rotation stranded the report-sheet focus');
+    await page.setViewportSize({width:390,height:844});
+    await page.waitForTimeout(250);
+    assert.equal(await page.locator('.feed-sheet').count(),0,'Rotation back to portrait reopened an old report modal');
+    await sameCanvas(page,canvas);receipt.orientation_round_trip={portrait_return:true,report_sheet_reopened:false,same_canvas:true};
     receipt.checks.push('portrait_to_landscape_preserves_canvas_and_fits_viewport');
     await context.close();
   } catch (error) { receipt.findings.push({ type: 'probe_failure', error: safe(error.message) }); }

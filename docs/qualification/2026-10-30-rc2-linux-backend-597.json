@@ -1,0 +1,24 @@
+{
+  "app_imports": "/app/app",
+  "application_source_mounted": false,
+  "elapsed_seconds": 16.719,
+  "exit_code": 0,
+  "image": "sha256:9b094edd5879d47d682c62dbb81f977b9ed5597058aa3f4a162434bd31c02877",
+  "limits": [
+    "Does not replace live provider, SQL, browser or duration gates.",
+    "Runs as root only in the disposable test container; production UID and capability checks are separate."
+  ],
+  "log_sha256": "f808df9954fefa70a358e5e673f068ac8de1779ad0140fbc9c5b4ef1b651b1e8",
+  "only_missing_dev_packages_installed": true,
+  "private_env_mounted": false,
+  "scope": "Linux unit suite imports application bytes from the actual qualified backend image; only tests and tools are mounted.",
+  "status": "PASS",
+  "test_dependencies_added": 27,
+  "tests": {
+    "passed": 597,
+    "pytest_seconds": 9.64,
+    "skipped": 0,
+    "subtests_passed": 29
+  },
+  "version": "0.2.0-rc.2"
+}

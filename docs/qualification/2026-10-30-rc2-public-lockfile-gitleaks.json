@@ -1,0 +1,39 @@
+{
+  "version": "0.2.0-rc.2",
+  "status": "TARGETED_PACKAGE_LOCK_SCAN_COMPLETED_ZERO_FINDINGS",
+  "scope": "Supplemental scan of only the same public snapshot frontend/package-lock.json with its one default path-exclusion alternative removed",
+  "checked_at": "2026-10-30T05:03:43.574497+00:00",
+  "tool_version": "8.30.1",
+  "tool_sha256": "17157e2ee8b76fc8b1d8bee607a250e34b8a8023c8bc81822d4b5ee4d78fcb7c",
+  "rule_count": 222,
+  "target_relative_path": "frontend/package-lock.json",
+  "target_bytes": 86621,
+  "target_sha256": "4ef1baa729ff968d9d6e244cf30d88ac863d6d28e518d572a3194ceb80100e0f",
+  "original_config_sha256": "e163e53b9e7e8a8511e77271e2b323ed057759542a6d988258afe3a1fa329caf",
+  "targeted_config_sha256": "148df8c9e99f282c0e19af8edaeb49137154b68b70bff2219205a761e9c75db2",
+  "config_diff_sha256": "a3405a1e7da50f3aca674ada3540d388e83a48c82cdb6ae479f3f2296385f112",
+  "only_one_global_path_regex_changed": true,
+  "rules_and_value_allowlists_identical": true,
+  "custom_ignores_added": false,
+  "raw_exit_code": 0,
+  "finding_count": 0,
+  "raw_redacted_report_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+  "limits": [
+    "This closes the listed lockfile path-exclusion gap for these exact bytes only; eleven raster image files remain outside Gitleaks coverage.",
+    "All222 rules and upstream value/rule allowlists remain unchanged; no detected match was suppressed.",
+    "No private environment, Git history, backup, credential validation request or upload was involved.",
+    "This is not exhaustive secret clearance. The default362-file snapshot and its five retained noncredential findings remain separately documented.",
+    "Historical DEBUG logs may contain unredacted decoder source fragments despite --redact=100; no raw log is public. Later helpers use INFO and keep logs private without a blanket redaction claim."
+  ],
+  "normalized_text_config_diff": "--- official-config\n+++ targeted-lockfile-config\n@@ -34,7 +34,7 @@\n     '''(?:^|/)mvnw(?:\\.cmd)?$''',\n     '''(?:^|/)\\.mvn/wrapper/MavenWrapperDownloader\\.java$''',\n     '''(?:^|/)node_modules(?:/.*)?$''',\n-    '''(?:^|/)(?:deno\\.lock|npm-shrinkwrap\\.json|package-lock\\.json|pnpm-lock\\.yaml|yarn\\.lock)$''',\n+    '''(?:^|/)(?:deno\\.lock|npm-shrinkwrap\\.json|pnpm-lock\\.yaml|yarn\\.lock)$''',\n     '''(?:^|/)bower_components(?:/.*)?$''',\n     '''(?:^|/)(?:angular|bootstrap|jquery(?:-?ui)?|plotly|swagger-?ui)[a-zA-Z0-9.-]*(?:\\.min)?\\.js(?:\\.map)?$''',\n     '''(?:^|/)javascript\\.json$''',\n",
+  "line_ending_note": "Official config bytes use LF; the tested Windows-written targeted copy uses CRLF. Its exact byte hash is recorded separately. Parsed settings differ only in the single lockfile path alternative; all222 rules and all other allowlists remain identical.",
+  "private_log_scope": {
+    "historical_log_level": "debug",
+    "json_report_secret_fields_redacted": true,
+    "log_text_guaranteed_redacted": false,
+    "debug_decoder_source_fragments_observed": true,
+    "raw_logs_kept_private_and_not_published": true,
+    "subsequent_private_helper_log_level": "info",
+    "scope_correction": "The historical .redacted.log filenames do not guarantee log redaction. The redaction assertion applies only to JSON report Secret fields; decoder-debug output can contain source fragments."
+  }
+}

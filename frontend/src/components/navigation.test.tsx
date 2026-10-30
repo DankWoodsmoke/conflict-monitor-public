@@ -5,6 +5,7 @@ import { Header } from "./Header";
 import { SettingsPanel } from "./SettingsPanel";
 import { AboutPanel } from "./AboutPanel";
 import { useTracking } from "../hooks/useTracking";
+import {ShowcaseBar} from './ShowcaseBar';
 
 vi.mock("../lib/api",()=>({apiFetch:vi.fn(async(input:string)=>Response.json(
   input.includes("/tracking/aircraft") ? [{icao24:"test",callsign:"SYNTHETIC",lat:0,lon:0,altitude:1000,on_ground:false}] :
@@ -17,6 +18,16 @@ afterEach(async()=>{await act(async()=>root.unmount());host.remove();vi.restoreA
 const base={isConnected:false,eventCount:0,aircraftCount:0,vesselCount:0,demoMode:true,onAboutClick:vi.fn(),onSettingsClick:vi.fn(),viewMode:"earth" as const,onViewModeChange:vi.fn(),activeSources:new Set(["rss"]),onSourceToggle:vi.fn()};
 
 describe("workspace navigation",()=>{
+  it("gives the nonmodal capability tour a focus entry and return while respecting a foreground modal's Escape",async()=>{
+    vi.spyOn(HTMLElement.prototype,'getClientRects').mockReturnValue([{width:100,height:40}] as any);
+    await act(async()=>root.render(<ShowcaseBar view="earth" onView={()=>{}}/>));
+    const trigger=host.querySelector<HTMLButtonElement>('[aria-controls="capability-tour"]')!;trigger.focus();await act(async()=>trigger.click());
+    const close=host.querySelector<HTMLButtonElement>('[aria-label="Close capability tour"]')!;expect(document.activeElement).toBe(close);expect(host.querySelector('.showcase-tour')?.getAttribute('aria-modal')).toBe('false');
+    const foreground=document.createElement('section');foreground.setAttribute('role','dialog');foreground.setAttribute('aria-modal','true');document.body.append(foreground);
+    await act(async()=>window.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',cancelable:true})));expect(host.querySelector('.showcase-tour')).not.toBeNull();foreground.remove();
+    await act(async()=>window.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',cancelable:true})));expect(host.querySelector('.showcase-tour')).toBeNull();expect(document.activeElement).toBe(trigger);
+    await act(async()=>trigger.click());await act(async()=>host.querySelector<HTMLButtonElement>('[aria-label="Close capability tour"]')!.click());expect(document.activeElement).toBe(trigger);
+  });
   it("uses the workspace view names and explains the free source briefing",async()=>{
     await act(async()=>root.render(<AboutPanel onClose={()=>{}}/>));
     expect([...host.querySelectorAll('h3')].map(h=>h.textContent)).toEqual(["01 / Earth","02 / Media","03 / Brief"]);

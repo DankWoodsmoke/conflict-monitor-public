@@ -1,0 +1,110 @@
+{
+  "version": "0.2.0-rc.2",
+  "status": "SCANNED_FINDINGS_RETAINED",
+  "scope": "Exact local frontend image and APK/match-set rebind; not a deployment or whole-system security clearance",
+  "started_at": "2026-10-30T05:41:30.045507+00:00",
+  "ended_at": "2026-10-30T05:41:39.267489+00:00",
+  "image_id": "sha256:71dae32e0eb066f835426cdbce78c9d6a0eaedbc51a19cd835edfdb3b7012ce0",
+  "baseline_image_id": "sha256:4236ac4715021d2ed56c2791be709d78a036f18a54b8a8f9c3c585e07d8effd4",
+  "scanner": {
+    "name": "Grype",
+    "version": "0.121.0",
+    "exe_sha256": "4f366a6f8ed46f97280e14ded6acb8711ac49744f99c09214f5e676f34a16ecb",
+    "database_built": "2026-10-29T06:23:34Z",
+    "database_sha256": "bd2a260cf746a39229f01a3eb0da8453ba0ef5e51e88a1abe735c6e257774494",
+    "database_updated_during_scan": false,
+    "external_lookups_enabled": false
+  },
+  "exit_code": 0,
+  "seconds": 9.219,
+  "raw_sha256": "11564accd9e0e950da25caf609e12836010f099eaeda84ea3acdd790732dd870",
+  "baseline_raw_sha256": "ce51e8b6cf91bc0e456a398aa766aa1a2408e1b390ccd337292d946d3203f15b",
+  "records": 3,
+  "severity_counts": {
+    "Medium": 3
+  },
+  "no_ignore_rules": true,
+  "all_findings_retained": [
+    {
+      "package": "busybox",
+      "version": "1.37.0-r31",
+      "type": "apk",
+      "purl": "pkg:apk/alpine/busybox@1.37.0-r31?arch=x86_64&distro=alpine-3.24.3",
+      "vulnerability": "CVE-2025-60876",
+      "namespace": "nvd:cpe",
+      "data_source": "https://nvd.nist.gov/vuln/detail/CVE-2025-60876",
+      "severity": "Medium",
+      "fix_state": "",
+      "fix_versions": []
+    },
+    {
+      "package": "busybox-binsh",
+      "version": "1.37.0-r31",
+      "type": "apk",
+      "purl": "pkg:apk/alpine/busybox-binsh@1.37.0-r31?arch=x86_64&distro=alpine-3.24.3&upstream=busybox",
+      "vulnerability": "CVE-2025-60876",
+      "namespace": "nvd:cpe",
+      "data_source": "https://nvd.nist.gov/vuln/detail/CVE-2025-60876",
+      "severity": "Medium",
+      "fix_state": "",
+      "fix_versions": []
+    },
+    {
+      "package": "ssl_client",
+      "version": "1.37.0-r31",
+      "type": "apk",
+      "purl": "pkg:apk/alpine/ssl_client@1.37.0-r31?arch=x86_64&distro=alpine-3.24.3&upstream=busybox",
+      "vulnerability": "CVE-2025-60876",
+      "namespace": "nvd:cpe",
+      "data_source": "https://nvd.nist.gov/vuln/detail/CVE-2025-60876",
+      "severity": "Medium",
+      "fix_state": "",
+      "fix_versions": []
+    }
+  ],
+  "package_comparison": {
+    "baseline_count": 72,
+    "new_count": 72,
+    "exact_package_rows_equal": true,
+    "baseline_inventory_sha256": "b084ef86b1c84286178d4ab6701789d2dc57075ed00ae64a84c919032609a17c",
+    "new_inventory_sha256": "b084ef86b1c84286178d4ab6701789d2dc57075ed00ae64a84c919032609a17c"
+  },
+  "vulnerability_multiset_equal": true,
+  "added_records": [],
+  "removed_records": [],
+  "runtime_layer_comparison": {
+    "baseline": [
+      "sha256:75c137aedfb2760f88629236cb7b797630aed0c3d91d626d1d1bb694878fc2ba",
+      "sha256:347d70688a4f620ee434007bc3b622592c459d0c45cbc275d0c8c3db0d2cb3e5",
+      "sha256:0118eeeab20f23cb5712fe7b96dd0a3460b185c3f9fb0bdb59062a3972f5b9af",
+      "sha256:a027351c56d0ec60ff555693e0afdd9ac6536425c3a6cd70cfd99438c32cf33b",
+      "sha256:54733ab91a37b26f9dbcdebb53c37d88e967e1aca9e52984d231c7418c858dba",
+      "sha256:26fc657c345556a2c48a5cdaa66f5e31ea881a18184bc943ad42cc46e93d7139",
+      "sha256:6e2ae602f9d69418f36fd9c178e472fb6e6b468f6aadd3dbd759fcee552a7527",
+      "sha256:a617e334a194398d200a112e5d4a39c65aa720650fe0fae732bdb1d7d4fb53a0",
+      "sha256:06a85ef3304894dd8ec4162582365fd035ad50c64e58002d79e9084f4f18f1d8",
+      "sha256:13cd1552e1b4bb5a6d7663712316da1b1f3636108cf98724dfbabe0e7221bed7",
+      "sha256:012ca536d07aecbcb25778cf9f15785122f0bf9eb9e852a8a8190fd89515b0ca"
+    ],
+    "new": [
+      "sha256:75c137aedfb2760f88629236cb7b797630aed0c3d91d626d1d1bb694878fc2ba",
+      "sha256:347d70688a4f620ee434007bc3b622592c459d0c45cbc275d0c8c3db0d2cb3e5",
+      "sha256:0118eeeab20f23cb5712fe7b96dd0a3460b185c3f9fb0bdb59062a3972f5b9af",
+      "sha256:a027351c56d0ec60ff555693e0afdd9ac6536425c3a6cd70cfd99438c32cf33b",
+      "sha256:54733ab91a37b26f9dbcdebb53c37d88e967e1aca9e52984d231c7418c858dba",
+      "sha256:26fc657c345556a2c48a5cdaa66f5e31ea881a18184bc943ad42cc46e93d7139",
+      "sha256:6e2ae602f9d69418f36fd9c178e472fb6e6b468f6aadd3dbd759fcee552a7527",
+      "sha256:a617e334a194398d200a112e5d4a39c65aa720650fe0fae732bdb1d7d4fb53a0",
+      "sha256:06a85ef3304894dd8ec4162582365fd035ad50c64e58002d79e9084f4f18f1d8",
+      "sha256:13cd1552e1b4bb5a6d7663712316da1b1f3636108cf98724dfbabe0e7221bed7",
+      "sha256:b61cb620cc22b4f0b28622b9085cb13989d6a4aa63b81c4fac67374739f900ad"
+    ]
+  },
+  "limits": [
+    "Dated scanner results do not establish absence of unknown vulnerabilities or exploitability.",
+    "Retains existing BusyBox advisories if still measured; no blanket component exemption.",
+    "Does not re-audit the backend, database, builder stages, host, browser or runtime UI.",
+    "Baseline vulnerability output is reused, not rescanned; APK inventories are actual network-disabled read-only one-shot filesystem reads.",
+    "No source/image upload, authentication, application start, live-container inspection or deployment occurred."
+  ]
+}

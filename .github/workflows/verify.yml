@@ -73,3 +73,140 @@ jobs:
       - run: python tools/verify_live_pipeline.py
       - run: python tools/release_gate.py --scan-only
       - run: pip-audit
+  container_profile:
+    name: Shipped Compose security and pipeline profile
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      COMPOSE_PROJECT_NAME: cmonitor-ci-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - name: Prepare isolated masked fixtures
+        run: |
+          python - <<'PY'
+          import os, re, secrets
+          from pathlib import Path
+          project = os.environ['COMPOSE_PROJECT_NAME']
+          assert re.fullmatch(r'cmonitor-ci-[0-9]+-[0-9]+', project)
+          folder = Path(os.environ['RUNNER_TEMP']) / 'conflict-monitor-compose'
+          folder.mkdir(mode=0o700)
+          with open(os.environ['GITHUB_ENV'], 'a', encoding='utf8') as output:
+              output.write('QUALIFY_DIR=' + str(folder) + '\n')
+          (folder / 'reports').mkdir()
+          (folder / 'empty-voice').mkdir()
+          bootstrap, runtime = secrets.token_hex(32), secrets.token_hex(32)
+          for value in (bootstrap, runtime):
+              print('::add-mask::' + value)
+          values = {
+              'POSTGRES_PASSWORD': bootstrap, 'POSTGRES_APP_PASSWORD': runtime,
+              'CONFLICT_ENV_FILE': str(folder / 'fixture.env'),
+              'PIPER_VOICE_DIR': str(folder / 'empty-voice'),
+              'FRONTEND_PORT': '0', 'BACKEND_PORT': '0',
+              'LIVE_INGESTION_ENABLED': 'false', 'DEMO_MODE': 'false',
+              'X_INGESTION_ENABLED': 'false', 'ENABLE_LOCAL_AI': 'false',
+              'ENABLE_SITREP_GENERATION': 'false', 'ENABLE_VIDEO_GENERATION': 'false',
+              'GOOGLE_EARTH_ENABLED': 'false', 'GOOGLE_MAPS_BROWSER_KEY': '',
+              'ANTHROPIC_API_KEY': '', 'ADMIN_API_KEY': '',
+              'TWITTER_BEARER_TOKEN': '', 'TELEGRAM_API_ID': '0',
+              'TELEGRAM_API_HASH': '', 'TELEGRAM_SESSION': '',
+              'AISSTREAM_API_KEY': '', 'FIRMS_MAP_KEY': '',
+          }
+          descriptor = os.open(folder / 'fixture.env', os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+          with os.fdopen(descriptor, 'w', encoding='utf8') as output:
+              output.write(''.join(key + '=' + value + '\n' for key, value in values.items()))
+          (folder / 'compose.override.yml').write_text('''services:
+            db:
+              image: ${COMPOSE_PROJECT_NAME}-db
+              environment:
+                POSTGRES_DB: conflict_monitor_test
+              healthcheck:
+                test: [CMD-SHELL, "pg_isready -h 127.0.0.1 -U monitor_admin -d conflict_monitor_test"]
+            migrate:
+              image: ${COMPOSE_PROJECT_NAME}-backend
+              environment:
+                DATABASE_URL: postgresql+asyncpg://monitor_admin:${POSTGRES_PASSWORD}@db:5432/conflict_monitor_test
+            backend:
+              image: ${COMPOSE_PROJECT_NAME}-backend
+              environment:
+                DATABASE_URL: postgresql+asyncpg://monitor:${POSTGRES_APP_PASSWORD}@db:5432/conflict_monitor_test
+                PYTHONPATH: /app
+                PYTHONDONTWRITEBYTECODE: "1"
+              volumes:
+                - type: bind
+                  source: ${GITHUB_WORKSPACE}/tools
+                  target: /qualification/tools
+                  read_only: true
+            frontend:
+              image: ${COMPOSE_PROJECT_NAME}-frontend
+          ''', encoding='utf8')
+          PY
+      - name: Build all shipped runtime images from source
+        run: docker compose --env-file "$QUALIFY_DIR/fixture.env" -f docker-compose.yml -f "$QUALIFY_DIR/compose.override.yml" build db backend frontend
+      - name: Initialize the isolated shipped profile
+        run: docker compose --env-file "$QUALIFY_DIR/fixture.env" -f docker-compose.yml -f "$QUALIFY_DIR/compose.override.yml" up -d --no-build --wait --wait-timeout 180
+      - name: Verify actual runtime permissions and PostGIS TCP pipeline
+        run: |
+          set -o pipefail
+          for gate in verify_database_role.py verify_postgis.py verify_live_pipeline.py; do
+            docker compose --env-file "$QUALIFY_DIR/fixture.env" -f docker-compose.yml -f "$QUALIFY_DIR/compose.override.yml" exec -T backend python "/qualification/tools/$gate" | tee "$QUALIFY_DIR/reports/$gate.log"
+          done
+      - name: Verify PID1, capability, mount and port boundaries
+        run: |
+          python tools/verify_container_boundary.py --project "$COMPOSE_PROJECT_NAME" --compose-file docker-compose.yml --override-file "$QUALIFY_DIR/compose.override.yml" --env-file "$QUALIFY_DIR/fixture.env" --output "$QUALIFY_DIR/reports/container-boundary.json"
+      - name: Verify actual served security and cache headers
+        run: |
+          front=$(docker compose --env-file "$QUALIFY_DIR/fixture.env" -f docker-compose.yml -f "$QUALIFY_DIR/compose.override.yml" port frontend 80)
+          back=$(docker compose --env-file "$QUALIFY_DIR/fixture.env" -f docker-compose.yml -f "$QUALIFY_DIR/compose.override.yml" port backend 8000)
+          python tools/verify_http_headers.py --frontend-url "http://$front" --backend-url "http://$back" --output "$QUALIFY_DIR/reports/http-headers.json"
+      - name: Remove generated fixture secrets from retained reports
+        id: sanitize_reports
+        if: always() && env.QUALIFY_DIR != ''
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          folder = Path(os.environ['QUALIFY_DIR'])
+          fixture = folder / 'fixture.env'
+          reports = folder / 'reports'
+          sanitized = folder / 'sanitized-reports'
+          if fixture.is_symlink() or not fixture.is_file() or reports.is_symlink() or not reports.is_dir():
+              raise RuntimeError('Missing or unexpected qualification fixture/report paths')
+          values = dict(line.split('=', 1) for line in fixture.read_text(encoding='utf8').splitlines() if '=' in line)
+          private = [values[key].encode() for key in ('POSTGRES_PASSWORD', 'POSTGRES_APP_PASSWORD') if values.get(key)]
+          if len(private) != 2:
+              raise RuntimeError('Missing generated fixture secrets')
+          sanitized.mkdir(mode=0o700)
+          entries = list(reports.iterdir())
+          if len(entries) > 64:
+              raise RuntimeError('Too many qualification report entries')
+          total = 0
+          for path in entries:
+              if path.is_symlink() or not path.is_file() or path.suffix not in {'.json', '.log'}:
+                  raise RuntimeError('Unexpected qualification report entry')
+              if path.stat().st_size > 4_000_000:
+                  raise RuntimeError('Qualification report exceeds export budget')
+              data = path.read_bytes()
+              total += len(data)
+              if len(data) > 4_000_000 or total > 16_000_000:
+                  raise RuntimeError('Qualification reports exceed export budget')
+              for value in private:
+                  data = data.replace(value, b'[redacted-generated-fixture]')
+              (sanitized / path.name).write_bytes(data)
+          PY
+      - name: Retain sanitized qualification receipts
+        if: always() && steps.sanitize_reports.outcome == 'success'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: shipped-profile-qualification
+          path: ${{ env.QUALIFY_DIR }}/sanitized-reports/
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Remove only this job's isolated profile and volumes
+        if: always()
+        run: |
+          if [[ "$COMPOSE_PROJECT_NAME" =~ ^cmonitor-ci-[0-9]+-[0-9]+$ ]] && [[ -n "${QUALIFY_DIR:-}" ]] && [[ -f "$QUALIFY_DIR/fixture.env" ]]; then
+            docker compose --env-file "$QUALIFY_DIR/fixture.env" -f docker-compose.yml -f "$QUALIFY_DIR/compose.override.yml" down --volumes --remove-orphans
+          fi

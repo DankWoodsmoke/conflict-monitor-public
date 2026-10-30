@@ -110,9 +110,11 @@ made explicit. The complete raw sample/metrics are in
 
 Configure `ENABLE_VIDEO_GENERATION=true` and `PIPER_MODEL_PATH` pointing to an
 installed English espeak Piper voice with its adjacent `.onnx.json` file.
-`PIPER_PYTHON` optionally selects the worker interpreter. The production image
-installs FFmpeg, DejaVu fonts, Pillow13, Piper1.8 and ONNX Runtime1.31.1 using
-the dependency locks. Model files are mounted separately, never downloaded by
+`PIPER_PYTHON` optionally selects the worker interpreter. The RC.2 production image
+builds SHA/signature-verified FFmpeg9.0.2 with only required local formats and
+`file`/`pipe` protocols, alongside DejaVu fonts and the locked Pillow13, Piper1.8
+and ONNX Runtime1.31.1 dependencies. Retained parser advisories and native-library
+inventory are in the [OS review](OS_SECURITY_REVIEW.md). Model files are mounted separately, never downloaded by
 an incoming generation request. `BRIEFING_ARTIFACT_DIR` must be writable by the
 unprivileged backend user and backed by persistent storage for restarts.
 
@@ -144,7 +146,52 @@ stream/duration checks and a full FFmpeg decode before publication. A failed or
 cancelled job preserves the prior manifest. No subprocess command uses a shell
 or interpolates source prose into FFmpeg expressions.
 
-The native Windows qualification fetched one actual current production report
+## Captions and exact narration transcript
+
+The caption feature introduced in the 224-test frontend provides native WebVTT captions and a complete narration
+transcript for compatible recorded manifests. It validates one to four unique
+sources, the opening/source/closing segment order, finite measured audio durations,
+bounded safe text and the content filename/full-hash prefix. WebCrypto checks
+each exact UTF-8 narration against its manifest hash before either captions or
+the transcript become available. Missing metadata, unavailable crypto or a
+mismatch leaves the video playable with an explicit caption/transcript limit.
+Hash identity does not independently establish spoken content or source truth.
+
+Cue boundaries use cumulative measured audio-segment durations, never stretched
+to the video length; they are **not word aligned**. The current real `c39e4447…`
+artifact has three segments totaling38.359365seconds against a38.379801-second
+container, a20.436ms difference. Captions escape markup, timing delimiters and
+newlines; the separate transcript preserves the exact narration as text. It is
+keyboard reachable and scrollable. Neither transcript nor captions are a source
+translation or independent factual check.
+
+Equivalent manifest polls retain the same video, playback position, caption
+selection and Blob resource. Artifact/consumed-metadata changes retire the owned
+resource; stale verification cannot attach a revoked URL or an old transcript.
+A native track-load failure keeps the verified transcript available and does not
+become a false MP4 playback error. These lifecycle and malformed-metadata cases
+have focused regressions; viewing or toggling captions starts no generation job.
+
+Earlier development preflight and the exact `b6e6bc17…` Docker frontend at port5196
+qualified native playback and exact cue/transcript behavior in three engines,
+with a retained limit. Chromium/WebKit passed visible caption on/off/restore.
+**Firefox failed immediate repaint when captions were re-enabled on a paused
+frame**; cue mode/state alone did not prove visible text. Actual native user
+Play/Pause checks restored the caption pixels, kept the same video and one track,
+and produced no generation POST or page errors. This is two strict paused-frame
+restoration passes and one qualified user-resume recovery, not three paused-repaint passes.
+The page conditionally says to resume playback if paused captions do not appear;
+the notice clears on actual playback or hiding captions. No browser sniffing,
+forced play, seeking or track rebuild workaround is used. The verified transcript
+remains an alternative. Failed native-repaint experiments are preserved.
+
+The caption-specific [b6e6 admission](qualification/2026-10-30-rc2-frontend-build-and-admission.json) and [finite production mobile/caption batch](qualification/2026-10-30-rc2-mobile-accessibility.json) remain dated evidence, retaining the two strict paused-restoration passes and Firefox failure/user-resume recovery. Frontend `71dae32e` passed [229-test build and live admission](qualification/2026-10-30-rc2-frontend-timeline-admission-229.json) after repairing global timeline arrows that intercepted native video and modal controls. [Three-engine targeted checks](qualification/2026-10-30-rc2-timeline-keyboard-229.json) passed 33 cases on both isolated and live images. Firefox native arrow seeking returned to its standalone behavior; WebKit's zero native seek in this host remains zero, rather than being called a seek pass. This does not erase the separate Firefox paused-repaint limit or cause the application to force playback/seek.
+
+Final duration, exact merge/tag CI and artifact binding belong to the release-attached `conflict-monitor-0.2.0-rc.2-verification.json`; this source document does not assert those post-freeze gates passed. Neither development nor production desktop-engine checks qualify physical iOS, screen readers, every native CC menu, general speech quality or full WCAG conformance. See [verification](VERIFICATION.md).
+
+## Earlier native media sample
+
+The earlier native Windows qualification fetched one actual production report
 over HTTP, froze that source, and generated a33.194-second MP4 in32.734seconds.
 It passed H.264/AAC metadata, complete decode and all three non-silent narration
 segment checks. A frame was visually inspected for readable attribution/date/
@@ -185,13 +232,23 @@ produce exit1 and a failed receipt; they do not retry generation. Prior receipts
 are preserved when the named output is reused. A PASS/exit0 establishes this
 specific executed path and source/model binding, not general factual accuracy.
 
-The [upgraded-profile execution](qualification/2026-10-29-postgresql17-local-generation.json)
+The [RC.2 execution](qualification/2026-10-30-rc2-local-generation.json) passed
+all24 checks on backend `9b094edd…` and database `fc61b564…`, using actual RSS
+report1257, one CPU Qwen3.5:4B request, Piper and restricted FFmpeg. The
+759,731-byte H.264/AAC720p24fps MP4 is38.379801seconds, fully decoded independently,
+with content-addressed filename/hash, HTTP206 and unchanged source data verified.
+Paid UsageLog remained zero; that does not erase the local inference job or its
+resource cost. A prior explicit Telegram selection was rejected before work,
+and no eligibility gate was relaxed. Caption/browser rendering has separate
+checks and is not implied by this backend generation pass.
+
+The [earlier upgraded-profile execution](qualification/2026-10-29-postgresql17-local-generation.json)
 on October 29 passed all 24 checks through nginx, restricted-role PostGIS,
 CPU Qwen3.5:4B and containerized Piper/FFmpeg using actual RSS report 55. Its
 650,081-byte H264/AAC MP4 is 33.503 seconds, fully decoded independently and
 served with HTTP206 range support. The canonical source ID, reviewed display
 name and complete source snapshot hash agree. Paid usage remained zero and the
-source report was unchanged. Final frontend playback advanced on Chromium,
+source report was unchanged. That phase's frontend playback advanced on Chromium,
 Firefox and WebKit at 390-pixel width without implicit generation.
 
 A separate offline, cached medium.en CPU/int8 ASR check matched all 70 expected
@@ -199,7 +256,7 @@ words, including both uncertainty/no-footage disclaimers. The earlier narrated
 artifact and its less accurate ASR result remain preserved; neither was relabeled
 as the new result. This is one English source-card example, not multilingual
 speech quality, general extraction accuracy or human audibility qualification.
-The new generation receipt also retains the verifier-only failed attempts and
+That earlier generation receipt also retains the verifier-only failed attempts and
 accounts for the additional local analysis job rather than erasing it.
 
 ## Components, weights and licenses

@@ -81,7 +81,7 @@ async def lifespan(app: FastAPI):
 
 
 
-app = FastAPI(title="Conflict Monitor", version="0.2.0-rc.1", lifespan=lifespan)
+app = FastAPI(title="Conflict Monitor", version="0.2.0-rc.2", lifespan=lifespan)
 origins = [s.strip() for s in settings.cors_origins.split(",") if s.strip()] or [
     "http://localhost:5173", "http://127.0.0.1:5173"]
 app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=False,

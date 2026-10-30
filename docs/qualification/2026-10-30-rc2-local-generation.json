@@ -1,0 +1,87 @@
+{
+  "backend_image": "sha256:9b094edd5879d47d682c62dbb81f977b9ed5597058aa3f4a162434bd31c02877",
+  "checks": {
+    "actual_h264_720p_and_aac_streams": "PASS",
+    "actual_http_206_byte_range": "PASS",
+    "actual_live_mode_without_synthetic_fallback": "PASS",
+    "actual_owned_local_model_identity_and_cpu_request": "PASS",
+    "actual_postgis_source_matches_api": "PASS",
+    "analysis_snapshot_hash_recomputed": "PASS",
+    "content_addressed_video_name_and_url": "PASS",
+    "core_readiness": "PASS",
+    "core_readiness_after_optional_jobs": "PASS",
+    "downloaded_mp4_exact_full_sha256_and_size": "PASS",
+    "exact_unicode_and_utf16_source_spans": "PASS",
+    "independent_complete_video_and_audio_decode": "PASS",
+    "independent_mp4_probe": "PASS",
+    "local_ai_job_admitted": "PASS",
+    "local_generation_explicitly_enabled": "PASS",
+    "new_analysis_is_bound_to_actual_source": "PASS",
+    "new_video_is_bound_to_actual_source": "PASS",
+    "no_model_coordinates_or_fact_verdict": "PASS",
+    "no_other_generation_is_running": "PASS",
+    "no_recorded_paid_usage_rows_before_or_after": "PASS",
+    "server_pcm_energy_and_full_decode_receipts": "PASS",
+    "source_report_not_mutated_by_generation": "PASS",
+    "video_job_admitted": "PASS",
+    "video_snapshot_hash_recomputed_and_matches_analysis": "PASS"
+  },
+  "database_image": "sha256:fc61b5645ca9a0115ef9a4fab2f0a3b35006c90a05d5511c5c010786da75ba65",
+  "ended_at": "2026-10-30T02:27:55.985906+00:00",
+  "limitations": [
+    "Source truth, independent corroboration, precise incident locations and model general accuracy remain unverified.",
+    "Paid UsageLog rows do not count local inference or electricity. A successful run qualifies one new local inference job.",
+    "Successful decoding/PCM checks do not certify listener audibility or pronunciation."
+  ],
+  "local_ai": {
+    "eval_count": 67,
+    "generated_at": "2026-10-30T02:27:29.960393+00:00",
+    "model": "qwen3.5:4b",
+    "model_calls_qualified": 1,
+    "model_digest": "d8b0f5e9760cd1682034f292d7ef72ec46f432149be0df7574bf2d6e92e38c04",
+    "paid_api": false,
+    "prompt_eval_count": 834,
+    "source_snapshot_sha256": "dd3cdf96df0b6d08ae0a3db8f985a468887f71e8ca9e0ae4664b1834a777124e",
+    "system_sha256": "dd73ee0c4fc9b4e2d424bcbf5b76f0138f12f432e3837f43c21715567e899d95",
+    "total_duration_ns": 27963245000
+  },
+  "private_raw_receipt_sha256": "74c4c42cb7c89c8dbf38fa513ce8864390c2323d661e20dc776c296a55069a20",
+  "retained_rejected_attempt": "Initial Telegram-selected report failed the RSS eligibility precondition before generation; no gate was relaxed. The subsequent actual RSS report passed.",
+  "scope": "Actual loopback production API, PostGIS, owned local model and local speech/video generation",
+  "source": {
+    "event_id": 1257,
+    "original_text_sha256": "2ee8fc96e0508b41f19225def6ca1cb8e5e7b87fa70fb00c61babf38f8acd70e",
+    "published_at": "2026-10-30T02:21:21Z",
+    "source": "rss_middle_east_eye"
+  },
+  "started_at": "2026-10-30T02:27:01.698583+00:00",
+  "status": "PASS",
+  "usage_log_rows_after": 0,
+  "usage_log_rows_before": 0,
+  "version": "0.2.0-rc.2",
+  "video": {
+    "bytes": 759731,
+    "duration_seconds": 38.379801,
+    "filename": "c39e44477dad85763f0c6d573140f556.mp4",
+    "generated_at": "2026-10-30T02:27:30.213745+00:00",
+    "sha256": "c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e",
+    "source_snapshot_sha256": "dd3cdf96df0b6d08ae0a3db8f985a468887f71e8ca9e0ae4664b1834a777124e",
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "height": 720,
+        "r_frame_rate": "24/1",
+        "width": 1280
+      },
+      {
+        "channels": 1,
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "r_frame_rate": "0/0",
+        "sample_rate": "22050"
+      }
+    ],
+    "voice_model_sha256": "5d4f08ba6a2a48c44592eed3ce56bf85e9de3dd4e20df90541ae68a8310c029a"
+  }
+}

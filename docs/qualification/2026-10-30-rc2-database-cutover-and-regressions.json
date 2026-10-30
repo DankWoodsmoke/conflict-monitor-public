@@ -1,0 +1,113 @@
+{
+  "backend_image": "sha256:9b094edd5879d47d682c62dbb81f977b9ed5597058aa3f4a162434bd31c02877",
+  "database": {
+    "flatgeobuf_upstream_security_backport": true,
+    "postgis": "3.6.4",
+    "postgresql": "17.11"
+  },
+  "database_image": "sha256:fc61b5645ca9a0115ef9a4fab2f0a3b35006c90a05d5511c5c010786da75ba65",
+  "fresh_database_gates": [
+    {
+      "exit_code": 0,
+      "gate": "bootstrap",
+      "log_sha256": "818b17fadddeff3164bdf19eb6d498215ff26a94296b3aa7d97a01ac6e71b595"
+    },
+    {
+      "exit_code": 0,
+      "gate": "role",
+      "log_sha256": "7eadc961592101ba71f5ab9aa0a723d0cf2563c9d8977df5a9b98f511cc6ed3c"
+    },
+    {
+      "exit_code": 0,
+      "gate": "postgis",
+      "log_sha256": "80e5f0ad190bcf05a384f4f319ad502d99218b312452a404321a4d7bb05f030f"
+    },
+    {
+      "exit_code": 0,
+      "gate": "pipeline",
+      "log_sha256": "741b357f40554f5bb2858192145d5c6a555920f80f155338c99c0d4bd9aa206d"
+    }
+  ],
+  "limits": [
+    "Source report hashes establish preservation, not factual truth.",
+    "Restore and SQL tests do not establish universal compatibility for extensions absent from this deployment.",
+    "Security applicability and retained vendor findings are documented separately."
+  ],
+  "live_migration": {
+    "checks": {
+      "extensions": true,
+      "geometry": true,
+      "indexes": true,
+      "locale": true,
+      "sequences_after": true,
+      "sequences_before": true,
+      "tables": true
+    },
+    "comparison_receipt_sha256": "7e0bed809c55e23b9b05288bec4054e9ee0160ed1dc4a188913b1fd1ed9c96df",
+    "dump_bytes": 6041390,
+    "dump_sha256": "c63da8162f887f73f771e4fe45f1e1f1de0da8ae5943ab10441518d9ed4c457b",
+    "index_count": 23,
+    "method": "pg_dump uses the same exported repeatable-read snapshot as complete table hashes; restore into a new volume with restricted runtime bootstrap before admission.",
+    "original_volume_preserved": true,
+    "sequence_count": 5,
+    "snapshot_at": "2026-10-30T02:16:09.106052+00:00",
+    "table_count": 10,
+    "tables": {
+      "alembic_version": {
+        "rows": 1,
+        "sha256": "45227ecceab211318a811f02224c9db5a74e9cf99f3ee5df4454edd3ea12de8d"
+      },
+      "channel_checkpoints": {
+        "rows": 3,
+        "sha256": "e0b8a86f59166b150b09d23709a36ecf977c98aff65f77918f6fe5f7df2ea4f3"
+      },
+      "cost_config": {
+        "rows": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "events": {
+        "rows": 1256,
+        "sha256": "5b4234c1432fb4b71157a65e47bfa154e47cfe33347b76a46eb8cbb3f31b0372"
+      },
+      "intel_media": {
+        "rows": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "sitreps": {
+        "rows": 193,
+        "sha256": "7c562ce6c77aee82912a3b24b41636678b7fb1ff036fe43f62047971a5e83bd2"
+      },
+      "source_reports": {
+        "rows": 1571,
+        "sha256": "2eaa8b399deb3739ba005e0b530a36e6dcec15d05196287ac496427b82777bcd"
+      },
+      "spatial_ref_sys": {
+        "rows": 8500,
+        "sha256": "d98ac5b69267bd620b56fab77ea205f470e3827ce6c653140bdf1b1263333999"
+      },
+      "tracking_snapshots": {
+        "rows": 691,
+        "sha256": "748f80cd8a1f8046a784bc689961b6c877a5aa6fbbccffbf74e2e123c6ca7e53"
+      },
+      "usage_log": {
+        "rows": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      }
+    }
+  },
+  "retained_failed_preflight": "Reused test fixture database failed the fresh-database spatial dedup assertion; retained separately.",
+  "status": "PASS",
+  "upstream_regressions": {
+    "complete_sql_runs": 2,
+    "cunit_assertions": 5495,
+    "cunit_failures": 0,
+    "cunit_tests": 346,
+    "log_sha256": "a6889fb1c1e235c0ea39ce172686ffcfffa8a777d86e6ca08595a87e87b4c6f9",
+    "native_bytes_match_final_image_before_and_after_tests": true,
+    "native_postgis_library_sha256": "69cc773504805a74097c685324444c6949d589ca0cc8858c21d62f39f5216756",
+    "runner_log_sha256": "2aea85508700b95a1d990b3bef976fdf0ab732ceeb2e40fc22eb9e16953ee634",
+    "sql_cases_per_run": 250,
+    "sql_failures": 0
+  },
+  "version": "0.2.0-rc.2"
+}

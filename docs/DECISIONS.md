@@ -175,3 +175,99 @@ Telegram-specific publication labels remain explicit. This repairs misleading
 captions without changing stored timestamps, timeline ordering, API compatibility
 fields or source observations. A successful fetch is not evidence that the
 underlying report or position is verified.
+
+## 2026-10-30 — bounded runtime hardening and release qualification
+
+Keep the established Earth, API and database architecture. The measured gaps
+were container attack surface, an upstream FlatGeobuf bounds defect, browser
+session ownership and specific mobile/keyboard failures. They did not justify a
+new map engine or an unmeasured model replacement. RC.2 builds the existing
+PostGIS 3.6.4 release with the reviewed upstream security backport on the same
+PostgreSQL 17/Trixie generation, without unused raster dependencies. The narrow
+FFmpeg build retains the actual local source-card pipeline and removes unused
+network protocols and codecs. Vendor-open and applicability-dependent advisory
+records remain published; reduced package counts are not vulnerability clearance.
+
+The database cutover used a new volume and the same exported repeatable-read
+snapshot for the dump and complete table hashes. All ten public tables, five
+sequences, index definitions, extensions, geometry and collation checks matched
+after restore. The former volume and a standalone rollback profile remain
+preserved. Rollback would require reconciliation of later writes. Restricted-role
+bootstrap/PostGIS/TCP gates and 597 Linux unit tests passed against the final
+backend image; 500 upstream SQL cases and 346 CUnit cases passed against the
+native PostGIS library bytes shipped in the final image. These are distinct
+checks, not a claim that every possible input or code path was exercised.
+
+A new actual RSS report passed 24 source-bound local Qwen/Piper/video checks,
+including exact source spans, independent complete MP4 decode and HTTP byte
+ranges. The first selected Telegram report was rejected by the eligibility gate
+before generation, and that failed attempt remains recorded. Local model output
+is still unreviewed extraction; video is narrated publisher text with source
+cards, not incident footage or a verified account of events.
+
+Google root access rotates proactively after 150 minutes, measured from the
+request, with one active root and at most one replacement candidate. The old
+root remains until the replacement has usable current-view content. Hidden or
+offline tabs pause scheduling; bounded retries and explicit recovery preserve
+attribution and camera ownership. This is application policy, not a claim that
+Google access expires at precisely three hours. Controlled lifecycle tests and
+manual production handoff are separate from the required real-time observation.
+
+Responsive and accessibility checks use actual rendered geometry, visible text
+hit-testing, keyboard focus, enlarged text and Chromium/Firefox/WebKit. Emulated
+phone dimensions and touch input do not certify iOS system behavior, native
+VoiceOver or OS memory eviction. No phone configuration, network exposure or
+operator action is required to complete the automated scope. The finite expanded
+entrypoint audit exposed Feed, tour and Earth focus failures missed by earlier
+closed-panel scans; those findings and intermediate builds are retained.
+
+The final frontend audit, unchanged-profile observation beyond three hours,
+hosted build of all three shipped containers, and downloaded-release byte check
+remain separate publication gates. A verifier variable-shadowing defect that
+would have failed only at the natural 150-minute handoff was identified before
+that run; a controlled regression must exercise the verifier branch without
+counting accelerated time as live-session evidence. Current results and gate
+status are recorded in [verification](VERIFICATION.md).
+
+Later hosted execution exposed a five-second test timeout and transient upstream
+source-download failures. Count/name boundaries and modal behavior were separated
+without deleting assertions or extending timeouts. The resulting 225-test build
+has exactly the admitted frontend's eleven filesystem layers and runtime
+configuration; its distinct image ID is never substituted for observed uptime.
+Source downloads now make at most three bounded attempts while retaining the
+same official bytes, hashes, signing fingerprint and compiler configuration.
+Permanent HTTP and certificate failures still stop the build. Both repairs have
+passed hosted execution; earlier failures remain recorded.
+
+Live inventory arrivals made exact-count touch assertions incomplete. A separate
+native camera probe declared pixel-change and restoration criteria before
+execution, then measured them against real rendered imagery. It supplements the
+eight strict touch passes without changing the earlier incomplete results.
+Caption pixels are likewise checked independently of active-cue metadata:
+Firefox's paused repaint failure remains visible despite successful explicit
+user-resume recovery and an exact verified transcript.
+
+The public export also receives an independent secret scan in addition to its
+allowlist and known-value checks. Public fingerprints and reproducible digests
+are triaged explicitly, not hidden with global ignores. Final source scans and
+download bindings remain external to the archive to avoid self-referential
+hash claims; private environments and history are outside the export.
+
+A final native-keyboard check found that page-level timeline arrows also changed
+the background range while a video or Methods control owned focus. Firefox's
+native video seeking was also suppressed. The 229-test repair defers already
+handled, modified, composing, interactive, media, canvas and foreground-modal
+keys to their owner while preserving neutral-page timeline shortcuts. The same
+three-engine probe records the original twelve failures and the corrected
+33-case preflight and live results. The earlier approximately 81-minute windows
+were interrupted and preserved; none of their elapsed time qualifies the new
+frontend image.
+
+The source freezes after its image admission and finite browser checks. Exact
+merge/tag CI, uninterrupted Google/server observations and final ZIP/manifest
+hashes are admitted by a separate release-attached verification JSON. This lets
+CI run during the real observation without inventing results or changing the
+archive afterward. Publication requires the completed gates; the unauthenticated
+consumer then checks all three assets, exact local attestation bytes, tag target,
+archive CRC and every manifest/Git blob and mode. Source-only documentation does
+not assert that post-freeze observations have passed.
