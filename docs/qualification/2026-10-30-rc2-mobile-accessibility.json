@@ -1,0 +1,585 @@
+{
+  "recorded_at": "2026-10-30T04:40:18.371632+00:00",
+  "scope": "Conflict Monitor 0.2.0-rc.2, completed bounded production mobile/accessibility qualification; desktop-engine emulation, not physical-device certification",
+  "overall_status": "QUALIFIED_WITH_EXPLICIT_LIMITATIONS",
+  "runtime": {
+    "canonical_origin": "http://127.0.0.1:5190",
+    "identity_before": [
+      {
+        "name": "/cmonitor-live-frontend-1",
+        "image": "sha256:b6e6bc17ba236fd46c6f7f64e3bb4efb0da2c0dfb7797b14668bdd888123b998",
+        "started_at": "2026-10-30T04:11:24.510599334Z",
+        "health": "healthy",
+        "volumes": []
+      },
+      {
+        "name": "/cmonitor-live-backend-1",
+        "image": "sha256:9b094edd5879d47d682c62dbb81f977b9ed5597058aa3f4a162434bd31c02877",
+        "started_at": "2026-10-30T02:17:07.608080243Z",
+        "health": "healthy",
+        "volumes": [
+          {
+            "type": "volume",
+            "name": "cmonitor-live_briefing_data",
+            "destination": "/app/videos/briefing"
+          },
+          {
+            "type": "bind",
+            "name": "",
+            "destination": "/opt/voices"
+          }
+        ]
+      },
+      {
+        "name": "/cmonitor-live-db-1",
+        "image": "sha256:fc61b5645ca9a0115ef9a4fab2f0a3b35006c90a05d5511c5c010786da75ba65",
+        "started_at": "2026-10-30T02:17:01.159083667Z",
+        "health": "healthy",
+        "volumes": [
+          {
+            "type": "volume",
+            "name": "cmonitor_live_pg17_secure_20261030",
+            "destination": "/var/lib/postgresql/data"
+          }
+        ]
+      }
+    ],
+    "identity_after": [
+      {
+        "name": "/cmonitor-live-frontend-1",
+        "image": "sha256:b6e6bc17ba236fd46c6f7f64e3bb4efb0da2c0dfb7797b14668bdd888123b998",
+        "started_at": "2026-10-30T04:11:24.510599334Z",
+        "health": "healthy",
+        "volumes": []
+      },
+      {
+        "name": "/cmonitor-live-backend-1",
+        "image": "sha256:9b094edd5879d47d682c62dbb81f977b9ed5597058aa3f4a162434bd31c02877",
+        "started_at": "2026-10-30T02:17:07.608080243Z",
+        "health": "healthy",
+        "volumes": [
+          {
+            "type": "volume",
+            "name": "cmonitor-live_briefing_data",
+            "destination": "/app/videos/briefing"
+          },
+          {
+            "type": "bind",
+            "name": "",
+            "destination": "/opt/voices"
+          }
+        ]
+      },
+      {
+        "name": "/cmonitor-live-db-1",
+        "image": "sha256:fc61b5645ca9a0115ef9a4fab2f0a3b35006c90a05d5511c5c010786da75ba65",
+        "started_at": "2026-10-30T02:17:01.159083667Z",
+        "health": "healthy",
+        "volumes": [
+          {
+            "type": "volume",
+            "name": "cmonitor_live_pg17_secure_20261030",
+            "destination": "/var/lib/postgresql/data"
+          }
+        ]
+      }
+    ],
+    "all_three_images_starts_health_and_mounts_unchanged": true,
+    "before_sha256": "dd2dbbc84b04e664b1896c45c19c4c6b0df07a03e3446a3700801f00ddb1127c",
+    "after_sha256": "dd2dbbc84b04e664b1896c45c19c4c6b0df07a03e3446a3700801f00ddb1127c",
+    "identity_verified_after_all_tests_utc": "2026-10-30T04:40:18.182158+00:00",
+    "batch_identity_sha256": "07e79d886f156ef34e0b74073c9310ee005493937d4d34fdd91127f280c59744",
+    "natural_collector_writes_allowed": true,
+    "app_image_environment_database_mutations_by_this_batch": 0
+  },
+  "execution_results": {
+    "axe": {
+      "baseline_states": 61,
+      "additional_entrypoint_states": 41,
+      "total_states": 102,
+      "violations_all_impact_levels": 0,
+      "keyboard_samples": 71,
+      "keyboard_failures": 0,
+      "viewports": [
+        [
+          1536,
+          1000
+        ],
+        [
+          390,
+          844
+        ],
+        [
+          844,
+          390
+        ],
+        [
+          320,
+          844
+        ]
+      ],
+      "entrypoints": [
+        "Brief",
+        "Camera-source selection",
+        "Complete narration transcript",
+        "Earth",
+        "Earth imagery details",
+        "Earth navigation expanded",
+        "Earth spatial layers",
+        "Expanded source briefing",
+        "External-frame disconnect controls",
+        "Local analysis provenance and source excerpts",
+        "Local analysis read-only panel",
+        "Media",
+        "Methods Deployment",
+        "Methods Evidence & sources",
+        "Methods Overview",
+        "Narrated briefing native-player panel",
+        "Narrated briefing source references",
+        "Native imagery attribution",
+        "REPORT MIX",
+        "Report evidence and preserved-text disclosures",
+        "Report feed filters",
+        "Report feed sheet",
+        "SOURCE RECORDS",
+        "Settings",
+        "Source Health",
+        "Source filters",
+        "Synthetic tour Earth workspace",
+        "Synthetic tour Media desk",
+        "Synthetic tour Situation report"
+      ],
+      "unavailable_service_usage_popover_states": 4,
+      "incomplete_rule_occurrences": 190,
+      "incomplete_rules": [
+        "bypass",
+        "color-contrast",
+        "frame-tested",
+        "label-content-name-mismatch"
+      ],
+      "raw_baseline_legacy_status": "completed_with_findings",
+      "raw_status_interpretation": "The legacy harness always emits completed_with_findings. This projection asserts actual 61 completed cases, zero violations, zero page errors and zero POSTs; incompletes remain incomplete.",
+      "controlled_external_iframe_fixture": "Only the app-owned connect/disconnect controls were qualified; embedded provider contents and live stream availability were not."
+    },
+    "reflow": {
+      "status": "PASS",
+      "states": 30,
+      "profiles": [
+        {
+          "engine": "chromium",
+          "profile": "Emulated viewport/touch and controlled text enlargement",
+          "states": 8,
+          "status": "PASS"
+        },
+        {
+          "engine": "firefox",
+          "profile": "Emulated viewport/touch and controlled text enlargement",
+          "states": 8,
+          "status": "PASS"
+        },
+        {
+          "engine": "webkit",
+          "profile": "Emulated viewport/touch and controlled text enlargement",
+          "states": 8,
+          "status": "PASS"
+        },
+        {
+          "engine": "firefox",
+          "profile": "Actual minimum-font preference24px",
+          "states": 6,
+          "status": "PASS"
+        }
+      ],
+      "methods": "Real viewport rotation/height changes, controlled per-element 200 percent font/line-height enlargement, actual Firefox 24 CSS-pixel minimum-font preference, text-fragment bounds, native hit testing, target spacing and keyboard reachability.",
+      "target_spacing_primary_reference": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum/"
+    },
+    "browser_viewport_matrix": {
+      "passed": 12,
+      "failed": 0,
+      "engines": [
+        "chromium",
+        "firefox",
+        "webkit"
+      ]
+    },
+    "e2e": {
+      "expected_and_passed": 5,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0,
+      "duration_ms": 17306.023
+    },
+    "browser_native_touch_under_emulation": {
+      "strict_checks_passed": 8,
+      "strict_checks_incomplete": 1,
+      "findings": [],
+      "passed_checks": [
+        "actual_touchscreen_taps_all_three_tabs_preserve_canvas",
+        "touch_camera_zoom_changes_observed_height",
+        "touch_layers_and_last_known_toggle",
+        "touch_settings_open_and_close",
+        "native_touch_pinch_changes_observed_camera_height",
+        "touch_region_restores_visible_hemisphere",
+        "native_touch_scroll_moves_report_list",
+        "portrait_to_landscape_preserves_canvas_and_fits_viewport"
+      ],
+      "status": "PARTIAL/INCOMPLETE",
+      "native_pinch": {
+        "accepted": true,
+        "before_meters": 1300000,
+        "after_meters": 961000
+      },
+      "native_pan": {
+        "command_accepted": true,
+        "attempts": [
+          {
+            "attempt": 1,
+            "real_region_and_globe_reset": true,
+            "before": {
+              "enabled": 324,
+              "visible": 324
+            },
+            "after": {
+              "enabled": 325,
+              "visible": 0
+            },
+            "elapsed_ms": 1802,
+            "inventory_unchanged": false,
+            "large_hemisphere_mask_change_measured": false
+          },
+          {
+            "attempt": 2,
+            "real_region_and_globe_reset": true,
+            "before": {
+              "enabled": 325,
+              "visible": 325
+            },
+            "after": {
+              "enabled": 327,
+              "visible": 327
+            },
+            "elapsed_ms": 2018,
+            "inventory_unchanged": false,
+            "large_hemisphere_mask_change_measured": false
+          },
+          {
+            "attempt": 3,
+            "real_region_and_globe_reset": true,
+            "before": {
+              "enabled": 327,
+              "visible": 327
+            },
+            "after": {
+              "enabled": 330,
+              "visible": 330
+            },
+            "elapsed_ms": 1931,
+            "inventory_unchanged": false,
+            "large_hemisphere_mask_change_measured": false
+          }
+        ],
+        "large_hemisphere_mask_change_measured": false,
+        "exact_camera_center_measured": false
+      },
+      "pan_interpretation": "Exact-count strict criterion remains unqualified. First fresh-baseline native gesture moved the visible hemisphere mask from 324 to zero, while enabled live inventory changed from 324 to 325 during 1802 milliseconds. This is bounded movement evidence, not a same-identity or exact-camera-center proof. All three real reset/gesture attempts are retained; no data or clock was frozen and no count tolerance was substituted.",
+      "region_restoration_passed": true,
+      "feed_scroll": {
+        "method": "Input.dispatchTouchEvent",
+        "before": 0,
+        "after": 165,
+        "reverse": {
+          "before": 165,
+          "after": 60,
+          "sheet_remained_open": true
+        }
+      },
+      "orientation_round_trip": {
+        "portrait_return": true,
+        "report_sheet_reopened": false,
+        "same_canvas": true
+      },
+      "independent_camera_motion_method": {
+        "status": "PASS",
+        "separate_from_strict_touch_run": true,
+        "criteria_declared_before_execution": {
+          "max_attempts": 3,
+          "min_roi_pixels": 20000,
+          "rgb_l1_threshold": 60,
+          "min_changed_fraction": 0.35,
+          "max_inventory_churn_fraction": 0.05,
+          "min_visible_drop_fraction": 0.75,
+          "min_restored_visible_fraction": 0.75,
+          "restore_must_improve_initial_roi_similarity": true
+        },
+        "roi": {
+          "x": 78,
+          "y": 378,
+          "width": 234,
+          "height": 216
+        },
+        "attempts": [
+          {
+            "attempt": 1,
+            "before": {
+              "enabled": 322,
+              "visible": 322
+            },
+            "after": {
+              "enabled": 322,
+              "visible": 0
+            },
+            "region": {
+              "enabled": 321,
+              "visible": 321
+            },
+            "restored": {
+              "enabled": 326,
+              "visible": 326
+            },
+            "elapsed_ms": 5466,
+            "net_inventory_loss": 0,
+            "inventory_churn_fraction": 0,
+            "movement": {
+              "pixels": 50544,
+              "changed_pixels": 18661,
+              "changed_fraction": 0.3692030705919595,
+              "mean_rgb_l1": 65.23059116809117
+            },
+            "restoration": {
+              "pixels": 50544,
+              "changed_pixels": 0,
+              "changed_fraction": 0,
+              "mean_rgb_l1": 0
+            },
+            "initial_roi_sha256": "8128f84f51af8f186ea417a8b3153eb4d1588643c605acbb6f6d6a44a74c77e6",
+            "moved_roi_sha256": "09e63e69edb38966053e6799d4ee200299f33a0b0e5d2a237f2e1b8871430862",
+            "restored_roi_sha256": "8128f84f51af8f186ea417a8b3153eb4d1588643c605acbb6f6d6a44a74c77e6",
+            "overlay_intersections": [],
+            "gates": {
+              "native_command_accepted": true,
+              "same_canvas": true,
+              "at_least_four_before_positions": true,
+              "inventory_churn_within_five_percent": true,
+              "visible_mask_drop_beyond_net_inventory_loss": true,
+              "central_roi_at_least_35percent_changed": true,
+              "region_restores_at_least_75percent_visible": true,
+              "globe_reset_restores_at_least_75percent_visible": true,
+              "restoration_improves_initial_scene_similarity": true
+            },
+            "status": "PASS"
+          }
+        ],
+        "page_errors": [],
+        "api_posts": 0,
+        "interpretation": "The promoted public helper passed its own execution with no threshold change. Actual inventory remained322 during movement, visible mask322 to zero; the declared5-percent bound was not needed. Region restored321 visible and Globe reset326, with initial ROI decoded pixels exactly restored. This adds one qualified bounded camera-motion criterion to eight other strict touch checks; neither earlier8/9 execution is relabeled9/9. The initial private-helper PASS is separately retained.",
+        "imagery_buffers_or_frames_saved": false
+      }
+    },
+    "network_recovery": {
+      "engines": 3,
+      "checks": 18,
+      "failures": 0,
+      "actual_offline_http_failure_and_online_200": true,
+      "same_canvas": true,
+      "native_background_or_eviction_qualified": false
+    },
+    "local_narrated_video": {
+      "source_id": 1257,
+      "video_sha256": "c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e",
+      "native_user_playback_passed": 3,
+      "cue_text_and_timing_exact": true,
+      "cue_count": 3,
+      "cue_boundaries_seconds": [
+        0,
+        11.633,
+        24.474,
+        38.359
+      ],
+      "audio_container_delta_seconds": 0.020435920634923832,
+      "exact_complete_transcript_available": true,
+      "generation_posts": 0,
+      "engines": [
+        {
+          "engine": "chromium",
+          "version": "156.0.8078.4",
+          "status": "passed",
+          "native_playback_time_seconds": 1.522475,
+          "paused_caption_restore": "PASS",
+          "cue_count": 3
+        },
+        {
+          "engine": "firefox",
+          "version": "157.0",
+          "status": "qualified_with_limitations",
+          "native_playback_time_seconds": 1.525291,
+          "paused_caption_restore": "FAIL",
+          "cue_count": 3
+        },
+        {
+          "engine": "webkit",
+          "version": "27.2",
+          "status": "passed",
+          "native_playback_time_seconds": 1.5098332,
+          "paused_caption_restore": "PASS",
+          "cue_count": 3
+        }
+      ],
+      "strict_paused_caption_restore_passed": 2,
+      "strict_paused_caption_restore_failed": 1,
+      "known_firefox_limitation": "Showing captions while paused may update native mode/cues without repainting visible captions. The strict pixel requirement remains FAIL. Exact transcript and conditional resume guidance are present; actual user-triggered playback restores caption pixels. No automatic play, seek, forced media reload, synthetic event or user-agent sniff is used."
+    }
+  },
+  "source_and_test_binding": {
+    "image_admitted_test_execution": 224,
+    "subsequent_test_only_execution": {
+      "tests": 225,
+      "passed": 225,
+      "failed": 0,
+      "skipped": 0,
+      "test_files": 21,
+      "tsc_vite_build": "passed",
+      "cesium_compatibility": "passed",
+      "npm_audit": "Previous0; package/lock unchanged. No OS/DB/browser/host audit claim."
+    },
+    "test_only_edit_utc": "2026-10-30T04:23:05.544908Z",
+    "changed_unimported_test": "frontend/src/workspace-accessibility.test.tsx",
+    "old_sha256": "2511f64f5c86885c49ea571d9a249fb6772b91d56b5b1173700e3a59eb1e1a0d",
+    "new_sha256": "06fd769ecb7b9a8ad3e9f884239dafa0ce09bae6537e945307455a86c71847df",
+    "all_current_source_hashes_match_225_rebind": 63,
+    "runtime_dist_files_unchanged": 402,
+    "matching_live_http_bytes": 17218939,
+    "product_bytes_changed_by_test_split": false,
+    "tool_only_pan_correction": "Fresh real Region/Globe reset and fresh baseline before each of the existing three bounded native gestures; exact-inventory and 75-percent-mask-drop requirements retained. Failed first and corrected strict incomplete receipts preserved."
+  },
+  "reproduction": [
+    "$env:CM_BASE_URL='http://127.0.0.1:5190'; $env:CM_REFLOW_OUTPUT='artifacts/mobile-reflow-new-run'; node tools/verify_mobile_reflow.cjs",
+    "$env:CM_BASE_URL='http://127.0.0.1:5190'; $env:CM_MOBILE_OUTPUT='artifacts/mobile-earth-new-run'; node tools/verify_mobile_earth.cjs",
+    "$env:CM_BASE_URL='http://127.0.0.1:5190'; $env:CM_TOUCH_OUTPUT='artifacts/native-touch-new-run'; node tools/verify_native_touch.cjs",
+    "$env:CM_BASE_URL='http://127.0.0.1:5190'; $env:CM_CAMERA_OUTPUT='artifacts/native-camera-motion-new-run'; node tools/verify_native_camera_motion.cjs",
+    "$env:CM_BASE_URL='http://127.0.0.1:5190'; $env:CM_EXPECT_SOURCE_ID='1257'; $env:CM_BRIEFING_OUTPUT='artifacts/briefing-new-run'; node tools/verify_browser_briefing.cjs",
+    "$env:CM_BASE_URL='http://127.0.0.1:5190'; npm --prefix frontend run test:browser -- --reporter=json"
+  ],
+  "receipt_bindings": [
+    {
+      "scope": "axe_baseline",
+      "private_source_path": "artifacts/private/earth-quality-20261029/accessibility61-rc2-b6e6-production-final.json",
+      "sha256": "20f5fd8303bf70c3169146083b88f288310f5e34f6b4ce5721de1212fbaf8b42",
+      "started_at": "2026-10-30T04:15:03.882Z",
+      "ended_at": "2026-10-30T04:17:18.404Z"
+    },
+    {
+      "scope": "axe_additional_entrypoints",
+      "private_source_path": "artifacts/private/mobile-accessibility-20261030/extra-entrypoints-production-b6e6-final.json",
+      "sha256": "07f78312461f411b2241cff8a9fd9139f3e8b33de7406afcc4ece43aeccf9624",
+      "started_at": "2026-10-30T04:18:13.392Z",
+      "ended_at": "2026-10-30T04:19:58.008Z"
+    },
+    {
+      "scope": "reflow",
+      "private_source_path": "artifacts/private/mobile-accessibility-20261030/reflow-production-b6e6-final/receipt.json",
+      "sha256": "a89211d560f6932350793754cdd40abc8f653c95de713c342cd084ab2ba7243a",
+      "started_at": "2026-10-30T04:15:14.062Z",
+      "ended_at": "2026-10-30T04:16:01.749Z"
+    },
+    {
+      "scope": "mobile_matrix",
+      "private_source_path": "artifacts/private/mobile-accessibility-20261030/mobile-matrix-production-b6e6-final/receipt.json",
+      "sha256": "56d068ec469c73846030bac4c9c098487b80dc6b7cc3e1cc4dd16b085b33c90d",
+      "started_at": "2026-10-30T04:18:23.774Z",
+      "ended_at": "2026-10-30T04:20:09.487Z"
+    },
+    {
+      "scope": "e2e",
+      "private_source_path": "artifacts/e2e-production-b6e6-final.json",
+      "sha256": "73e356aeadca49e6a61acb93d00bd2ca208b0444da62fea0d9cd64d3cadfcb1c",
+      "started_at": "2026-10-30T04:21:03.635Z",
+      "ended_at": null
+    },
+    {
+      "scope": "native_touch_first_attempt",
+      "private_source_path": "artifacts/private/mobile-accessibility-20261030/native-touch-production-b6e6-final/receipt.json",
+      "sha256": "edd1da3d12403e9f40d955e31d36ddf4d848a1b4acdf1826cb4c709463b0380c",
+      "started_at": "2026-10-30T04:21:13.034Z",
+      "ended_at": "2026-10-30T04:21:34.498Z"
+    },
+    {
+      "scope": "native_touch_fresh_baselines",
+      "private_source_path": "artifacts/private/mobile-accessibility-20261030/native-touch-production-b6e6-fresh-baselines/receipt.json",
+      "sha256": "383650dc20ce31e85aecb30f93fe282b8f10c1949c5763a486863ad294174cdf",
+      "started_at": "2026-10-30T04:32:41.016Z",
+      "ended_at": "2026-10-30T04:33:09.970Z"
+    },
+    {
+      "scope": "independent_native_camera_motion_initial",
+      "private_source_path": "artifacts/private/mobile-accessibility-20261030/native-camera-pixels-production-b6e6-final/receipt.json",
+      "sha256": "510e885f3ae0ce950b31c2593689fb35d20ce743b0eec2f57fb689f61ee36761",
+      "started_at": "2026-10-30T04:37:11.926Z",
+      "ended_at": "2026-10-30T04:37:25.722Z"
+    },
+    {
+      "scope": "independent_native_camera_motion",
+      "private_source_path": "artifacts/private/mobile-accessibility-20261030/native-camera-pixels-public-tool-b6e6-final/receipt.json",
+      "sha256": "629d66f91ef42e63f7940691dc47335af490e02e0fef6e080e968ea8cf28376b",
+      "started_at": "2026-10-30T04:39:19.182Z",
+      "ended_at": "2026-10-30T04:39:32.183Z"
+    },
+    {
+      "scope": "network_recovery",
+      "private_source_path": "artifacts/private/mobile-accessibility-20261030/recovery-production-b6e6-final/receipt.json",
+      "sha256": "495f3d2a9c41a35c884d1b508d2e7f57f72190e767a248703f70d6ee06e817c9",
+      "started_at": "2026-10-30T04:25:12.817Z",
+      "ended_at": "2026-10-30T04:25:37.905Z"
+    },
+    {
+      "scope": "native_video_and_captions",
+      "private_source_path": "artifacts/private/mobile-accessibility-20261030/captions-production-b6e6-final/receipt.json",
+      "sha256": "8aa7dc7180b43454877bfc1cdde0ed949103a2741c552fc5460089d62c0308f6",
+      "started_at": "2026-10-30T04:25:02.470Z",
+      "ended_at": "2026-10-30T04:25:57.930Z"
+    },
+    {
+      "scope": "test_only_225_rebind",
+      "private_source_path": "artifacts/frontend-test-only-source-freeze-225.json",
+      "sha256": "d3e8baac60a005a33c13c3ae0d4e8984fecf658f087213f15006ecfef94c5b3d",
+      "started_at": null,
+      "ended_at": null
+    }
+  ],
+  "tool_hashes": [
+    {
+      "path": "tools/verify_mobile_reflow.cjs",
+      "sha256": "17b4f1a70ed10af3030d46dfd881c376e39da8d668eb74056f72cc9614b7de1e"
+    },
+    {
+      "path": "tools/verify_mobile_earth.cjs",
+      "sha256": "f110b981adf4507cae51b895e002f3486507a6b1d0b57909d4895df86374cde6"
+    },
+    {
+      "path": "tools/verify_native_touch.cjs",
+      "sha256": "0866af9f29049975b374bd5be466c7ac3337f5029143c8810012d76f38151a26"
+    },
+    {
+      "path": "tools/verify_native_camera_motion.cjs",
+      "sha256": "2532bfef70b20a3912cae1f2c6852b7a3efe40763d8fcbf79652b9c50d349958"
+    },
+    {
+      "path": "tools/verify_browser_briefing.cjs",
+      "sha256": "1b60c34e72750de687e87441ebc84dfa6204f4b253d843c4238db0035334d27e"
+    },
+    {
+      "path": "frontend/e2e/workspace.pw.ts",
+      "sha256": "74e8a1b9f5cb42762686cb142923a669558f0cb801a0515f5a421a9fddb0eed7"
+    }
+  ],
+  "limitations": [
+    "No physical iPhone/Android, actual mobile Safari GPU/browser chrome/safe areas, OS eviction or memory-pressure proof. Desktop Chromium, Firefox and WebKit emulate viewport/touch; they do not certify those devices.",
+    "No screen-reader speech/audibility or complete WCAG conformance claim. Axe incompletes, imagery/gradient contrast and symbolic-name interpretation remain explicitly unqualified beyond measured samples.",
+    "Native background visibility was not qualified: supported desktop instrumentation did not yield the required trustworthy visibility transition. No synthetic visibility event is counted as native evidence.",
+    "Four service-usage popover states were unavailable in this configured free profile; no live pass is claimed for them.",
+    "The two earlier native-touch pan exact-inventory assertions remain incomplete. A separate predeclared pixel-correlated camera-motion method passed on one new real gesture; it is not an exact camera-center or same-track-identity proof. Browser-native touch is emulation, not physical iPhone certification.",
+    "Firefox paused caption enable retains a measured native paint limitation; the failed pixel requirement is not promoted to PASS by guidance or user-resume recovery.",
+    "Caption timing uses three actual narrated segment durations, not word alignment. Exact source preservation is not independent fact verification, model entailment or listener pronunciation certification.",
+    "No public source bodies, keys, browser storage, Google imagery or generated-video frames are included in this projection. Private receipt hashes are traceability bindings, not availability claims.",
+    "This receipt covers completed finite gates only. The separate 183/185-minute observers were still running when this projection was recorded; no future duration success is claimed here."
+  ]
+}

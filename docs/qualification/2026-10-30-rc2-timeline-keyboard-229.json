@@ -1,0 +1,1135 @@
+{
+  "recorded_at": "2026-10-30T05:46:48.874688+00:00",
+  "scope": "Finite RC2 page-arrow keyboard ownership correction, actual desktop-browser native input on isolated production images",
+  "status": "PASS",
+  "version": "0.2.0-rc.2",
+  "problem": "The page-level timeline ArrowLeft/ArrowRight handler also processed arrows owned by focused media and foreground modal controls. It could silently disable LIVE follow, shift report windows and suppress native Firefox video seeking.",
+  "change": "Timeline shortcuts now abstain for already-handled/composing/modified keys, interactive/focusable/media/canvas/editable owners and visible foreground modals. Neutral body/noninteractive timeline shortcuts remain functional.",
+  "source_binding": {
+    "freeze_path": "artifacts/timeline-keyboard-source-freeze-229.json",
+    "freeze_sha256": "247d2c03f2cd26a388040a60cd92b346824ddd400663f4e19663024fbce89c08",
+    "changed_paths": [
+      "frontend/src/components/TimelineScrubber.tsx",
+      "frontend/src/components/timeline.test.tsx"
+    ],
+    "changed_files": [
+      {
+        "path": "frontend/src/components/TimelineScrubber.tsx",
+        "sha256": "d145aa99e8b44dc67c3a8ec2ecbb76e41483ae2ff4dc18897ea230809bb47519",
+        "bytes": 32781
+      },
+      {
+        "path": "frontend/src/components/timeline.test.tsx",
+        "sha256": "fdaa0ff70beefd283e0225038779f3eddd64a8861af019f13e3c41f754d45ecd",
+        "bytes": 10519
+      }
+    ],
+    "unit_tests": {
+      "tests": 229,
+      "passed": 229,
+      "failed": 0,
+      "skipped": 0,
+      "files": 21,
+      "tsc_vite_build": "passed",
+      "cesium_compatibility": "passed",
+      "npm_audit": "Previous0 advisory result; package/lock/dependencies unchanged. No new OS/browser/DB/host clearance."
+    },
+    "harness_path": "artifacts/private/mobile-accessibility-20261030/verify_timeline_keyboard_ownership_v2.cjs",
+    "same_executed_harness_sha256": "7913a01f8e86f425a94b920d0dd768ce7fe3de284cb529b31ffa911f1977b2ff",
+    "product_source_edits_by_browser_reviewer": false
+  },
+  "before_fix": {
+    "started_at": "2026-10-30T05:39:03.953Z",
+    "ended_at": "2026-10-30T05:40:05.467Z",
+    "source_receipt_sha256": "ea4a372f911a594f1451c74f15bc5106056a861d0c043dbd0b2624a95a01447e",
+    "private_source_path": "artifacts/private/mobile-accessibility-20261030/timeline-keyboard-before-fix-b6e6-v2/receipt.json",
+    "completed_cases": 33,
+    "passed": 21,
+    "failed": 12,
+    "incomplete": 0,
+    "page_errors": 0,
+    "api_posts": 0,
+    "engines": [
+      {
+        "engine": "chromium",
+        "version": "156.0.8078.4",
+        "checks": [
+          {
+            "scenario": "paused_native_video_ArrowRight",
+            "status": "FAIL",
+            "gates": {
+              "timeline_preserved": false,
+              "video_stays_paused": true,
+              "video_focus_preserved": true,
+              "native_video_behavior_matches_controlled_baseline": true
+            },
+            "key": "ArrowRight",
+            "app_media_time_delta_seconds": 0.383796,
+            "standalone_native_media_time_delta_seconds": 0.383795
+          },
+          {
+            "scenario": "paused_native_video_ArrowLeft",
+            "status": "FAIL",
+            "gates": {
+              "timeline_preserved": false,
+              "video_stays_paused": true,
+              "video_focus_preserved": true,
+              "native_video_behavior_matches_controlled_baseline": true
+            },
+            "key": "ArrowLeft",
+            "app_media_time_delta_seconds": -0.383797,
+            "standalone_native_media_time_delta_seconds": -0.383797
+          },
+          {
+            "scenario": "foreground_modal_ArrowLeft",
+            "status": "FAIL",
+            "gates": {
+              "background_timeline_preserved": false,
+              "foreground_button_focus_preserved": true
+            }
+          },
+          {
+            "scenario": "foreground_modal_ArrowRight",
+            "status": "FAIL",
+            "gates": {
+              "background_timeline_preserved": false,
+              "foreground_button_focus_preserved": true
+            }
+          },
+          {
+            "scenario": "native_input_ArrowLeft",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "native_caret_moved": true,
+              "focus_preserved": true
+            }
+          },
+          {
+            "scenario": "native_input_ArrowRight",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "native_caret_moved": true,
+              "focus_preserved": true
+            }
+          },
+          {
+            "scenario": "legitimate_timeline_ArrowLeft",
+            "status": "PASS"
+          },
+          {
+            "scenario": "legitimate_timeline_ArrowRight",
+            "status": "PASS"
+          },
+          {
+            "scenario": "tab_smoke_Media",
+            "status": "PASS",
+            "same_canvas": true
+          },
+          {
+            "scenario": "tab_smoke_Brief",
+            "status": "PASS",
+            "same_canvas": true
+          },
+          {
+            "scenario": "tab_smoke_Earth",
+            "status": "PASS",
+            "same_canvas": true
+          }
+        ],
+        "passed": 7,
+        "failed": 4,
+        "video_sha256": "c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e"
+      },
+      {
+        "engine": "firefox",
+        "version": "157.0",
+        "checks": [
+          {
+            "scenario": "paused_native_video_ArrowRight",
+            "status": "FAIL",
+            "gates": {
+              "timeline_preserved": false,
+              "video_stays_paused": true,
+              "video_focus_preserved": true,
+              "native_video_behavior_matches_controlled_baseline": false
+            },
+            "key": "ArrowRight",
+            "app_media_time_delta_seconds": 0.0,
+            "standalone_native_media_time_delta_seconds": 5.0
+          },
+          {
+            "scenario": "paused_native_video_ArrowLeft",
+            "status": "FAIL",
+            "gates": {
+              "timeline_preserved": false,
+              "video_stays_paused": true,
+              "video_focus_preserved": true,
+              "native_video_behavior_matches_controlled_baseline": false
+            },
+            "key": "ArrowLeft",
+            "app_media_time_delta_seconds": 0.0,
+            "standalone_native_media_time_delta_seconds": -5.0
+          },
+          {
+            "scenario": "foreground_modal_ArrowLeft",
+            "status": "FAIL",
+            "gates": {
+              "background_timeline_preserved": false,
+              "foreground_button_focus_preserved": true
+            }
+          },
+          {
+            "scenario": "foreground_modal_ArrowRight",
+            "status": "FAIL",
+            "gates": {
+              "background_timeline_preserved": false,
+              "foreground_button_focus_preserved": true
+            }
+          },
+          {
+            "scenario": "native_input_ArrowLeft",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "native_caret_moved": true,
+              "focus_preserved": true
+            }
+          },
+          {
+            "scenario": "native_input_ArrowRight",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "native_caret_moved": true,
+              "focus_preserved": true
+            }
+          },
+          {
+            "scenario": "legitimate_timeline_ArrowLeft",
+            "status": "PASS"
+          },
+          {
+            "scenario": "legitimate_timeline_ArrowRight",
+            "status": "PASS"
+          },
+          {
+            "scenario": "tab_smoke_Media",
+            "status": "PASS",
+            "same_canvas": true
+          },
+          {
+            "scenario": "tab_smoke_Brief",
+            "status": "PASS",
+            "same_canvas": true
+          },
+          {
+            "scenario": "tab_smoke_Earth",
+            "status": "PASS",
+            "same_canvas": true
+          }
+        ],
+        "passed": 7,
+        "failed": 4,
+        "video_sha256": "c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e"
+      },
+      {
+        "engine": "webkit",
+        "version": "27.2",
+        "checks": [
+          {
+            "scenario": "paused_native_video_ArrowRight",
+            "status": "FAIL",
+            "gates": {
+              "timeline_preserved": false,
+              "video_stays_paused": true,
+              "video_focus_preserved": true,
+              "native_video_behavior_matches_controlled_baseline": true
+            },
+            "key": "ArrowRight",
+            "app_media_time_delta_seconds": 0.0,
+            "standalone_native_media_time_delta_seconds": 0.0
+          },
+          {
+            "scenario": "paused_native_video_ArrowLeft",
+            "status": "FAIL",
+            "gates": {
+              "timeline_preserved": false,
+              "video_stays_paused": true,
+              "video_focus_preserved": true,
+              "native_video_behavior_matches_controlled_baseline": true
+            },
+            "key": "ArrowLeft",
+            "app_media_time_delta_seconds": 0.0,
+            "standalone_native_media_time_delta_seconds": 0.0
+          },
+          {
+            "scenario": "foreground_modal_ArrowLeft",
+            "status": "FAIL",
+            "gates": {
+              "background_timeline_preserved": false,
+              "foreground_button_focus_preserved": true
+            }
+          },
+          {
+            "scenario": "foreground_modal_ArrowRight",
+            "status": "FAIL",
+            "gates": {
+              "background_timeline_preserved": false,
+              "foreground_button_focus_preserved": true
+            }
+          },
+          {
+            "scenario": "native_input_ArrowLeft",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "native_caret_moved": true,
+              "focus_preserved": true
+            }
+          },
+          {
+            "scenario": "native_input_ArrowRight",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "native_caret_moved": true,
+              "focus_preserved": true
+            }
+          },
+          {
+            "scenario": "legitimate_timeline_ArrowLeft",
+            "status": "PASS"
+          },
+          {
+            "scenario": "legitimate_timeline_ArrowRight",
+            "status": "PASS"
+          },
+          {
+            "scenario": "tab_smoke_Media",
+            "status": "PASS",
+            "same_canvas": true
+          },
+          {
+            "scenario": "tab_smoke_Brief",
+            "status": "PASS",
+            "same_canvas": true
+          },
+          {
+            "scenario": "tab_smoke_Earth",
+            "status": "PASS",
+            "same_canvas": true
+          }
+        ],
+        "passed": 7,
+        "failed": 4,
+        "video_sha256": "c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e"
+      }
+    ]
+  },
+  "isolated_production_image_preflight": {
+    "started_at": "2026-10-30T05:41:16.844Z",
+    "ended_at": "2026-10-30T05:42:20.830Z",
+    "source_receipt_sha256": "ae42e846c507f207255db8f03af4ca945390a4b93d64ac2b044e36edf4830773",
+    "private_source_path": "artifacts/private/mobile-accessibility-20261030/timeline-keyboard-preflight229-71dae/receipt.json",
+    "completed_cases": 33,
+    "passed": 33,
+    "failed": 0,
+    "incomplete": 0,
+    "page_errors": 0,
+    "api_posts": 0,
+    "engines": [
+      {
+        "engine": "chromium",
+        "version": "156.0.8078.4",
+        "checks": [
+          {
+            "scenario": "paused_native_video_ArrowRight",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "video_stays_paused": true,
+              "video_focus_preserved": true,
+              "native_video_behavior_matches_controlled_baseline": true
+            },
+            "key": "ArrowRight",
+            "app_media_time_delta_seconds": 0.3838,
+            "standalone_native_media_time_delta_seconds": 0.383798
+          },
+          {
+            "scenario": "paused_native_video_ArrowLeft",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "video_stays_paused": true,
+              "video_focus_preserved": true,
+              "native_video_behavior_matches_controlled_baseline": true
+            },
+            "key": "ArrowLeft",
+            "app_media_time_delta_seconds": -0.383797,
+            "standalone_native_media_time_delta_seconds": -0.383797
+          },
+          {
+            "scenario": "foreground_modal_ArrowLeft",
+            "status": "PASS",
+            "gates": {
+              "background_timeline_preserved": true,
+              "foreground_button_focus_preserved": true
+            }
+          },
+          {
+            "scenario": "foreground_modal_ArrowRight",
+            "status": "PASS",
+            "gates": {
+              "background_timeline_preserved": true,
+              "foreground_button_focus_preserved": true
+            }
+          },
+          {
+            "scenario": "native_input_ArrowLeft",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "native_caret_moved": true,
+              "focus_preserved": true
+            }
+          },
+          {
+            "scenario": "native_input_ArrowRight",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "native_caret_moved": true,
+              "focus_preserved": true
+            }
+          },
+          {
+            "scenario": "legitimate_timeline_ArrowLeft",
+            "status": "PASS"
+          },
+          {
+            "scenario": "legitimate_timeline_ArrowRight",
+            "status": "PASS"
+          },
+          {
+            "scenario": "tab_smoke_Media",
+            "status": "PASS",
+            "same_canvas": true
+          },
+          {
+            "scenario": "tab_smoke_Brief",
+            "status": "PASS",
+            "same_canvas": true
+          },
+          {
+            "scenario": "tab_smoke_Earth",
+            "status": "PASS",
+            "same_canvas": true
+          }
+        ],
+        "passed": 11,
+        "failed": 0,
+        "video_sha256": "c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e"
+      },
+      {
+        "engine": "firefox",
+        "version": "157.0",
+        "checks": [
+          {
+            "scenario": "paused_native_video_ArrowRight",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "video_stays_paused": true,
+              "video_focus_preserved": true,
+              "native_video_behavior_matches_controlled_baseline": true
+            },
+            "key": "ArrowRight",
+            "app_media_time_delta_seconds": 5.0,
+            "standalone_native_media_time_delta_seconds": 5.0
+          },
+          {
+            "scenario": "paused_native_video_ArrowLeft",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "video_stays_paused": true,
+              "video_focus_preserved": true,
+              "native_video_behavior_matches_controlled_baseline": true
+            },
+            "key": "ArrowLeft",
+            "app_media_time_delta_seconds": -5.0,
+            "standalone_native_media_time_delta_seconds": -5.0
+          },
+          {
+            "scenario": "foreground_modal_ArrowLeft",
+            "status": "PASS",
+            "gates": {
+              "background_timeline_preserved": true,
+              "foreground_button_focus_preserved": true
+            }
+          },
+          {
+            "scenario": "foreground_modal_ArrowRight",
+            "status": "PASS",
+            "gates": {
+              "background_timeline_preserved": true,
+              "foreground_button_focus_preserved": true
+            }
+          },
+          {
+            "scenario": "native_input_ArrowLeft",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "native_caret_moved": true,
+              "focus_preserved": true
+            }
+          },
+          {
+            "scenario": "native_input_ArrowRight",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "native_caret_moved": true,
+              "focus_preserved": true
+            }
+          },
+          {
+            "scenario": "legitimate_timeline_ArrowLeft",
+            "status": "PASS"
+          },
+          {
+            "scenario": "legitimate_timeline_ArrowRight",
+            "status": "PASS"
+          },
+          {
+            "scenario": "tab_smoke_Media",
+            "status": "PASS",
+            "same_canvas": true
+          },
+          {
+            "scenario": "tab_smoke_Brief",
+            "status": "PASS",
+            "same_canvas": true
+          },
+          {
+            "scenario": "tab_smoke_Earth",
+            "status": "PASS",
+            "same_canvas": true
+          }
+        ],
+        "passed": 11,
+        "failed": 0,
+        "video_sha256": "c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e"
+      },
+      {
+        "engine": "webkit",
+        "version": "27.2",
+        "checks": [
+          {
+            "scenario": "paused_native_video_ArrowRight",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "video_stays_paused": true,
+              "video_focus_preserved": true,
+              "native_video_behavior_matches_controlled_baseline": true
+            },
+            "key": "ArrowRight",
+            "app_media_time_delta_seconds": 0.0,
+            "standalone_native_media_time_delta_seconds": 0.0
+          },
+          {
+            "scenario": "paused_native_video_ArrowLeft",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "video_stays_paused": true,
+              "video_focus_preserved": true,
+              "native_video_behavior_matches_controlled_baseline": true
+            },
+            "key": "ArrowLeft",
+            "app_media_time_delta_seconds": 0.0,
+            "standalone_native_media_time_delta_seconds": 0.0
+          },
+          {
+            "scenario": "foreground_modal_ArrowLeft",
+            "status": "PASS",
+            "gates": {
+              "background_timeline_preserved": true,
+              "foreground_button_focus_preserved": true
+            }
+          },
+          {
+            "scenario": "foreground_modal_ArrowRight",
+            "status": "PASS",
+            "gates": {
+              "background_timeline_preserved": true,
+              "foreground_button_focus_preserved": true
+            }
+          },
+          {
+            "scenario": "native_input_ArrowLeft",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "native_caret_moved": true,
+              "focus_preserved": true
+            }
+          },
+          {
+            "scenario": "native_input_ArrowRight",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "native_caret_moved": true,
+              "focus_preserved": true
+            }
+          },
+          {
+            "scenario": "legitimate_timeline_ArrowLeft",
+            "status": "PASS"
+          },
+          {
+            "scenario": "legitimate_timeline_ArrowRight",
+            "status": "PASS"
+          },
+          {
+            "scenario": "tab_smoke_Media",
+            "status": "PASS",
+            "same_canvas": true
+          },
+          {
+            "scenario": "tab_smoke_Brief",
+            "status": "PASS",
+            "same_canvas": true
+          },
+          {
+            "scenario": "tab_smoke_Earth",
+            "status": "PASS",
+            "same_canvas": true
+          }
+        ],
+        "passed": 11,
+        "failed": 0,
+        "video_sha256": "c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e"
+      }
+    ]
+  },
+  "current_live": {
+    "started_at": "2026-10-30T05:43:25.618Z",
+    "ended_at": "2026-10-30T05:44:27.658Z",
+    "source_receipt_sha256": "e4807a340a807bf189c06c12d55010141706fc7108d825671b1ee7a2fdd19649",
+    "private_source_path": "artifacts/private/mobile-accessibility-20261030/timeline-keyboard-live229-71dae/receipt.json",
+    "completed_cases": 33,
+    "passed": 33,
+    "failed": 0,
+    "incomplete": 0,
+    "page_errors": 0,
+    "api_posts": 0,
+    "engines": [
+      {
+        "engine": "chromium",
+        "version": "156.0.8078.4",
+        "checks": [
+          {
+            "scenario": "paused_native_video_ArrowRight",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "video_stays_paused": true,
+              "video_focus_preserved": true,
+              "native_video_behavior_matches_controlled_baseline": true
+            },
+            "key": "ArrowRight",
+            "app_media_time_delta_seconds": 0.383797,
+            "standalone_native_media_time_delta_seconds": 0.383801
+          },
+          {
+            "scenario": "paused_native_video_ArrowLeft",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "video_stays_paused": true,
+              "video_focus_preserved": true,
+              "native_video_behavior_matches_controlled_baseline": true
+            },
+            "key": "ArrowLeft",
+            "app_media_time_delta_seconds": -0.383797,
+            "standalone_native_media_time_delta_seconds": -0.383797
+          },
+          {
+            "scenario": "foreground_modal_ArrowLeft",
+            "status": "PASS",
+            "gates": {
+              "background_timeline_preserved": true,
+              "foreground_button_focus_preserved": true
+            }
+          },
+          {
+            "scenario": "foreground_modal_ArrowRight",
+            "status": "PASS",
+            "gates": {
+              "background_timeline_preserved": true,
+              "foreground_button_focus_preserved": true
+            }
+          },
+          {
+            "scenario": "native_input_ArrowLeft",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "native_caret_moved": true,
+              "focus_preserved": true
+            }
+          },
+          {
+            "scenario": "native_input_ArrowRight",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "native_caret_moved": true,
+              "focus_preserved": true
+            }
+          },
+          {
+            "scenario": "legitimate_timeline_ArrowLeft",
+            "status": "PASS"
+          },
+          {
+            "scenario": "legitimate_timeline_ArrowRight",
+            "status": "PASS"
+          },
+          {
+            "scenario": "tab_smoke_Media",
+            "status": "PASS",
+            "same_canvas": true
+          },
+          {
+            "scenario": "tab_smoke_Brief",
+            "status": "PASS",
+            "same_canvas": true
+          },
+          {
+            "scenario": "tab_smoke_Earth",
+            "status": "PASS",
+            "same_canvas": true
+          }
+        ],
+        "passed": 11,
+        "failed": 0,
+        "video_sha256": "c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e"
+      },
+      {
+        "engine": "firefox",
+        "version": "157.0",
+        "checks": [
+          {
+            "scenario": "paused_native_video_ArrowRight",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "video_stays_paused": true,
+              "video_focus_preserved": true,
+              "native_video_behavior_matches_controlled_baseline": true
+            },
+            "key": "ArrowRight",
+            "app_media_time_delta_seconds": 5.0,
+            "standalone_native_media_time_delta_seconds": 5.0
+          },
+          {
+            "scenario": "paused_native_video_ArrowLeft",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "video_stays_paused": true,
+              "video_focus_preserved": true,
+              "native_video_behavior_matches_controlled_baseline": true
+            },
+            "key": "ArrowLeft",
+            "app_media_time_delta_seconds": -5.0,
+            "standalone_native_media_time_delta_seconds": -5.0
+          },
+          {
+            "scenario": "foreground_modal_ArrowLeft",
+            "status": "PASS",
+            "gates": {
+              "background_timeline_preserved": true,
+              "foreground_button_focus_preserved": true
+            }
+          },
+          {
+            "scenario": "foreground_modal_ArrowRight",
+            "status": "PASS",
+            "gates": {
+              "background_timeline_preserved": true,
+              "foreground_button_focus_preserved": true
+            }
+          },
+          {
+            "scenario": "native_input_ArrowLeft",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "native_caret_moved": true,
+              "focus_preserved": true
+            }
+          },
+          {
+            "scenario": "native_input_ArrowRight",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "native_caret_moved": true,
+              "focus_preserved": true
+            }
+          },
+          {
+            "scenario": "legitimate_timeline_ArrowLeft",
+            "status": "PASS"
+          },
+          {
+            "scenario": "legitimate_timeline_ArrowRight",
+            "status": "PASS"
+          },
+          {
+            "scenario": "tab_smoke_Media",
+            "status": "PASS",
+            "same_canvas": true
+          },
+          {
+            "scenario": "tab_smoke_Brief",
+            "status": "PASS",
+            "same_canvas": true
+          },
+          {
+            "scenario": "tab_smoke_Earth",
+            "status": "PASS",
+            "same_canvas": true
+          }
+        ],
+        "passed": 11,
+        "failed": 0,
+        "video_sha256": "c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e"
+      },
+      {
+        "engine": "webkit",
+        "version": "27.2",
+        "checks": [
+          {
+            "scenario": "paused_native_video_ArrowRight",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "video_stays_paused": true,
+              "video_focus_preserved": true,
+              "native_video_behavior_matches_controlled_baseline": true
+            },
+            "key": "ArrowRight",
+            "app_media_time_delta_seconds": 0.0,
+            "standalone_native_media_time_delta_seconds": 0.0
+          },
+          {
+            "scenario": "paused_native_video_ArrowLeft",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "video_stays_paused": true,
+              "video_focus_preserved": true,
+              "native_video_behavior_matches_controlled_baseline": true
+            },
+            "key": "ArrowLeft",
+            "app_media_time_delta_seconds": 0.0,
+            "standalone_native_media_time_delta_seconds": 0.0
+          },
+          {
+            "scenario": "foreground_modal_ArrowLeft",
+            "status": "PASS",
+            "gates": {
+              "background_timeline_preserved": true,
+              "foreground_button_focus_preserved": true
+            }
+          },
+          {
+            "scenario": "foreground_modal_ArrowRight",
+            "status": "PASS",
+            "gates": {
+              "background_timeline_preserved": true,
+              "foreground_button_focus_preserved": true
+            }
+          },
+          {
+            "scenario": "native_input_ArrowLeft",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "native_caret_moved": true,
+              "focus_preserved": true
+            }
+          },
+          {
+            "scenario": "native_input_ArrowRight",
+            "status": "PASS",
+            "gates": {
+              "timeline_preserved": true,
+              "native_caret_moved": true,
+              "focus_preserved": true
+            }
+          },
+          {
+            "scenario": "legitimate_timeline_ArrowLeft",
+            "status": "PASS"
+          },
+          {
+            "scenario": "legitimate_timeline_ArrowRight",
+            "status": "PASS"
+          },
+          {
+            "scenario": "tab_smoke_Media",
+            "status": "PASS",
+            "same_canvas": true
+          },
+          {
+            "scenario": "tab_smoke_Brief",
+            "status": "PASS",
+            "same_canvas": true
+          },
+          {
+            "scenario": "tab_smoke_Earth",
+            "status": "PASS",
+            "same_canvas": true
+          }
+        ],
+        "passed": 11,
+        "failed": 0,
+        "video_sha256": "c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e"
+      }
+    ]
+  },
+  "runtime_binding": {
+    "old_baseline_frontend_image": "sha256:b6e6bc17ba236fd46c6f7f64e3bb4efb0da2c0dfb7797b14668bdd888123b998",
+    "old_baseline_frontend_started_at": "2026-10-30T04:11:24.510599334Z",
+    "old_baseline_binding_note": "Docker inspection after the clean baseline completed confirmed the old image/start; earlier b6e6 finite-qualification receipt retains its separate full identity observation.",
+    "preflight_identity_before": [
+      {
+        "name": "/cmonitor-rc2-final-preflight",
+        "image": "sha256:71dae32e0eb066f835426cdbce78c9d6a0eaedbc51a19cd835edfdb3b7012ce0",
+        "started_at": "2026-10-30T05:40:51.563666642Z",
+        "health": "healthy",
+        "volumes": []
+      },
+      {
+        "name": "/cmonitor-live-backend-1",
+        "image": "sha256:9b094edd5879d47d682c62dbb81f977b9ed5597058aa3f4a162434bd31c02877",
+        "started_at": "2026-10-30T02:17:07.608080243Z",
+        "health": "healthy",
+        "volumes": [
+          {
+            "type": "volume",
+            "name": "cmonitor-live_briefing_data",
+            "destination": "/app/videos/briefing"
+          },
+          {
+            "type": "bind",
+            "name": "",
+            "destination": "/opt/voices"
+          }
+        ]
+      },
+      {
+        "name": "/cmonitor-live-db-1",
+        "image": "sha256:fc61b5645ca9a0115ef9a4fab2f0a3b35006c90a05d5511c5c010786da75ba65",
+        "started_at": "2026-10-30T02:17:01.159083667Z",
+        "health": "healthy",
+        "volumes": [
+          {
+            "type": "volume",
+            "name": "cmonitor_live_pg17_secure_20261030",
+            "destination": "/var/lib/postgresql/data"
+          }
+        ]
+      }
+    ],
+    "preflight_identity_after": [
+      {
+        "name": "/cmonitor-rc2-final-preflight",
+        "image": "sha256:71dae32e0eb066f835426cdbce78c9d6a0eaedbc51a19cd835edfdb3b7012ce0",
+        "started_at": "2026-10-30T05:40:51.563666642Z",
+        "health": "healthy",
+        "volumes": []
+      },
+      {
+        "name": "/cmonitor-live-backend-1",
+        "image": "sha256:9b094edd5879d47d682c62dbb81f977b9ed5597058aa3f4a162434bd31c02877",
+        "started_at": "2026-10-30T02:17:07.608080243Z",
+        "health": "healthy",
+        "volumes": [
+          {
+            "type": "volume",
+            "name": "cmonitor-live_briefing_data",
+            "destination": "/app/videos/briefing"
+          },
+          {
+            "type": "bind",
+            "name": "",
+            "destination": "/opt/voices"
+          }
+        ]
+      },
+      {
+        "name": "/cmonitor-live-db-1",
+        "image": "sha256:fc61b5645ca9a0115ef9a4fab2f0a3b35006c90a05d5511c5c010786da75ba65",
+        "started_at": "2026-10-30T02:17:01.159083667Z",
+        "health": "healthy",
+        "volumes": [
+          {
+            "type": "volume",
+            "name": "cmonitor_live_pg17_secure_20261030",
+            "destination": "/var/lib/postgresql/data"
+          }
+        ]
+      }
+    ],
+    "live_first_healthy_identity_observation": [
+      {
+        "name": "/cmonitor-live-frontend-1",
+        "image": "sha256:71dae32e0eb066f835426cdbce78c9d6a0eaedbc51a19cd835edfdb3b7012ce0",
+        "started_at": "2026-10-30T05:43:01.56454013Z",
+        "health": "healthy",
+        "volumes": []
+      },
+      {
+        "name": "/cmonitor-live-backend-1",
+        "image": "sha256:9b094edd5879d47d682c62dbb81f977b9ed5597058aa3f4a162434bd31c02877",
+        "started_at": "2026-10-30T02:17:07.608080243Z",
+        "health": "healthy",
+        "volumes": [
+          {
+            "type": "volume",
+            "name": "cmonitor-live_briefing_data",
+            "destination": "/app/videos/briefing"
+          },
+          {
+            "type": "bind",
+            "name": "",
+            "destination": "/opt/voices"
+          }
+        ]
+      },
+      {
+        "name": "/cmonitor-live-db-1",
+        "image": "sha256:fc61b5645ca9a0115ef9a4fab2f0a3b35006c90a05d5511c5c010786da75ba65",
+        "started_at": "2026-10-30T02:17:01.159083667Z",
+        "health": "healthy",
+        "volumes": [
+          {
+            "type": "volume",
+            "name": "cmonitor_live_pg17_secure_20261030",
+            "destination": "/var/lib/postgresql/data"
+          }
+        ]
+      }
+    ],
+    "live_identity_after": {
+      "inspected_at": "2026-10-30T05:44:52.354903+00:00",
+      "identities_after": [
+        {
+          "name": "/cmonitor-live-frontend-1",
+          "image": "sha256:71dae32e0eb066f835426cdbce78c9d6a0eaedbc51a19cd835edfdb3b7012ce0",
+          "started_at": "2026-10-30T05:43:01.56454013Z",
+          "health": "healthy",
+          "volumes": []
+        },
+        {
+          "name": "/cmonitor-live-backend-1",
+          "image": "sha256:9b094edd5879d47d682c62dbb81f977b9ed5597058aa3f4a162434bd31c02877",
+          "started_at": "2026-10-30T02:17:07.608080243Z",
+          "health": "healthy",
+          "volumes": [
+            {
+              "type": "volume",
+              "name": "cmonitor-live_briefing_data",
+              "destination": "/app/videos/briefing"
+            },
+            {
+              "type": "bind",
+              "name": "",
+              "destination": "/opt/voices"
+            }
+          ]
+        },
+        {
+          "name": "/cmonitor-live-db-1",
+          "image": "sha256:fc61b5645ca9a0115ef9a4fab2f0a3b35006c90a05d5511c5c010786da75ba65",
+          "started_at": "2026-10-30T02:17:01.159083667Z",
+          "health": "healthy",
+          "volumes": [
+            {
+              "type": "volume",
+              "name": "cmonitor_live_pg17_secure_20261030",
+              "destination": "/var/lib/postgresql/data"
+            }
+          ]
+        }
+      ],
+      "equals_first_healthy_observation": true,
+      "first_healthy_observation_after_test_launch_utc": "2026-10-30T05:43:49.134400+00:00",
+      "admission_note": "First immediate health assertion during frontend starting failed; healthy identity observation above occurred after test launch. Container image/start lifetimes cover entire receipt interval. No browser/API errors were observed.",
+      "harness_sha256": "7913a01f8e86f425a94b920d0dd768ce7fe3de284cb529b31ffa911f1977b2ff"
+    },
+    "preflight_and_live_frontend_image_equal": true,
+    "backend_db_images_starts_health_and_mounts_unchanged": true
+  },
+  "outcome": {
+    "old_clean_complete_baseline": {
+      "cases": 33,
+      "expected_defect_failures": 12,
+      "other_passes": 21
+    },
+    "new_isolated_image": {
+      "passed": 33,
+      "failed": 0
+    },
+    "new_live": {
+      "passed": 33,
+      "failed": 0
+    },
+    "firefox_native_seek": {
+      "standalone_native_arrow_delta_seconds": [
+        5,
+        -5
+      ],
+      "old_app_arrow_delta_seconds": [
+        0,
+        0
+      ],
+      "new_preflight_and_live_arrow_delta_seconds": [
+        5,
+        -5
+      ],
+      "suppression_reproduced_and_repaired": true
+    },
+    "chromium_native_seek": "Both old and corrected app match the standalone native duration/100 step (about0.3838seconds), but only corrected app preserves timeline ownership.",
+    "webkit_native_seek": "Focused-video-host arrows produced no seek in both standalone native control and app. Native video-host behavior is preserved; a WebKit seek capability is not invented.",
+    "foreground_modal_background_isolation": "Both arrow directions preserve the report timeline and button focus in all three corrected engines.",
+    "positive_controls": "Native search caret arrows, legitimate neutral-body timeline arrows and Earth/Media/Brief canvas persistence pass in all three engines."
+  },
+  "scope_relationship": {
+    "prior_mobile_receipt": "2026-10-30-rc2-mobile-accessibility.json",
+    "prior_finite_profile": "b6e6 image:102axe states/71keyboard samples/30reflow states/12matrix/5E2E/18network checks and separate native camera-motion evidence remain historical measured scopes. They are not silently relabeled as229-image executions.",
+    "targeted_rerun_reason": "Only TimelineScrubber implementation and its focused unit test file changed after the admitted225 product profile. The affected33keyboard cases and bounded full-tab smoke were rerun; all102axe states were not needlessly repeated.",
+    "prior_duration_window": "Interrupted for a confirmed product correction; earlier elapsed time is excluded from the new image window.",
+    "new_duration_qualification": "Separate new183/185-minute observers were running when this receipt was written; no future duration completion is asserted."
+  },
+  "limits": [
+    "Desktop Chromium, Firefox and WebKit are not physical iPhone/Android or actual mobile Safari certification.",
+    "The standalone actual-MP4 element is an explicitly controlled browser-native keyboard baseline, not an application or real-provider fixture pass.",
+    "No media seeking API, clock mutation, synthesized keyboard event, generation request or application data write was used by these checks.",
+    "The earlier Firefox paused-caption repaint failure and user-resume handling remain documented; this keyboard repair does not clear that separate engine limitation.",
+    "No complete WCAG, screen-reader speech, native OS background/eviction, security or source-truth claim follows from these targeted keyboard cases.",
+    "Two earlier harness attempts used stale accessible-name selectors after their native-media observations. Those failures remain private; the clean33-case baseline and identical-harness corrected33-case runs above contain zero harness errors.",
+    "The first immediate live Docker health assertion landed during expected starting state. The first healthy identity observation was recorded after test launch; all completed browser checks had zero page/API errors, and container lifetime/image/start equality covers the run."
+  ]
+}

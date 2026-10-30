@@ -148,7 +148,7 @@ or interpolates source prose into FFmpeg expressions.
 
 ## Captions and exact narration transcript
 
-The frozen 224-test frontend adds native WebVTT captions and a complete narration
+The caption feature introduced in the 224-test frontend provides native WebVTT captions and a complete narration
 transcript for compatible recorded manifests. It validates one to four unique
 sources, the opening/source/closing segment order, finite measured audio durations,
 bounded safe text and the content filename/full-hash prefix. WebCrypto checks
@@ -172,7 +172,7 @@ A native track-load failure keeps the verified transcript available and does not
 become a false MP4 playback error. These lifecycle and malformed-metadata cases
 have focused regressions; viewing or toggling captions starts no generation job.
 
-Development preflight and the exact `b6e6bc17…` Docker frontend at port5196
+Earlier development preflight and the exact `b6e6bc17…` Docker frontend at port5196
 qualified native playback and exact cue/transcript behavior in three engines,
 with a retained limit. Chromium/WebKit passed visible caption on/off/restore.
 **Firefox failed immediate repaint when captions were re-enabled on a paused
@@ -185,12 +185,9 @@ the notice clears on actual playback or hiding captions. No browser sniffing,
 forced play, seeking or track rebuild workaround is used. The verified transcript
 remains an alternative. Failed native-repaint experiments are preserved.
 
-Frontend `b6e6bc17…` is [live-admitted](qualification/2026-10-30-rc2-frontend-build-and-admission.json)
-with source/served-byte/header/process checks complete; full final production
-mobile/caption checks and the running long-session observations remain pending. Development
-results do not qualify the final admitted runtime, physical iOS, screen readers,
-every native CC menu, general speech quality or full WCAG conformance. See the
-[verification state](VERIFICATION.md) for current phase and exact identities.
+The caption-specific [b6e6 admission](qualification/2026-10-30-rc2-frontend-build-and-admission.json) and [finite production mobile/caption batch](qualification/2026-10-30-rc2-mobile-accessibility.json) remain dated evidence, retaining the two strict paused-restoration passes and Firefox failure/user-resume recovery. Frontend `71dae32e` passed [229-test build and live admission](qualification/2026-10-30-rc2-frontend-timeline-admission-229.json) after repairing global timeline arrows that intercepted native video and modal controls. [Three-engine targeted checks](qualification/2026-10-30-rc2-timeline-keyboard-229.json) passed 33 cases on both isolated and live images. Firefox native arrow seeking returned to its standalone behavior; WebKit's zero native seek in this host remains zero, rather than being called a seek pass. This does not erase the separate Firefox paused-repaint limit or cause the application to force playback/seek.
+
+Final duration, exact merge/tag CI and artifact binding belong to the release-attached `conflict-monitor-0.2.0-rc.2-verification.json`; this source document does not assert those post-freeze gates passed. Neither development nor production desktop-engine checks qualify physical iOS, screen readers, every native CC menu, general speech quality or full WCAG conformance. See [verification](VERIFICATION.md).
 
 ## Earlier native media sample
 

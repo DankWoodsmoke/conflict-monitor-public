@@ -11,6 +11,23 @@ const EVENT_COLORS: Record<string, string> = {
   cyber:      "#bc8cff",
 };
 
+// Page shortcuts belong to the neutral background. Native controls, Earth
+// canvas/focus regions and foreground dialogs retain their own arrow keys.
+const KEYBOARD_OWNERS='input,textarea,select,button,a[href],summary,video,audio,canvas,[tabindex],[contenteditable]:not([contenteditable="false"]),[role="button"],[role="textbox"],[role="searchbox"],[role="combobox"],[role="slider"],[role="spinbutton"],[role="listbox"],[role="menu"],[role="menubar"],[role="tree"],[role="grid"],[role="tab"],[role="tablist"],[role="checkbox"],[role="radio"],[role="radiogroup"],[role="switch"],[role="scrollbar"]';
+function pageOwnsTimelineKey(event:KeyboardEvent){
+  if(event.defaultPrevented||event.isComposing||event.altKey||event.ctrlKey||event.metaKey||event.shiftKey)return false;
+  const owns=(target:EventTarget|null)=>target instanceof Element&&!!target.closest(KEYBOARD_OWNERS);
+  if(event.composedPath().some(owns)||owns(document.activeElement))return false;
+  const modals=document.querySelectorAll('dialog[open],[role="dialog"][aria-modal="true"],[role="alertdialog"][aria-modal="true"]');
+  for(const modal of modals){
+    if(modal.closest('[hidden],[inert],[aria-hidden="true"]'))continue;
+    let visible=true;
+    for(let node:Element|null=modal;node;node=node.parentElement){const style=getComputedStyle(node);if(style.display==='none'||style.visibility==='hidden'||style.visibility==='collapse'){visible=false;break;}}
+    if(visible)return false;
+  }
+  return true;
+}
+
 // Conflict start — left edge of the entire timeline
 const DEFAULT_HISTORY_START = new Date(SHOWCASE ? nowMs() - 24 * 3600000 : ((import.meta as any).env?.VITE_HISTORY_START || "2026-02-28T00:00:00Z"));
 
@@ -165,7 +182,8 @@ export function TimelineScrubber({
   // ── Keyboard shortcuts ────────────────────────────────────────────────────
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) return;
+      if (e.code !== "ArrowLeft" && e.code !== "ArrowRight") return;
+      if (!pageOwnsTimelineKey(e)) return;
       if (e.code === "ArrowLeft" && activeRange) {
         e.preventDefault();
         const step = Math.max(3600000, (winEnd - winStart) * 0.15);
@@ -463,7 +481,7 @@ export function TimelineScrubber({
               <span style={{ color: "#a3b9ca" }}> HIGH</span>
             </span>
           )}
-          <span style={{ color: "#a3b9ca", fontSize: 11, whiteSpace: "nowrap" }}>← → KEYS · DRAG</span>
+          <span title="Left/Right shift the report window when the page background is focused. Controls, media and dialogs keep their own keys." style={{ color: "#a3b9ca", fontSize: 11, whiteSpace: "nowrap" }}>PAGE ← → · DRAG</span>
         </div>
 
         {/* Time display */}

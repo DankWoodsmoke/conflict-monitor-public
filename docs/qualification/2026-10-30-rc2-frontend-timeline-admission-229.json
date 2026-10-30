@@ -1,0 +1,179 @@
+{
+  "version": "0.2.0-rc.2",
+  "status": "PASS_FRONTEND_BUILD_AND_LIVE_ADMISSION",
+  "recorded_at": "2026-10-30T05:43:50.001080+00:00",
+  "image": "sha256:71dae32e0eb066f835426cdbce78c9d6a0eaedbc51a19cd835edfdb3b7012ce0",
+  "frontend_started_at": "2026-10-30T05:43:01.56454013Z",
+  "scope": "229-test timeline keyboard ownership repair, actual source/build/served-byte/process/header binding; browser and duration gates are separate",
+  "source_freeze_sha256": "247d2c03f2cd26a388040a60cd92b346824ddd400663f4e19663024fbce89c08",
+  "build_receipt_sha256": "351422825064f5ef35bfc4905116e41e09e8d4dd201d38dc79435f3f5e370458",
+  "preflight_admission_raw_sha256": "0fabca59e731f495845fbd5d78b68392c520400221550757613696e647f29061",
+  "live_admission_raw_sha256": "6156f3b6cbcf2d16def328773dd2cf0a1b29103e0368c8ec18f13f3555f3c18c",
+  "source": {
+    "exported_frontend_files": 97,
+    "tested_source_files": 63,
+    "source_unchanged_through_build": true,
+    "tested_and_exported_source_equal": true,
+    "all_402_local_dist_files_equal_to_image": true
+  },
+  "tests": {
+    "tests": 229,
+    "passed": 229,
+    "failed": 0,
+    "skipped": 0,
+    "files": 21,
+    "tsc_vite_build": "passed",
+    "cesium_compatibility": "passed",
+    "npm_audit": "Previous0 advisory result; package/lock/dependencies unchanged. No new OS/browser/DB/host clearance."
+  },
+  "changed_paths_since_225": [
+    "frontend/src/components/TimelineScrubber.tsx",
+    "frontend/src/components/timeline.test.tsx"
+  ],
+  "keyboard_contract": {
+    "owned": "Neutral page background/body, including actual noninteractive timeline stats click; unmodified Left/Right continue shifting range and leaving LIVE.",
+    "deferred_to_owner": [
+      "defaultPrevented",
+      "composition",
+      "Alt/Ctrl/Meta/Shift chords",
+      "native controls and nested button/anchor/summary targets",
+      "media and Earth canvas",
+      "editable and ARIA control targets",
+      "focusable content regions",
+      "any visible foreground modal even with body focus"
+    ],
+    "hidden_modal": "Hidden/inert/aria-hidden or CSS-hidden native attribution dialog does not disable legitimate page timeline shortcuts.",
+    "new_controls_added": false
+  },
+  "served_byte_comparison": {
+    "application_files": 402,
+    "nginx_error_pages": 1,
+    "total_static_files": 403,
+    "all_preflight_and_live_http_files_equal_to_image": true
+  },
+  "runtime": {
+    "name": "/cmonitor-live-frontend-1",
+    "image": "sha256:71dae32e0eb066f835426cdbce78c9d6a0eaedbc51a19cd835edfdb3b7012ce0",
+    "started_at": "2026-10-30T05:43:01.56454013Z",
+    "health": "healthy",
+    "read_only_root": true,
+    "process": {
+      "Uid": "101\t101\t101\t101",
+      "CapEff": "0000000000000000",
+      "NoNewPrivs": "1"
+    },
+    "ports": {
+      "80/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "5190"
+        }
+      ]
+    },
+    "volumes": []
+  },
+  "http_header_checks": {
+    "checked_at": "2026-10-30T05:43:45.113080+00:00",
+    "scope": "Actual built loopback HTML, hashed script, frontend/API errors and proxied/direct API response headers",
+    "status": "PASS",
+    "cases": [
+      {
+        "case": "html",
+        "status": 200,
+        "checks": {
+          "expected_status": true,
+          "nosniff": true,
+          "referrer_policy": true,
+          "sameorigin_frame_policy": true,
+          "html_revalidated_or_not_stored": true
+        }
+      },
+      {
+        "case": "hashed_asset",
+        "status": 200,
+        "checks": {
+          "expected_status": true,
+          "nosniff": true,
+          "referrer_policy": true,
+          "sameorigin_frame_policy": true,
+          "hashed_asset_immutable_year": true
+        }
+      },
+      {
+        "case": "missing_asset",
+        "status": 404,
+        "checks": {
+          "expected_status": true,
+          "nosniff": true,
+          "referrer_policy": true,
+          "sameorigin_frame_policy": true,
+          "missing_asset_not_immutable": true
+        }
+      },
+      {
+        "case": "proxied_health",
+        "status": 200,
+        "checks": {
+          "expected_status": true,
+          "nosniff": true,
+          "referrer_policy": true,
+          "sameorigin_frame_policy": true,
+          "api_not_stored": true
+        }
+      },
+      {
+        "case": "proxied_404",
+        "status": 404,
+        "checks": {
+          "expected_status": true,
+          "nosniff": true,
+          "referrer_policy": true,
+          "sameorigin_frame_policy": true,
+          "api_not_stored": true
+        }
+      },
+      {
+        "case": "direct_health",
+        "status": 200,
+        "checks": {
+          "expected_status": true,
+          "nosniff": true,
+          "referrer_policy": true,
+          "api_not_stored": true
+        }
+      },
+      {
+        "case": "direct_404",
+        "status": 404,
+        "checks": {
+          "expected_status": true,
+          "nosniff": true,
+          "referrer_policy": true,
+          "api_not_stored": true
+        }
+      }
+    ],
+    "html_sha256": "f2ae97de113248d1f9926b1488609cb4d2690bb9b739be78f753c79866fb9537",
+    "redirects_followed": 0,
+    "provider_or_generation_requests": 0,
+    "limits": [
+      "This checks the declared local header/cache policy, not TLS/HSTS, CSP completeness, every endpoint or arbitrary deployment security.",
+      "An absent cache lifetime on the missing asset is not a claim that all intermediaries will never cache an error."
+    ]
+  },
+  "prior_observation": {
+    "frontend": "sha256:b6e6bc17ba236fd46c6f7f64e3bb4efb0da2c0dfb7797b14668bdd888123b998",
+    "browser_seconds": 4866.5409727999995,
+    "browser_samples": 163,
+    "server_last_sample_seconds": 4891.52,
+    "server_samples": 164,
+    "status": "INTERRUPTED_FOR_CONFIRMED_PRODUCT_FIX",
+    "three_hour_qualified": false,
+    "carried_seconds_to_new_image": 0
+  },
+  "limits": [
+    "The earlier b6e6 finite browser receipts retain their actual image identity; this receipt does not relabel them.",
+    "229 tests and byte identity do not certify all code paths, source truth, physical iOS, assistive technology or a production SLA.",
+    "Final uninterrupted duration, exact tag CI and download binding are separate release-attached qualification evidence."
+  ]
+}

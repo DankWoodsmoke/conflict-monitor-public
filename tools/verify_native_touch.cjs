@@ -106,22 +106,34 @@ async function stableHeight(page) {
       receipt.checks.push('native_touch_pinch_changes_observed_camera_height');
     } catch (error) { receipt.incomplete.push({ type: 'native_pinch', error: safe(error.message) }); }
     try {
-      await showEarthNavigation(page);
-      await tap(page, page.getByRole('button', { name: 'Globe', exact: true }));
-      await page.waitForFunction(() => /1[5-9]\.\d Mm|2\d\.\d Mm/.test(document.querySelector('.earth-navigation small')?.textContent || ''), null, { timeout: 8000 });
-      await stableHeight(page);
-      await hideEarthNavigation(page);
       const counts = () => page.locator('.earth-coverage').evaluate(node => ({
         enabled: Number(node.getAttribute('data-position-count')), visible: Number(node.getAttribute('data-visible-count')) }));
-      const beforePan = await counts(); let afterPan = beforePan;
+      const attempts = [];
       let measured = false;
       for (let attempt = 0; attempt < 3; attempt++) {
+        // Each bounded gesture needs its own real reset and fresh baseline:
+        // live positions can expire while an earlier attempt is in progress.
+        // Never compare later gestures with a stale first-attempt inventory.
+        await showEarthNavigation(page);
+        await tap(page, page.getByRole('button', { name: 'Region', exact: true }));
+        await stableHeight(page);
+        await tap(page, page.getByRole('button', { name: 'Globe', exact: true }));
+        await page.waitForFunction(() => /1[5-9]\.\d Mm|2\d\.\d Mm/.test(document.querySelector('.earth-navigation small')?.textContent || ''), null, { timeout: 8000 });
+        await stableHeight(page);
+        await hideEarthNavigation(page);
+        const beforePan = await counts();
+        const started = Date.now();
         await cdp.send('Input.synthesizeScrollGesture', { x: canvasBox.x + canvasBox.width / 2,
           y: canvasBox.y + canvasBox.height / 2, xDistance: 180, yDistance: 0, speed: 220, gestureSourceType: 'touch' });
-        await page.waitForTimeout(700); afterPan = await counts();
-        if (beforePan.visible >= 4 && afterPan.enabled === beforePan.enabled && afterPan.visible <= Math.floor(beforePan.visible / 4)) { measured = true; break; }
+        await page.waitForTimeout(700);
+        const afterPan = await counts();
+        measured = beforePan.visible >= 4 && afterPan.enabled === beforePan.enabled && afterPan.visible <= Math.floor(beforePan.visible / 4);
+        attempts.push({ attempt: attempt + 1, real_region_and_globe_reset: true, before: beforePan, after: afterPan,
+          elapsed_ms: Date.now() - started, inventory_unchanged: afterPan.enabled === beforePan.enabled,
+          large_hemisphere_mask_change_measured: measured });
+        if (measured) break;
       }
-      receipt.native_pan = { command_accepted: true, before: beforePan, after: afterPan,
+      receipt.native_pan = { command_accepted: true, attempts,
         large_hemisphere_mask_change_measured: measured, exact_camera_center_measured: false };
       if (measured) receipt.checks.push('native_touch_pan_changes_actual_position_hemisphere_viewport');
       else receipt.incomplete.push({ type: 'native_pan_outcome', reason: 'Native commands accepted, but a sufficiently large viewport-mask change with unchanged position count was not observed.' });

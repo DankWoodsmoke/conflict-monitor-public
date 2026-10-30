@@ -1,0 +1,512 @@
+{
+  "version": "0.2.0-rc.2",
+  "status": "PASS_QUALIFIED_SOURCE_HOSTED_CI",
+  "source_commit": "b15a60eb19bfa141e1c6c9ec576c7e9205e338c1",
+  "branch": "codex/release-rc2-security-mobile",
+  "run_id": 41003507817,
+  "url": "https://github.com/DankWoodsmoke/conflict-monitor-public/actions/runs/41003507817",
+  "event": "push",
+  "run_conclusion": "success",
+  "jobs": [
+    {
+      "id": 123893074076,
+      "name": "backend",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T04:32:59Z",
+      "completed_at": "2026-10-30T04:34:16Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pip install --upgrade pip setuptools",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pip install -r backend/requirements-dev.txt",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m ruff check --select E9,F63,F7,F82 backend tools",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m pytest -q",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Generate isolated runtime password",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python -m app.bootstrap",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Use restricted runtime login for integration gates",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python tools/verify_database_role.py",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python tools/verify_postgis.py",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python tools/verify_live_pipeline.py",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run python tools/release_gate.py --scan-only",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pip-audit",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 123893074289,
+      "name": "frontend",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T04:32:59Z",
+      "completed_at": "2026-10-30T04:33:34Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run test:compat",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm test",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run build",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm audit --audit-level=moderate",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 123893074345,
+      "name": "Shipped Compose security and pipeline profile",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T04:32:58Z",
+      "completed_at": "2026-10-30T04:38:07Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare isolated masked fixtures",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build all shipped runtime images from source",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize the isolated shipped profile",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify actual runtime permissions and PostGIS TCP pipeline",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify PID1, capability, mount and port boundaries",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify actual served security and cache headers",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Remove generated fixture secrets from retained reports",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Retain sanitized qualification receipts",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Remove only this job's isolated profile and volumes",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "observed_suite_results": {
+    "frontend_tests": 225,
+    "frontend_test_files": 21,
+    "frontend_build_compatibility": "passed",
+    "npm_reported_vulnerabilities": 0,
+    "backend_tests": 597,
+    "backend_subtests": 29,
+    "backend_pytest_seconds": 8.45,
+    "backend_ruff": "passed",
+    "pip_audit_reported_advisories": 0,
+    "hosted_python": "3.12.15",
+    "hosted_node": "22.23.4"
+  },
+  "shipped_profile": {
+    "fresh_custom_database_backend_frontend_builds": "passed",
+    "official_ffmpeg_archive_sha256_and_pinned_pgp_verified_in_build_log": true,
+    "bootstrap_and_up": "passed",
+    "restricted_role_checks": {
+      "runtime_identity": true,
+      "no_administrative_flags": true,
+      "no_role_memberships": true,
+      "no_public_object_ownership": true,
+      "no_database_or_public_schema_ownership": true,
+      "migration_revision_readable": true,
+      "denied_create_public_table": true,
+      "denied_create_schema": true,
+      "denied_create_temporary_table": true,
+      "denied_alter_application_table": true,
+      "denied_truncate_application_table": true,
+      "denied_alter_migration_revision": true,
+      "denied_create_extension": true,
+      "denied_drop_application_table": true,
+      "denied_become_administrator": true,
+      "denied_change_session_authorization": true,
+      "denied_grant_administrator": true,
+      "denied_elevate_role": true,
+      "denied_read_authentication_catalog": true,
+      "ordinary_advisory_lock_available": true,
+      "sequence_usage_and_select_only": true
+    },
+    "actual_fresh_postgis_gate": "passed",
+    "synthetic_tcp_websocket_pipeline": {
+      "checks": {
+        "free_rss_to_postgis_tcp_api_and_websocket": "PASS",
+        "replay_and_immutable_unicode_revision": "PASS",
+        "undated_source_failure_is_persisted_not_fabricated": "PASS",
+        "free_telegram_processor_and_atomic_monotonic_checkpoint": "PASS",
+        "distinct_oversized_source_failure_identities_and_prefix_hashes": "PASS",
+        "real_sql_compound_timestamp_id_pagination": "PASS",
+        "creation_id_recovery_includes_old_dated_reports": "PASS",
+        "real_jsonb_snapshot_sampling_bound": "PASS",
+        "free_persistent_attributed_brief_no_risk_inference": "PASS",
+        "real_sql_legacy_json_abstention_and_missing_citation_disclosure": "PASS",
+        "paid_and_admin_operations_fail_closed": "PASS",
+        "no_paid_usage_and_required_query_indexes": "PASS"
+      },
+      "public_feed_requested": false,
+      "model_calls": 0,
+      "status": "PASS"
+    },
+    "services": [
+      {
+        "service": "frontend",
+        "image_id": "sha256:ec647c06f2441e5921d70ce22ab975c5db30606aa943b28f332fc46132ba3ad6",
+        "checks": {
+          "owned_project": true,
+          "expected_service": true,
+          "running_healthy": true,
+          "no_new_privileges_policy": true,
+          "all_default_capabilities_dropped": true,
+          "pid1_effective_capabilities_zero": true,
+          "pid1_no_new_privileges": true,
+          "pid1_expected_uid": true,
+          "not_privileged": true,
+          "no_publish_all_ports": true,
+          "loopback_only_published_ports": true,
+          "no_added_capabilities": true,
+          "readonly_rootfs": true
+        }
+      },
+      {
+        "service": "backend",
+        "image_id": "sha256:57049db971d12271832ff0206e2ad8ba5e18d6e7cfb7ff3dc0dc7ec94a5af56b",
+        "checks": {
+          "owned_project": true,
+          "expected_service": true,
+          "running_healthy": true,
+          "no_new_privileges_policy": true,
+          "all_default_capabilities_dropped": true,
+          "pid1_effective_capabilities_zero": true,
+          "pid1_no_new_privileges": true,
+          "pid1_expected_uid": true,
+          "not_privileged": true,
+          "no_publish_all_ports": true,
+          "loopback_only_published_ports": true,
+          "no_added_capabilities": true,
+          "bootstrap_environment_explicitly_blank": true,
+          "collectors_demo_and_models_explicitly_disabled": true,
+          "restricted_test_dsn": true
+        }
+      },
+      {
+        "service": "db",
+        "image_id": "sha256:4ede9be5b813ae09d2ab5b9f68fc4b6597ef4a1afd84841d18ee9920897c75eb",
+        "checks": {
+          "owned_project": true,
+          "expected_service": true,
+          "running_healthy": true,
+          "no_new_privileges_policy": true,
+          "all_default_capabilities_dropped": true,
+          "pid1_effective_capabilities_zero": true,
+          "pid1_no_new_privileges": true,
+          "pid1_expected_uid": true,
+          "not_privileged": true,
+          "no_publish_all_ports": true,
+          "no_database_published_ports": true,
+          "readonly_rootfs": true,
+          "isolated_test_database": true,
+          "proj_network_off": true
+        }
+      }
+    ],
+    "packaged_application_source_binding": {
+      "files": 56,
+      "mismatches": [],
+      "all_bytes_equal": true
+    },
+    "headers": {
+      "status": "PASS",
+      "cases": [
+        {
+          "case": "html",
+          "status": 200,
+          "checks": {
+            "expected_status": true,
+            "nosniff": true,
+            "referrer_policy": true,
+            "sameorigin_frame_policy": true,
+            "html_revalidated_or_not_stored": true
+          }
+        },
+        {
+          "case": "hashed_asset",
+          "status": 200,
+          "checks": {
+            "expected_status": true,
+            "nosniff": true,
+            "referrer_policy": true,
+            "sameorigin_frame_policy": true,
+            "hashed_asset_immutable_year": true
+          }
+        },
+        {
+          "case": "missing_asset",
+          "status": 404,
+          "checks": {
+            "expected_status": true,
+            "nosniff": true,
+            "referrer_policy": true,
+            "sameorigin_frame_policy": true,
+            "missing_asset_not_immutable": true
+          }
+        },
+        {
+          "case": "proxied_health",
+          "status": 200,
+          "checks": {
+            "expected_status": true,
+            "nosniff": true,
+            "referrer_policy": true,
+            "sameorigin_frame_policy": true,
+            "api_not_stored": true
+          }
+        },
+        {
+          "case": "proxied_404",
+          "status": 404,
+          "checks": {
+            "expected_status": true,
+            "nosniff": true,
+            "referrer_policy": true,
+            "sameorigin_frame_policy": true,
+            "api_not_stored": true
+          }
+        },
+        {
+          "case": "direct_health",
+          "status": 200,
+          "checks": {
+            "expected_status": true,
+            "nosniff": true,
+            "referrer_policy": true,
+            "api_not_stored": true
+          }
+        },
+        {
+          "case": "direct_404",
+          "status": 404,
+          "checks": {
+            "expected_status": true,
+            "nosniff": true,
+            "referrer_policy": true,
+            "api_not_stored": true
+          }
+        }
+      ]
+    },
+    "artifact_sanitizer_upload_and_owned_cleanup": "passed"
+  },
+  "raw_job_logs": [
+    {
+      "job": 123893074076,
+      "name": "backend",
+      "bytes": 134351,
+      "sha256": "c9037dff459b9a86df07bfa749a1ccc384a0c876443a5bb240757f5c846832fe"
+    },
+    {
+      "job": 123893074289,
+      "name": "frontend",
+      "bytes": 39948,
+      "sha256": "f61b47b4451f5fb8e1facb7aa71e73e594223720f85258337e10f7d7e0f59b7f"
+    },
+    {
+      "job": 123893074345,
+      "name": "Shipped Compose security and pipeline profile",
+      "bytes": 1262604,
+      "sha256": "352f3ef561428fd931319ad843b39003754dd6920044448f1e0ee342f9e428d4"
+    }
+  ],
+  "retained_initial_failure_runs": [
+    41002034434,
+    41002063268
+  ],
+  "limitations": [
+    "This qualifies source commit b15a60eb19bfa141e1c6c9ec576c7e9205e338c1, not subsequent documentation commits or a future release tag.",
+    "Hosted built image identities are distinct from the admitted local profile; no whole-image byte identity or new OS vulnerability clearance is inferred.",
+    "Synthetic isolated DB/TCP fixtures use no provider ingestion or model calls; local live-provider/Google/mobile/media and duration observations remain separate.",
+    "Initial network and frontend timeout failures remain retained; no timeout increase, skipped assertion or automatic rerun produced this pass.",
+    "Final 183-minute Google and185-minute server observations and tag/archive/public download qualification remain pending."
+  ]
+}

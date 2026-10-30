@@ -32,6 +32,34 @@ describe("report timeline state",()=>{
     expect(current!.end.getTime()).toBe(now);expect(current!.start.getTime()).toBe(now-duration);
     expect(current!.end.getTime()-current!.start.getTime()).toBe(duration);
   });
+  it("leaves media, nested button, editor, custom control and Earth canvas arrows with their native owner",async()=>{
+    const change=vi.fn(),now=Date.now(),range={start:new Date(now-86400000),end:new Date(now)};
+    await act(async()=>root.render(<><TimelineScrubber allEvents={[]} timeRange={null} activeRange={range} onRangeChange={change}/><div>
+      <video controls/><audio controls/><button><span data-button-child>Overview</span></button><input/><textarea/><select><option>Choice</option></select><a href="#fixture">Link</a><details><summary>More</summary></details><div contentEditable suppressContentEditableWarning><span data-editor-child>Editable text</span></div><div role="slider"/><div tabIndex={0} aria-label="Scrollable context"/><canvas/>
+    </div></>));
+    for(const selector of ['video','audio','[data-button-child]','input','textarea','select','a','summary','[data-editor-child]','[role="slider"]','[tabindex="0"]','canvas'])for(const code of ['ArrowLeft','ArrowRight']){
+      const event=new KeyboardEvent('keydown',{code,bubbles:true,cancelable:true});await act(async()=>host.querySelector(selector)!.dispatchEvent(event));
+      expect(event.defaultPrevented,selector).toBe(false);expect(change,selector).not.toHaveBeenCalled();expect(host.textContent).toContain('● LIVE');
+    }
+  });
+  it("does not steal arrows dispatched at window while an outside control owns focus",async()=>{
+    const change=vi.fn(),now=Date.now();await act(async()=>root.render(<><TimelineScrubber allEvents={[]} timeRange={null} activeRange={{start:new Date(now-86400000),end:new Date(now)}} onRangeChange={change}/><button data-focus-owner>Outside control</button></>));
+    host.querySelector<HTMLButtonElement>('[data-focus-owner]')!.focus();const event=new KeyboardEvent('keydown',{code:'ArrowLeft',cancelable:true});await act(async()=>window.dispatchEvent(event));
+    expect(event.defaultPrevented).toBe(false);expect(change).not.toHaveBeenCalled();expect(host.textContent).toContain('● LIVE');
+  });
+  it("respects foreground modals even with body focus, but not a hidden native attribution dialog",async()=>{
+    const change=vi.fn(),now=Date.now();await act(async()=>root.render(<><TimelineScrubber allEvents={[]} timeRange={null} activeRange={{start:new Date(now-86400000),end:new Date(now)}} onRangeChange={change}/><div data-overlay><div role="dialog" aria-modal="true">Fixture foreground</div></div></>));
+    const event=new KeyboardEvent('keydown',{code:'ArrowLeft',cancelable:true});await act(async()=>window.dispatchEvent(event));expect(event.defaultPrevented).toBe(false);expect(change).not.toHaveBeenCalled();
+    host.querySelector<HTMLElement>('[data-overlay]')!.style.display='none';const background=new KeyboardEvent('keydown',{code:'ArrowLeft',cancelable:true});await act(async()=>host.querySelector('.timeline-stats')!.dispatchEvent(new MouseEvent('click',{bubbles:true})));await act(async()=>window.dispatchEvent(background));
+    expect(background.defaultPrevented).toBe(true);expect(change).toHaveBeenCalledOnce();expect(change.mock.calls[0][0].end.getTime()-change.mock.calls[0][0].start.getTime()).toBe(86400000);expect(host.textContent).not.toContain('● LIVE');
+  });
+  it("respects prior event ownership, composition and modifier chords without changing LIVE",async()=>{
+    const change=vi.fn(),now=Date.now();await act(async()=>root.render(<TimelineScrubber allEvents={[]} timeRange={null} activeRange={{start:new Date(now-86400000),end:new Date(now)}} onRangeChange={change}/>));
+    for(const init of [{isComposing:true},{altKey:true},{ctrlKey:true},{metaKey:true},{shiftKey:true}]){
+      const event=new KeyboardEvent('keydown',{code:'ArrowRight',cancelable:true,...init});await act(async()=>window.dispatchEvent(event));expect(event.defaultPrevented).toBe(false);expect(change).not.toHaveBeenCalled();
+    }
+    const prevented=new KeyboardEvent('keydown',{code:'ArrowLeft',cancelable:true});prevented.preventDefault();await act(async()=>window.dispatchEvent(prevented));expect(change).not.toHaveBeenCalled();expect(host.textContent).toContain('● LIVE');
+  });
   it("labels its geolocated subset rather than implying unlocated reports are missing",async()=>{
     const fixture=buildShowcase(Date.now()).events[0];const events=[fixture,{...fixture,id:fixture.id+1,lat:null,lon:null}];
     await act(async()=>root.render(<TimelineScrubber allEvents={events} timeRange={null} activeRange={null} onRangeChange={()=>{}}/>));

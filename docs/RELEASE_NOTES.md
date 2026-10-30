@@ -1,4 +1,62 @@
-# 0.2.0-rc.1 — one Earth workspace and accountable source collection
+# 0.2.0-rc.2 — imagery continuity, native controls and source-bound narration
+
+One Google/Cesium Earth canvas persists across Earth, Media and Brief. Close-view
+imagery/detail settings, visible provider availability, proactive access refresh
+and named fallback states improve inspection without presenting static reference
+imagery as current or uniformly high resolution. Native attribution remains
+visible and keyboard reachable.
+
+Frontend `71dae32e` passed 229 tests and exact source/build/live admission. Global
+timeline arrows now defer to native video, controls, focusable content and visible
+dialogs. The same three-engine harness measured 12 failures among33 cases before
+the fix, then33/33 passes in each isolated and live run. Firefox's suppressed native
+plus/minus5-second seeking returned to its standalone behavior; WebKit's zero
+native seek in this host is retained rather than presented as a seek pass.
+Neutral timeline shortcuts still work. See the [targeted before/after evidence](qualification/2026-10-30-rc2-timeline-keyboard-229.json).
+
+Narrated source cards now have bounded hash-checked exact transcripts and captions
+timed to measured audio segments. Firefox can fail to repaint captions when they
+are re-enabled while paused; measured native user Play/Pause recovery, explicit
+guidance and the transcript remain available. No forced playback/seek or factual
+verification is implied. The earlier b6e6 finite accessibility/mobile checks and
+224/225-test proofs retain their original image identities. Its interrupted
+observation contributes zero seconds to the replacement profile.
+
+The backend passed597 Linux tests plus29 subtests on the actual application
+image. A fresh-volume database restore preserves all ten recorded tables and
+five sequences. The reduced PostGIS build includes a reviewed pinned upstream
+FlatGeobuf backport; two250-case SQL runs (500 executions,250 distinct cases) and
+346 CUnit tests passed. Restricted FFmpeg9.0.2 is SHA/signature verified and
+retains only required local media inputs. Real RSS to local Qwen/Piper/MP4 passed
+24 source/hash/decode/delivery checks. Reduced privileges, read-only
+frontend/database roots and seven HTTP header/cache cases have image-bound
+admission evidence. [Database upgrade instructions](DB_UPGRADE.md) require a
+fresh secure volume and qualified logical restore; old PGDATA is not reused.
+
+Earlier hosted source `b15a60eb` passed all three jobs, including fresh custom
+container builds and actual role/PostGIS/TCP/process/header gates. Initial
+transport failures and the frontend timeout remain preserved. This source-commit
+result is not the final merge/tag qualification or proof that independently built
+images are byte-identical. Backend/database vendor-open findings and the three
+retained frontend Medium records remain explicit in the [OS review](OS_SECURITY_REVIEW.md).
+
+This is an immutable source candidate. The release-attached
+`conflict-monitor-0.2.0-rc.2-verification.json` supplies the exact tag/archive/
+manifest binding and completed post-freeze duration and merge/tag CI evidence.
+Publication admission requires its PASS result; this in-tree note does not
+assert those future gates passed. Public asset bytes are independently checked
+after publication. The [verification contract](VERIFICATION.md) retains incomplete
+accessibility checks, the native Firefox limit, physical-iOS/assistive-technology
+limits, source uncertainty and residual security findings. No every-line,
+zero-vulnerability or sustained-production-SLA claim is made.
+
+Private history, environments, collected source bodies, model caches and raw logs
+are excluded. RC.1 tags/assets and the original private working directory remain
+unchanged.
+
+---
+
+# Retained 0.2.0-rc.1 notes — one Earth workspace and accountable source collection
 
 Earth is the persistent workspace. Reports, source/time filters, regional tracking,
 thermal context, search and recorded replay share one Google/Cesium canvas. Media

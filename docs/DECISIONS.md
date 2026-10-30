@@ -228,3 +228,46 @@ would have failed only at the natural 150-minute handoff was identified before
 that run; a controlled regression must exercise the verifier branch without
 counting accelerated time as live-session evidence. Current results and gate
 status are recorded in [verification](VERIFICATION.md).
+
+Later hosted execution exposed a five-second test timeout and transient upstream
+source-download failures. Count/name boundaries and modal behavior were separated
+without deleting assertions or extending timeouts. The resulting 225-test build
+has exactly the admitted frontend's eleven filesystem layers and runtime
+configuration; its distinct image ID is never substituted for observed uptime.
+Source downloads now make at most three bounded attempts while retaining the
+same official bytes, hashes, signing fingerprint and compiler configuration.
+Permanent HTTP and certificate failures still stop the build. Both repairs have
+passed hosted execution; earlier failures remain recorded.
+
+Live inventory arrivals made exact-count touch assertions incomplete. A separate
+native camera probe declared pixel-change and restoration criteria before
+execution, then measured them against real rendered imagery. It supplements the
+eight strict touch passes without changing the earlier incomplete results.
+Caption pixels are likewise checked independently of active-cue metadata:
+Firefox's paused repaint failure remains visible despite successful explicit
+user-resume recovery and an exact verified transcript.
+
+The public export also receives an independent secret scan in addition to its
+allowlist and known-value checks. Public fingerprints and reproducible digests
+are triaged explicitly, not hidden with global ignores. Final source scans and
+download bindings remain external to the archive to avoid self-referential
+hash claims; private environments and history are outside the export.
+
+A final native-keyboard check found that page-level timeline arrows also changed
+the background range while a video or Methods control owned focus. Firefox's
+native video seeking was also suppressed. The 229-test repair defers already
+handled, modified, composing, interactive, media, canvas and foreground-modal
+keys to their owner while preserving neutral-page timeline shortcuts. The same
+three-engine probe records the original twelve failures and the corrected
+33-case preflight and live results. The earlier approximately 81-minute windows
+were interrupted and preserved; none of their elapsed time qualifies the new
+frontend image.
+
+The source freezes after its image admission and finite browser checks. Exact
+merge/tag CI, uninterrupted Google/server observations and final ZIP/manifest
+hashes are admitted by a separate release-attached verification JSON. This lets
+CI run during the real observation without inventing results or changing the
+archive afterward. Publication requires the completed gates; the unauthenticated
+consumer then checks all three assets, exact local attestation bytes, tag target,
+archive CRC and every manifest/Git blob and mode. Source-only documentation does
+not assert that post-freeze observations have passed.

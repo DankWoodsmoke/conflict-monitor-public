@@ -21,14 +21,14 @@
       "sha256": "ffc354b94ff7e64fd24763ca5567fcf0c80bb5d99babfb045af68808d77e2886"
     },
     {
-      "bytes": 16203,
+      "bytes": 17398,
       "path": "README.md",
-      "sha256": "558db0f2be9c959644fc49cd70d3f00ffc97aa7029e385a11b41af78a796df9a"
+      "sha256": "0106a4d5e7d354f253e614e9d4b5264a5ec4824e2b8f484f81e5a499370e2f66"
     },
     {
-      "bytes": 8138,
+      "bytes": 8614,
       "path": "SECURITY.md",
-      "sha256": "07517fedb163b76fe298604e5c24b44d51f7ce3416ca373a398a70eb3da149a1"
+      "sha256": "aeadd351b21e0484de6358c02d8b7f21bfdf02b8b3eef13f047e5f8aed891842"
     },
     {
       "bytes": 5884,
@@ -621,9 +621,9 @@
       "sha256": "614473bda75281705128d763128f2347a9c4b9af9540c77435a838a796a70640"
     },
     {
-      "bytes": 25027,
+      "bytes": 27910,
       "path": "docs/DECISIONS.md",
-      "sha256": "f5932345eeac471455f7acf1a3846cac66f058dda3b26d7b36b8c9187de94a85"
+      "sha256": "679db16dc3dd0aae7d7a5d986a52fa4454d3d1f3c15405bd626e9f36d50d2436"
     },
     {
       "bytes": 26075,
@@ -646,9 +646,9 @@
       "sha256": "dc140aad38fe83c6545016529343b9ea04299e809ee9ddb6a4beef3ec482366e"
     },
     {
-      "bytes": 22497,
+      "bytes": 23372,
       "path": "docs/LOCAL_AI_VIDEO.md",
-      "sha256": "41a4a26c4f15549ba25e630ded22ecd9c2d5afc7c646497f5708b4001eff1585"
+      "sha256": "20c05388968e445e519cb8e24b1de6333937f047738d6274ed3bbbf2bd9c6d2d"
     },
     {
       "bytes": 10396,
@@ -656,14 +656,14 @@
       "sha256": "be0e079b800ede0a46cbc1e63818340fdfcbc03eedc0a723163872f243cc84a6"
     },
     {
-      "bytes": 22057,
+      "bytes": 22884,
       "path": "docs/OS_SECURITY_REVIEW.md",
-      "sha256": "4c7f5656325c9163311e9e6382e3b74db64a6a37cd71fd4af193917d7ae5d4fe"
+      "sha256": "12cc33e1404b7f5bbd6f5c5fa9bbddf0ed149498b2f7b650198b447f2520f227"
     },
     {
-      "bytes": 5169,
+      "bytes": 8963,
       "path": "docs/RELEASE_NOTES.md",
-      "sha256": "e8961bdc366b778bcbe8f05b67bf0875c3eef952920e88dbc7ecb052e2391d9d"
+      "sha256": "7bb896d45959e6de5ddc7bd5c5bd11c13c3ceaaab921224a452a384a149a982d"
     },
     {
       "bytes": 3230,
@@ -681,9 +681,9 @@
       "sha256": "c56b46890190bf941c5d2c0d5bc6aadd067e0e788485f14b3e790694bae90879"
     },
     {
-      "bytes": 30845,
+      "bytes": 37085,
       "path": "docs/VERIFICATION.md",
-      "sha256": "84fec2c4826d38905614450977060a0c0f15b8a58d77a5aeccdc9671ce743626"
+      "sha256": "15501e0699f4e27a5d3a619036c5c860441a3d929cfa291a96c9569c4b20a85c"
     },
     {
       "bytes": 9372,
@@ -857,6 +857,11 @@
     },
     {
       "bytes": 5361,
+      "path": "docs/qualification/2026-10-30-frontend-security-rebind-71dae-final229.json",
+      "sha256": "33e7cd0adb6484d56455b17a2ddec89076110e29774d0acd2f5ffab54624b6ca"
+    },
+    {
+      "bytes": 5361,
       "path": "docs/qualification/2026-10-30-frontend-security-rebind-b6e6-final224.json",
       "sha256": "f3f893c210358e558fe056b8fa03286a963087a43cdced214acdee11efdab18a"
     },
@@ -886,6 +891,16 @@
       "sha256": "8ec43457b7ab2a741b990760bd39e2dfd04091fb240e6927520a097c07a33358"
     },
     {
+      "bytes": 6441,
+      "path": "docs/qualification/2026-10-30-rc2-frontend-timeline-admission-229.json",
+      "sha256": "7c0edf1f68722c28aeb4a709009a7b1af9e87cf6710a74dd4c31b1d769bf8ef8"
+    },
+    {
+      "bytes": 17092,
+      "path": "docs/qualification/2026-10-30-rc2-hosted-qualified-source-ci.json",
+      "sha256": "90c05ec5abb60ee584f2ddc325f34cfe35a22bd43a50467b69b7c8650ba6f458"
+    },
+    {
       "bytes": 7574,
       "path": "docs/qualification/2026-10-30-rc2-linux-backend-597-export-rebind.json",
       "sha256": "809773ac25acdc55c10685cdcf829f7cfc1fa517b555647277a6bb89db777be6"
@@ -899,6 +914,31 @@
       "bytes": 4014,
       "path": "docs/qualification/2026-10-30-rc2-local-generation.json",
       "sha256": "4ab21f5693263fbd4143528c97e10e2616744f90be3944e347d184d99db10972"
+    },
+    {
+      "bytes": 24928,
+      "path": "docs/qualification/2026-10-30-rc2-mobile-accessibility.json",
+      "sha256": "cd8f3e69550c41dc019a8f9139546ccff6af79ab4f32a679daa1dd1361773dc3"
+    },
+    {
+      "bytes": 7218,
+      "path": "docs/qualification/2026-10-30-rc2-public-export-span-and-byte-gate.json",
+      "sha256": "33b6e1c158317f37f9d2ab61418b41b0aad5515530da3ce8b6966f8ab8565ca6"
+    },
+    {
+      "bytes": 3380,
+      "path": "docs/qualification/2026-10-30-rc2-public-lockfile-gitleaks.json",
+      "sha256": "334654b58a83c907c23d55e9be0224b459572655262e69dd550f288f37d0d087"
+    },
+    {
+      "bytes": 10003,
+      "path": "docs/qualification/2026-10-30-rc2-public-source-gitleaks.json",
+      "sha256": "ba8c64029b3d2f19a75d14bde48f237c60c9ea613b7394e2e58d0dd4f1062f2d"
+    },
+    {
+      "bytes": 40487,
+      "path": "docs/qualification/2026-10-30-rc2-timeline-keyboard-229.json",
+      "sha256": "8099360689b522e0dcf7a43576d1a24fc391cdae4c9cdbafb62ca68b880bf9c0"
     },
     {
       "bytes": 3430,
@@ -1416,9 +1456,9 @@
       "sha256": "7c36261854b5a456f4342a6af4c314d8ce9882c981512dc1a412b05879e5d5c3"
     },
     {
-      "bytes": 31145,
+      "bytes": 32781,
       "path": "frontend/src/components/TimelineScrubber.tsx",
-      "sha256": "0eb5ac59c4700f2eb0545328b12662e601604baf84b8b51ef56dd1ab79be460c"
+      "sha256": "d145aa99e8b44dc67c3a8ec2ecbb76e41483ae2ff4dc18897ea230809bb47519"
     },
     {
       "bytes": 35621,
@@ -1451,9 +1491,9 @@
       "sha256": "c208229a3b10b2be44fec406489b46c5a93b2985208cddbd5a1c2395c396e505"
     },
     {
-      "bytes": 6378,
+      "bytes": 10519,
       "path": "frontend/src/components/timeline.test.tsx",
-      "sha256": "3281f1814d9119e9e86ed479b2a0fd2929656a50e0ab0a48ee9cd2be3d6c6535"
+      "sha256": "fdaa0ff70beefd283e0225038779f3eddd64a8861af019f13e3c41f754d45ecd"
     },
     {
       "bytes": 1488,
@@ -1781,9 +1821,14 @@
       "sha256": "17b4f1a70ed10af3030d46dfd881c376e39da8d668eb74056f72cc9614b7de1e"
     },
     {
-      "bytes": 14756,
+      "bytes": 7427,
+      "path": "tools/verify_native_camera_motion.cjs",
+      "sha256": "2532bfef70b20a3912cae1f2c6852b7a3efe40763d8fcbf79652b9c50d349958"
+    },
+    {
+      "bytes": 15448,
       "path": "tools/verify_native_touch.cjs",
-      "sha256": "25f395a03f58cd9a38dcc0ffc1c4ee10874a5c1f0708ab4e075eff2e37587541"
+      "sha256": "0866af9f29049975b374bd5be466c7ac3337f5029143c8810012d76f38151a26"
     },
     {
       "bytes": 4632,
