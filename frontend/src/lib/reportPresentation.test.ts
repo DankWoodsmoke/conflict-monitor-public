@@ -16,6 +16,7 @@ describe("source presentation boundaries",()=>{
  });
  it("rejects invalid coordinates and leaves a bad acquisition date unknown rather than guessing today",()=>{
   expect(reportImageryLinks({...base,lat:91,lon:0})).toEqual({google:null,worldview:null,copernicus:null});
+  expect(reportImageryLinks({...base,lat:-25,lon:80})).toEqual({google:null,worldview:null,copernicus:null});
   const links=reportImageryLinks({...base,lat:0,lon:0,timestamp:"invalid"});expect(links.google).toBeTruthy();expect(links.worldview).toBeNull();
  });
  it("never prints a negative or NaN source age",()=>{expect(sourceAge("invalid",clock)).toBe("Time unknown");expect(sourceAge(new Date(clock+1).toISOString(),clock)).toBe("Future source time");expect(sourceAge(new Date(clock-60000).toISOString(),clock)).toBe("1m");});

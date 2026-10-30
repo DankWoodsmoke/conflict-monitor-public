@@ -23,6 +23,16 @@ async function tap(page, locator) {
 async function sameCanvas(page, handle) {
   assert(await page.evaluate(node => node === document.querySelector('.cesium-widget canvas'), handle), 'Earth canvas remounted');
 }
+async function showEarthNavigation(page) {
+  const show = page.getByRole('button', { name: 'Controls — show Earth navigation', exact: true });
+  if (await show.count() && await show.isVisible()) await tap(page, show);
+  assert(await page.locator('#earth-navigation-body').isVisible(), 'Touch did not expand Earth navigation');
+}
+async function hideEarthNavigation(page) {
+  const hide = page.getByRole('button', { name: 'Hide controls — Earth navigation', exact: true });
+  if (await hide.count() && await hide.isVisible()) await tap(page, hide);
+  assert(!await page.locator('#earth-navigation-body').isVisible(), 'Touch did not collapse Earth navigation before the canvas gesture');
+}
 async function height(page) {
   const text = await page.locator('.earth-navigation small').innerText();
   const match = text.match(/([\d.]+)\s*(Mm|km)/); assert(match, 'No actual camera height exposed');
@@ -67,6 +77,7 @@ async function stableHeight(page) {
     }, beforeZoom, { timeout: 8000 });
     receipt.camera_tap_zoom = { before_meters: beforeZoom, after_meters: await height(page) };
     receipt.checks.push('touch_camera_zoom_changes_observed_height');
+    await showEarthNavigation(page);
     await tap(page, page.getByRole('button', { name: /^Layers/ }));
     await page.locator('.earth-layer-panel').waitFor({ state: 'visible' });
     const aging = page.getByRole('checkbox', { name: 'Show last-known positions', exact: true });
@@ -79,6 +90,7 @@ async function stableHeight(page) {
     const close = dialog.getByRole('button', { name: /close/i });
     await tap(page, close); await dialog.waitFor({ state: 'hidden' });
     receipt.checks.push('touch_settings_open_and_close');
+    await hideEarthNavigation(page);
     const cdp = await context.newCDPSession(page);
     const canvasBox = await page.locator('.cesium-widget canvas').boundingBox(); assert(canvasBox);
     const x = canvasBox.x + canvasBox.width * .5;
@@ -94,9 +106,11 @@ async function stableHeight(page) {
       receipt.checks.push('native_touch_pinch_changes_observed_camera_height');
     } catch (error) { receipt.incomplete.push({ type: 'native_pinch', error: safe(error.message) }); }
     try {
+      await showEarthNavigation(page);
       await tap(page, page.getByRole('button', { name: 'Globe', exact: true }));
       await page.waitForFunction(() => /1[5-9]\.\d Mm|2\d\.\d Mm/.test(document.querySelector('.earth-navigation small')?.textContent || ''), null, { timeout: 8000 });
       await stableHeight(page);
+      await hideEarthNavigation(page);
       const counts = () => page.locator('.earth-coverage').evaluate(node => ({
         enabled: Number(node.getAttribute('data-position-count')), visible: Number(node.getAttribute('data-visible-count')) }));
       const beforePan = await counts(); let afterPan = beforePan;
@@ -112,9 +126,11 @@ async function stableHeight(page) {
       if (measured) receipt.checks.push('native_touch_pan_changes_actual_position_hemisphere_viewport');
       else receipt.incomplete.push({ type: 'native_pan_outcome', reason: 'Native commands accepted, but a sufficiently large viewport-mask change with unchanged position count was not observed.' });
     } catch (error) { receipt.incomplete.push({ type: 'native_pan_runtime', error: safe(error.message) }); }
+    await showEarthNavigation(page);
     await tap(page, page.getByRole('button', { name: 'Region', exact: true }));
     await page.waitForFunction(() => Number(document.querySelector('.earth-coverage')?.getAttribute('data-visible-count')) > 0, null, { timeout: 10000 });
     await sameCanvas(page, canvas); receipt.checks.push('touch_region_restores_visible_hemisphere');
+    await hideEarthNavigation(page);
     await tap(page, page.locator('.feed-fab'));
     await page.locator('.feed-sheet').waitFor({ state: 'visible' });
     await page.waitForFunction(() => document.querySelector('.feed-sheet')?.getAnimations().every(animation => animation.playState === 'finished'), null, { timeout: 5000 });

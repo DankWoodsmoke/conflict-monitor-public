@@ -2,6 +2,7 @@ import type {ConflictEvent} from "../types/event";
 import type {Aircraft,Vessel,JammingZone} from "../hooks/useTracking";
 import {severityLabel} from "./events";
 import {BASES,CHOKEPOINTS,REFINERIES,AIRFIELDS} from "./earthReference";
+import {hasUsableReportCoordinates} from "./reportPosition";
 
 export type EarthKind="report"|"aircraft"|"vessel"|"thermal"|"reference"|"navigation";
 export type PositionState="fresh"|"last_known"|"recorded"|"synthetic";
@@ -11,6 +12,14 @@ export type EarthLayers=Record<EarthKind,boolean> & {routes:boolean;lastKnown:bo
 export const DEFAULT_EARTH_LAYERS:EarthLayers={report:true,aircraft:true,vessel:true,thermal:false,reference:false,navigation:false,routes:false,lastKnown:true};
 export function enabledEarthMarkers(markers:EarthMarker[],layers:EarthLayers){return markers.filter(marker=>layers[marker.kind]&&(layers.lastKnown||marker.positionState!=="last_known"));}
 export const validCoordinates=(lat:unknown,lon:unknown):boolean=>typeof lat==="number"&&typeof lon==="number"&&Number.isFinite(lat)&&Number.isFinite(lon)&&lat>=-90&&lat<=90&&lon>=-180&&lon<=180;
+export type EarthDetail="balanced"|"detail";
+export const EARTH_DETAIL_ERROR:Record<EarthDetail,number>={balanced:8,detail:4};
+/** Native display pixels, bounded independently of zoom or provider resolution. */
+export function earthResolutionScale(width:number,height:number,devicePixelRatio:number):number{
+  const ratio=Number.isFinite(devicePixelRatio)&&devicePixelRatio>0?devicePixelRatio:1;
+  const area=Math.max(1,Number.isFinite(width)?width:1)*Math.max(1,Number.isFinite(height)?height:1);
+  return Math.min(ratio,2,Math.sqrt(8000000/area))/ratio;
+}
 export const utc=(value:string)=>Number.isFinite(Date.parse(value))?new Date(value).toISOString().replace("T"," ").replace(/\.\d{3}Z$/," UTC"):"Unknown";
 export function coordinateLabel(lat:number,lon:number){return `${Math.abs(lat).toFixed(4)}°${lat<0?"S":"N"}, ${Math.abs(lon).toFixed(4)}°${lon<0?"W":"E"}`;}
 const finite=(value:unknown,unit:string)=>typeof value==="number"&&Number.isFinite(value)?`${Math.round(value*10)/10} ${unit}`:"Unknown";
@@ -44,23 +53,25 @@ export function reportCameraRange(event:ConflictEvent):number{
 export function earthMarkers(options:{events:ConflictEvent[];aircraft:Aircraft[];vessels:Vessel[];hotspots:ThermalObservation[];navigation:JammingZone[];clock:number;synthetic?:boolean;windowStart?:number;replaying?:boolean}):EarthMarker[]{
   const result:EarthMarker[]=[];
   for(const event of options.events){
-    if(!validCoordinates(event.lat,event.lon))continue;
+    if(!hasUsableReportCoordinates(event))continue;
     result.push({id:`report-${event.id}`,kind:"report",name:event.summary,lat:event.lat!,lon:event.lon!,height:0,color:COLORS[event.event_type]||COLORS.unclassified,report:event,url:event.source_url,
-      details:[["Source",event.channel_name||event.source],["Source publication",`${utc(event.timestamp)} · incident time unverified`],["Location precision",event.geolocation_precision||"Unknown"],["Coordinates",coordinateLabel(event.lat!,event.lon!)],["Severity",severityLabel(event)],["Position display","Surface marker; no measured event altitude"]]});
+      details:[["Source",event.channel_name||event.source],["Source time",`${utc(event.timestamp)} · publication, update or acquisition; incident time unverified`],["Location precision",event.geolocation_precision||"Unknown"],["Coordinates",coordinateLabel(event.lat!,event.lon!)],["Severity",severityLabel(event)],["Position display","Surface marker; no measured event altitude"]]});
   }
   for(const ac of options.aircraft){
     const clock=trackClock(ac,options.clock,120000,options.synthetic);
     if(!validCoordinates(ac.lat,ac.lon)||!clock)continue;
     const state=positionState(ac,options.clock,45000,options.synthetic,options.replaying);
     result.push({id:`aircraft-${ac.icao24}`,kind:"aircraft",name:ac.callsign?.trim()||ac.icao24,lat:ac.lat,lon:ac.lon,height:0,color:ac.is_emergency?"#f69d84":"#8fd3f5",heading:ac.heading,positionState:state,
-      details:[["ICAO",ac.icao24],["Source",ac.source||"Tracking provider"],["Position state",positionStateLabel(state)],clock,["Coordinates",coordinateLabel(ac.lat,ac.lon)],["Reported altitude",finite(ac.altitude,"m")],["Vertical reference",ac.altitude_reference||"Mixed provider reference; not established as ellipsoid height"],["Speed",finite(ac.velocity,"m/s")],["Heading",finite(ac.heading,"degrees")],["Position display","Surface projection; aircraft height is not inferred"],["Coverage","Partial receiver coverage; absence is not evidence of no aircraft"]]});
+      details:[["ICAO",ac.icao24],["Source",ac.source||"Tracking provider"],["Position state",positionStateLabel(state)],clock,["Coordinates",coordinateLabel(ac.lat,ac.lon)],["Reported altitude",finite(ac.altitude,"m")],["Vertical reference",ac.altitude_reference||"Mixed provider reference; not established as ellipsoid height"],["Speed",finite(ac.velocity,"m/s")],["Reported direction",finite(ac.heading,"degrees")],["Direction basis","Track or heading basis not retained"],["Position display","Surface projection; aircraft height is not inferred"],["Coverage","Partial receiver coverage; absence is not evidence of no aircraft"]]});
   }
   for(const vessel of options.vessels){
     const clock=trackClock(vessel,options.clock,600000,options.synthetic);
     if(!validCoordinates(vessel.lat,vessel.lon)||!clock)continue;
     const state=positionState(vessel,options.clock,120000,options.synthetic,options.replaying);
+    const directionLabel=vessel.heading_basis==="true_heading"?"True heading":vessel.heading_basis==="course_over_ground"?"Direction (course over ground)":"Reported direction";
+    const directionBasis=vessel.heading_basis==="true_heading"?"True heading reported by provider":vessel.heading_basis==="course_over_ground"?"Course over ground reported by provider":"Basis not recorded";
     result.push({id:`vessel-${vessel.mmsi}`,kind:"vessel",name:vessel.name||vessel.mmsi,lat:vessel.lat,lon:vessel.lon,height:0,color:"#79d6c5",heading:vessel.heading,positionState:state,
-      details:[["MMSI",vessel.mmsi],["Source","AISStream · identity and flag are reported"],["Position state",positionStateLabel(state)],clock,["Coordinates",coordinateLabel(vessel.lat,vessel.lon)],["Speed",finite(vessel.speed,"knots")],["Heading",finite(vessel.heading,"degrees")],["Course",finite(vessel.course,"degrees")],["Destination",vessel.destination||"Unknown"],["Position display","Surface projection; not a surveyed sea-level height"]]});
+      details:[["MMSI",vessel.mmsi],["Source","AISStream · identity and flag are reported"],["Position state",positionStateLabel(state)],clock,["Coordinates",coordinateLabel(vessel.lat,vessel.lon)],["Speed",finite(vessel.speed,"knots")],[directionLabel,finite(vessel.heading,"degrees")],["Direction basis",directionBasis],["Course over ground",finite(vessel.course,"degrees")],["Destination",vessel.destination||"Unknown"],["Position display","Surface projection; not a surveyed sea-level height"]]});
   }
   for(const hot of options.hotspots){
     const time=Date.parse(hot.ts),age=options.clock-time;
@@ -76,7 +87,7 @@ export function earthMarkers(options:{events:ConflictEvent[];aircraft:Aircraft[]
   return result;
 }
 
-export const CAMERA_PLACES=[{name:"Region",lat:29,lon:44,range:3500000},{name:"Levant",lat:32,lon:35,range:700000},{name:"Gulf",lat:25,lon:52,range:1100000},{name:"Tehran",lat:35.69,lon:51.39,range:120000},{name:"Tel Aviv",lat:32.08,lon:34.78,range:90000},{name:"Dubai",lat:25.2,lon:55.27,range:110000},{name:"Beirut",lat:33.89,lon:35.5,range:90000},{name:"Gaza",lat:31.5,lon:34.46,range:110000},{name:"Strait of Hormuz",lat:26.6,lon:56.5,range:350000}];
+export const CAMERA_PLACES=[{name:"Region",lat:29,lon:44,range:2000000},{name:"Levant",lat:32,lon:35,range:700000},{name:"Gulf",lat:25,lon:52,range:1100000},{name:"Tehran",lat:35.69,lon:51.39,range:8000},{name:"Tel Aviv",lat:32.08,lon:34.78,range:6500},{name:"Dubai",lat:25.2,lon:55.27,range:6500},{name:"Beirut",lat:33.89,lon:35.5,range:6500},{name:"Gaza",lat:31.5,lon:34.46,range:9000},{name:"San Francisco",lat:37.789,lon:-122.3999,range:6500},{name:"Strait of Hormuz",lat:26.6,lon:56.5,range:350000}];
 export function parseCoordinates(text:string):{lat:number;lon:number}|null{
   const match=text.trim().match(/^(-?\d+(?:\.\d+)?)\s*[,\s]\s*(-?\d+(?:\.\d+)?)$/);
   if(!match)return null;const lat=Number(match[1]),lon=Number(match[2]);return validCoordinates(lat,lon)?{lat,lon}:null;

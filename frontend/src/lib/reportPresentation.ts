@@ -1,5 +1,5 @@
 import type {ConflictEvent} from "../types/event";
-import {validCoordinates} from "./earth";
+import {hasUsableReportCoordinates} from "./reportPosition";
 import {reportSourceKind as sourceFamily} from "./events";
 export {sourceFamily};
 
@@ -19,7 +19,7 @@ export function sourceAge(timestamp:unknown,clock:number):string{
 }
 /** Provider context links do not assert imagery date, resolution or incident proof. */
 export function reportImageryLinks(event:Pick<ConflictEvent,"lat"|"lon"|"timestamp">){
- if(!validCoordinates(event.lat,event.lon))return {google:null,worldview:null,copernicus:null};
+ if(!hasUsableReportCoordinates(event))return {google:null,worldview:null,copernicus:null};
  const lat=event.lat!,lon=event.lon!,time=Date.parse(event.timestamp);
  return {
   google:`https://www.google.com/maps/@${lat.toFixed(5)},${lon.toFixed(5)},17z/data=!3m1!1e3`,

@@ -43,7 +43,7 @@ test("reports, persistent Earth and both workspace panels remain usable",async({
  await page.getByRole("navigation",{name:"Workspace views"}).getByRole("button",{name:/^Earth —/}).click();
  await expect(page.locator(".cesium-widget canvas")).toBeVisible();
  const canvas=await page.locator(".cesium-widget canvas").elementHandle();
- if(google){await expect(page.locator(".earth-controls [role=status]")).toContainText("Google 3D tiles connected");await expect(page.locator(".cesium-widget-credits")).toContainText("Google");}
+ if(google){await expect(page.locator(".earth-workspace")).toHaveAttribute("data-earth-provider","ready");await expect(page.locator(".earth-provider-status")).toContainText("Photographic imagery");await expect(page.locator(".cesium-widget-credits")).toContainText("Google");}
  await page.getByRole("navigation",{name:"Workspace views"}).getByRole("button",{name:/^Media —/}).click();
  await expect(page.getByRole("complementary",{name:"Media workspace panel"})).toBeVisible();
  expect(await page.evaluate(node=>node===document.querySelector(".cesium-widget canvas"),canvas)).toBeTruthy();
@@ -62,7 +62,7 @@ test("reports, persistent Earth and both workspace panels remain usable",async({
 test("provider health and settings support keyboard dismissal",async({page})=>{
  await openWorkspace(page);
  const dismiss=page.getByRole("button",{name:/close.*(?:about|methods)|begin monitoring/i});if(await dismiss.count())await dismiss.first().click();
- if(live){await page.getByRole("button",{name:"Sources & health",exact:true}).click();await expect(page.getByRole("heading",{name:"Sources & health"})).toBeVisible();await expect(page.getByText("Newest source publication age").first()).toBeVisible();await page.keyboard.press("Escape");await expect(page.getByRole("heading",{name:"Sources & health"})).toHaveCount(0);}
+ if(live){await page.getByRole("button",{name:"Sources & health",exact:true}).click();await expect(page.getByRole("heading",{name:"Sources & health"})).toBeVisible();await expect(page.getByText("Newest source time age").first()).toBeVisible();await page.keyboard.press("Escape");await expect(page.getByRole("heading",{name:"Sources & health"})).toHaveCount(0);}
  await page.getByRole("button",{name:"Settings",exact:true}).click();await expect(page.getByRole("heading",{name:"Earth & data"})).toBeVisible();
  await page.keyboard.press("Escape");await expect(page.getByRole("heading",{name:"Earth & data"})).toHaveCount(0);
  expect(await page.evaluate(()=>Object.keys(sessionStorage).some(key=>/google|token|key/i.test(key)))).toBeFalsy();
@@ -87,4 +87,21 @@ test("old Map and 3D links open the single Earth workspace",async({page})=>{
   await expect(page.locator(".leaflet-container")).toHaveCount(0);
   await expect(page.getByRole("navigation",{name:"Workspace views"}).getByRole("button",{name:/^Earth —/})).toHaveAttribute("aria-pressed","true");
  }
+});
+
+test("320px showcase keeps Methods text and its complete button reachable",async({page})=>{
+ await page.setViewportSize({width:320,height:844});
+ await page.goto("/?showcase=true&view=earth");
+ await expect(page.locator(".showcase-banner")).toContainText(/Synthetic exercise/i);
+ const methods=page.locator(".app-header button").filter({hasText:/^Methods$/});
+ await expect(methods).toBeVisible();
+ const bounds=await methods.evaluate(node=>{
+  const button=node.getBoundingClientRect(),range=document.createRange();range.selectNodeContents(node);
+  return {button:{left:button.left,right:button.right},text:[...range.getClientRects()].map(rect=>({left:rect.left,right:rect.right,width:rect.width,height:rect.height}))};
+ });
+ expect(bounds.button.left).toBeGreaterThanOrEqual(0);expect(bounds.button.right).toBeLessThanOrEqual(320);
+ expect(bounds.text.some(rect=>rect.width>0&&rect.height>0)).toBeTruthy();
+ for(const rect of bounds.text.filter(rect=>rect.width>0&&rect.height>0)){expect(rect.left).toBeGreaterThanOrEqual(0);expect(rect.right).toBeLessThanOrEqual(320);}
+ await methods.click();await expect(page.getByRole("dialog",{name:"Evidence in context."})).toBeVisible();
+ await page.keyboard.press("Escape");await expect(page.getByRole("dialog")).toHaveCount(0);
 });

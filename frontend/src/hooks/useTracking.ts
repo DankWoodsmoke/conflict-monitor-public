@@ -58,9 +58,11 @@ export interface Vessel {
   name: string;
   lat: number;
   lon: number;
-  speed: number;
-  heading: number;
-  course: number;
+  speed: number | null;
+  /** Provider direction may be true heading or course; do not infer its basis. */
+  heading: number | null;
+  heading_basis?: string | null;
+  course: number | null;
   nav_status: number;
   age_seconds?:number|null;
   received_age_seconds?:number|null;
@@ -89,7 +91,7 @@ interface SnapshotData {
   }>;
   vessels: Array<{
     m: string; n: string; la: number; lo: number;
-    sp: number; h: number; k: string; f: string; st: string;
+    sp: number | null; h: number | null; k: string; f: string; st: string;
     observed_at?:string|null;received_at?:string|null;
   }>;
   jamming: Array<{
@@ -127,7 +129,9 @@ function expandVessels(compact: SnapshotData["vessels"],snapshotAt:string): Vess
     lon: v.lo,
     speed: v.sp,
     heading: v.h,
-    course: v.h,
+    // The recorder retains only h, which may be heading or course. Its basis
+    // and the independent course field are not present in this contract.
+    course: null,
     nav_status: 0,
     vessel_category: v.k,
     flag_code: v.f,

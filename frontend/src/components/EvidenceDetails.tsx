@@ -8,7 +8,7 @@ export function EvidenceDetails({event}:{event:ConflictEvent}) {
       <dt>Original sources</dt><dd>{event.evidence?.unique_source_count ?? "Unknown"}</dd>
       <dt>Independence</dt><dd>{event.evidence?.independence_status || "Unassessed"}</dd>
       <dt>Classification</dt><dd>{event.classification_status === "not_requested" ? "Source report · model not requested" : event.classification_status || "Legacy / unknown"}</dd>
-      <dt>Source publication</dt><dd>{new Date(event.timestamp).toLocaleString()} · incident time unverified</dd>
+      <dt title="Publication, update or sensor acquisition, depending on the source">Source time</dt><dd>{new Date(event.timestamp).toLocaleString()} · incident time unverified</dd>
       <dt>Location precision</dt><dd>{event.geolocation_precision || "Unknown"}</dd></dl>
     <p>Publisher ratings and repeated reports do not verify a claim. Location uncertainty is not calibrated.</p>
     {(event.evidence?.limitations || []).map((text,i)=><p key={i}>{text}</p>)}

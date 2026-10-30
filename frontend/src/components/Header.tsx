@@ -260,6 +260,8 @@ interface HeaderProps {
   onViewModeChange: (mode: ViewMode) => void;
   activeSources: Set<string>;
   onSourceToggle: (src: string) => void;
+  earthFocused?: boolean;
+  onEarthFocusChange?: () => void;
 }
 
 function formatUTCTime(): string {
@@ -421,6 +423,8 @@ export function Header({
   onViewModeChange,
   activeSources,
   onSourceToggle,
+  earthFocused = false,
+  onEarthFocusChange,
 }: HeaderProps) {
   const [utcTime, setUtcTime] = useState(formatUTCTime);
 
@@ -506,6 +510,7 @@ export function Header({
         </span>
         {demoMode && (
           <span
+            className="header-demo-badge"
             style={{
               fontSize: 11,
               padding: "2px 6px",
@@ -597,6 +602,7 @@ export function Header({
         {/* Divider */}
         <div style={{ width: 1, height: 16, background: "var(--border)", opacity: 0.5 }} />
 
+        {viewMode==="earth"&&onEarthFocusChange&&<button onClick={onEarthFocusChange} className="header-action earth-focus-control" aria-pressed={earthFocused} aria-label={earthFocused?"Restore reports and timeline":"Focus Earth — expand workspace"} title={earthFocused?"Restore reports, markets and timeline":"Give Earth the full workspace"}><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d={earthFocused?"M3 9h6V3m6 0v6h6M3 15h6v6m6 0v-6h6":"M9 3H3v6m12-6h6v6M3 15v6h6m6 0h6v-6"}/></svg><span>{earthFocused?"Restore":"Focus Earth"}</span></button>}
         <button onClick={onSettingsClick} className="header-action" title="Configure Earth and data providers">Settings</button>
         {/* About button */}
         <button

@@ -43,10 +43,61 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,[t
 /* CamCell already names the source in its reserved caption row. */
 .media-source-cell .media-preview-caption strong{display:none}
 .media-desk .media-preview-caption button{min-height:36px}
-.media-desk .showcase-briefing{justify-content:flex-start;padding:12px;gap:8px;scroll-padding:12px}
-.media-desk .showcase-briefing>*{flex-shrink:0}
-.media-desk .showcase-briefing h2{font-size:22px}
+.media-desk .showcase-briefing,.brief-video .showcase-briefing{justify-content:flex-start;padding:12px;gap:8px;scroll-padding:12px}
+.media-desk .showcase-briefing>*,.brief-video .showcase-briefing>*{flex-shrink:0}
+.media-desk .showcase-briefing h2,.brief-video .showcase-briefing h2{font-size:22px}
 .conflict-feed-content{display:flex;flex-direction:column;height:100%;min-height:0}
 .conflict-feed-player{flex:1;min-height:0;overflow:hidden}
 .conflict-feed-selector{display:flex;justify-content:center;gap:3px;flex-shrink:0;min-height:38px;padding:3px;background:#07121d;border-top:1px solid #29404d}
 .sitrep-history-card:focus-visible{outline-offset:-3px}
+
+/* Earth inspection: expand the existing canvas without remounting its camera. */
+.market-strip-wrap{grid-area:market;min-width:0;overflow:hidden}
+.earth-focus-control{display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap}
+.earth-focus-control[aria-pressed=true]{background:#24443f;border-color:#83c5b5;color:#dcf7ee}
+@media(min-width:1101px){.app-grid:not(.has-workspace-panel){grid-template-columns:minmax(0,1fr) 380px}.app-header{gap:12px}.header-tools{gap:7px!important}}
+@media(min-width:901px),(min-width:769px) and (min-height:501px){.app-grid.earth-focused{grid-template-columns:minmax(0,1fr);grid-template-rows:68px minmax(0,1fr);grid-template-areas:"header" "map"}.earth-focused>.sidebar,.earth-focused>.market-strip-wrap,.earth-focused>.timeline-wrap{display:none}}
+@media(max-width:768px),(max-width:900px) and (max-height:500px){.earth-focus-control{display:none}}
+@media(min-width:769px) and (max-width:1250px){.earth-focus-control span{display:none}.earth-focus-control{min-width:40px}}
+.earth-controls{background:#0b1823f2;border-color:#3d535e;box-shadow:0 6px 24px #0004;backdrop-filter:blur(8px)}
+.earth-controls button:hover,.earth-navigation button:hover{background:#254653;border-color:#76a6b1;color:#f0fbff}
+.earth-controls button[aria-pressed=true]{background:#24473f;border-color:#8cc6b3;color:#d6f4e5}
+.earth-imagery-details{border-top:1px solid #314750;margin-top:9px;padding-top:7px}
+.earth-imagery-details>summary{cursor:pointer;color:#b2cbd5;font:11px/1.5 var(--font-sans);min-height:28px;padding:5px 0}
+.earth-imagery-details>summary:focus-visible{outline:2px solid #a5e4d4;outline-offset:2px}
+.earth-location-presets,.earth-view-controls,.earth-quality-controls{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;align-items:center}
+.earth-location-presets button{font-size:11px;background:#112834}
+.earth-view-controls button,.earth-quality-controls button{font-size:11px;flex:1;white-space:nowrap}
+.earth-quality-controls>span{font:10px var(--font-mono);color:#a8bec9;margin-right:3px}
+.earth-quality-controls label{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;font-size:11px;color:#bdced7}
+.earth-quality-controls select{min-width:0;max-width:65%;border:1px solid #506b77;border-radius:4px;background:#102733;color:#d8e8ed;padding:7px;font:11px var(--font-sans)}
+.earth-location-presets>span{font-size:10px;color:#9eb4c0;margin-right:2px}
+.earth-controls .earth-imagery-details p{color:#b0c5cf;font-size:11px;margin:6px 0;line-height:1.6}
+.earth-controls a,.settings-notice a{color:#b1e8d9;text-underline-offset:3px}
+.earth-provider-actions{display:flex;gap:5px;align-items:center;flex-shrink:0}
+.earth-provider-actions button[aria-controls="earth-navigation-body"]{min-width:36px;padding-inline:8px}
+.earth-navigation-body[hidden]{display:none}
+.showcase-actions .live-earth-link{border-color:#5b8c7e;color:#c7eddf}
+@media(max-width:768px){.showcase-actions .live-earth-link{display:inline-flex;font-size:10px;padding:4px 6px}.showcase-actions>button{display:none}.earth-location-presets{gap:4px}.earth-location-presets button{font-size:10px;min-height:32px;padding:4px 7px}}
+/* An implicit min-content grid width can clip camera controls behind overflow:hidden. */
+.app-header{min-width:0}
+@media(max-width:768px) and (orientation:portrait),(max-width:768px) and (min-height:501px){.app-grid,.app-grid.has-workspace-panel{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:768px){.app-header{gap:6px!important}.app-header h1{font-size:13px!important;letter-spacing:.25px!important}.header-tools{gap:5px!important}.header-tools .header-action{padding-inline:8px!important}}
+/* The persistent showcase banner supplies the synthetic label on narrow screens. */
+@media(max-width:360px){.has-showcase .header-demo-badge{display:none}}
+/* Feed has its own navigation slot, so it cannot cover native imagery credits. */
+.mobile-bottom-nav .feed-fab{display:flex;position:relative;inset:auto;flex:1;width:auto;height:auto;min-height:48px;flex-direction:column;gap:3px;padding:0 4px;border:0;border-radius:0;background:none;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;color:#8dc8ff;z-index:auto}
+.mobile-feed-count{position:absolute;top:3px;right:5px;min-width:16px;height:16px;border-radius:8px;padding:0 3px;background:#f85149;color:#101820;font:700 10px/16px var(--font-mono)}
+.earth-workspace .cesium-credit-lightbox-overlay{z-index:40}
+.earth-workspace .cesium-credit-lightbox-close{width:44px;height:44px;display:flex;align-items:center;justify-content:center}
+.earth-attribution .cesium-credit-expand-link{display:inline-flex;align-items:center;min-height:28px;padding:2px 4px}
+/* Brief uses readable full-width sections on narrow screens; its parent desk scrolls. */
+@media(max-width:768px){
+  .brief-desk{height:auto!important;min-height:0!important;grid-template-rows:auto 112px auto!important}
+  .brief-status{flex-wrap:wrap;gap:6px!important;padding:8px 12px!important;min-height:44px}
+  .brief-main,.brief-content{display:block!important;overflow:visible!important}
+  .brief-context-grid{display:flex!important;flex-direction:column;overflow:visible!important}
+  .brief-video{height:240px;flex:none}
+  .brief-context{overflow:visible!important;flex:none}
+  .brief-source-events{height:280px}
+}

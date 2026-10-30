@@ -62,7 +62,7 @@ describe("free report integrity",()=>{
   fetchMock.mockResolvedValue(Response.json({mode:"live",news_feeds:{mode:"reports",enabled:true,feeds:[{source:"publisher",status:"ok",cache_age_seconds:20,publication_age_seconds:172800,publication_stale:true,published_items:2,error_type:null}]}}));
   await act(async()=>root.render(<SourceStatus fallback="Connecting"/>));
   await act(async()=>host.querySelector<HTMLButtonElement>('button')!.click());
-  expect(host.textContent).toContain("Fetch age20s");expect(host.textContent).toContain("Newest source publication age2d · old publication");
+  expect(host.textContent).toContain("Fetch age20s");expect(host.textContent).toContain("Newest source time age2d · old source time");
   await act(async()=>window.dispatchEvent(new KeyboardEvent("keydown",{key:"Escape"})));expect(host.querySelector('[role="dialog"]')).toBeNull();
  });
 });

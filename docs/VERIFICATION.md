@@ -1,5 +1,7 @@
 # Earth and local-generation release-candidate verification
 
+**Subsequent Earth candidate:** the [imagery quality review](EARTH_QUALITY_REVIEW.md), [executed verification](qualification/2026-10-29-earth-quality-verification.json) and [source/runtime manifest](qualification/2026-10-29-earth-quality-source-manifest.json) describe the later `03b08f` frontend. The RC.1 results below remain dated evidence for `cb2`; they are not relabeled as tests of the new build. Backend and database runtime images are unchanged.
+
 Candidate **0.2.0-rc.1**, checked October29,2026. The original April8 backup and local changes remain separate and preserved. This receipt supersedes [phase1](VERIFICATION_PHASE1.md) and [phase2](VERIFICATION_PHASE2.md), retaining their dated evidence. The clean destination is [DankWoodsmoke/conflict-monitor-public](https://github.com/DankWoodsmoke/conflict-monitor-public); [release assets](https://github.com/DankWoodsmoke/conflict-monitor-public/releases/tag/v0.2.0-rc.1) record final tag/CI/distribution identities. The former VPS and original private Git history are unchanged.
 
 The current workspace uses one persistent Cesium/Google Earth canvas. Media and Brief open within that workspace; previous map/3d links resolve to Earth. The qualified local profile uses real free-source ingestion and operator-triggered local extraction/narrated source cards. Google imagery requires its own billing, API restrictions and attribution; it is not a free/open dataset.

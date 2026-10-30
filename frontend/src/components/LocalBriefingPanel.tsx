@@ -124,7 +124,7 @@ export function LocalBriefingPanel({eventIds=[],operatorKey="",onConfigureOperat
    {analysis?.status==="available"?<>
     <p>{analysis.stale?<strong style={{color:"#f5bb7b"}}>STALE RESULT · </strong>:null}Generated {date(analysis.generated_at)}. Publisher text is preserved; model labels remain unreviewed.</p>
     {analysis.reports.map(r=><div key={r.id} style={{borderTop:"1px solid #29404b",padding:"12px 0",overflowWrap:"anywhere"}}>
-     <strong>[src:{r.id}] {r.source}</strong><div style={{fontSize:12,color:"#9db5bb"}}>Published {date(r.published_at)}</div>
+     <strong>[src:{r.id}] {r.source}</strong><div title="Publication, update or sensor acquisition, depending on the source" style={{fontSize:12,color:"#9db5bb"}}>Source time {date(r.published_at)}</div>
      <p style={{whiteSpace:"pre-wrap"}}>{r.headline||r.text}</p>
      <div>Topic: {r.relevance.replace(/_/g," ")} · Linguistic stance: {r.stance}</div>
      {([['place_mentions','Places mentioned'],['actor_mentions','Actors mentioned'],['quantity_mentions','Quantities quoted']] as const).map(([key,label])=>{

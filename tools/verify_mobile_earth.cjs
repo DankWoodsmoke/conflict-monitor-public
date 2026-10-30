@@ -21,10 +21,38 @@ async function selectTab(page,name){
  if(await visible(mobile))await mobile.getByRole('button',{name:new RegExp(name)}).click();
  else await page.getByRole('navigation',{name:'Workspace views'}).getByRole('button',{name:new RegExp(`^(?:${name==='Brief'?'Situation brief':name}) —`)}).click();
 }
+async function showEarthNavigation(page){
+ const show=page.getByRole('button',{name:'Controls — show Earth navigation',exact:true});
+ if(await visible(show))await show.click();
+ await page.getByRole('button',{name:'Hide controls — Earth navigation',exact:true}).waitFor({state:'visible'});
+ assert.equal(await page.locator('#earth-navigation-body').isVisible(),true,'Earth navigation failed to expand');
+}
+async function checkNativeAttribution(page){
+ const link=page.locator('.earth-attribution .cesium-credit-expand-link');
+ await link.waitFor({state:'visible'});
+ const fragments=await link.evaluate(node=>{
+   const range=document.createRange();range.selectNodeContents(node);
+   return [...range.getClientRects()].filter(box=>box.width>0&&box.height>0).map(box=>{
+     const top=document.elementFromPoint(box.left+box.width/2,box.top+box.height/2);
+     return{left:box.left,right:box.right,top:box.top,bottom:box.bottom,hit_link_or_descendant:!!top&&(top===node||node.contains(top))};
+   });
+ });
+ assert(fragments.length>0,'Native attribution has no rendered text');
+ assert(fragments.every(fragment=>fragment.hit_link_or_descendant),'Native attribution text is covered by another control');
+ await link.click();await page.locator('.cesium-credit-lightbox').waitFor({state:'visible'});
+ await page.locator('.cesium-credit-lightbox-close').click();await page.locator('.cesium-credit-lightbox-overlay').waitFor({state:'hidden'});
+ return fragments;
+}
 async function checkLayout(page,label){
  const layout=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,
    height:innerHeight,scrollHeight:document.documentElement.scrollHeight}));
  assert(layout.scrollWidth<=layout.width+1,`${label}: horizontal page overflow ${layout.scrollWidth}/${layout.width}`);
+ // overflow:hidden can conceal a wider grid track while scrollWidth still looks correct.
+ const bounds=await page.locator('.app-header,.app-header button,.cesium-widget canvas,.earth-navigation').evaluateAll(nodes=>nodes.map(node=>{
+   const box=node.getBoundingClientRect();return{element:node.tagName==='CANVAS'?'earth_canvas':node.tagName==='BUTTON'?`header_button:${node.getAttribute('aria-label')||node.textContent?.trim().slice(0,80)}`:node.className,left:box.left,right:box.right,width:box.width,height:box.height};
+ }));
+ for(const box of bounds)if(box.width&&box.height)assert(box.left>=-1&&box.right<=layout.width+1,`${label}: ${box.element} clipped outside viewport (${box.left}..${box.right}/${layout.width})`);
+ layout.element_bounds=bounds;
  return layout;
 }
 (async()=>{
@@ -51,6 +79,8 @@ async function checkLayout(page,label){
     assert((await page.locator('.cesium-widget-credits').innerText()).includes('Google'),'Google credit absent');
     row.checks.push('actual_google_tiles_connected_with_attribution');
     row.layout=await checkLayout(page,'Earth');
+    row.native_credit_fragments=await checkNativeAttribution(page);
+    row.checks.push('native_attribution_text_pointer_access_and_popup_open_close');
     for(const name of ['Media','Brief','Earth','Media','Earth']){
       await selectTab(page,name);
       if(name!=='Earth')await page.locator('.workspace-panel').waitFor({state:'visible'});
@@ -58,6 +88,7 @@ async function checkLayout(page,label){
       await checkLayout(page,name);
     }
     row.checks.push('all_three_workspaces_fit_and_preserve_same_earth_canvas');
+    await showEarthNavigation(page);
     const search=page.locator('#earth-search');
     await search.fill('91,181');
     await page.getByText('No known position matches.',{exact:false}).waitFor({state:'visible',timeout:5000});
