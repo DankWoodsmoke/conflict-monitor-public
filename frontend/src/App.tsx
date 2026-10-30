@@ -16,7 +16,7 @@ import { LiveFeed } from "./components/LiveFeed";
 import {workspaceView,type ViewMode} from "./lib/workspace";
 import { TimelineScrubber } from "./components/TimelineScrubber";
 import { MarketStrip } from "./components/MarketStrip";
-import { AboutPanel, shouldShowAbout } from "./components/AboutPanel";
+import { AboutPanel } from "./components/AboutPanel";
 import { useEventStream } from "./hooks/useEventStream";
 import { useTracking } from "./hooks/useTracking";
 import { useEarthProvider } from "./hooks/useEarthProvider";
@@ -68,9 +68,11 @@ const MOBILE_NAV_ITEMS: { mode: ViewMode; label: string; icon: string; pulse?: s
   { mode: "sitrep", label: "Brief", icon: "◈",  pulse: "#f85149" },
 ];
 
-function MobileNav({ viewMode, onViewModeChange }: {
+function MobileNav({ viewMode, onViewModeChange, onOpenFeed, reportCount = 0 }: {
   viewMode: ViewMode;
   onViewModeChange: (m: ViewMode) => void;
+  onOpenFeed?: () => void;
+  reportCount?: number;
 }) {
   return (
     <nav className="mobile-bottom-nav" aria-label="View navigation">
@@ -109,6 +111,11 @@ function MobileNav({ viewMode, onViewModeChange }: {
           </button>
         );
       })}
+      {onOpenFeed && <button className="feed-fab" onClick={onOpenFeed} title="Open report feed" aria-label="Feed — open report feed">
+        <span aria-hidden="true" style={{fontSize:20,lineHeight:1}}>⚡</span>
+        <span style={{fontSize:11,fontFamily:mono,letterSpacing:1.2,fontWeight:700,lineHeight:1}}>FEED</span>
+        {reportCount>0 && <span className="mobile-feed-count" aria-hidden="true">{reportCount>99?"99+":reportCount}</span>}
+      </button>}
     </nav>
   );
 }
@@ -323,8 +330,8 @@ function SitrepBroadcastView({ style }: { style?: React.CSSProperties }) {
     (nowMs() - new Date(sitrep.generated_at).getTime()) < 35 * 60 * 1000;
 
   return (
-    <div style={{
-      ...style,
+    <div className="brief-desk" style={{
+      ...style, minWidth: 0,
       display: "grid",
       gridTemplateRows: "44px 112px minmax(360px,1fr)",
       minHeight:560,
@@ -334,7 +341,7 @@ function SitrepBroadcastView({ style }: { style?: React.CSSProperties }) {
     }}>
 
       {/* ── TOP ALERT BANNER ── */}
-      <div style={{
+      <div className="brief-status" style={{
         display: "flex", alignItems: "center", gap: 10, padding: "0 14px",
         background: `linear-gradient(90deg, ${lb} 0%, #030508 60%)`,
         borderBottom: `2px solid ${lc}55`, flexShrink: 0,
@@ -487,25 +494,25 @@ function SitrepBroadcastView({ style }: { style?: React.CSSProperties }) {
       </div>
 
       {/* ── MAIN CONTENT ── */}
-      <div style={{
+      <div className="brief-main" style={{
         display: "grid",
-        gridTemplateColumns: "1fr",
+        gridTemplateColumns: "minmax(0,1fr)",
         overflow: "hidden",
         flex: 1, minHeight: 0,
       }}>
 
         {/* ═══ Video + Source Events (full width) ═══ */}
-        <div style={{
+        <div className="brief-content" style={{
           display: "grid",
           gridTemplateRows: "55fr 45fr",
-          overflow: "hidden",
+          overflow: "hidden", minWidth: 0,
         }}>
 
           {/* ── Video + Action Panel (2 columns) ── */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", overflow: "hidden" }}>
+          <div className="brief-context-grid" style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0,1fr)", overflow: "hidden", minWidth: 0 }}>
 
             {/* LEFT: Video column */}
-            <div style={{ display: "flex", flexDirection: "column", background: "#000", overflow: "hidden", borderRight: `1px solid ${lc}22` }}>
+            <div className="brief-video" style={{ display: "flex", flexDirection: "column", background: "#000", overflow: "hidden", minWidth: 0, borderRight: `1px solid ${lc}22` }}>
             {/* Header bar */}
             <div style={{ padding: "5px 10px", flexShrink: 0, display: "flex", alignItems: "center", gap: 8,
               background: `linear-gradient(90deg, ${lc}18 0%, rgba(3,5,8,0.95) 100%)`,
@@ -603,8 +610,8 @@ function SitrepBroadcastView({ style }: { style?: React.CSSProperties }) {
             </div>{/* end video column */}
 
             {/* RIGHT: Intel panel */}
-            <div style={{
-              display: "flex", flexDirection: "column", overflow: "hidden",
+            <div className="brief-context" role="region" aria-label="Briefing context and sources" tabIndex={0} style={{
+              display: "flex", flexDirection: "column", overflowY: "auto", minHeight: 0, minWidth: 0,
               background: "#020508", borderLeft: `1px solid ${lc}18`,
             }}>
 
@@ -707,8 +714,8 @@ function SitrepBroadcastView({ style }: { style?: React.CSSProperties }) {
                 </div>
               )}
 
-              {/* ── Source references (scrollable) ── */}
-              <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minHeight: 0 }}>
+              {/* References scroll with the context column instead of collapsing below its fixed sections. */}
+              <div style={{ flexShrink: 0, display: "flex", flexDirection: "column" }}>
                 <div style={{ padding: "5px 14px 4px", flexShrink: 0, display: "flex", alignItems: "center", gap: 6,
                   borderBottom: `1px solid #0a1520` }}>
                   <span style={{ fontSize: 11, fontWeight: 800, color: "#a3b9ca", letterSpacing: 1.8, fontFamily: mono }}>
@@ -717,7 +724,7 @@ function SitrepBroadcastView({ style }: { style?: React.CSSProperties }) {
                   <span style={{ fontSize: 11, color: lc, background: `${lc}18`, padding: "1px 5px",
                     borderRadius: 2, fontWeight: 700 }}>{sitrepEvents.filter(e => safeUrl(e.source_url) && !e.source_url.includes("copernicus")).length}</span>
                 </div>
-                <div style={{ flex: 1, overflowY: "auto", padding: "3px 0" }}>
+                <div role="region" aria-label="Briefing source references" tabIndex={0} style={{ padding: "3px 0" }}>
                   {sitrepEvents.length === 0 && (
                     <div style={{ padding: "12px 14px", fontSize: 11, color: "#a3b9ca", fontStyle: "italic" }}>
                       {briefSourceStatus==="unavailable"?"Source references unavailable · retrying":briefSourceStatus==="loading"?"Loading source references…":"No source records for this briefing"}
@@ -777,7 +784,7 @@ function SitrepBroadcastView({ style }: { style?: React.CSSProperties }) {
           </div>{/* end 2-col grid */}
 
           {/* Source Events */}
-          <div style={{ display: "flex", flexDirection: "column", overflow: "hidden", minHeight: 0,
+          <div className="brief-source-events" style={{ display: "flex", flexDirection: "column", overflow: "hidden", minHeight: 0, minWidth: 0,
             borderTop: `1px solid ${lc}22` }}>
             <div style={{ padding: "5px 10px", flexShrink: 0, display: "flex", alignItems: "center", gap: 8,
               background: "rgba(4,8,16,0.95)", borderBottom: "1px solid #1a2a3a" }}>
@@ -788,7 +795,7 @@ function SitrepBroadcastView({ style }: { style?: React.CSSProperties }) {
                 Click to view source article
               </span>
             </div>
-            <div style={{ flex: 1, overflowY: "auto", padding: "3px 0" }}>
+            <div role="region" aria-label="Briefing source events" tabIndex={0} style={{ flex: 1, overflowY: "auto", padding: "3px 0" }}>
               {sitrepEvents.length === 0 && (
                 <div style={{ padding: "12px", fontSize: 11, color: "#8b9eaf", textAlign: "center" }}>
                   {sitrep?(briefSourceStatus==="unavailable"?"Source references unavailable · retrying":briefSourceStatus==="loading"?"Loading source references…":"No source records for this briefing"):briefEmptyText}
@@ -936,7 +943,7 @@ function SitrepBroadcastView({ style }: { style?: React.CSSProperties }) {
             </div>
 
             {/* Modal body — scrollable */}
-            <div style={{ flex: 1, overflowY: "auto", padding: "24px 28px",
+            <div role="region" aria-label="Expanded briefing content" tabIndex={0} style={{ flex: 1, overflowY: "auto", padding: "24px 28px",
               display: "flex", flexDirection: "column", gap: 22,
               scrollbarWidth: "thin", scrollbarColor: `${lc}33 transparent`,
             }}>
@@ -1131,6 +1138,7 @@ export default function App() {
   };
   const { isMobile, isLandscape,isOverlay } = useIsMobile();
   const [showFeed, setShowFeed] = useState(false);
+  const [earthFocused, setEarthFocused] = useState(false);
   const [viewMode, setViewModeState] = useState<ViewMode>(() => {
     const view = new URLSearchParams(window.location.search).get("view");
     return workspaceView(view);
@@ -1142,7 +1150,8 @@ export default function App() {
   const [briefDesk,setBriefDesk]=useState<"sources"|"analysis">("sources");
   const [mediaDesk,setMediaDesk]=useState<"sources"|"video">("sources");
   const {googleKey,googleEnabled,applyManual:applyEarthProvider,applyServerConfig:applyEarthConfig}=useEarthProvider();
-  const [showAbout, setShowAbout] = useState(() => SHOWCASE ? false : shouldShowAbout());
+  // Open on the actual workspace. Methods remain one click away in the header.
+  const [showAbout, setShowAbout] = useState(false);
   const [focusEventId, setFocusEventId] = useState<number | null>(null);
   const focusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handleFeedEventClick = useCallback((evt: import("./types/event").ConflictEvent) => {
@@ -1211,7 +1220,7 @@ export default function App() {
   return (
     <>
       {SHOWCASE ? <ShowcaseBar view={viewMode} onView={setViewMode} /> : <div className="runtime-banner" role="status"><SourceStatus fallback={collectionState}/><a href="?showcase=true">Explore synthetic showcase ↗</a></div>}
-      <main aria-label="Conflict monitoring workspace" className={`${SHOWCASE ? "app-grid has-showcase" : "app-grid has-runtime"}${viewMode!=="earth"?" has-workspace-panel":""}`}>
+      <main aria-label="Conflict monitoring workspace" className={`${SHOWCASE ? "app-grid has-showcase" : "app-grid has-runtime"}${viewMode!=="earth"?" has-workspace-panel":""}${earthFocused&&viewMode==="earth"?" earth-focused":""}`}>
         <Header
           isConnected={isConnected} eventCount={filteredEvents.length}
           aircraftCount={aircraft.length} vesselCount={vessels.length}
@@ -1219,6 +1228,7 @@ export default function App() {
           escalationLevel={escalationLevel} onAboutClick={() => setShowAbout(true)} onSettingsClick={() => setShowSettings(true)}
           viewMode={viewMode} onViewModeChange={setViewMode}
           activeSources={activeSources} onSourceToggle={toggleSource}
+          earthFocused={earthFocused} onEarthFocusChange={()=>setEarthFocused(value=>!value)}
         />
         <div className="market-strip-wrap"><MarketStrip /></div>
         <div ref={stageRef} inert={viewMode!=="earth"&&isOverlay} aria-hidden={viewMode!=="earth"&&isOverlay?true:undefined} className="earth-stage" style={{gridArea:"map",minWidth:0,minHeight:0,overflow:"hidden"}}>
@@ -1246,37 +1256,12 @@ export default function App() {
           />
         </div>
 
-        {/* FAB — portrait mobile only — opens feed sheet */}
-        {isMobile && !isLandscape && (
-          <button
-            className="feed-fab"
-            onClick={() => setShowFeed(true)}
-            title="Open report feed"
-          >
-            <span aria-hidden="true" style={{ fontSize: 20, lineHeight: 1 }}>⚡</span>
-            <span style={{
-              fontSize: 11, fontFamily: mono, letterSpacing: 1.5, fontWeight: 700,
-              marginTop: 2, lineHeight: 1,
-            }}>FEED</span>
-            {filteredEvents.length > 0 && (
-              <span aria-hidden="true" style={{
-                position: "absolute", top: 6, right: 6,
-                minWidth: 16, height: 16, borderRadius: 8,
-                background: "#f85149", color: "#101820",
-                fontSize: 11, fontWeight: 800, fontFamily: mono,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                padding: "0 3px",
-              }}>
-                {filteredEvents.length > 99 ? "99+" : filteredEvents.length}
-              </span>
-            )}
-          </button>
-        )}
       </main>
 
       {/* Mobile bottom nav */}
       {isMobile && (
-        <MobileNav viewMode={viewMode} onViewModeChange={setViewMode} />
+        <MobileNav viewMode={viewMode} onViewModeChange={setViewMode}
+          onOpenFeed={isLandscape?undefined:()=>setShowFeed(true)} reportCount={filteredEvents.length} />
       )}
 
       {/* Slide-up feed sheet — portrait mobile */}

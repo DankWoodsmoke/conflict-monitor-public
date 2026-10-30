@@ -1,0 +1,397 @@
+{
+  "started_at": "2026-10-30T00:17:22.745Z",
+  "scope": "synthetic_keyless_May2004_reference_public_previews",
+  "reference_clock": "2026-10-29T00:00:00Z",
+  "report_data": "explicit synthetic exercise only",
+  "imagery": "NASA Blue Marble May2004 static2048×1024 reference; no Google or external provider enabled",
+  "cases": [
+    {
+      "name": "earth-desktop",
+      "viewport": {
+        "width": 1600,
+        "height": 1000
+      },
+      "status": "passed",
+      "external_request_attempts": 0,
+      "local_api_requests": 0,
+      "generation_posts": 0,
+      "page_errors": [],
+      "texture": {
+        "source_sha256": "7405c39a220bc37519474eba54625a0d1a02b6ad954895147c103a1bc8dd61fb",
+        "served_sha256": "7405c39a220bc37519474eba54625a0d1a02b6ad954895147c103a1bc8dd61fb",
+        "bytes": 312383,
+        "dimensions": "2048x1024 (matches independently decoded official source bytes)"
+      },
+      "camera_extent": "Existing Globe navigation control,18Mm range",
+      "same_canvas": true,
+      "layout": {
+        "horizontal_overflow": false,
+        "clock": {
+          "top": 832,
+          "bottom": 861,
+          "left": 12,
+          "right": 670.671875
+        },
+        "credits": {
+          "top": 867,
+          "bottom": 895,
+          "left": 0,
+          "right": 1219
+        },
+        "earth": {
+          "top": 150,
+          "bottom": 895,
+          "left": 0,
+          "right": 1219
+        },
+        "navigation_collapsed": false,
+        "synthetic_banner_visible": true
+      },
+      "methods_bounds": {
+        "button_left": 1506.890625,
+        "button_right": 1580,
+        "text_left": 1519.890625,
+        "text_right": 1567,
+        "viewport_width": 1600
+      },
+      "screenshot": {
+        "path": "docs/screenshots/may2004-showcase-earth-desktop-20261030T001722Z.png",
+        "bytes": 530205,
+        "sha256": "f88ee04484ecc545ffc7b19768ab5038f10347f3d3787c9ccaab3fb0f758808e",
+        "pixel_width": 1600,
+        "pixel_height": 1000
+      }
+    },
+    {
+      "name": "media-desktop",
+      "viewport": {
+        "width": 1600,
+        "height": 1000
+      },
+      "status": "passed",
+      "external_request_attempts": 0,
+      "local_api_requests": 0,
+      "generation_posts": 0,
+      "page_errors": [],
+      "texture": {
+        "source_sha256": "7405c39a220bc37519474eba54625a0d1a02b6ad954895147c103a1bc8dd61fb",
+        "served_sha256": "7405c39a220bc37519474eba54625a0d1a02b6ad954895147c103a1bc8dd61fb",
+        "bytes": 312383,
+        "dimensions": "2048x1024 (matches independently decoded official source bytes)"
+      },
+      "camera_extent": "Existing Globe navigation control,18Mm range",
+      "same_canvas": true,
+      "layout": {
+        "horizontal_overflow": false,
+        "clock": {
+          "top": 832,
+          "bottom": 861,
+          "left": 12,
+          "right": 670.671875
+        },
+        "credits": {
+          "top": 867,
+          "bottom": 895,
+          "left": 0,
+          "right": 710.65625
+        },
+        "earth": {
+          "top": 150,
+          "bottom": 895,
+          "left": 0,
+          "right": 710.65625
+        },
+        "navigation_collapsed": true,
+        "synthetic_banner_visible": true
+      },
+      "methods_bounds": {
+        "button_left": 1506.890625,
+        "button_right": 1580,
+        "text_left": 1519.890625,
+        "text_right": 1567,
+        "viewport_width": 1600
+      },
+      "screenshot": {
+        "path": "docs/screenshots/may2004-showcase-media-desktop-20261030T001722Z.png",
+        "bytes": 397911,
+        "sha256": "5e7661a9fd39d244087813a3789f6e7cc8b0b7cd20124e84fe5465203544495a",
+        "pixel_width": 1600,
+        "pixel_height": 1000
+      }
+    },
+    {
+      "name": "brief-desktop",
+      "viewport": {
+        "width": 1600,
+        "height": 1000
+      },
+      "status": "passed",
+      "external_request_attempts": 0,
+      "local_api_requests": 0,
+      "generation_posts": 0,
+      "page_errors": [],
+      "texture": {
+        "source_sha256": "7405c39a220bc37519474eba54625a0d1a02b6ad954895147c103a1bc8dd61fb",
+        "served_sha256": "7405c39a220bc37519474eba54625a0d1a02b6ad954895147c103a1bc8dd61fb",
+        "bytes": 312383,
+        "dimensions": "2048x1024 (matches independently decoded official source bytes)"
+      },
+      "camera_extent": "Existing Globe navigation control,18Mm range",
+      "same_canvas": true,
+      "layout": {
+        "horizontal_overflow": false,
+        "clock": {
+          "top": 832,
+          "bottom": 861,
+          "left": 12,
+          "right": 670.671875
+        },
+        "credits": {
+          "top": 867,
+          "bottom": 895,
+          "left": 0,
+          "right": 710.65625
+        },
+        "earth": {
+          "top": 150,
+          "bottom": 895,
+          "left": 0,
+          "right": 710.65625
+        },
+        "navigation_collapsed": true,
+        "synthetic_banner_visible": true
+      },
+      "methods_bounds": {
+        "button_left": 1506.890625,
+        "button_right": 1580,
+        "text_left": 1519.890625,
+        "text_right": 1567,
+        "viewport_width": 1600
+      },
+      "screenshot": {
+        "path": "docs/screenshots/may2004-showcase-brief-desktop-20261030T001722Z.png",
+        "bytes": 458635,
+        "sha256": "b362c42a47ccae1754a2a42a9e9f154e69895782d9b91760b9c48e796b3b84ce",
+        "pixel_width": 1600,
+        "pixel_height": 1000
+      }
+    },
+    {
+      "name": "earth-portrait390",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": "passed",
+      "external_request_attempts": 0,
+      "local_api_requests": 0,
+      "generation_posts": 0,
+      "page_errors": [],
+      "texture": {
+        "source_sha256": "7405c39a220bc37519474eba54625a0d1a02b6ad954895147c103a1bc8dd61fb",
+        "served_sha256": "7405c39a220bc37519474eba54625a0d1a02b6ad954895147c103a1bc8dd61fb",
+        "bytes": 312383,
+        "dimensions": "2048x1024 (matches independently decoded official source bytes)"
+      },
+      "camera_extent": "Existing Globe navigation control,18Mm range",
+      "same_canvas": true,
+      "layout": {
+        "horizontal_overflow": false,
+        "clock": {
+          "top": 670,
+          "bottom": 711,
+          "left": 12,
+          "right": 378
+        },
+        "credits": {
+          "top": 717,
+          "bottom": 760,
+          "left": 0,
+          "right": 390
+        },
+        "earth": {
+          "top": 112,
+          "bottom": 760,
+          "left": 0,
+          "right": 390
+        },
+        "navigation_collapsed": true,
+        "synthetic_banner_visible": true
+      },
+      "methods_bounds": {
+        "button_left": 314.890625,
+        "button_right": 380,
+        "text_left": 323.890625,
+        "text_right": 371,
+        "viewport_width": 390
+      },
+      "feed_navigation": {
+        "button": {
+          "left": 292.5,
+          "right": 390,
+          "top": 793,
+          "bottom": 844
+        },
+        "navigation": {
+          "left": 0,
+          "right": 390,
+          "top": 792,
+          "bottom": 844
+        },
+        "credits": {
+          "left": 0,
+          "right": 390,
+          "top": 717,
+          "bottom": 760
+        }
+      },
+      "screenshot": {
+        "path": "docs/screenshots/may2004-showcase-earth-portrait390-20261030T001722Z.png",
+        "bytes": 169348,
+        "sha256": "03208d240c30fa9abd5d6a76023eb99361d4b85ea5fcac87108474576fedcf44",
+        "pixel_width": 390,
+        "pixel_height": 844
+      }
+    },
+    {
+      "name": "earth-qa320",
+      "viewport": {
+        "width": 320,
+        "height": 740
+      },
+      "status": "passed",
+      "external_request_attempts": 0,
+      "local_api_requests": 0,
+      "generation_posts": 0,
+      "page_errors": [],
+      "texture": {
+        "source_sha256": "7405c39a220bc37519474eba54625a0d1a02b6ad954895147c103a1bc8dd61fb",
+        "served_sha256": "7405c39a220bc37519474eba54625a0d1a02b6ad954895147c103a1bc8dd61fb",
+        "bytes": 312383,
+        "dimensions": "2048x1024 (matches independently decoded official source bytes)"
+      },
+      "camera_extent": "Existing Globe navigation control,18Mm range",
+      "same_canvas": true,
+      "layout": {
+        "horizontal_overflow": false,
+        "clock": {
+          "top": 552.5,
+          "bottom": 607,
+          "left": 12,
+          "right": 308
+        },
+        "credits": {
+          "top": 613,
+          "bottom": 656,
+          "left": 0,
+          "right": 320
+        },
+        "earth": {
+          "top": 112,
+          "bottom": 656,
+          "left": 0,
+          "right": 320
+        },
+        "navigation_collapsed": true,
+        "synthetic_banner_visible": true
+      },
+      "methods_bounds": {
+        "button_left": 244.890625,
+        "button_right": 310,
+        "text_left": 253.890625,
+        "text_right": 301,
+        "viewport_width": 320
+      },
+      "feed_navigation": {
+        "button": {
+          "left": 240,
+          "right": 320,
+          "top": 689,
+          "bottom": 740
+        },
+        "navigation": {
+          "left": 0,
+          "right": 320,
+          "top": 688,
+          "bottom": 740
+        },
+        "credits": {
+          "left": 0,
+          "right": 320,
+          "top": 613,
+          "bottom": 656
+        }
+      }
+    }
+  ],
+  "privacy": {
+    "raw_live_source_bodies": false,
+    "keys_or_field_values_saved": false,
+    "external_requests_allowed": false
+  },
+  "limitations": [
+    "Screenshots establish the sampled layout only, not source truth, live satellite capture, physical-device performance or current Google quality."
+  ],
+  "runtime_before": {
+    "image": "sha256:03b08ff49e8c6d78348ec17f66cafebc7767963616732f167328706e927b4b65",
+    "started_at": "2026-10-30T00:10:25.757075347Z"
+  },
+  "runtime_after": {
+    "image": "sha256:03b08ff49e8c6d78348ec17f66cafebc7767963616732f167328706e927b4b65",
+    "started_at": "2026-10-30T00:10:25.757075347Z"
+  },
+  "finished_at": "2026-10-30T00:17:58.646Z",
+  "status": "passed",
+  "manual_visual_review": {
+    "inspected_at": "2026-10-30T00:18:34.0577590Z",
+    "images_inspected": 4,
+    "method": "Direct visual inspection of all four original PNGs",
+    "result": "passed for sampled layout",
+    "observations": [
+      "Earth shows the static NASA global reference with persistent synthetic disclosure",
+      "Media and Brief preserve the Earth canvas and show complete top synthetic briefing disclosures",
+      "390px portrait shows the four-button Earth/Media/Brief/Feed navigation",
+      "Native NASA/Cesium credits and track legend occupy separate visible rows"
+    ],
+    "limits": [
+      "Scrollable synthetic cards contain additional content below the initial screenshot; keyboard disclosure/caption reachability is qualified separately",
+      "This gallery does not show Google imagery, real source reports, video playback or current satellite capture"
+    ]
+  },
+  "served_asset_verification": {
+    "recorded_at": "2026-10-30T00:17:22.533Z",
+    "status": "passed",
+    "assets": [
+      {
+        "path": "countries.json",
+        "bytes": 340010,
+        "sha256": "d42479fd79552cca4eec7f85fcdca717a790d29ff06be7676f1af0568c6d3f7c",
+        "source_and_served_exact": true
+      },
+      {
+        "path": "coastlines.json",
+        "bytes": 139907,
+        "sha256": "851f581ff5ffb844deed8ae1a9ce22e3c4bb3d74fa342cadb5d8e39b41ae7c3c",
+        "source_and_served_exact": true
+      },
+      {
+        "path": "earth-night.jpg",
+        "bytes": 779638,
+        "sha256": "d87de751a264e4f8ff69c68de5dab9606daee87a6f15ae743c93200743bd7ec1",
+        "source_and_served_exact": true
+      },
+      {
+        "path": "earth-day.jpg",
+        "bytes": 2308163,
+        "sha256": "f76d7b94445e8975a755c849ddaa93ed07b7e01118fb0b7e6bc5546a68c18d5c",
+        "source_and_served_exact": true
+      },
+      {
+        "path": "earth-day-2048.jpg",
+        "bytes": 312383,
+        "sha256": "7405c39a220bc37519474eba54625a0d1a02b6ad954895147c103a1bc8dd61fb",
+        "source_and_served_exact": true
+      }
+    ]
+  }
+}

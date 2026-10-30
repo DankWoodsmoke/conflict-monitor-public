@@ -2,7 +2,7 @@
 
 An OSINT workspace centered on one persistent Google Earth canvas, with source reports, regional ADS-B/AIS, thermal observations, replay, Media and Brief panels. It preserves original evidence and makes source age, unresolved locations and coverage limits visible. Optional local Qwen extraction and Piper/FFmpeg narrated source cards use no paid inference or speech API.
 
-**Version: 0.2.0-rc.1.** See the [release](https://github.com/DankWoodsmoke/conflict-monitor-public/releases/tag/v0.2.0-rc.1), [GitHub CI](https://github.com/DankWoodsmoke/conflict-monitor-public/actions/workflows/verify.yml) and [verification](docs/VERIFICATION.md) for downloads, executed checks and remaining limits. The former server and original private repository were not changed.
+**Published version: 0.2.0-rc.1.** This branch also contains the subsequent [Earth imagery and usability improvements](docs/EARTH_QUALITY_REVIEW.md); the existing release download retains its original bytes. See the [release](https://github.com/DankWoodsmoke/conflict-monitor-public/releases/tag/v0.2.0-rc.1), [GitHub CI](https://github.com/DankWoodsmoke/conflict-monitor-public/actions/workflows/verify.yml) and [verification](docs/VERIFICATION.md) for dated checks and remaining limits. The former server and original private repository were not changed.
 
 [![Verify release candidate](https://github.com/DankWoodsmoke/conflict-monitor-public/actions/workflows/verify.yml/badge.svg?branch=codex%2Fpublic-release)](https://github.com/DankWoodsmoke/conflict-monitor-public/actions/workflows/verify.yml)
 
@@ -18,13 +18,15 @@ npm run dev
 
 Open **http://localhost:5173/?showcase=true**. The explicit exercise uses local cartography and synthetic reports, tracks, media panels, markets and analysis. No database or model service is required. The capability tour opens panels within Earth; export saves the exercise data and reference clock. Earlier `view=map` and `view=3d` links resolve to Earth.
 
-The **Earth** view retains Cesium and Google Photorealistic 3D Tiles. Configure a browser-restricted Google Maps key in Settings to enable the original imagery capability. A self-hosted deployment can set `GOOGLE_EARTH_ENABLED=true` and `GOOGLE_MAPS_BROWSER_KEY` for automatic Earth configuration without rebuilding the frontend. That explicitly public browser key is delivered by `/config`; backend credentials remain server-only. Google requires its Map Tiles API, billing and visible attribution. Earth imagery supplies geographic context; it does not establish an event's date or location. The keyless exercise uses a local reference globe. Enabling Google imagery is a deliberate provider choice independent of synthetic report data.
+The **Earth** view uses Cesium and Google Photorealistic 3D Tiles. Configure a browser-restricted Google Maps key in Settings to enable detailed photography. A self-hosted deployment can set `GOOGLE_EARTH_ENABLED=true` and `GOOGLE_MAPS_BROWSER_KEY` for automatic Earth configuration without rebuilding the frontend. That explicitly public browser key is delivered by `/config`; backend credentials remain server-only. Google requires its Map Tiles API, billing and visible attribution. Imagery dates and 3D coverage vary; it is not a live satellite feed and does not establish an event's date or location.
+
+**To inspect real imagery**, leave the keyless exercise using **Open live Earth**, select a reference city such as Dubai or Tehran, then choose **Top down** or **Oblique 3D**. **Focus Earth** expands the desktop workspace; **Imagery and detail** exposes the provider, loading state and balanced/detail setting. Native-resolution rendering is bounded to 2× device pixel ratio and eight million pixels. Controls collapse on small screens, while Earth, Media and Brief share the same canvas. On imagery failure a named reference layer remains available with an explicit retry. The keyless exercise uses a static NASA May 2004 daytime globe for orientation; it cannot show city detail.
 
 ## Capabilities
 
 | Workspace | Implemented capability | Verification boundary |
 | --- | --- | --- |
-| Earth | Persistent Cesium/Google imagery, report feed and filters, coordinate/place search, source selection, regional aircraft/vessels, thermal observations, camera controls and replay | Unknown locations stay unplotted. Tracking is explicitly projected onto the surface; no altitude conversion or motion extrapolation is invented. |
+| Earth | Persistent Cesium/Google imagery, close city views, native-resolution/detail controls, focus mode, report feed and filters, coordinate/place search, source selection, regional aircraft/vessels, thermal observations and replay | Unknown locations stay unplotted. Tracking is explicitly projected onto the surface; no altitude conversion or motion extrapolation is invented. Unknown headings use a neutral marker. |
 | Media panel | External media activation and real locally narrated source-card MP4s, preserving the Earth camera | Video reads attributed reports; it contains no incident footage. External broadcasters retain their own availability and rights. |
 | Brief panel | Source digest, report references and optional local topic/stance/mention extraction; inherited analysis remains labeled | Model labels and source mentions remain unreviewed. Literal spans and valid JSON do not establish factual truth or an incident location. |
 | Evidence | Preserved original reports, content hashes, source-scoped identities, revisions, explicit extraction failures | Report/network counts never automatically become independent confirmation. |
@@ -34,7 +36,7 @@ The default free profile preserves publisher text with `UNSCORED` severity and u
 
 ## Demonstrate the workspace
 
-1. Open Earth and enable Google imagery through Settings or your deployment's restricted browser key. Check provider attribution and the source-health panel before describing anything as current. The keyless showcase labels its synthetic data and reference globe explicitly.
+1. Open live Earth and enable Google imagery through Settings or your deployment's restricted browser key. Choose a city view, inspect the imagery at street/building scale, then use Focus Earth or Top down/Oblique 3D. Check provider attribution and source health before describing anything as current. The keyless showcase labels its synthetic data and static reference globe explicitly.
 2. Explore reports and source/time filters, open a cited source, then compare its publication clock with collection time. Unlocated reports stay in the feed. Tracking controls distinguish fresh, last-known and recorded positions; the four aircraft regions describe the actual coverage.
 3. Open Media, then return to Earth to show that the camera and canvas persist. External broadcasts need deliberate activation; an embedded page is not proof of live playback. The narrated briefing contains editorial source cards, not incident footage.
 4. Open Brief for the attributed source digest and, when configured, optional local analysis. Inspect original citations and unreviewed labels. Local generation requires the operator key and a deliberate action; opening a panel starts no inference or speech job.
@@ -43,11 +45,11 @@ The capability tour and export in the keyless showcase can demonstrate these con
 
 ## Preview
 
-These are the synthetic, keyless exercise with the NASA Black Marble 2016 reference. Google photorealistic imagery is a separately configured live-provider capability.
+These previews show the synthetic, keyless exercise with the **NASA Blue Marble May 2004 daytime reference** at globe scale. They do not depict the detailed Google imagery available in a configured deployment. Use **Open live Earth** and an inspection-city control to see that capability.
 
-![Earth workspace with synthetic reports and regional tracks](docs/screenshots/clean-showcase-earth-desktop-20261029T084844192667Z.png)
+![Earth workspace with synthetic reports and a dated daytime reference globe](docs/screenshots/may2004-showcase-earth-desktop-20261030T001722Z.png)
 
-Also see [Media](docs/screenshots/clean-showcase-media-desktop-20261029T084844192667Z.png), [Brief](docs/screenshots/clean-showcase-brief-desktop-20261029T084844192667Z.png) and [390-pixel portrait](docs/screenshots/clean-showcase-earth-portrait390-20261029T084844192667Z.png). The previews came from a fresh source reconstruction whose 400 built assets matched the deployed image; screenshots illustrate layout and do not establish source truth.
+Also see [Media](docs/screenshots/may2004-showcase-media-desktop-20261030T001722Z.png), [Brief](docs/screenshots/may2004-showcase-brief-desktop-20261030T001722Z.png) and [390-pixel portrait](docs/screenshots/may2004-showcase-earth-portrait390-20261030T001722Z.png). The [preview receipt](docs/screenshots/may2004-showcase-20261030T001722Z-receipt.json) binds them to the deployed `03b08f` image, with no external imagery, live-data or generation requests. The four previews illustrate synthetic layouts, not current imagery or source truth. Original RC.1 previews remain preserved. The live workspace uses the operator's configured Google imagery and offers close city inspection; these public screenshots deliberately use the distributable NASA reference.
 
 The optional free tools are configured in [local AI/video](docs/LOCAL_AI_VIDEO.md). The application never pulls a model or voice automatically. Operator-triggered work is authenticated, bounded and published only after its respective validation gates. The measured model comparison includes rejected batches and remaining errors. The inherited paid standalone video script is retained as historical source; automatic paid generation remains disabled by default.
 

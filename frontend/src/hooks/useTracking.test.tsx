@@ -35,4 +35,11 @@ describe("recorded tracking time slices",()=>{
   fetchMock.mockImplementation(async(url)=>Response.json(String(url).includes("/snapshots?")?[snapshot(time+60000)]:[{icao24:"live",lat:1,lon:1}]));
   await act(async()=>root.render(<Harness cursor={time}/>));expect(latest.aircraft).toEqual([]);expect(latest.vessels).toEqual([]);
  });
+ it("retains legacy replay direction including zero without inventing course or direction basis",async()=>{
+  const row=snapshot(time);row.vessels.push({...row.vessels[0],m:"987654321",h:125});
+  fetchMock.mockImplementation(async(url)=>Response.json(String(url).includes("/snapshots?")?[row]:[]));
+  await act(async()=>root.render(<Harness cursor={time+60000}/>));
+  expect(latest.vessels.map(v=>v.heading)).toEqual([0,125]);
+  for(const vessel of latest.vessels){expect(vessel.course).toBeNull();expect(vessel.heading_basis).toBeUndefined();expect(vessel.lat).toBe(0);expect(vessel.lon).toBe(0);}
+ });
 });

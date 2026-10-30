@@ -1,0 +1,523 @@
+{
+  "generated_at": "2026-10-30T00:29:26.071336+00:00",
+  "scope": "Post-RC.1 Earth imagery candidate; bounded local production qualification, not universal accuracy or stable-release certification",
+  "frontend_image_sha256": "03b08ff49e8c6d78348ec17f66cafebc7767963616732f167328706e927b4b65",
+  "frontend_started_at": "2026-10-30T00:10:25.757075347Z",
+  "backend_and_database_restarted_for_this_deployment": false,
+  "frontend": {
+    "test_files": 18,
+    "tests": 178,
+    "passed": 178,
+    "failed": 0,
+    "skipped": 0,
+    "tsc_and_vite_build": "passed",
+    "cesium_compatibility": "passed",
+    "dependency_audit": {
+      "result": "0 vulnerabilities at recorded prior audit",
+      "evidence": "artifacts/direction-basis-npm-audit.json",
+      "same_dependencies": true,
+      "limitation": "Audit timestamp predates caption-only changes; package and lock hashes match the prior freeze exactly"
+    }
+  },
+  "imagery": {
+    "passed_cases": 11,
+    "cases": [
+      {
+        "name": "fresh_normal_desktop_google",
+        "status": "PASS"
+      },
+      {
+        "name": "full_earth_focus_and_restore",
+        "status": "PASS"
+      },
+      {
+        "name": "tehran_city_topdown_oblique_detail",
+        "status": "PASS"
+      },
+      {
+        "name": "media_brief_preserve_earth_no_generation",
+        "status": "PASS"
+      },
+      {
+        "name": "mobile_320_google_controls",
+        "status": "PASS"
+      },
+      {
+        "name": "mobile_390_google_controls",
+        "status": "PASS"
+      },
+      {
+        "name": "controlled_missing_google_config",
+        "status": "PASS"
+      },
+      {
+        "name": "controlled_google_failure_then_real_retry",
+        "status": "PASS"
+      },
+      {
+        "name": "controlled_google_child_failure_then_real_retry",
+        "status": "PASS"
+      },
+      {
+        "name": "controlled_reference_failure_then_real_retry",
+        "status": "PASS"
+      },
+      {
+        "name": "keyless_showcase_day_reference",
+        "status": "PASS"
+      }
+    ],
+    "google_network": {
+      "google_requests": 4216,
+      "statuses": {
+        "200": 4193,
+        "503": 19
+      },
+      "failures": {
+        "net::ERR_ABORTED": 4
+      }
+    },
+    "page_errors": 0,
+    "unexpected_api_posts": 0,
+    "limits": [
+      "Browser emulation is not a physical display/device check.",
+      "Injected missing-config and provider-failure cases are labeled separately.",
+      "No source acquisition-date, absolute resolution, or ground-accuracy claim.",
+      "Screenshots are private live UI captures."
+    ]
+  },
+  "browser_viewport_matrix": {
+    "passed_cases": 12,
+    "cases": [
+      {
+        "browser": "chromium",
+        "version": "156.0.8078.4",
+        "viewport": {
+          "width": 320,
+          "height": 740
+        },
+        "status": "passed"
+      },
+      {
+        "browser": "chromium",
+        "version": "156.0.8078.4",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "status": "passed"
+      },
+      {
+        "browser": "chromium",
+        "version": "156.0.8078.4",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "status": "passed"
+      },
+      {
+        "browser": "chromium",
+        "version": "156.0.8078.4",
+        "viewport": {
+          "width": 844,
+          "height": 390
+        },
+        "status": "passed"
+      },
+      {
+        "browser": "firefox",
+        "version": "157.0",
+        "viewport": {
+          "width": 320,
+          "height": 740
+        },
+        "status": "passed"
+      },
+      {
+        "browser": "firefox",
+        "version": "157.0",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "status": "passed"
+      },
+      {
+        "browser": "firefox",
+        "version": "157.0",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "status": "passed"
+      },
+      {
+        "browser": "firefox",
+        "version": "157.0",
+        "viewport": {
+          "width": 844,
+          "height": 390
+        },
+        "status": "passed"
+      },
+      {
+        "browser": "webkit",
+        "version": "27.2",
+        "viewport": {
+          "width": 320,
+          "height": 740
+        },
+        "status": "passed"
+      },
+      {
+        "browser": "webkit",
+        "version": "27.2",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "status": "passed"
+      },
+      {
+        "browser": "webkit",
+        "version": "27.2",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "status": "passed"
+      },
+      {
+        "browser": "webkit",
+        "version": "27.2",
+        "viewport": {
+          "width": 844,
+          "height": 390
+        },
+        "status": "passed"
+      }
+    ],
+    "limits": [
+      "Desktop browser engines with emulated viewport/touch are not physical iOS or Android devices.",
+      "Tiles, imagery dates and source reports are not ground truth or incident confirmation.",
+      "No arbitrary external media playback or long-term GPU reliability is certified."
+    ]
+  },
+  "native_touch": {
+    "passed_checks": [
+      "actual_touchscreen_taps_all_three_tabs_preserve_canvas",
+      "touch_camera_zoom_changes_observed_height",
+      "touch_layers_and_last_known_toggle",
+      "touch_settings_open_and_close",
+      "native_touch_pinch_changes_observed_camera_height",
+      "native_touch_pan_changes_actual_position_hemisphere_viewport",
+      "touch_region_restores_visible_hemisphere",
+      "native_touch_scroll_moves_report_list",
+      "portrait_to_landscape_preserves_canvas_and_fits_viewport"
+    ],
+    "findings": 0,
+    "incomplete": 0,
+    "limits": [
+      "This is not a physical Android or iOS device.",
+      "Native pan acceptance alone is not a measured viewport change; the probe requires a large real-position hemisphere-mask change.",
+      "A successful touch interaction is not long-term GPU or provider reliability evidence."
+    ]
+  },
+  "playwright": {
+    "passed": 5,
+    "failed": 0,
+    "source_time_assertion_updated_before_this_run": true
+  },
+  "accessibility": {
+    "completed_states": 61,
+    "automated_violations_all_impacts": 0,
+    "keyboard_scenarios": 54,
+    "keyboard_failures": 0,
+    "native_attribution_viewports_passed": 4,
+    "synthetic_disclosure_and_keyboard_caption_viewports_passed": 4,
+    "incomplete_rules_requiring_manual_review": [
+      {
+        "id": "color-contrast",
+        "case_occurrences": 58,
+        "node_occurrences": 1611,
+        "unique_selectors": 170
+      },
+      {
+        "id": "label-content-name-mismatch",
+        "case_occurrences": 55,
+        "node_occurrences": 128,
+        "unique_selectors": 12
+      }
+    ],
+    "manual_review": {
+      "symbolic_control_names": {
+        "status": "source_named_controls_and_automated_name_rules_only",
+        "scope": "No speech-recognition or screen-reader qualification performed. Automated checks and bounded keyboard samples do not establish assistive-technology usability."
+      },
+      "contrast_incomplete": {
+        "status": "remaining_manual_review_limit",
+        "scope": "Axe could not determine all translucent, gradient, SVG/image/canvas and third-party credit backgrounds. These incomplete nodes are not counted as contrast passes."
+      },
+      "assistive_technology": {
+        "status": "unverified",
+        "scope": "No NVDA, JAWS, VoiceOver, real speech-control or physical-device qualification performed."
+      }
+    },
+    "source_binding": {
+      "scope": "Strict product stability plus disclosed exact unimported E2E assertion transition; all original before/after hashes retained",
+      "files": 88,
+      "all_frontend_files_unchanged": false,
+      "mismatches": [
+        "frontend/e2e/workspace.pw.ts"
+      ],
+      "product_mismatches": [],
+      "authorized_test_only_delta_matches": true,
+      "test_only_change": {
+        "path": "frontend/e2e/workspace.pw.ts",
+        "before_sha256": "eaacc503da44a9293021ee0c66f6ab1921e747c2eae071282b73d049f2660450",
+        "after_sha256": "74e8a1b9f5cb42762686cb142923a669558f0cb801a0515f5a421a9fddb0eed7",
+        "recorded_edit_at": "2026-10-30T00:12:17.4478963Z",
+        "change": "Newest source publication age -> Newest source time age",
+        "basis": "Explicit root-coordinated QA-only assertion update. Not imported by production code or this audit runner; TypeScript build includes src only. Separate actual five-case E2E run qualifies the new assertion."
+      },
+      "public_manifest": "docs/qualification/2026-10-29-earth-quality-source-manifest.json",
+      "public_manifest_sha256": "c76af6cf1d2de9b877bd3e6bf26c95d01b36bf424a46d184c8d4ca70430a8165",
+      "public_manifest_mismatches": [],
+      "public_image_matches": true
+    },
+    "full_wcag_or_physical_assistive_technology_certification": false
+  },
+  "existing_local_video": {
+    "passed_browser_engines": 3,
+    "cases": [
+      {
+        "browser": "chromium",
+        "version": "156.0.8078.4",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "status": "passed",
+        "video_sha256": "0932039e271f22c6afa7f25afab4fca9947b795b98ca567dde959c404d16470d",
+        "playback": {
+          "current_time": 1.509624,
+          "duration": 33.503337,
+          "paused": false,
+          "ready_state": 4,
+          "error": null,
+          "h264_aac_support": "probably"
+        }
+      },
+      {
+        "browser": "firefox",
+        "version": "157.0",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "status": "passed",
+        "video_sha256": "0932039e271f22c6afa7f25afab4fca9947b795b98ca567dde959c404d16470d",
+        "playback": {
+          "current_time": 1.513791,
+          "duration": 33.477959,
+          "paused": false,
+          "ready_state": 4,
+          "error": null,
+          "h264_aac_support": "probably"
+        }
+      },
+      {
+        "browser": "webkit",
+        "version": "27.2",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "status": "passed",
+        "video_sha256": "0932039e271f22c6afa7f25afab4fca9947b795b98ca567dde959c404d16470d",
+        "playback": {
+          "current_time": 1.5122499,
+          "duration": 33.504,
+          "paused": false,
+          "ready_state": 4,
+          "error": null,
+          "h264_aac_support": "probably"
+        }
+      }
+    ],
+    "video_sha256": "0932039e271f22c6afa7f25afab4fca9947b795b98ca567dde959c404d16470d",
+    "bytes": 650081,
+    "generation_jobs_during_verification": 0,
+    "limits": [
+      "390x844 viewport/touch emulation is not a physical mobile device.",
+      "Advancing playback/decoding does not certify listener audibility or pronunciation.",
+      "Source truth and model labels remain unreviewed; this probe never starts generation.",
+      "No external live stream status is inferred from local recorded artifact playback."
+    ]
+  },
+  "server_observation": {
+    "status": "qualified_sample",
+    "started_at": "2026-10-30T00:10:50.382656+00:00",
+    "ended_at": "2026-10-30T00:21:50.406169+00:00",
+    "elapsed_seconds": 660.01,
+    "samples": 22,
+    "requirements": {
+      "observer_finished": true,
+      "requested_duration_observed": true,
+      "sample_cadence_bounded": true,
+      "rest_requests_successful": true,
+      "sampled_integrity_preserved": true,
+      "sql_checks_available": true,
+      "sql_integrity_preserved": true,
+      "websocket_connected": true,
+      "websocket_available_over_95_percent": true,
+      "websocket_payloads_valid": true,
+      "one_backend_and_frontend_image_pair": true,
+      "database_identity_observed_throughout": true,
+      "one_three_container_start_and_database_volume_identity": true,
+      "database_versions_and_collation_observed": true,
+      "expected_postgresql_version": true,
+      "expected_postgis_version": true,
+      "expected_database_volume": true,
+      "no_recorded_paid_usage": true
+    },
+    "sql_checks": 3,
+    "unavailable_sql_checks": 0,
+    "websocket": {
+      "connections": 1,
+      "disconnects": 0,
+      "observed_connected_seconds": 659.55,
+      "connected_fraction": 0.99931,
+      "event_messages": 4,
+      "payload_errors": 0,
+      "delivery_observed": true
+    },
+    "max_sample_gap_seconds": 30.02,
+    "limitations": [
+      "Provider state and sampled API/SQL behavior do not establish factual truth or global source coverage.",
+      "WebSocket connection with no event messages does not qualify event delivery; use the separate real pipeline test.",
+      "Deployment segments are distinct; total duration does not imply the final image ran for that duration.",
+      "No physical device, every code path, long-term reliability, or sustained-load claim is established."
+    ]
+  },
+  "browser_observation": {
+    "status": "PASS",
+    "started_at": "2026-10-30T00:11:40.018Z",
+    "ended_at": "2026-10-30T00:22:40.084Z",
+    "elapsed_seconds": 660.066,
+    "actual_ready_observation_seconds": 653.347,
+    "samples": 22,
+    "findings": 0,
+    "generation_posts": 0,
+    "page_errors": 0,
+    "workspaces": {
+      "earth": 8,
+      "local_analysis": 7,
+      "narrated_briefing": 7
+    },
+    "same_single_canvas": true,
+    "google_ready_at_every_sample": true,
+    "maximum_provider_settle_ms": 6,
+    "limits": [
+      "Bounded browser emulation is not physical-device or screen-reader qualification.",
+      "Heap/DOM counters do not prove absence of leaks.",
+      "No source truth, global imagery coverage, acquisition-date accuracy or listener audibility claim."
+    ]
+  },
+  "browser_batch_identity": {
+    "all_container_images_starts_and_database_volume_equal": true,
+    "closure_observed_at": "2026-10-30T00:28:18.162Z",
+    "validated_receipt_hashes_and_times": 10,
+    "limits": [
+      "The lifecycle starts shortly before the imagery receipt; actual current-container StartedAt values precede every batch.",
+      "Stable identity is measured before and after; the independent server observer supplies periodic checks.",
+      "No runtime, data, model generation or app-source mutation was performed by these viewing probes."
+    ]
+  },
+  "source_and_runtime": {
+    "frontend_source_config_test_asset_files": 88,
+    "deployed_static_files": 403,
+    "host_build_files_matching_deployment": 402,
+    "additional_deployed_file": "nginx 50x.html"
+  },
+  "retained_prior_findings": [
+    "16321b: 57-state audit failed visible-name matching and keyboard-scroll rules; mobile Feed intercepted attribution text.",
+    "a61eb0: 61-state audit found a Brief scroll failure; subsequent geometry measured collapsed and offscreen reference content.",
+    "First final-layout DEV preflight ended after 20 of 61 states when the development server disconnected; it is not counted as a pass.",
+    "The restarted DEV preflight completed 61 states, 54 keyboard scenarios and four synthetic briefing checks before the final source-time caption repair.",
+    "Current production receipts, not earlier image passes, qualify the final candidate."
+  ],
+  "remaining_limits": [
+    "Google photographic imagery is not real-time, has varying capture dates and coverage, and requires the operator's configured Google access.",
+    "The keyless NASA May 2004 daytime texture is a coarse static reference, not contemporary city imagery.",
+    "Google documents at least three hours of access per root request; automatic renewal is not implemented and longer uninterrupted sessions remain unqualified. The executed observations are only 11 minutes.",
+    "Browser emulation and keyboard checks do not establish behavior on physical phones or with native screen readers; incomplete accessibility rules are not automatic passes.",
+    "Source clocks, provider freshness and positional metadata do not establish factual truth, exhaustive coverage, measured incident location or calibrated accuracy.",
+    "Previously documented backend/database container OS findings remain open; a zero-vulnerability npm snapshot is not whole-system clearance.",
+    "Local video checks replay the existing source-bound artifact; they do not claim new footage, listener quality, new AI generation or GOOL qualification."
+  ],
+  "evidence_receipt_hashes": [
+    {
+      "scope": "Final frontend tests, source and host build",
+      "sha256": "95b945fb22702ae05a79097a6205ef6bfe7f7c73531e481a3c0196c2c6b9116e"
+    },
+    {
+      "scope": "Actual final Vitest execution",
+      "sha256": "8ea000b4c9259115ee53a0eff301cf82c524a8e74a56bbdbd889651e3363b3bd"
+    },
+    {
+      "scope": "Final production Google imagery and controlled recovery",
+      "sha256": "47ac64d6147973dcf842d32cd636036e191c7a9e4c5775cc3b153b9979dd2cce"
+    },
+    {
+      "scope": "Final production browser and viewport matrix",
+      "sha256": "06ead835a8edb6e95a8422412bed047f8329c8ee2ba4f8a38125066eb860d3d0"
+    },
+    {
+      "scope": "Final production actual native touch gestures",
+      "sha256": "601f10fce7b8d3dadd3dfc7d83831f0ee275208189c16bc6d0890cdcd102009e"
+    },
+    {
+      "scope": "Final production existing local briefing playback in three engines",
+      "sha256": "57595d901f8a4387f00dafc04335413c25d3e584e3abf4b43b15a7bcdb03c020"
+    },
+    {
+      "scope": "Unchanged source-bound briefing MP4 and HTTP range delivery",
+      "sha256": "3bd997d991170a6726dd8ef10b567582c1d84aba83ce62c1d67934d7ec3d9a8f"
+    },
+    {
+      "scope": "Final production five-case Playwright run",
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "scope": "Actual Playwright JSON reporter with completed test counts",
+      "sha256": "09a5c4a67c850a64116b2897d3a3077fd9832dd3a286a810157d0a7a67608c7e"
+    },
+    {
+      "scope": "Final production accessibility, keyboard, attribution and synthetic briefing",
+      "sha256": "4a58222c21c363cf6e7688e9fe0d4e83205e2360e3ac315b8739707390c1fb50"
+    },
+    {
+      "scope": "Final production 660-second API, WebSocket, SQL and container identity observation",
+      "sha256": "52636403a4ebe052d66b74374b09fa268ad4f45c2c748743bb6e48b50d4d56d0"
+    },
+    {
+      "scope": "Final production 660-second browser lifecycle observation",
+      "sha256": "d392d3ad3e17fe722c30558b1c7dc0f84c74e3c9e6fdd0f2c79673de8e7d11bb"
+    },
+    {
+      "scope": "Actual three-container lifetime and receipt-hash closure across every browser batch",
+      "sha256": "ca6598a71cf63cddb6c807d56068f52d5d693cc180f874fd71a3be017a17854d"
+    },
+    {
+      "scope": "Final source and deployed static-file hash manifest",
+      "sha256": "c76af6cf1d2de9b877bd3e6bf26c95d01b36bf424a46d184c8d4ca70430a8165"
+    },
+    {
+      "scope": "Independent complete host-build to running-container byte comparison",
+      "sha256": "edef3148a2cd09a977af16e9495ea050dfc5c54d15292bd7d210ae77568fd9f8"
+    }
+  ],
+  "private_runtime_and_source_content_exported": false
+}

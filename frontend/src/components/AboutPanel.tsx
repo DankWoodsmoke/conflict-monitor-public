@@ -27,7 +27,7 @@ export function AboutPanel({onClose}:{onClose:()=>void}) {
     <div className="methods-dialog" ref={dialog} role="dialog" aria-modal="true" aria-labelledby="methods-title" tabIndex={-1}>
       <header role="presentation"><span className="tour-kicker">CONFLICT MONITOR / RELEASE CANDIDATE</span><button onClick={close} aria-label="Close about and methodology">×</button><h1 id="methods-title">Evidence in context.</h1><p>Reports, spatial context, media and situation analysis in one inspectable workspace.</p></header>
       <nav aria-label="About sections">{tabs.map(t=><button key={t} onClick={()=>setTab(t)} aria-pressed={tab===t}>{t}</button>)}</nav>
-      <div className="methods-body">
+      <div className="methods-body" role="region" aria-label={`Methods content — ${tab}`} tabIndex={0}>
         {tab==="Overview"&&<><h2>One Earth workspace</h2><div className="methods-grid">{[
           ["01 / Earth","Search reports and tracks, inspect original sources, choose spatial layers and replay recorded snapshots on one persistent Earth. Unknown locations stay unresolved; track heights are not invented."],
           ["02 / Media","Open media beside Earth. External broadcasts load only when selected; publisher commentary remains separate from observed evidence."],

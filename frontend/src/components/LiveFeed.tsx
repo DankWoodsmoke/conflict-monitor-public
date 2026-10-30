@@ -2,6 +2,7 @@ import { severityLabel,reportSourceKind } from "../lib/events";
 import { safeUrl } from "../lib/runtime";
 import { EvidenceDetails } from "./EvidenceDetails";
 import { nowMs } from "../lib/clock";
+import {hasUsableReportCoordinates} from "../lib/reportPosition";
 import {recentReports} from "../lib/reportPresentation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ConflictEvent } from "../types/event";
@@ -177,8 +178,8 @@ function ConfBadge({ evt }: { evt: ConflictEvent }) {
 // ── Age display ───────────────────────────────────────────────────────────────
 function AgeChip({ timestamp }: { timestamp: string }) {
   const ageMs = nowMs() - new Date(timestamp).getTime();
-  if(!Number.isFinite(ageMs))return <span>Publication time unknown</span>;
-  if(ageMs<0)return <span title={timestamp}>Publication clock ahead</span>;
+  if(!Number.isFinite(ageMs))return <span>Source time unknown</span>;
+  if(ageMs<0)return <span title={timestamp}>Source clock ahead</span>;
   const mins = Math.floor(ageMs / 60000);
   if (mins < 1) return <span style={{ fontSize: 11, color: "#f85149", fontWeight: 900, fontFamily: "var(--font-mono)", letterSpacing: 0.5 }}>●&nbsp;NOW</span>;
   if (mins < 5)  return <span style={{ fontSize: 11, color: "#f85149", fontWeight: 700, fontFamily: "var(--font-mono)" }}>●&nbsp;{mins}m</span>;
@@ -516,6 +517,7 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
       <div
         ref={containerRef}
         onScroll={handleScroll}
+        role="region" aria-label="Report feed entries" tabIndex={0}
         style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}
       >
         {filteredEvents.length === 0 && (
@@ -530,7 +532,7 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
           const isCrit     = (evt.severity ?? 0) >= 9;
           const ageMs      = nowMs() - new Date(evt.timestamp).getTime();
           const isRecent   = Number.isFinite(ageMs)&&ageMs>=0&&ageMs < 5 * 60000;
-          const hasPin     = evt.lat != null && evt.lon != null && Number.isFinite(evt.lat) && Number.isFinite(evt.lon) && Math.abs(evt.lat)<=90 && Math.abs(evt.lon)<=180 && !(evt.lat===-25 && evt.lon===80);
+          const hasPin     = hasUsableReportCoordinates(evt);
           const hasSrcUrl  = !!safeUrl(evt.source_url);
           const cm         = chanMeta(evt.channel_name || evt.source || "");
           const typeColor  = TYPE_COLORS[evt.event_type] ?? "#a3b9ca";
@@ -606,7 +608,7 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
                   <QualityDots score={evt.source_reliability} />
                 </span>
 
-                <span title="Timeline uses the source publication time, not a verified incident time" style={{color:"#9aafbd"}}>Published</span>
+                <span title="Source time can represent publication, an update or sensor acquisition; incident time is unverified" style={{color:"#9aafbd"}}>Source time</span>
                 {!hasPin && <span style={{color:"#a9b6c4"}}>Location unresolved</span>}
                 {/* Location */}
                 {evt.location_name && evt.location_name.toLowerCase() !== "unknown" && (

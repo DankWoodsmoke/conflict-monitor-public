@@ -261,7 +261,7 @@ function BreakingIntelPanel({ events,clock }: { events: ConflictEvent[];clock:nu
           {top.length} / {recent.length} LOADED REPORTS
         </span>
       </div>
-      <div style={{ flex: 1, overflow: "auto", display: "flex", flexDirection: "column", gap: 2 }}>
+      <div role="region" aria-label="Recent source reports" tabIndex={0} style={{ flex: 1, overflow: "auto", display: "flex", flexDirection: "column", gap: 2 }}>
         {top.length === 0 && (
           <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "#829aae",
             textAlign: "center", marginTop: 12 }}>No loaded reports with source timestamps in the last 4h</div>

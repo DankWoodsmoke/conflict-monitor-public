@@ -49,6 +49,58 @@
       "license": "NASA media usage guidelines: government content generally not subject to US copyright; factual informational use, credit and no endorsement",
       "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
       "credit": "NASA Earth Observatory image by Joshua Stevens, using Suomi NPP VIIRS data from Miguel Roman, NASA GSFC."
+    },
+    {
+      "path": "earth-day.jpg",
+      "url": "https://assets.science.nasa.gov/content/dam/science/esd/eo/images/bmng/bmng-topography-bathymetry/august/world.topo.bathy.200408.3x5400x2700.jpg",
+      "source_page": "https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/base-topography-bathymetry/",
+      "bytes": 2308163,
+      "sha256": "f76d7b94445e8975a755c849ddaa93ed07b7e01118fb0b7e6bc5546a68c18d5c",
+      "format": "JPEG",
+      "width": 5400,
+      "height": 2700,
+      "mode": "RGB",
+      "data_year": 2004,
+      "composite_month": "August",
+      "provider_stated_resolution": "8 km/pixel for this global download; varies with latitude",
+      "processing": "provider-supplied monthly land-surface composite with shaded topography and bathymetry; original JPEG bytes unchanged",
+      "license": "NASA media usage guidelines: government content generally not subject to US copyright; factual informational use, credit and no endorsement",
+      "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "credit": "NASA Earth Observatory. Blue Marble: Next Generation produced by Reto Stoeckli, NASA GSFC.",
+      "checked_at": "2026-10-29 UTC",
+      "limitations": [
+        "Static 2004 global reference, not current imagery or incident evidence.",
+        "This small global texture does not resolve city/building detail.",
+        "The month dates the land-surface composite; shaded relief and bathymetry are ancillary reference data."
+      ]
+    },
+    {
+      "path": "earth-day-2048.jpg",
+      "url": "https://raw.githubusercontent.com/NASAWorldWind/WebWorldWind/5ffe2dfc54ab4d744fc9e587af9639c9910db228/images/BMNG_world.topo.bathy.200405.3.2048x1024.jpg",
+      "source_page": "https://worldwind.arc.nasa.gov/autodocs/WebWorldWind/layer_BMNGOneImageLayer.js.html",
+      "source_repo": "NASAWorldWind/WebWorldWind",
+      "source_commit": "5ffe2dfc54ab4d744fc9e587af9639c9910db228",
+      "bytes": 312383,
+      "sha256": "7405c39a220bc37519474eba54625a0d1a02b6ad954895147c103a1bc8dd61fb",
+      "format": "JPEG",
+      "width": 2048,
+      "height": 1024,
+      "mode": "RGB",
+      "data_year": 2004,
+      "composite_month": "May",
+      "approximate_equatorial_pixel_spacing_m_calculated": 19568,
+      "processing": "NASA-distributed single-image Blue Marble monthly composite with topography and bathymetry; original provider JPEG bytes unchanged",
+      "license": "NASA media usage guidelines: factual informational imagery use, acknowledgment and no endorsement; the containing WebWorldWind SDK separately declares Apache-2.0",
+      "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "source_repository_license_url": "https://github.com/NASAWorldWind/WebWorldWind/blob/5ffe2dfc54ab4d744fc9e587af9639c9910db228/README.md#license",
+      "credit": "NASA Earth Observatory. Blue Marble: Next Generation produced by Reto Stoeckli, NASA GSFC. NASA WorldWind supplies this small reference image.",
+      "checked_at": "2026-10-29 UTC",
+      "limitations": [
+        "Static May 2004 global reference, not current imagery or incident evidence.",
+        "Approximate 20 km equatorial pixel spacing is calculated from global map width, not a new measured sensor resolution.",
+        "No local image generation, resizing, recoloring or recompression was applied.",
+        "Native physical-device WebGL compatibility remains separately qualified."
+      ]
     }
   ]
 }

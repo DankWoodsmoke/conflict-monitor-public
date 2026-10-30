@@ -120,3 +120,58 @@ fixed. Final commit and tag CI, distribution manifests/checksums and uploaded
 asset round-trip checks are recorded separately with the release before it is
 made public. No browser login, credential creation or platform messaging was
 needed.
+
+## 2026-10-29 — detailed Earth imagery and controlled failure recovery
+
+The public exercise's night composite and distant city presets concealed the
+detail already available through the configured Google provider. Direct network
+and close-view checks established that Google worked; replacing the geospatial
+engine would not address the observed rendering and navigation defects. The
+candidate now uses native display resolution with a 2×/eight-million-pixel bound,
+balanced/detail refinement, close city views, top-down/oblique controls and a
+desktop focus layout. First entry opens Earth directly; Methods remains available.
+Small screens collapse navigation without hiding provider state or recovery.
+
+Initial root success no longer stands in for a usable current view. Reference
+imagery remains while Google refines, and a root/child failure restores a named
+reference with an explicit retry. Google mesh collision supports the existing
+surface-clamped markers. Report plotting, fly-to and imagery links share a guard
+for the inherited unknown-location sentinel; unknown track headings use a neutral
+symbol. A targeted regression reproduced a quality change lost during pending
+root creation, then passed after applying the current detail setting at resolution.
+
+The offline exercise uses NASA's original 2,048-wide May 2004 daytime image,
+bounded for a 4,096-pixel texture context. The 5,400-wide August image and older
+night texture remain preserved. None is current or city-resolution imagery.
+Source reading, unit regressions, image-bound browser checks and bounded live
+observations retain separate scopes. Automatic Google authorization renewal and
+uninterrupted sessions beyond three hours remain unqualified. See
+[Earth quality review](EARTH_QUALITY_REVIEW.md) for primary-source research,
+implemented repairs and explicit future work.
+
+
+Expanded browser review found additional usability and provenance defects after
+initial functional passes. Actual text-fragment hit testing proved the mobile
+Feed control covered native attribution; it now occupies its own bottom-nav slot.
+Native attribution popup controls reuse the application's existing modal focus,
+background-inert, Escape and focus-restoration behavior, with explicit cleanup.
+The hidden popup does not retain a foreground dialog role. Methods and report
+content regions remain keyboard-scrollable through loading and empty states.
+The Brief context column now scrolls as a whole: its references previously
+collapsed to a measured six-pixel viewport below fixed content.
+
+AIS direction values preserve their explicit true-heading/course-over-ground
+basis. Aircraft mixed-provider direction and historical replay retain an unknown
+basis where none was recorded. A historical heading field is no longer copied
+into a purported course value. Numeric positions, rotations, stored snapshots and
+backend schema remain unchanged. Original failures and completed observations
+retain their original source/image identities; no later build inherits their pass
+label without its own execution.
+
+Generic event timestamps are labeled **Source time** because the same field can
+contain publication, an Atom update, or a FIRMS acquisition time. Source-health
+wording also distinguishes RSS's mixed source clock from its fetch clock; the
+Telegram-specific publication labels remain explicit. This repairs misleading
+captions without changing stored timestamps, timeline ordering, API compatibility
+fields or source observations. A successful fetch is not evidence that the
+underlying report or position is verified.

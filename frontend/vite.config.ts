@@ -16,7 +16,9 @@ export default defineConfig({
       interval: 1000,
     },
     proxy: {
-      "/api": { target: process.env.API_PROXY_TARGET || "http://127.0.0.1:8000", changeOrigin: true, ws: true, rewrite: path => path.replace(/^\/api/, "") },
+      // Preserve the page host so the backend can verify same-origin WebSockets,
+      // exactly as the production nginx proxy does. Do not rewrite Origin.
+      "/api": { target: process.env.API_PROXY_TARGET || "http://127.0.0.1:8000", changeOrigin: false, ws: true, rewrite: path => path.replace(/^\/api/, "") },
       // Proxy adsb.lol V2 API to avoid CORS issues
       "/adsb-api": {
         target: "https://api.adsb.lol",

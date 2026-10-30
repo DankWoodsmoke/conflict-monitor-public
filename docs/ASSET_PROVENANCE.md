@@ -106,3 +106,71 @@ uses, and specify separate conditions for promotional video. The application
 does not extract Google imagery into AI inputs or narrated source-card MP4s.
 Those MP4s contain editorial text cards, not Google tiles. No offline Google
 imagery archive or blanket image-redistribution license is included.
+
+## Added daytime global reference (October 29, 2026)
+
+`earth-day.jpg` adds an original NASA **Blue Marble: Next Generation August
+2004 monthly composite with shaded topography and bathymetry**. The three assets
+documented above, including `earth-night.jpg`, remain unchanged. This addition
+does not replace any protected backup or rewrite the night-texture receipts.
+
+The [NASA download catalog](https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/base-topography-bathymetry/)
+links the exact [August global JPEG](https://assets.science.nasa.gov/content/dam/science/esd/eo/images/bmng/bmng-topography-bathymetry/august/world.topo.bathy.200408.3x5400x2700.jpg).
+The download is **2,308,163 bytes**, SHA-256
+`f76d7b94445e8975a755c849ddaa93ed07b7e01118fb0b7e6bc5546a68c18d5c`.
+Full decoder verification and pixel decode passed: **JPEG, RGB, 5,400×2,700**.
+The provider's bytes were copied directly; no image generation, resizing,
+recompression, recoloring or sharpening was applied.
+
+NASA lists this particular global download as **8 km/pixel**. The underlying
+collection also offers larger products; its 500 m dataset description does not
+describe the resolution of this bundled small JPEG. Geographic pixel spacing
+also varies with latitude. The [collection description](https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/)
+identifies monthly 2004 land-surface composites and credits Reto Stöckli at NASA
+Earth Observatory/GSFC. The date refers to the land-surface composite; the
+shaded relief and bathymetry are ancillary reference layers.
+
+Required displayed acknowledgment for the selected product is **NASA Earth
+Observatory**. Recommended descriptive credit: **NASA Earth Observatory · Blue
+Marble August 2004 composite · static ~8 km/pixel reference**. Reuse relies on
+the [NASA media usage guidelines](https://www.nasa.gov/nasa-brand-center/images-and-media/)
+described above: factual informational use, acknowledgment, no implied NASA
+endorsement and no software-license claim over third-party/government imagery.
+
+This is a daylight-colored **global orientation and offline/showcase reference**.
+It is not recent satellite coverage, a city-resolution basemap, live imagery,
+evidence of damage, present control or a substitute for the separately configured
+Google provider. Close inspection should explicitly identify this reference as
+coarse and dated. Provider switching and browser/render qualification are separate
+from this byte/provenance check; adding the file does not establish deployment.
+
+### Bounded runtime reference: May 2004, 2,048×1,024
+
+`earth-day-2048.jpg` is a separate **original NASA WorldWind-distributed** Blue
+Marble image. Its [official layer source](https://worldwind.arc.nasa.gov/autodocs/WebWorldWind/layer_BMNGOneImageLayer.js.html)
+identifies `BMNG_world.topo.bathy.200405.3.2048x1024.jpg` as its single-image global
+reference. The [pinned provider file](https://raw.githubusercontent.com/NASAWorldWind/WebWorldWind/5ffe2dfc54ab4d744fc9e587af9639c9910db228/images/BMNG_world.topo.bathy.200405.3.2048x1024.jpg)
+is **312,383 bytes**, SHA-256
+`7405c39a220bc37519474eba54625a0d1a02b6ad954895147c103a1bc8dd61fb`.
+Full decode passed: **JPEG, RGB, 2,048×1,024**. This is **May 2004**, a different
+month from the retained August image; the two assets must not share one month label.
+Original NASA repository bytes are retained without local image editing.
+
+The NASA WorldWind [repository notice](https://github.com/NASAWorldWind/WebWorldWind/blob/5ffe2dfc54ab4d744fc9e587af9639c9910db228/README.md#license)
+declares the SDK's United States Government/NASA copyright notice and Apache-2.0
+software terms. Its pinned third-party notices concern the accompanying software
+libraries; no WorldWind software or those libraries were copied into this project.
+This selected NASA Earth-observation image uses the NASA informational-imagery
+reuse basis above, with **NASA Earth Observatory** acknowledgment and no implied
+NASA endorsement. It is not relicensed as MIT application code.
+
+The small file is intended as the bounded runtime reference on all devices. The
+retained 5,400-pixel August file is an additional provenance asset, not the runtime
+choice. A 5,400-wide texture can exceed a device's maximum texture size. The small
+image requires about **8.4 MB** for one decoded RGBA base level, compared with
+58.3 MB for the large image; these calculations exclude mipmaps and other renderer
+allocations. They are not measured total GPU memory or universal device support.
+Its roughly **20 km equatorial pixel spacing** is calculated from global map width,
+not a newly measured native sensor resolution. Use **NASA Earth Observatory · Blue
+Marble May 2004 composite · static global reference** as descriptive credit. The
+same coarse/dated/no-incident-evidence limits continue to apply.

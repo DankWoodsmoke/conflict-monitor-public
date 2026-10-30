@@ -20,6 +20,26 @@ function briefResponses(recording=false){
  window.history.replaceState(null,"","/?view=sitrep");
 }
 describe("application landmarks",()=>{
+ it("opens directly on Earth and expands the same canvas while retaining the feed and timeline state",async()=>{
+  localStorage.clear();await act(async()=>root.render(<App/>));
+  expect(host.querySelector('[role="dialog"]')).toBeNull();
+  const canvas=host.querySelector("canvas"),feed=host.querySelector(".sidebar-feed"),timeline=host.querySelector(".timeline-wrap");
+  const expand=host.querySelector<HTMLButtonElement>('[aria-label="Focus Earth — expand workspace"]')!;
+  const namedHeaderCaptions=()=>{for(const button of host.querySelectorAll<HTMLButtonElement>('header button[aria-label]')){const caption=button.textContent!.trim().replace(/\s+/g,' ').toLowerCase();if(/[a-z]{2}/.test(caption))expect(button.getAttribute('aria-label')!.toLowerCase()).toContain(caption);}};
+  namedHeaderCaptions();
+  await act(async()=>expand.click());expect(host.querySelector("main")?.classList.contains("earth-focused")).toBe(true);
+  namedHeaderCaptions();
+  expect(host.querySelector("canvas")).toBe(canvas);expect(host.querySelector(".sidebar-feed")).toBe(feed);expect(host.querySelector(".timeline-wrap")).toBe(timeline);
+  await act(async()=>host.querySelector<HTMLButtonElement>('[aria-label="Restore reports and timeline"]')!.click());
+  expect(host.querySelector("main")?.classList.contains("earth-focused")).toBe(false);expect(host.querySelector("canvas")).toBe(canvas);
+ });
+ it.each(['Evidence & sources','Deployment'])("provides a named keyboard-focusable Methods scroll region for %s",async(section)=>{
+  await act(async()=>root.render(<App/>));const canvas=host.querySelector('canvas'),trigger=host.querySelector<HTMLButtonElement>('[aria-label="Methods and evidence limitations"]')!;trigger.focus();await act(async()=>trigger.click());
+  const dialog=host.querySelector<HTMLElement>('[role="dialog"]')!;await act(async()=>[...dialog.querySelectorAll<HTMLButtonElement>('nav button')].find(button=>button.textContent===section)!.click());
+  const region=dialog.querySelector<HTMLElement>(`[role="region"][aria-label="Methods content — ${section}"]`)!;expect(region).not.toBeNull();expect(region.tabIndex).toBe(0);region.focus();expect(document.activeElement).toBe(region);
+  const controls=[...dialog.querySelectorAll('button,a[href],[tabindex="0"]')];expect(controls.indexOf(region)).toBeGreaterThan(controls.indexOf(dialog.querySelector('nav button:last-child')!));expect(controls.indexOf(region)).toBeLessThan(controls.indexOf(dialog.querySelector('footer button')!));
+  await act(async()=>window.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'})));expect(host.querySelector('[role="dialog"]')).toBeNull();expect(host.querySelector('canvas')).toBe(canvas);expect(document.activeElement).toBe(trigger);
+ });
  it("groups Earth, markets, report feed and timeline in one named native main landmark",async()=>{
   await act(async()=>root.render(<App/>));
   const main=host.querySelector('main[aria-label="Conflict monitoring workspace"]');

@@ -1,6 +1,6 @@
 import {describe,expect,it} from "vitest";
 import * as Cesium from "cesium";
-import {earthMarkers,enabledEarthMarkers,validCoordinates,trackClock,coordinateLabel,parseCoordinates,DEFAULT_EARTH_LAYERS,reportCameraRange} from "./earth";
+import {earthMarkers,enabledEarthMarkers,validCoordinates,trackClock,coordinateLabel,parseCoordinates,DEFAULT_EARTH_LAYERS,reportCameraRange,earthResolutionScale,CAMERA_PLACES} from "./earth";
 import {applyEarthHorizon,earthPointVisible,syncEarthEntities} from "./earthScene";
 import {workspaceView} from "./workspace";
 import {buildShowcase} from "./showcase";
@@ -20,6 +20,20 @@ it("names the interactive Earth region without flattening its descendants and gr
 });
 
 describe("Earth position and clock policy",()=>{
+ it("renders fractional native display pixels while bounding large/high-DPR viewports",()=>{
+  expect(earthResolutionScale(1118,757,1.25)).toBe(1);
+  expect(earthResolutionScale(390,844,3)).toBeCloseTo(2/3);
+  const scale=earthResolutionScale(3840,2160,2);expect(3840*2160*(2*scale)**2).toBeLessThanOrEqual(8000000.01);
+  expect(earthResolutionScale(0,0,NaN)).toBe(1);
+ });
+ it("provides discoverable close reference views without narrowing uncertain report locations",()=>{
+  for(const name of ['Dubai','Tel Aviv','Tehran','Gaza','San Francisco'])expect(CAMERA_PLACES.find(place=>place.name===name)!.range).toBeLessThanOrEqual(10000);
+  expect(reportCameraRange({...event,geolocation_precision:'unknown'})).toBe(1000000);expect(reportCameraRange(event)).toBe(90000);
+ });
+ it("does not plot the known legacy report placeholder while retaining that valid coordinate for actual tracks",()=>{
+  const aircraft={...fixture.aircraft[0],lat:-25,lon:80,observed_at:new Date(now-10000).toISOString()};
+  const rows=earthMarkers({...options,events:[{...event,lat:-25,lon:80}],aircraft:[aircraft]});expect(rows.some(row=>row.kind==='report')).toBe(false);expect(rows.some(row=>row.kind==='aircraft')).toBe(true);
+ });
  it.each([[0,0],[-90,-180],[90,180],[-33.9,151.2]])("retains valid signed coordinates including zero",(lat,lon)=>expect(validCoordinates(lat,lon)).toBe(true));
  it.each([[null,0],[0,null],[NaN,1],[1,Infinity],[91,0],[0,181],["1",2]])("rejects unknown or invalid coordinates instead of guessing",(lat,lon)=>expect(validCoordinates(lat,lon)).toBe(false));
  it("uses truthful S/W labels and validates coordinate search",()=>{expect(coordinateLabel(-1,-2)).toBe("1.0000°S, 2.0000°W");expect(parseCoordinates("0, 0")).toEqual({lat:0,lon:0});expect(parseCoordinates("-33.9,151.2")).toEqual({lat:-33.9,lon:151.2});expect(parseCoordinates("91,45")).toBeNull();});
@@ -32,6 +46,31 @@ describe("Earth position and clock policy",()=>{
    const marker=earthMarkers({...options,aircraft:[ac]}).find(row=>row.kind==="aircraft")!;
    expect(marker.height).toBe(0);expect(marker.details).toContainEqual(["Reported altitude","0 m"]);expect(marker.details).toContainEqual(["Position display","Surface projection; aircraft height is not inferred"]);
    const unknown=earthMarkers({...options,aircraft:[{...ac,altitude:null}]}).find(row=>row.kind==="aircraft")!;expect(unknown.details).toContainEqual(["Reported altitude","Unknown"]);expect(unknown.height).toBe(0);
+ });
+ it("distinguishes explicitly reported true heading zero from a separate course over ground",()=>{
+   const vessel={...fixture.vessels[0],heading:0,heading_basis:"true_heading",course:75,observed_at:new Date(now-10000).toISOString()};
+   const marker=earthMarkers({...options,vessels:[vessel]}).find(row=>row.kind==="vessel")!;
+   expect(marker.details).toContainEqual(["True heading","0 degrees"]);expect(marker.details).toContainEqual(["Course over ground","75 degrees"]);
+   expect(marker.details).toContainEqual(["Direction basis","True heading reported by provider"]);expect(marker.heading).toBe(0);
+ });
+ it("labels the AIS course fallback as course rather than true heading and preserves its geometry",()=>{
+   const vessel={...fixture.vessels[0],heading:125,heading_basis:"course_over_ground",course:125,observed_at:new Date(now-10000).toISOString()};
+   const marker=earthMarkers({...options,vessels:[vessel]}).find(row=>row.kind==="vessel")!;
+   expect(marker.details).toContainEqual(["Direction (course over ground)","125 degrees"]);expect(marker.details).toContainEqual(["Direction basis","Course over ground reported by provider"]);
+   expect(marker.details.some(([label])=>label==="True heading"||label==="Heading")).toBe(false);expect(marker.heading).toBe(125);expect(marker.lat).toBe(vessel.lat);expect(marker.lon).toBe(vessel.lon);
+ });
+ it.each([undefined,null,"unrecognized"])("does not guess direction basis from vessel course when metadata is %s",heading_basis=>{
+   const vessel={...fixture.vessels[0],heading:0,heading_basis,course:90,observed_at:new Date(now-10000).toISOString()};
+   const marker=earthMarkers({...options,vessels:[vessel]}).find(row=>row.kind==="vessel")!;
+   expect(marker.details).toContainEqual(["Reported direction","0 degrees"]);expect(marker.details).toContainEqual(["Direction basis","Basis not recorded"]);expect(marker.details).toContainEqual(["Course over ground","90 degrees"]);
+   expect(marker.heading).toBe(0);expect(marker.details.some(([label])=>label==="True heading"||label==="Direction (course over ground)")).toBe(false);
+ });
+ it("keeps unknown vessel direction and course unknown and labels mixed aircraft direction conservatively",()=>{
+   const clock={observed_at:new Date(now-10000).toISOString()};
+   const vessel=earthMarkers({...options,vessels:[{...fixture.vessels[0],...clock,heading:null,course:null,speed:null}]}).find(row=>row.kind==="vessel")!;
+   expect(vessel.details).toContainEqual(["Reported direction","Unknown"]);expect(vessel.details).toContainEqual(["Course over ground","Unknown"]);expect(vessel.details).toContainEqual(["Speed","Unknown"]);expect(vessel.heading).toBeNull();
+   const aircraft=earthMarkers({...options,aircraft:[{...fixture.aircraft[0],...clock,heading:0}]}).find(row=>row.kind==="aircraft")!;
+   expect(aircraft.details).toContainEqual(["Reported direction","0 degrees"]);expect(aircraft.details).toContainEqual(["Direction basis","Track or heading basis not retained"]);expect(aircraft.heading).toBe(0);expect(aircraft.details.some(([label])=>label==="Heading")).toBe(false);
  });
  it("expires stale/future positions against the displayed clock and preserves receipt versus observation",()=>{
    expect(trackClock({observed_at:new Date(now-121000).toISOString()},now,120000)).toBeNull();
@@ -93,7 +132,7 @@ describe("actual Cesium entity reconciliation and ellipsoid occlusion",()=>{
    const position=Cesium.Cartographic.fromCartesian(entity.position!.getValue(Cesium.JulianDate.now())!);
    expect(Cesium.Math.toDegrees(position.latitude)).toBeCloseTo(-10,8);expect(Cesium.Math.toDegrees(position.longitude)).toBeCloseTo(-20,8);expect(position.height).toBeCloseTo(0,6);
    expect(entity.billboard!.rotation!.getValue(Cesium.JulianDate.now())).toBeCloseTo(-Math.PI/2);expect(entity.billboard!.disableDepthTestDistance!.getValue(Cesium.JulianDate.now())).toBe(0);
-   expect(markers[0].details).toContainEqual(["Heading","90 degrees"]);expect(entity.label!.text!.getValue(Cesium.JulianDate.now())).toBe("AFTER");
+   expect(markers[0].details).toContainEqual(["Reported direction","90 degrees"]);expect(entity.label!.text!.getValue(Cesium.JulianDate.now())).toBe("AFTER");
  });
  it("updates retained report coordinates and removes missing IDs",()=>{
    const source=new Cesium.CustomDataSource();syncEarthEntities(source,earthMarkers(options).filter(row=>row.kind==="report"));

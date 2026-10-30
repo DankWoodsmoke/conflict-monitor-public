@@ -45,6 +45,12 @@ function save(){fs.writeFileSync(path.join(output,'summary.json'),JSON.stringify
     }
     row.workspace=['earth','local_analysis','narrated_briefing'][mode];
     assert(await page.evaluate(node=>node===document.querySelector('.cesium-widget canvas'),handle),'Earth canvas remounted');
+    // Panel resizing can legitimately refine a different tile set. Require
+    // bounded actual readiness before sampling instead of treating root-load
+    // success as a permanent provider-ready state.
+    const providerWait=Date.now();
+    await page.waitForFunction(()=>document.querySelector('.earth-workspace')?.getAttribute('data-earth-provider')==='ready',null,{timeout:40000});
+    row.provider_settle_milliseconds=Date.now()-providerWait;
     row.scene=await page.locator('.earth-workspace').evaluate(element=>({provider:element.getAttribute('data-earth-provider'),
       canvas_count:element.querySelectorAll('.cesium-widget canvas').length,
       positions:Number(element.querySelector('.earth-coverage')?.getAttribute('data-position-count')),

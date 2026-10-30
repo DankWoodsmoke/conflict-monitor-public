@@ -20,7 +20,7 @@ export function ShowcaseBar({view,onView}:{view:ViewMode;onView:(v:ViewMode)=>vo
   return <>
     <div className="showcase-banner" role="region" aria-label="Synthetic showcase controls">
       <div className="showcase-wordmark"><span className="showcase-dot"/>SHOWCASE<span className="showcase-divider">/</span><span className="showcase-disclosure">Synthetic exercise · no live intelligence</span></div>
-      <div className="showcase-actions"><button onClick={()=>setOpen(v=>!v)} aria-expanded={open}>Capability tour <span>↗</span></button><button onClick={download} title="Export the exact synthetic fixture and reference clock">Export exercise ↓</button><a href={window.location.pathname}>Live configuration</a></div>
+      <div className="showcase-actions"><a className="live-earth-link" href="?view=earth">Open live Earth ↗</a><button onClick={()=>setOpen(v=>!v)} aria-expanded={open}>Capability tour <span>↗</span></button><button onClick={download} title="Export the exact synthetic fixture and reference clock">Export exercise ↓</button></div>
     </div>
     {open && <section className="showcase-tour" role="dialog" aria-modal="false" aria-label="Capability tour">
       <button className="tour-close" onClick={()=>setOpen(false)} aria-label="Close capability tour">×</button>
