@@ -24,5 +24,10 @@ Scope note: the MIT grant above covers Conflict Monitor application code except
 where a file states another license. The standalone optional speech worker
 backend/app/workers/piper_speech.py is GPL-3.0-or-later; its license text is in
 docs/licenses/PIPER_GPL_3.txt. Third-party dependencies, model weights, geographic
-assets and provider data retain their respective licenses and terms, described
-in THIRD_PARTY_NOTICES.md. This note does not alter the original MIT notice.
+assets and provider data retain their respective licenses and terms. The
+upstream-derived tools/postgis/flatgeobuf-3.6.4.patch is GPL-2.0-or-later,
+including its two reviewed 3.6.4 context adaptations; it is not covered by the
+MIT grant. Its original upstream license text is preserved in
+docs/licenses/PostGIS-COPYING.txt. See THIRD_PARTY_NOTICES.md for attribution,
+build-component licensing and scope. This note does not alter the original MIT
+notice.

@@ -124,6 +124,7 @@ function ConflictFeedCell() {
         {CONFLICT_FEEDS.map((src, i) => (
           <button
             key={src.ch}
+            aria-pressed={i===idx}
             onClick={() => setIdx(i)}
             style={{
               padding: "2px 7px",
@@ -136,7 +137,7 @@ function ConflictFeedCell() {
               borderRadius: 2,
               fontWeight: 700,
               letterSpacing: 0.8,
-              transition: "all 0.15s",
+              transition: "border-color 0.15s",
             }}
           >
             {src.tag}
@@ -549,7 +550,7 @@ export function IntelMediaView({ events }: { events: ConflictEvent[] }) {
             const m = PANEL_META[p];
             const on = p === activePanel;
             return (
-              <button key={p} onClick={() => { setActivePanel(p); setPanelCycling(false); }} style={{
+              <button key={p} aria-pressed={on} onClick={() => { setActivePanel(p); setPanelCycling(false); }} style={{
                 flex: 1, padding: "5px 3px",
                 background: on ? `${m.color}10` : "transparent",
                 border: "none",

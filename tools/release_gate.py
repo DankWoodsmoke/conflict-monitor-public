@@ -4,7 +4,9 @@ This is a content gate, not proof of production readiness or an exhaustive
 secret detector. Never export the original working directory or Git history.
 """
 import argparse
+import ast
 import hashlib
+import io
 import json
 import re
 import sys
@@ -16,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ALLOWED_DIRS = {"backend", "frontend", "docs", "tools", ".github"}
 ALLOWED_ROOT = {"README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "SECURITY.md", "CONTRIBUTING.md",
                 "docker-compose.yml", ".env.example", ".gitignore", "sitrep_video.py", "gen_video_cron.sh"}
-ALLOWED_SUFFIXES = {".py", ".tsx", ".ts", ".mjs", ".cjs", ".css", ".json", ".html", ".jpg", ".png", ".webp", ".svg", ".md", ".txt", ".ini", ".mako", ".yml", ".yaml", ".toml", ".ps1", ".sh", ".in", ".conf"}
+ALLOWED_SUFFIXES = {".py", ".tsx", ".ts", ".mjs", ".cjs", ".css", ".json", ".html", ".jpg", ".png", ".webp", ".svg", ".md", ".txt", ".ini", ".mako", ".yml", ".yaml", ".toml", ".ps1", ".sh", ".in", ".conf", ".patch"}
 ALLOWED_BASENAMES = {"Dockerfile", ".dockerignore", ".env.example", ".gitignore"}
 EXCLUDED = {"node_modules", ".venv", ".git", "__pycache__", ".pytest_cache", "dist", "sessions", "artifacts", ".ruff_cache", "playwright-report", "test-results", "htmlcov"}
 PATTERNS = {
@@ -80,6 +82,48 @@ def export_files():
         yield p
 
 
+def release_version(snapshots):
+    required = {"frontend/package.json", "frontend/package-lock.json", "backend/app/main.py"}
+    if not required <= snapshots.keys():
+        raise ValueError("Missing required release identity files")
+    package = json.loads(snapshots["frontend/package.json"])
+    lock = json.loads(snapshots["frontend/package-lock.json"])
+    version = package.get("version", "")
+    if not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+(?:-(?:alpha|beta|rc)\.[0-9]+)?", version):
+        raise ValueError("Invalid release version")
+    if lock.get("version") != version or lock.get("packages", {}).get("", {}).get("version") != version:
+        raise ValueError("Package and lockfile release versions differ")
+    try:
+        module = ast.parse(snapshots["backend/app/main.py"])
+    except (SyntaxError, ValueError):
+        raise ValueError("Backend application source cannot be parsed") from None
+    apps = [node.value for node in module.body if isinstance(node, ast.Assign)
+            and any(isinstance(target, ast.Name) and target.id == "app" for target in node.targets)
+            and isinstance(node.value, ast.Call) and isinstance(node.value.func, ast.Name)
+            and node.value.func.id == "FastAPI"]
+    versions = [kw.value.value for app in apps for kw in app.keywords
+                if kw.arg == "version" and isinstance(kw.value, ast.Constant)]
+    if len(apps) != 1 or versions != [version]:
+        raise ValueError("Backend and frontend release versions differ")
+    return version
+
+
+def candidate_archive(snapshots, manifest, version):
+    """Fixed ZIP metadata makes identical reviewed bytes reproducible."""
+    output = io.BytesIO()
+    release_manifest = json.dumps({"status": "candidate", "version": version,
+        "verification": "See docs/VERIFICATION.md; incomplete gates prevent stable release.",
+        "files": sorted(manifest, key=lambda row: row["path"])}, indent=2, sort_keys=True).encode("utf-8") + b"\n"
+    with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+        for rel, data in [*sorted(snapshots.items()), ("RELEASE_MANIFEST.json", release_manifest)]:
+            entry = zipfile.ZipInfo("conflict-monitor/" + rel, date_time=(2020, 1, 1, 0, 0, 0))
+            entry.create_system = 3
+            entry.external_attr = (0o100755 if rel.endswith(".sh") else 0o100644) << 16
+            entry.compress_type = zipfile.ZIP_DEFLATED
+            archive.writestr(entry, data, compresslevel=9)
+    return output.getvalue()
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--scan-only", action="store_true")
@@ -103,15 +147,17 @@ def main():
     if args.package_candidate:
         destination = ROOT / "artifacts"
         destination.mkdir(exist_ok=True)
-        package = destination / "conflict-monitor-0.2.0-rc.1-source.zip"
-        with zipfile.ZipFile(package, "w", zipfile.ZIP_DEFLATED) as archive:
-            for rel, data in snapshots.items():
-                archive.writestr("conflict-monitor/" + rel, data)
-            archive.writestr("conflict-monitor/RELEASE_MANIFEST.json", json.dumps({"status": "candidate",
-                "verification": "See docs/VERIFICATION.md; incomplete gates prevent stable release.",
-                "files": manifest}, indent=2))
-        digest = hashlib.sha256(package.read_bytes()).hexdigest()
-        package.with_suffix(".zip.sha256").write_text(digest + "  " + package.name + "\n", encoding="utf-8")
+        version = release_version(snapshots)
+        package = destination / f"conflict-monitor-{version}-source.zip"
+        checksum = package.with_suffix(".zip.sha256")
+        if package.exists() or checksum.exists():
+            raise ValueError("Versioned release artifact already exists; preserve it and use a new version")
+        data = candidate_archive(snapshots, manifest, version)
+        digest = hashlib.sha256(data).hexdigest()
+        with package.open("xb") as output:
+            output.write(data)
+        with checksum.open("x", encoding="utf-8", newline="\n") as output:
+            output.write(digest + "  " + package.name + "\n")
         print(f"CANDIDATE: {package.name} sha256={digest}")
     return 0
 

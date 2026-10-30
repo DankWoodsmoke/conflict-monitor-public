@@ -32,8 +32,10 @@ describe("optional media truth and failure states",()=>{
  it("distinguishes sensor/other families and includes unscored records in report mix",async()=>{
   await act(async()=>root.render(<IntelMediaView events={[report,{...report,id:2,source:"satellite_firms"},{...report,id:3,source:"unknown"}]}/>));
   await act(async()=>[...host.querySelectorAll("button")].find(b=>b.textContent?.includes("SOURCE RECORDS"))!.click());
+  expect([...host.querySelectorAll('button')].find(b=>b.textContent?.includes('SOURCE RECORDS'))!.getAttribute('aria-pressed')).toBe('true');
   expect(host.textContent).toContain("SENSOR");expect(host.textContent).toContain("OTHER");expect(host.querySelector('[role="region"][aria-label="Source record counts"]')?.getAttribute("tabindex")).toBe("0");
   await act(async()=>[...host.querySelectorAll("button")].find(b=>b.textContent?.includes("REPORT MIX"))!.click());expect(host.textContent).toContain("UNSCORED");expect(host.textContent).not.toContain("THREAT MATRIX");expect(host.querySelector('[role="region"][aria-label="Report type counts"]')?.getAttribute("tabindex")).toBe("0");
+  expect([...host.querySelectorAll('button')].find(b=>b.textContent?.includes('REPORT MIX'))!.getAttribute('aria-pressed')).toBe('true');expect([...host.querySelectorAll('button')].find(b=>b.textContent?.includes('SOURCE RECORDS'))!.getAttribute('aria-pressed')).toBe('false');
  });
  it("labels empty versus failed briefing references and never leaves either in perpetual loading",async()=>{
   fetchMock.mockImplementation(async()=>new Response("{}",{status:503}));await act(async()=>root.render(<IntelMediaView events={[]}/>));

@@ -37,7 +37,10 @@ describe("free report integrity",()=>{
   await act(async()=>root.render(<LiveFeed events={[event]}/>));
   await act(async()=>[...host.querySelectorAll("button")].find(button=>button.textContent==="FILTER")!.click());
   await act(async()=>[...host.querySelectorAll("button")].find(button=>button.textContent===label)!.click());
+  expect([...host.querySelectorAll("button")].find(button=>button.textContent===label)!.getAttribute('aria-pressed')).toBe('true');
   expect(host.textContent).toContain("No reports match active filters");expect(host.textContent).not.toContain("No reports in this window");
+  await act(async()=>[...host.querySelectorAll("button")].find(button=>button.textContent===label)!.click());
+  expect([...host.querySelectorAll("button")].find(button=>button.textContent===label)!.getAttribute('aria-pressed')).toBe('false');expect(host.querySelectorAll('.intel-card')).toHaveLength(1);
  });
  it("labels and counts the entire loaded source mix independently from the visible time window",async()=>{
   const base=buildShowcase(Date.now()).events[0],all=Array.from({length:205},(_,i)=>({...base,id:i+1,source:"rss_fixture"}));

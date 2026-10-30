@@ -83,6 +83,16 @@ def test_encrypted_private_key_in_source_text_is_rejected(tmp_path, monkeypatch)
 def test_packaged_bytes_are_exactly_the_bytes_scanned_and_manifested(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(gate, "ROOT", tmp_path)
     monkeypatch.setattr("sys.argv", ["release_gate.py", "--package-candidate"])
+    version = "0.2.0-rc.2"
+    version_inputs = {
+        "frontend/package.json": json.dumps({"version": version}),
+        "frontend/package-lock.json": json.dumps({"version": version, "packages": {"": {"version": version}}}),
+        "backend/app/main.py": f'app = FastAPI(version="{version}")\n',
+    }
+    for name, contents in version_inputs.items():
+        version_file = tmp_path / name
+        version_file.parent.mkdir(parents=True, exist_ok=True)
+        version_file.write_text(contents, encoding="utf-8")
     path = tmp_path / "README.md"
     original = b"reviewed source bytes\n"
     path.write_bytes(original)

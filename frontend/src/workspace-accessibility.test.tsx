@@ -20,6 +20,29 @@ function briefResponses(recording=false){
  window.history.replaceState(null,"","/?view=sitrep");
 }
 describe("application landmarks",()=>{
+ it("keeps the visible mobile Feed count in its accessible name and owns its modal keyboard focus without hijacking report-list scroll gestures",async()=>{
+  const width=window.innerWidth,height=window.innerHeight;Object.defineProperty(window,'innerWidth',{configurable:true,value:390});Object.defineProperty(window,'innerHeight',{configurable:true,value:844});
+  vi.spyOn(HTMLElement.prototype,'getClientRects').mockReturnValue([{width:100,height:44}] as any);
+  try{
+   const base=buildShowcase(Date.now()).events[0];
+   for(const count of [0,1,99,100]){
+    vi.mocked(useEventStream).mockReturnValue({events:Array.from({length:count},(_,id)=>({...base,id})),isConnected:true,loadFullHistory:vi.fn(),historyStatus:'idle',recoveryStatus:'idle',historyTruncated:false,historyStart:null} as any);
+    await act(async()=>root.render(<App/>));const opener=host.querySelector<HTMLButtonElement>('.feed-fab')!;
+    const visibleLabel='Feed'+(host.querySelector('.mobile-feed-count')?.textContent||'');expect(opener.getAttribute('aria-label')!.toLowerCase()).toContain(visibleLabel.toLowerCase());
+   }
+   const opener=host.querySelector<HTMLButtonElement>('.feed-fab')!,canvas=host.querySelector('canvas');opener.focus();await act(async()=>opener.click());
+   const dialog=host.querySelector<HTMLElement>('[role="dialog"][aria-label="Report feed"]')!;expect(dialog.getAttribute('aria-modal')).toBe('true');
+   const close=dialog.querySelector<HTMLButtonElement>('[aria-label="Close report feed"]')!;expect(document.activeElement).toBe(close);expect(opener.closest('[inert]')).not.toBeNull();
+   const visibleSummaries=dialog.querySelectorAll<HTMLElement>('.intel-card .evidence-details>summary'),lastVisibleSummary=visibleSummaries[visibleSummaries.length-1];
+   expect(lastVisibleSummary).not.toBeNull();lastVisibleSummary.focus();await act(async()=>window.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',cancelable:true})));expect(document.activeElement).toBe(close);
+   const touch=(type:string,target:Element,y:number)=>{const event=new Event(type,{bubbles:true});Object.defineProperty(event,type==='touchstart'?'touches':'changedTouches',{value:[{clientY:y}]});target.dispatchEvent(event);};
+   const body=dialog.querySelector('.feed-sheet-body')!;await act(async()=>{touch('touchstart',body,100);touch('touchend',body,220);});expect(host.querySelector('.feed-sheet')).toBe(dialog);
+   await act(async()=>window.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',cancelable:true})));expect(host.querySelector('.feed-sheet')).toBeNull();expect(document.activeElement).toBe(opener);expect(opener.closest('[inert]')).toBeNull();expect(host.querySelector('canvas')).toBe(canvas);
+   await act(async()=>opener.click());await act(async()=>{const handle=host.querySelector('.feed-sheet-handle')!;touch('touchstart',handle,100);touch('touchend',handle,220);});expect(host.querySelector('.feed-sheet')).toBeNull();expect(host.querySelector('canvas')).toBe(canvas);
+   await act(async()=>opener.click());await act(async()=>{Object.defineProperty(window,'innerWidth',{configurable:true,value:844});Object.defineProperty(window,'innerHeight',{configurable:true,value:390});window.dispatchEvent(new Event('resize'));});expect(host.querySelector('.feed-sheet')).toBeNull();expect(document.activeElement).toBe(host.querySelector('.mobile-bottom-nav [aria-pressed="true"]'));
+   await act(async()=>{Object.defineProperty(window,'innerWidth',{configurable:true,value:390});Object.defineProperty(window,'innerHeight',{configurable:true,value:844});window.dispatchEvent(new Event('resize'));});expect(host.querySelector('.feed-sheet')).toBeNull();expect(host.querySelector('canvas')).toBe(canvas);
+  }finally{Object.defineProperty(window,'innerWidth',{configurable:true,value:width});Object.defineProperty(window,'innerHeight',{configurable:true,value:height});}
+ });
  it("opens directly on Earth and expands the same canvas while retaining the feed and timeline state",async()=>{
   localStorage.clear();await act(async()=>root.render(<App/>));
   expect(host.querySelector('[role="dialog"]')).toBeNull();

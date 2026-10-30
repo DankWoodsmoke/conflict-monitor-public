@@ -91,6 +91,53 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,[t
 .earth-workspace .cesium-credit-lightbox-overlay{z-index:40}
 .earth-workspace .cesium-credit-lightbox-close{width:44px;height:44px;display:flex;align-items:center;justify-content:center}
 .earth-attribution .cesium-credit-expand-link{display:inline-flex;align-items:center;min-height:28px;padding:2px 4px}
+/* Loading, failure and session recovery must remain readable in short landscape. */
+.earth-controls .earth-provider-status,.earth-controls .earth-session-status{display:block;line-height:1.4}
+/* A user minimum font size must not push Settings or Methods beyond the header.
+   The decorative wordmark may elide; the operable controls retain their labels. */
+@media(max-width:768px){
+  .app-header>div:nth-child(2){min-width:0;flex:1 1 auto}
+  .app-header h1{min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .header-tools{flex-shrink:0}
+}
+/* Enlarged text can put the imagery actions on a second line inside the panel. */
+.earth-provider-row{flex-wrap:wrap}
+.earth-provider-row>div:first-child{min-width:0;flex:1 1 130px}
+.earth-provider-actions{flex-wrap:wrap;flex-shrink:1;max-width:100%}
+.earth-provider-actions button{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+.earth-layer-panel label{min-height:32px}
+/* Camera-height text has a known opaque backplate over variable imagery. */
+.earth-navigation small{background:#081b28}
+.report-feed button{min-width:24px;min-height:28px}
+.report-filter-panel{max-height:55%;overflow:auto;overscroll-behavior:contain}
+.evidence-details summary,.local-briefing-panel summary{min-height:28px;cursor:pointer}
+.local-briefing-panel a{color:#a9e4d4;text-underline-offset:3px;display:inline-block;min-height:28px}
+/* Intrinsic chrome heights reserve enlarged labels instead of clipping them at
+   fixed52/56px. The spatial canvas receives the remaining dynamic viewport. */
+@media(max-width:768px),(max-width:900px) and (orientation:landscape) and (max-height:500px){
+  #root{display:flex;flex-direction:column;height:100dvh}
+  .runtime-banner,.showcase-banner{flex-shrink:0}
+  .runtime-banner{height:auto;min-height:42px;padding-block:4px}
+  .source-status-button{white-space:normal}
+  .app-grid.has-runtime,.app-grid.has-showcase{flex:1;min-height:0;height:auto;max-height:none;padding-bottom:0}
+  .mobile-bottom-nav{position:relative;inset:auto;flex-shrink:0;height:auto;min-height:calc(52px + env(safe-area-inset-bottom,0px))}
+  .workspace-panel{grid-area:auto;grid-row:3;grid-column:1/-1;inset:0}
+}
+@media(max-width:900px) and (orientation:landscape) and (max-height:500px){
+  .mobile-bottom-nav{min-height:calc(44px + env(safe-area-inset-bottom,0px))}
+  .mobile-bottom-nav button{min-height:40px!important}
+}
+/* User text preferences apply to newly opened dialogs as well as the shell.
+   One native scrolling surface keeps every section and action reachable. */
+@media(max-width:768px),(max-width:900px) and (orientation:landscape) and (max-height:500px){
+  .methods-dialog{overflow:auto;overscroll-behavior:contain}
+  .methods-dialog>header,.methods-dialog>nav,.methods-dialog>footer,.methods-dialog>.methods-body{flex-shrink:0}
+  .methods-dialog>header{padding-right:64px;overflow-wrap:anywhere}
+  .methods-dialog header>button{min-width:44px;min-height:44px}
+  .methods-dialog>nav{flex-wrap:wrap}
+  .methods-dialog>nav button{min-width:0;flex:1 1 100px;overflow-wrap:anywhere}
+  .methods-dialog>.methods-body{overflow:visible}
+}
 /* Brief uses readable full-width sections on narrow screens; its parent desk scrolls. */
 @media(max-width:768px){
   .brief-desk{height:auto!important;min-height:0!important;grid-template-rows:auto 112px auto!important}

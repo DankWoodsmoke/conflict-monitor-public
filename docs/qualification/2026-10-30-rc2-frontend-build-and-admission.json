@@ -1,0 +1,134 @@
+{
+  "version": "0.2.0-rc.2",
+  "status": "PASS_FRONTEND_BUILD_AND_LIVE_ADMISSION",
+  "scope": "Final frontend source/build/served-byte/process/header binding; production browser/mobile and duration checks remain separate",
+  "image": "sha256:b6e6bc17ba236fd46c6f7f64e3bb4efb0da2c0dfb7797b14668bdd888123b998",
+  "admitted_at": "2026-10-30T04:12:17.505814+00:00",
+  "frontend_started_at": "2026-10-30T04:11:24.510599334Z",
+  "source_freeze_sha256": "44d3870dac52feb5d6cbe80db2c8ded8dfb5d29e86b236dc45ba56f3d75cbd97",
+  "build_receipt_sha256": "13063d33198a3da32c5665bceaad192c9b3ba7f4bc12f668e0a0dca47cbd88d6",
+  "live_admission_raw_receipt_sha256": "46c3a770ad3cf32a82902d53b297736a1af637b3a0a1a47104c9bee3390d946f",
+  "source_test_dist_rebind_raw_receipt_sha256": "a42cbdcc61f483458941aee9fe626ae9fa803de8717ddda864884f4f1d733fe9",
+  "source": {
+    "public_frontend_build_files": 97,
+    "tested_source_files": 63,
+    "source_unchanged_through_build": true,
+    "live_byte_check_source_equal": true
+  },
+  "frontend_tests": {
+    "tests": 224,
+    "passed": 224,
+    "failed": 0,
+    "skipped": 0,
+    "test_files": 21,
+    "tsc_vite_build": "passed",
+    "cesium_compatibility": "passed",
+    "npm_advisories": 0
+  },
+  "served_byte_comparison": {
+    "application_dist_files": 402,
+    "additional_nginx_error_pages": 1,
+    "total_static_files": 403,
+    "all_http_files_equal_to_image": true,
+    "all_local_dist_files_equal_to_image": true,
+    "source_and_build_stable_through_live_check": true
+  },
+  "runtime": {
+    "health": "healthy",
+    "uid": 101,
+    "effective_capabilities": "0000000000000000",
+    "no_new_privileges": true,
+    "read_only_root_filesystem": true,
+    "loopback_only_published_port": true
+  },
+  "http_header_cache_checks": {
+    "status": "PASS",
+    "cases": [
+      {
+        "case": "html",
+        "status": 200,
+        "checks": {
+          "expected_status": true,
+          "nosniff": true,
+          "referrer_policy": true,
+          "sameorigin_frame_policy": true,
+          "html_revalidated_or_not_stored": true
+        }
+      },
+      {
+        "case": "hashed_asset",
+        "status": 200,
+        "checks": {
+          "expected_status": true,
+          "nosniff": true,
+          "referrer_policy": true,
+          "sameorigin_frame_policy": true,
+          "hashed_asset_immutable_year": true
+        }
+      },
+      {
+        "case": "missing_asset",
+        "status": 404,
+        "checks": {
+          "expected_status": true,
+          "nosniff": true,
+          "referrer_policy": true,
+          "sameorigin_frame_policy": true,
+          "missing_asset_not_immutable": true
+        }
+      },
+      {
+        "case": "proxied_health",
+        "status": 200,
+        "checks": {
+          "expected_status": true,
+          "nosniff": true,
+          "referrer_policy": true,
+          "sameorigin_frame_policy": true,
+          "api_not_stored": true
+        }
+      },
+      {
+        "case": "proxied_404",
+        "status": 404,
+        "checks": {
+          "expected_status": true,
+          "nosniff": true,
+          "referrer_policy": true,
+          "sameorigin_frame_policy": true,
+          "api_not_stored": true
+        }
+      },
+      {
+        "case": "direct_health",
+        "status": 200,
+        "checks": {
+          "expected_status": true,
+          "nosniff": true,
+          "referrer_policy": true,
+          "api_not_stored": true
+        }
+      },
+      {
+        "case": "direct_404",
+        "status": 404,
+        "checks": {
+          "expected_status": true,
+          "nosniff": true,
+          "referrer_policy": true,
+          "api_not_stored": true
+        }
+      }
+    ]
+  },
+  "pending_separate_gates": [
+    "Final production browser/mobile/caption/accessibility qualification",
+    "183-minute Google and 185-minute server observations",
+    "New hosted CI and public RC.2 archive/tag/download qualification"
+  ],
+  "limits": [
+    "Measured hashes/counts/outcomes only; no private paths, keys, provider URLs or publisher prose.",
+    "Byte/process/header admission is not whole-system clearance, sustained-load SLA or physical iPhone/screen-reader qualification.",
+    "Native Firefox paused-caption repaint failure and measured user-resume recovery remain separate browser evidence; no three-engine paused-repaint pass is implied."
+  ]
+}

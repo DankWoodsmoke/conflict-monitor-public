@@ -72,13 +72,13 @@ function chanMeta(handle: string): ChanMeta {
 // ── Constants ────────────────────────────────────────────────────────────────
 const TYPE_COLORS: Record<string, string> = {
   unclassified:    "#91b4c5",
-  military:        "#f85149",
-  diplomatic:      "#58a6ff",
-  economic:        "#f0883e",
-  cyber:           "#a855f7",
-  humanitarian:    "#3fb950",
-  protest:         "#d29922",
-  thermal_anomaly: "#ff8800",
+  military:        "#ff8f88",
+  diplomatic:      "#8fc5ff",
+  economic:        "#ffb878",
+  cyber:           "#d0adff",
+  humanitarian:    "#7ad793",
+  protest:         "#eac566",
+  thermal_anomaly: "#ffb66b",
 };
 
 const TYPE_ICONS: Record<string, string> = {
@@ -93,10 +93,10 @@ const TYPE_ICONS: Record<string, string> = {
 };
 
 function sevColor(s: number): string {
-  if (s >= 9) return "#ff2222";
-  if (s >= 7) return "#f85149";
-  if (s >= 5) return "#f0883e";
-  if (s >= 3) return "#d29922";
+  if (s >= 9) return "#ff7770";
+  if (s >= 7) return "#ff8f88";
+  if (s >= 5) return "#ffb878";
+  if (s >= 3) return "#eac566";
   return "#a3b9ca";
 }
 
@@ -107,7 +107,7 @@ function relColor(r: number | undefined | null): string {
   if (s >= 4) return "#3fb950";
   if (s >= 3) return "#d29922";
   if (s >= 2) return "#f0883e";
-  return "#f85149";
+  return "#ff8f88";
 }
 
 function playBlip() {
@@ -161,16 +161,16 @@ function ConfBadge({ evt }: { evt: ConflictEvent }) {
   const count = evt.report_count ?? 1;
 
   if (isSat) return (
-    <span style={{ fontSize: 11, padding: "1px 5px", borderRadius: 2, background: "rgba(13,110,253,0.2)", color: "#5b9cf6", fontWeight: 700, fontFamily: "var(--font-mono)", border: "1px solid rgba(13,110,253,0.4)", whiteSpace: "nowrap" }}>🛰 SAT</span>
+    <span style={{ fontSize: 11, padding: "1px 5px", borderRadius: 2, background: "rgba(13,110,253,0.2)", color: "#9cc8ff", fontWeight: 700, fontFamily: "var(--font-mono)", border: "1px solid rgba(13,110,253,0.4)", whiteSpace: "nowrap" }}>🛰 SAT</span>
   );
   if (isCross) {
     const nets = getNetworks(evt);
     return (
-      <span title={"Multiple source records; independence unassessed: " + nets.map(n => NETWORK_META[n]?.short ?? n).join(" + ")} style={{ fontSize: 11, padding: "1px 5px", borderRadius: 2, background: "rgba(63,185,80,0.15)", color: "#3fb950", fontWeight: 700, fontFamily: "var(--font-mono)", border: "1px solid rgba(63,185,80,0.4)", cursor: "help", whiteSpace: "nowrap" }}>↗ {count}× REPORTS</span>
+      <span title={"Multiple source records; independence unassessed: " + nets.map(n => NETWORK_META[n]?.short ?? n).join(" + ")} style={{ fontSize: 11, padding: "1px 5px", borderRadius: 2, background: "rgba(63,185,80,0.15)", color: "#8ae2a1", fontWeight: 700, fontFamily: "var(--font-mono)", border: "1px solid rgba(63,185,80,0.4)", cursor: "help", whiteSpace: "nowrap" }}>↗ {count}× REPORTS</span>
     );
   }
   if (isViral) return (
-    <span style={{ fontSize: 11, padding: "1px 5px", borderRadius: 2, background: "rgba(210,153,34,0.15)", color: "#d29922", fontWeight: 700, fontFamily: "var(--font-mono)", border: "1px solid rgba(210,153,34,0.4)", whiteSpace: "nowrap" }}>⚡ {count}×</span>
+    <span style={{ fontSize: 11, padding: "1px 5px", borderRadius: 2, background: "rgba(210,153,34,0.15)", color: "#f1d078", fontWeight: 700, fontFamily: "var(--font-mono)", border: "1px solid rgba(210,153,34,0.4)", whiteSpace: "nowrap" }}>⚡ {count}×</span>
   );
   return null;
 }
@@ -181,8 +181,8 @@ function AgeChip({ timestamp }: { timestamp: string }) {
   if(!Number.isFinite(ageMs))return <span>Source time unknown</span>;
   if(ageMs<0)return <span title={timestamp}>Source clock ahead</span>;
   const mins = Math.floor(ageMs / 60000);
-  if (mins < 1) return <span style={{ fontSize: 11, color: "#f85149", fontWeight: 900, fontFamily: "var(--font-mono)", letterSpacing: 0.5 }}>●&nbsp;NOW</span>;
-  if (mins < 5)  return <span style={{ fontSize: 11, color: "#f85149", fontWeight: 700, fontFamily: "var(--font-mono)" }}>●&nbsp;{mins}m</span>;
+  if (mins < 1) return <span style={{ fontSize: 11, color: "#ff8f88", fontWeight: 900, fontFamily: "var(--font-mono)", letterSpacing: 0.5 }}>●&nbsp;NOW</span>;
+  if (mins < 5)  return <span style={{ fontSize: 11, color: "#ff8f88", fontWeight: 700, fontFamily: "var(--font-mono)" }}>●&nbsp;{mins}m</span>;
   if (mins < 60) return <span style={{ fontSize: 11, color: "#d29922", fontFamily: "var(--font-mono)" }}>{mins}m ago</span>;
   const hrs = Math.floor(mins / 60);
   if (hrs < 24)  return <span style={{ fontSize: 11, color: "#96a8b8", fontFamily: "var(--font-mono)" }}>{hrs}h ago</span>;
@@ -301,7 +301,7 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
   const trendArrow = burstStats.trend === "up" ? "↑" : burstStats.trend === "down" ? "↓" : "→";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden", background: "#04080f" }}>
+    <div className="report-feed" style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden", background: "#04080f" }}>
 
       {/* ── HEADER ───────────────────────────────────────────────────────── */}
       <div style={{
@@ -394,7 +394,7 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
 
       {/* ── FILTER PANEL (collapsible) ────────────────────────────────────── */}
       {filtersOpen && (
-        <div style={{
+        <div className="report-filter-panel" role="region" aria-label="Report filters" tabIndex={0} style={{
           padding: "8px 12px",
           borderBottom: "1px solid #0a1a2a",
           background: "#040d1a",
@@ -418,6 +418,7 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
             {Object.entries(TYPE_COLORS).map(([type, color]) => (
               <button
                 key={type}
+                aria-pressed={typeFilter===type}
                 onClick={() => setTypeFilter(typeFilter === type ? null : type)}
                 style={{
                   background: typeFilter === type ? `${color}20` : "transparent",
@@ -461,6 +462,7 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
               return (
                 <button
                   key={src}
+                  aria-pressed={sourceFilter===key}
                   onClick={() => setSourceFilter(sourceFilter === key ? null : key)}
                   style={{
                     background: sourceFilter === key ? "rgba(88,166,255,0.12)" : "transparent",
@@ -477,6 +479,7 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
             {(["new", "sev", "conf"] as const).map((m) => (
               <button
                 key={m}
+                aria-pressed={sortMode===m}
                 onClick={() => setSortMode(m)}
                 style={{
                   background: sortMode === m ? "rgba(88,166,255,0.12)" : "transparent",
@@ -490,6 +493,7 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
             <div style={{ flex: 1 }} />
             {/* Confirmed only toggle */}
             <button
+              aria-pressed={confirmedOnly}
               onClick={() => setConfirmedOnly(v => !v)}
               style={{
                 background: confirmedOnly ? "rgba(63,185,80,0.12)" : "transparent",
@@ -612,7 +616,7 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
                 {!hasPin && <span style={{color:"#a9b6c4"}}>Location unresolved</span>}
                 {/* Location */}
                 {evt.location_name && evt.location_name.toLowerCase() !== "unknown" && (
-                  <span style={{ color: "#4a7aaa", display: "flex", alignItems: "center", gap: 3 }}>
+                  <span style={{ color: "#8fb7d7", display: "flex", alignItems: "center", gap: 3 }}>
                     <span style={{ opacity: 0.6 }}>📍</span>
                     <span>{evt.location_name}</span>
                   </span>
@@ -626,7 +630,7 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
                     onClick={(e) => { e.stopPropagation(); onEventClick(evt); }}
                     style={{
                       background: "rgba(88,166,255,0.08)", border: "1px solid rgba(88,166,255,0.25)",
-                      color: "#4a8aCC", borderRadius: 3, padding: "1px 7px", fontSize: 11,
+                      color: "#8fb7d7", borderRadius: 3, padding: "1px 7px", fontSize: 11,
                       cursor: "pointer", fontFamily: "var(--font-mono)", fontWeight: 600,
                       letterSpacing: 0.3,
                     }}

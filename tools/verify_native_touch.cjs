@@ -152,12 +152,29 @@ async function stableHeight(page) {
     await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
     await page.waitForFunction(before => Math.max(...[...document.querySelectorAll('.feed-sheet *')].map(node => Number(node.scrollTop) || 0), 0) > before + 20, beforeScroll, { timeout: 6000 });
     receipt.feed_scroll = { method: 'Input.dispatchTouchEvent', before: beforeScroll, after: await page.locator('.feed-sheet').evaluate(sheet => Math.max(...[...sheet.querySelectorAll('*')].map(node => Number(node.scrollTop) || 0), 0)) };
+    await page.waitForTimeout(350);
+    const reverseBefore=await page.locator('.feed-sheet').evaluate(sheet=>Math.max(...[...sheet.querySelectorAll('*')].map(node=>Number(node.scrollTop)||0),0));
+    const reverseY=box.y+box.height*.25;
+    await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:touchX,y:reverseY}]});
+    for(let step=1;step<=12;step++){
+      await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:touchX,y:reverseY+step*10}]});
+      await page.waitForTimeout(16);
+    }
+    await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+    assert(await page.locator('.feed-sheet').isVisible(),'A report-list scroll gesture dismissed its modal');
+    await page.waitForFunction(before=>Math.max(...[...document.querySelectorAll('.feed-sheet *')].map(node=>Number(node.scrollTop)||0),0)<before-10,reverseBefore,{timeout:6000});
+    receipt.feed_scroll.reverse={before:reverseBefore,after:await page.locator('.feed-sheet').evaluate(sheet=>Math.max(...[...sheet.querySelectorAll('*')].map(node=>Number(node.scrollTop)||0),0)),sheet_remained_open:true};
     receipt.checks.push('native_touch_scroll_moves_report_list');
     await page.setViewportSize({ width: 844, height: 390 });
     await page.locator('.feed-sheet').waitFor({ state: 'hidden' });
     await sameCanvas(page, canvas);
     const layout = await page.evaluate(() => ({ width: innerWidth, scroll_width: document.documentElement.scrollWidth }));
     assert(layout.scroll_width <= layout.width + 1); receipt.landscape_layout = layout;
+    assert(await page.locator('.mobile-bottom-nav [aria-pressed="true"]').evaluate(node=>node===document.activeElement),'Rotation stranded the report-sheet focus');
+    await page.setViewportSize({width:390,height:844});
+    await page.waitForTimeout(250);
+    assert.equal(await page.locator('.feed-sheet').count(),0,'Rotation back to portrait reopened an old report modal');
+    await sameCanvas(page,canvas);receipt.orientation_round_trip={portrait_return:true,report_sheet_reopened:false,same_canvas:true};
     receipt.checks.push('portrait_to_landscape_preserves_canvas_and_fits_viewport');
     await context.close();
   } catch (error) { receipt.findings.push({ type: 'probe_failure', error: safe(error.message) }); }

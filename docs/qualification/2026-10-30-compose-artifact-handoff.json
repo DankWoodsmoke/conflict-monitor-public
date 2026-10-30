@@ -1,0 +1,57 @@
+{
+  "version": "0.2.0-rc.2",
+  "scope": "Workflow-only fail-closed artifact handoff, independently checked using the exact sanitizer on authored offline fixtures",
+  "status": "PASS_LOCAL_WORKFLOW_HANDOFF",
+  "checked_at": "2026-10-30T02:59:16.248188+00:00",
+  "workflow_sha256": "85baaad8c54fee0db1ab0f64535f5f0994f115e878d0836269d48c966372eefb",
+  "cases": [
+    {
+      "case": "valid_redaction",
+      "sanitizer_exit_code": 0,
+      "old_always_upload_would_run": true,
+      "new_outcome_upload_would_run": true,
+      "raw_original_unchanged": true
+    },
+    {
+      "case": "unexpected_extension",
+      "sanitizer_exit_code": 1,
+      "old_always_upload_would_run": true,
+      "new_outcome_upload_would_run": false,
+      "raw_original_unchanged": true
+    },
+    {
+      "case": "oversize",
+      "sanitizer_exit_code": 1,
+      "old_always_upload_would_run": true,
+      "new_outcome_upload_would_run": false,
+      "raw_original_unchanged": true
+    },
+    {
+      "case": "missing_fixture",
+      "sanitizer_exit_code": 1,
+      "old_always_upload_would_run": true,
+      "new_outcome_upload_would_run": false,
+      "raw_original_unchanged": true
+    }
+  ],
+  "actionlint": {
+    "version": "1.7.12",
+    "exit_code": 0
+  },
+  "bash_run_blocks_syntax_passed": 25,
+  "python_heredocs_compiled": 4,
+  "upload_requires_sanitizer_success": true,
+  "upload_path_is_separate_sanitized_directory": true,
+  "cleanup_remains_always": true,
+  "private_receipt_sha256": "455bcbc7fb22a19f5782951ce39bd9017beff829c30f5e2c02fd2ba92f631c9a",
+  "prior_full_runtime_preflight": {
+    "path": "docs/qualification/2026-10-30-compose-profile-ci-preflight.json",
+    "sha256": "9ca69f0e912051ec4f697d62f3299aa5322dcb9e6678a48432b30b467ccee06f",
+    "scope": "Historical full isolated Compose runtime qualification; its original workflow identity is preserved, not rewritten as this delta."
+  },
+  "limitations": [
+    "No real GitHub Actions execution or artifact upload occurred in this fixture check.",
+    "The new upload condition was reviewed and evaluated from the sanitizer success/failure outcome; actionlint separately checked workflow syntax.",
+    "No containers, services, product source, credentials or Git state changed for this workflow-only qualification."
+  ]
+}

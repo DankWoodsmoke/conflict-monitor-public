@@ -111,7 +111,7 @@ function MobileNav({ viewMode, onViewModeChange, onOpenFeed, reportCount = 0 }: 
           </button>
         );
       })}
-      {onOpenFeed && <button className="feed-fab" onClick={onOpenFeed} title="Open report feed" aria-label="Feed — open report feed">
+      {onOpenFeed && <button className="feed-fab" onClick={onOpenFeed} title="Open report feed" aria-label={`Feed${reportCount>0?(reportCount>99?"99+":reportCount):""} — open report feed`}>
         <span aria-hidden="true" style={{fontSize:20,lineHeight:1}}>⚡</span>
         <span style={{fontSize:11,fontFamily:mono,letterSpacing:1.2,fontWeight:700,lineHeight:1}}>FEED</span>
         {reportCount>0 && <span className="mobile-feed-count" aria-hidden="true">{reportCount>99?"99+":reportCount}</span>}
@@ -122,12 +122,17 @@ function MobileNav({ viewMode, onViewModeChange, onOpenFeed, reportCount = 0 }: 
 
 // ── Feed sheet (slide-up live feed panel on portrait mobile) ───────────────────
 function FeedSheet({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
-  const startY = useRef(0);
-  const sheetRef = useRef<HTMLDivElement>(null);
+  const startY = useRef<number|null>(null);
+  const sheetRef = useModalFocus(true,onClose);
 
-  const onTouchStart = (e: React.TouchEvent) => { startY.current = e.touches[0].clientY; };
+  const onTouchStart = (e: React.TouchEvent) => {
+    // Scroll gestures in the report list belong to the native scroll surface.
+    const dragHandle=e.target instanceof Element&&e.target.closest('.feed-sheet-handle,.feed-sheet-header');
+    startY.current=dragHandle&&!((e.target as Element).closest('button'))?e.touches[0]?.clientY??null:null;
+  };
   const onTouchEnd   = (e: React.TouchEvent) => {
-    if (e.changedTouches[0].clientY - startY.current > 60) onClose(); // swipe down to dismiss
+    const start=startY.current;startY.current=null;
+    if (start!==null&&e.changedTouches[0]&&e.changedTouches[0].clientY-start>60) onClose();
   };
 
   // Close on backdrop click
@@ -146,20 +151,21 @@ function FeedSheet({ children, onClose }: { children: React.ReactNode; onClose: 
       <div
         ref={sheetRef}
         className="feed-sheet"
+        role="dialog" aria-modal="true" aria-label="Report feed" tabIndex={-1}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
         <div className="feed-sheet-handle" />
-        <div style={{
+        <div className="feed-sheet-header" style={{
           display: "flex", alignItems: "center", justifyContent: "space-between",
           padding: "0 14px 6px", flexShrink: 0,
         }}>
           <span style={{ fontSize: 11, fontFamily: mono, letterSpacing: 2, color: "var(--text-secondary)", fontWeight: 700 }}>
             REPORT FEED
           </span>
-          <button onClick={onClose} style={{
+          <button data-modal-close aria-label="Close report feed" onClick={onClose} style={{
             background: "none", border: "none", color: "var(--text-secondary)",
-            fontSize: 18, cursor: "pointer", lineHeight: 1, padding: "4px 8px",
+            fontSize: 18, cursor: "pointer", lineHeight: 1, padding: "4px 8px",minWidth:44,minHeight:44,
           }}>×</button>
         </div>
         <div className="feed-sheet-body">{children}</div>
@@ -1138,6 +1144,14 @@ export default function App() {
   };
   const { isMobile, isLandscape,isOverlay } = useIsMobile();
   const [showFeed, setShowFeed] = useState(false);
+  useEffect(()=>{
+    if(showFeed&&(!isMobile||isLandscape)){
+      setShowFeed(false);
+      // Rotation replaces the sheet with the landscape feed. Do not reopen an
+      // old modal when the user rotates back, or strand its former focus.
+      if(document.activeElement===document.body)document.querySelector<HTMLButtonElement>('.mobile-bottom-nav button[aria-pressed="true"]')?.focus();
+    }
+  },[showFeed,isMobile,isLandscape]);
   const [earthFocused, setEarthFocused] = useState(false);
   const [viewMode, setViewModeState] = useState<ViewMode>(() => {
     const view = new URLSearchParams(window.location.search).get("view");
