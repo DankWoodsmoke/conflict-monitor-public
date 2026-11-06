@@ -19,8 +19,10 @@ echo '7dc9dec77d21562088a1574a27f9f91d8604a4c4d6055e6d63bc0be226b75632  /flatgeo
 git apply --check --recount --exclude=NEWS /flatgeobuf-3.6.4.patch
 git apply --recount --exclude=NEWS /flatgeobuf-3.6.4.patch
 ./configure --with-pgconfig=/usr/local/bin/pg_config --without-raster --without-address-standardizer
-make -j2
-make install DESTDIR=/opt/postgis
+# PostGIS 3.6.4 utils starts separate raster SQL submakes even with raster disabled.
+# They share rtpostgis.sql.tmp; serialize build and install to avoid duplicate writers.
+make -j1
+make -j1 install DESTDIR=/opt/postgis
 mkdir -p /opt/postgis/usr/local/share/postgis-build
 cp ../flatgeobuf.patch /opt/postgis/usr/local/share/postgis-build/
 cp /flatgeobuf-3.6.4.patch /opt/postgis/usr/local/share/postgis-build/
