@@ -7,17 +7,20 @@ from app.services import telegram
 
 
 def setup_client(monkeypatch):
-    config = SimpleNamespace(telegram_session="fixture-session",telegram_api_id=1,
-        telegram_api_hash="fixture-hash",telegram_phone="")
+    config = SimpleNamespace(telegram_transport="session", live_ingestion_enabled=True, demo_mode=False,
+        telegram_session="fixture-session",telegram_api_id=1,
+        telegram_api_hash="fixture-hash",telegram_phone="",telegram_processing_mode="reports")
     monkeypatch.setattr(telegram,"settings",config)
     monkeypatch.setattr(telegram,"StringSession",lambda token: token)
     monkeypatch.setattr(telegram,"_get_channels",lambda:["fixture-channel"])
     monkeypatch.setattr(telegram,"_get_conflict_cutoff",lambda:datetime(2026,1,1,tzinfo=timezone.utc))
     monkeypatch.setattr(telegram,"_shared_client",None)
+    monkeypatch.setattr(telegram,"_listener_cleanup_unconfirmed",False)
     client=MagicMock()
     client.connect=AsyncMock()
     client.is_user_authorized=AsyncMock(return_value=True)
     client.disconnect=AsyncMock()
+    client.is_connected=MagicMock(return_value=False)
     monkeypatch.setattr(telegram,"TelegramClient",lambda *a,**k:client)
     return client
 

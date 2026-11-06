@@ -1,0 +1,15 @@
+# Reviewed local configuration template. It does not create a tunnel or DNS.
+# Replace the zero UUID and mount its existing tunnel-scoped credentials file.
+tunnel: 00000000-0000-0000-0000-000000000000
+credentials-file: /run/secrets/tunnel_credentials
+metrics: 127.0.0.1:20241
+no-autoupdate: true
+ingress:
+  - hostname: monitor.ianmalcolm84.com
+    service: http://publicfrontend:80
+    originRequest:
+      httpHostHeader: monitor.ianmalcolm84.com
+      connectTimeout: 5s
+      keepAliveTimeout: 30s
+      keepAliveConnections: 32
+  - service: http_status:404

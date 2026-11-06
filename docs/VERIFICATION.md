@@ -1,6 +1,243 @@
 # Release-candidate verification
 
-**0.2.0-rc.2 immutable source snapshot, October 30, 2026 UTC.** Backend/database gates and frontend `71dae32e` build/live admission completed; 229 frontend tests and targeted three-engine keyboard/video checks passed. Earlier `b6e6` finite mobile checks and hosted source `b15a60eb` retain their actual phase identities. The earlier observation was interrupted for a confirmed product repair, with zero time carried into its replacement. Final duration, exact merge/tag CI and archive qualification are admitted only by the release-attached verification JSON described below; this source snapshot does not declare those post-freeze gates passed. [RC.1](https://github.com/DankWoodsmoke/conflict-monitor-public/releases/tag/v0.2.0-rc.1) remains unchanged. Physical iOS, assistive-technology speech, incomplete axe checks and native Firefox limits remain explicit.
+## November 6, 2026: CI review draft; qualification remains incomplete
+
+This branch carries development candidate 13 for hosted CI review. The dated
+candidate 3 and RC.4 sections below are historical and superseded for this source;
+they do not qualify the current build. This draft is not a new release, launch
+approval or completed four-hour soak. Final verification documentation will follow.
+
+The current public reader has SELECT access only to `public_observation_batches`
+and `public_aircraft_batches` in the application database. It cannot read private
+report or delivery tables; this is not a universal database-cluster sandbox.
+The backend passed 1,243 tests and 29 subtests in candidate 11; exact full RootFS,
+runtime configuration and architecture equality binds that execution to the
+unchanged candidate 13 backend through measured candidate 11-to-12-to-13 identity. The frontend passed 429 tests. These are
+scoped checks, not evidence that every deployment or device works.
+
+Independent source/binary review bound known High findings to implemented fixes
+or absent affected code. Original Grype High matches and nonzero raw gate results
+remain retained; Python Low and BusyBox Medium residuals are not suppressed.
+This is a product-specific applicability assessment, not a zero-vulnerability
+claim or vendor approval. Updated Google Earth/mobile browser qualification,
+the new four-hour live soak, post-soak advisory refresh, hosted CI and public
+hosting activation remain pending. No DNS, tunnel or production site is launched
+by this branch. See [public hosting](PUBLIC_HOSTING.md) for operating boundaries.
+
+## November 5 evening public-hosting and native security candidate
+
+This is development after RC.4, not a new published release or a replacement
+for the admitted RC.4 live deployment. Candidate 3 was frozen and built as
+separate operator and public frontend images with one backend image. Candidate
+1's failed source-freeze check and earlier qualification attempts are retained.
+The final application image is `eacb139a6fc8`; operator/public frontends are
+`c442f03c415d` and `a5a5495bcf6d`. Documentation corrections after qualification
+are recorded separately from the unchanged application and build inputs.
+
+The final application source passed **1,080 backend tests and 29 subtests** both
+on the Windows host and inside its exact nonroot runtime image. The image test
+mounted test/development tooling only; application code came from the image and
+matched the frozen bytes. The frontend passed **416 tests** and its production
+TypeScript/Vite build. Showcase Settings again permits manual Google imagery
+configuration; public non-showcase views keep operator settings hidden.
+
+The exact new operator Compose profile passed migrations, restricted database
+roles, PostGIS, TCP/WebSocket source processing, committed delivery and HTTP
+boundary checks. Two current BBC feed reports were fetched and persisted in
+the disposable database with original URLs and without model classification.
+Telegram bot/account transport checks used explicit provider fixtures; they
+are not claims of an authorized live Telegram deployment.
+
+A separate exact-image operator instance received all 31 configured RSS feeds,
+held 59 real RSS reports and observed 175 aircraft initially and 183 afterward.
+All reports remained unclassified/unscored with unresolved positions. Its
+12 Google Earth cases across Chromium, Firefox and WebKit passed at 320×740,
+390×844, 768×1024 and 844×390, preserving the canvas, native attribution,
+dialogs and aging controls with zero uncaught page errors. Between 174 and 183
+aircraft were rendered during the cases. The actual container had empty
+CORS_ORIGINS and a custom frontend port: same-origin WebSocket access passed;
+an untrusted origin received 403. Preserving the original Host port repairs
+the previous nginx failure. The earlier failed fixture and synthetic PostGIS
+rows remain in their separate receipts; the final instance had real RSS-only
+reports. Disposable operator containers, volumes and networks were removed.
+
+The exact public application passed nine Google browser cases across the three
+engines at 320×740, 390×844 and 1440×900, with at least 35 settled seconds per
+case. Nine Google root sessions and 654 successful content responses were
+observed. All tabs preserved Earth and clickable native attribution; withheld
+reports/media were explicit. There were zero uncaught page errors, hidden
+report/tracking/media requests, background WebSockets or layout failures.
+The final nginx boundary passed 96 checks, including methods/raw paths,
+credential/body stripping, security/cache headers, limits and Compose isolation.
+
+Public containers omit the private environment file and application volumes,
+run with a read-only root, and bound temporary storage to 64 MiB with
+noexec/nosuid. Actual runtime checks rejected application-directory writes with
+EROFS, allowed temporary writes, and confirmed the separate monitor_public
+login. Its application-database access is SELECT-only on the three report and
+delivery tables; DML, DDL, sequences, private ledgers, publisher writes,
+large-object creation and role escalation were rejected by actual SQL checks.
+An earlier source-level fixture separately tested role adoption, rotation and
+14 unexpected-privilege scenarios. These are application-database controls,
+not a universal SQL sandbox or a restriction of every database in the cluster.
+See [public hosting](PUBLIC_HOSTING.md) for the cluster limitations.
+
+The final reader passed 47 SQL/API checks with an empty database and 48 with
+one explicitly authored synthetic report. Actual HTTP event and committed
+baseline responses retained its original text, unscored assessment and absent
+position. No real source dataset was admitted. Both default-closed and
+reports-enabled local load checks passed: 24 steady health reads each, then
+96-request bursts returning 41 successful responses and 55 throttles with no
+5xx, followed by successful recovery. Four simultaneous WebSockets were
+accepted, a fifth received 429, and capacity recovered after disconnect.
+This measures one loopback TCP peer, not internet audience capacity. The public
+fixture and its database volume were removed after these checks.
+
+The native CPython getaddrinfo backport is tied to the distributor's exact
+source, upstream patch and final extension bytes. All 15 malformed-input
+subcases passed; the original module's failures are retained as a negative
+control. The actual final image passed 671 upstream socket tests with 62
+explicit platform/resource skips. Its unmodified nominal package version
+still appears in the raw vulnerability scan. This is one repaired flaw, not
+a whole-image security clearance. Fresh Grype 0.121.2/November 5 database
+results retain backend 2 High/1 Medium/1 Low, database 1 High/3 Medium and
+public frontend 3 Medium package records, plus native supplemental findings.
+The frontend records represent one BusyBox CVE in three packages. No ignore
+or version override was introduced. See [security review](OS_SECURITY_REVIEW.md).
+
+Eleven offline media checks passed on candidate 2 with a read-only Piper voice,
+no network, two CPUs and 2 GiB memory: actual speech, two source-card segments,
+concatenation, full H.264/AAC decode and rejection of HTTPS/HLS input. The final
+candidate retains those media implementation and native binary bytes; this is
+a recorded rebind, not a second rendering run. The route now hashes bounded
+chunks in a worker thread; final-image tests cover range delivery, same-length
+tampering, an I/O race and event-loop responsiveness.
+
+These are finite local checks. Physical phones, a new multi-hour observation,
+public source rights, shared tracking publication, host-level backup/restore,
+trusted-edge rate limits, external load and actual DNS/TLS remain separate
+gates. The raw High security gate remains blocked. No website, DNS, Cloudflare
+or GitHub release was changed by this qualification.
+
+The [sanitized qualification summary](qualification/2026-11-05-public-reader-candidate.json)
+binds these results to the image and evidence hashes. The admitted RC.4 images,
+container start times, database volume and sealed source archive were rechecked
+and remained unchanged.
+
+## Development review after RC.4
+
+The November 5, 2026 product review added always-visible report search,
+original-text matching, canonical Unicode matching and filter state retained
+across workspace changes. The visual update improves narrative typography,
+selection contrast, search controls, scrollbars and narrow-screen source totals.
+The backend now requires explicit permission configuration before its optional
+OpenSky fallback can issue a request.
+
+The frontend passed 412 tests, TypeScript and Vite. Build `e24051a47c5d`
+matched the source at that checkpoint. Its production preview passed
+12 real Google browser/viewport combinations across Chromium, Firefox and
+WebKit. Six additional production workflows checked query/source criteria
+across Earth, Media and Brief, mobile drawer remounts, clear-focus restoration
+and native keyboard scrolling. All retained the Earth canvas. Five keyless
+showcase workflows passed. Eight changed palette pairs met the measured
+contrast thresholds, with the lowest tested text contrast 8.24 to 1.
+This is a scoped contrast check, with complete accessibility qualification
+remaining separate.
+
+The backend source passed 997 tests and 29 subtests on the Windows host,
+including permission-off and permission-on tests through the aircraft polling
+loop. The development frontend preview uses the existing live backend.
+The new backend permission setting was subsequently image-qualified above;
+live deployment admission remains separate.
+The earlier RC.4 archive and four-hour soak retain their original identities.
+This development build has no new long-session or public-load qualification.
+Physical phones remain outside this emulation result.
+
+See the [capability comparison](PRODUCT_GAP_REVIEW.md) and
+[website integration assessment](WEBSITE_INTEGRATION.md) for priorities
+and unresolved public-serving gates.
+
+## 0.2.0-rc.4 local candidate
+
+The packaged backend passed 994 tests and 29 subtests. The exact Compose
+profile passed restricted-role, PostGIS, committed delivery, TCP, process
+and HTTP boundary checks. The Bot API fixture checked durable
+acknowledgement, immutable edits and separation from the legacy history
+checkpoint. The local profile runs with Telegram disabled and has no
+deployment bot token. A publisher-authorized provider run is a separate gate.
+
+Frontend build `75a234f02100` passed 405 tests and five keyless browser
+workflows. All 403 application files served by the live profile matched
+the admitted build. The database volume and original briefing were
+preserved during the app image transition. The [private GOOL operator
+workflow](GOOL_REVIEW.md) validated three questions from one authored
+fixture through its explicitly selected Azure route.
+
+The exact live build passed 12 browser and viewport combinations
+covering real Google Earth imagery, native attribution, Earth, Media,
+Brief, Feed, Settings, Methods and source health. The separate iPhone 15
+WebKit emulation passed trusted taps, Feed scrolling by keyboard and
+same-context landscape resizing. Its first attempt timed out before
+completing the tabs. Physical-device behavior remains unmeasured.
+
+The independent four-hour confirmation completed on November 5 at
+07:00 UTC with unchanged backend, frontend and database container
+identities. All 480 sample rounds, 3,840 REST requests and 48 SQL checks
+passed. The separate delivery observer matched 27 natural publication
+offsets to PostgreSQL. The Google browser completed 478 samples with
+zero findings or page errors, renewed its root automatically and received
+300 successful new tile responses after three hours. Aircraft, maritime,
+satellite and thermal provider states were healthy in all 480 sampled
+rounds. Telegram was explicitly disabled throughout. The live usage ledger
+remained zero, with the separate private GOOL exercise recorded above.
+
+The first four-hour run is retained separately. Its browser had one
+provider-readiness timeout, and one container-identity inspection was
+unavailable around the same early interval. Its strict identity assessment
+remains incomplete. Thermal observations were unavailable in two rounds.
+The later confirmation does not resolve those initiating causes. These
+sampled observations do not establish source truth, physical-device
+behavior, every code path or absence of memory leaks.
+
+The backend and database each retain a raw High SQLite match. The
+backend excludes the standalone SQLite shell with a build guard. See
+[security review](OS_SECURITY_REVIEW.md) for the actual component scope.
+
+## RC.3 local evidence
+
+**0.2.0-rc.3 local candidate, November 4, 2026 UTC.** Frontend build `2a333395c5f8` passed 404 tests. The packaged backend passed 911 tests, 29 subtests and 11 offline media checks. The exact three-image profile passed isolated Compose, restricted-role, PostGIS, TCP WebSocket, committed delivery and served-header checks. The archived restore preserved 12 tables and five sequences. The live logical restore preserved the original volume and retained briefing artifacts. Physical-device testing and source factual accuracy have separate evidence requirements. Publication is held while backend and database retain High image findings. See [security review](OS_SECURITY_REVIEW.md) and [database upgrade](DB_UPGRADE.md).
+
+The exact Alpine spatial profile passed 250 upstream SQL cases on a clean
+database and the same 250 after an extension upgrade. Its source-matched
+CUnit runner passed 346 tests and 5,495 assertions with the qualified native
+dependencies. Auxiliary source-tree checks had separate tooling limitations.
+
+The live Google workspace passed 12 browser and viewport combinations plus
+targeted iPhone and Pixel device-profile emulation. Three engines played the
+retained briefing. Firefox needed a user resume to restore paused captions.
+Three fresh stock-model attempts failed. Two preserved responses violated the
+literal-source validation rule. Separately, a retained valid response passed validation
+and a new source-card video from the same authored fixture passed HTTP
+range delivery and full audio/video decoding. This qualifies the video
+and validation paths within that fixture.
+
+An uninterrupted four-hour loopback observation on the exact same three
+containers passed 480 sample rounds, 3,840 REST requests, 48 SQL checks and
+244 natural WebSocket messages. The independent REST delivery observer
+matched 244 publication offsets to PostgreSQL. There were zero sampled
+REST or SQL integrity errors and zero recorded paid usage. The same
+Google Earth browser renewed its root automatically and received 300
+successful tile responses after three hours.
+
+Provider availability had separate findings. Telegram entered a terminal
+`ConnectionError` state and stayed failed for 139 of the 480 samples.
+Aircraft were stale in 11 samples, and FIRMS thermal observations were
+unavailable in two. These observations qualify the bounded local serving
+and delivery path and leave continuous provider coverage open.
+
+## RC.2 evidence archive
+
+The following tables retain the scope and image identities of the October 30 release. [RC.2 public release and verification assets](https://github.com/DankWoodsmoke/conflict-monitor-public/releases/tag/v0.2.0-rc.2)
 
 ## Completed RC.2 checks
 

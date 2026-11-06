@@ -169,8 +169,9 @@ def _classify_aircraft(ac: dict) -> tuple[str, bool]:
     hex_code = ac.get("icao24", "")
     category = (ac.get("category") or "")
 
-    # UAV by ADS-B category
-    if category == "B2":
+    # Reported emitter category: B2 is lighter-than-air; B6 is UAV.
+    # Primary decoder UI: wiedehopf/tar1090 html/formatter.js aircraftCategories.
+    if category == "B6":
         return "uav", is_emergency
 
     # Rotorcraft by ADS-B category
@@ -245,8 +246,14 @@ def normalize_adsb(data, *, received):
         climb = item.get("baro_rate") if item.get("baro_rate") is not None else item.get("geom_rate")
         alt, speed, climb = number(alt, -2000, 200000), number(item.get("gs"), 0, 3000), number(climb, -60000, 60000)
         heading = number(item.get("track"), 0, 360)
+        if heading == 360:
+            heading = None
+        heading_basis = "course_over_ground" if heading is not None else None
         if heading is None:
             heading = number(item.get("true_heading"), 0, 360)
+            if heading == 360:
+                heading = None
+            heading_basis = "true_heading" if heading is not None else None
         row = {
             "icao24": identity, "callsign": text(item.get("flight"), 16), "origin_country": "",
             "lat": lat, "lon": lon, "altitude": alt * 0.3048 if alt is not None else None,
@@ -254,6 +261,7 @@ def normalize_adsb(data, *, received):
             "altitude_reference": ("geometric_reported" if alt_source == "alt_geom" else "barometric_standard_pressure") if alt is not None else "unknown",
             "velocity": speed * 0.5144444444444445 if speed is not None else None,
             "climb_rate": climb * 0.00508 if climb is not None else None, "heading": heading,
+            "heading_basis": heading_basis,
             "on_ground": item.get("alt_baro") == "ground",
             "position_source": 2 if isinstance(item.get("mlat"), list) and "lat" in item["mlat"] else 0,
             "nac_p": number(item.get("nac_p"), 0, 11), "nic": number(item.get("nic"), 0, 11),
@@ -303,6 +311,9 @@ def normalize_opensky(data, *, received):
                "squawk": text(item[14], 4), "type": "", "registration": "", "category": ""}
         if row["altitude"] is None:
             row.update(altitude_source=None, altitude_reference="unknown")
+        if row["heading"] == 360:
+            row["heading"] = None
+        row["heading_basis"] = "course_over_ground" if row["heading"] is not None else None
         prior = states.get(identity)
         if prior is None or observed > prior["observed_timestamp"]:
             states[identity] = _finish_aircraft(row, observed=observed, received=received, provider="opensky")
@@ -344,6 +355,8 @@ async def _poll_adsb_lol(client, *, region=None):
 
 async def _poll_opensky(client, auth=None):
     # Basic auth was retired. Anonymous fallback is credit-budgeted; OAuth is a separate adapter.
+    if not settings.opensky_fallback_enabled:
+        return None
     if time.time() < _next_attempt["opensky"]:
         return None
     now = time.time()
@@ -430,7 +443,7 @@ def _region_status(*, now):
 async def start_opensky_poller():
     if settings.demo_mode or not settings.live_ingestion_enabled:
         return
-    logger.info("Aircraft tracking: %d regional circles radius=%dnm, one request/%ds; anonymous OpenSky fallback", len(AIRCRAFT_REGIONS), RADIUS_NM, POLL_INTERVAL)
+    logger.info("Aircraft tracking: %d regional circles radius=%dnm, one request/%ds; OpenSky fallback enabled=%s", len(AIRCRAFT_REGIONS), RADIUS_NM, POLL_INTERVAL, settings.opensky_fallback_enabled)
     region_index = 0
     async with httpx.AsyncClient(timeout=20, follow_redirects=False) as client:
         while True:

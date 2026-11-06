@@ -1,0 +1,67 @@
+# Additive, closed-by-default public HTTP profile; no public network binding.
+# Requires Docker Compose supporting !reset (2.24.4 or newer).
+# Review docs/PUBLIC_HOSTING.md before admitting any data or exposing an edge.
+services:
+  migrate:
+    environment:
+      PUBLIC_READ_ONLY: "true"
+      # Optional for private installs, required to provision the public reader.
+      POSTGRES_PUBLIC_PASSWORD: ${POSTGRES_PUBLIC_PASSWORD:?Set a distinct 64-character hex POSTGRES_PUBLIC_PASSWORD}
+  backend:
+    # Public readers never inherit the operator's private provider/session file.
+    env_file: !reset []
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m,mode=1777
+    # No generated artifacts, private sessions or local voices are public inputs.
+    volumes: !reset []
+    environment:
+      DATABASE_URL: postgresql+asyncpg://monitor_public:${POSTGRES_PUBLIC_PASSWORD:?Set a distinct 64-character hex POSTGRES_PUBLIC_PASSWORD}@db:5432/conflict_monitor
+      # The reader secret is needed only inside its DSN, never as a second input.
+      POSTGRES_PUBLIC_PASSWORD: ""
+      PYTHONDONTWRITEBYTECODE: "1"
+      HOME: /tmp
+      PUBLIC_READ_ONLY: "true"
+      PUBLIC_REPORTS_ENABLED: ${PUBLIC_REPORTS_ENABLED:-false}
+      # Reserved: backend keeps public tracking withheld until publication is qualified.
+      PUBLIC_TRACKING_ENABLED: ${PUBLIC_TRACKING_ENABLED:-false}
+      DEMO_MODE: "false"
+      LIVE_INGESTION_ENABLED: "false"
+      PUBLIC_OBSERVATION_PUBLISHER_ENABLED: "false"
+      PUBLIC_AIRCRAFT_PUBLISHER_ENABLED: "false"
+      X_INGESTION_ENABLED: "false"
+      ENABLE_SITREP_GENERATION: "false"
+      ENABLE_VIDEO_GENERATION: "false"
+      ENABLE_LOCAL_AI: "false"
+      TELEGRAM_TRANSPORT: disabled
+      TELEGRAM_API_ID: "0"
+      TELEGRAM_API_HASH: ""
+      TELEGRAM_PHONE: ""
+      TELEGRAM_SESSION: ""
+      TELEGRAM_BOT_TOKEN: ""
+      ANTHROPIC_API_KEY: ""
+      ADMIN_API_KEY: ""
+      OPENSKY_USERNAME: ""
+      OPENSKY_PASSWORD: ""
+      AISSTREAM_API_KEY: ""
+      FIRMS_MAP_KEY: ""
+      TWITTER_BEARER_TOKEN: ""
+      TWITTER_AUTH_TOKEN: ""
+      TWITTER_CT0: ""
+      LOCAL_AI_URL: ""
+      LOCAL_AI_MODEL: ""
+      PIPER_MODEL_PATH: ""
+      NOMINATIM_URL: ""
+      SENTINEL_HUB_INSTANCE_ID: ""
+      # These public values come from Compose --env-file / shell / project .env,
+      # never from the removed service-level CONFLICT_ENV_FILE.
+      GOOGLE_EARTH_ENABLED: ${GOOGLE_EARTH_ENABLED:-false}
+      GOOGLE_MAPS_BROWSER_KEY: ${GOOGLE_MAPS_BROWSER_KEY:-}
+      CORS_ORIGINS: ${CORS_ORIGINS:-}
+      CONFLICT_START_DATE: ${CONFLICT_START_DATE:-2026-02-28}
+    # API is reachable only by the frontend on the Compose network.
+    ports: !reset []
+  frontend:
+    build:
+      args:
+        NGINX_CONFIG: nginx-public.conf

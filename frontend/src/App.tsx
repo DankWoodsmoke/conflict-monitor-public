@@ -1,6 +1,9 @@
-import {reportSourceKind} from "./lib/events";
+import {reportSourceKind,assessedSeverity} from "./lib/events";
 import {SourceStatus} from "./components/SourceStatus";
-import {briefScore,briefIndexLabel,isSourceDigest} from "./lib/brief";
+import {PublicObservationPanel,PublicDataAttribution} from "./components/PublicObservationPanel";
+import {usePublicObservations} from "./hooks/usePublicObservations";
+import {usePublicAircraft} from "./hooks/usePublicAircraft";
+import {briefScore,briefIndexLabel,briefLevel,isArchivedSourceDigest,isSourceDigest} from "./lib/brief";
 import { SettingsPanel } from "./components/SettingsPanel";
 import { nowMs } from "./lib/clock";
 import { SHOWCASE, safeUrl } from "./lib/runtime";
@@ -13,6 +16,7 @@ import React from 'react';
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Header } from "./components/Header";
 import { LiveFeed } from "./components/LiveFeed";
+import { useReportFilters } from "./hooks/useReportFilters";
 import {workspaceView,type ViewMode} from "./lib/workspace";
 import { TimelineScrubber } from "./components/TimelineScrubber";
 import { MarketStrip } from "./components/MarketStrip";
@@ -272,7 +276,7 @@ function SitrepBroadcastView({ style }: { style?: React.CSSProperties }) {
     return () => clearInterval(t);
   }, []);
 
-  const level = sitrep?.escalation_level || "UNASSESSED";
+  const level = briefLevel(sitrep);
   const lc = LEVEL_COLORS[level] || "#58a6ff";
   const lb = LEVEL_BG[level] || "#030508";
 
@@ -417,7 +421,7 @@ function SitrepBroadcastView({ style }: { style?: React.CSSProperties }) {
         }}>
           {[...sitrepList].sort((a: any, b: any) => b.id - a.id).map((s: any) => {
             const sc2 = briefScore(s);
-            const slc = LEVEL_COLORS[s.escalation_level as string] || "#58a6ff";
+            const slc = LEVEL_COLORS[briefLevel(s)] || "#58a6ff";
             const isSel = s.id === selectedId;
             const hasVid = !!videoManifest[String(s.id)];
             const headline = s.headline || "";
@@ -448,7 +452,7 @@ function SitrepBroadcastView({ style }: { style?: React.CSSProperties }) {
                     fontSize: 11, fontWeight: 800, letterSpacing: 0.5,
                     padding: "1px 5px", borderRadius: 2,
                     background: `${slc}22`, color: slc, flexShrink: 0,
-                  }}>{s.escalation_level}</span>
+                  }}>{briefLevel(s)}</span>
                   <span style={{ fontSize: 11, color: "#a3b9ca", marginLeft: "auto", flexShrink: 0 }}>
                     #{s.id}
                   </span>
@@ -532,7 +536,7 @@ function SitrepBroadcastView({ style }: { style?: React.CSSProperties }) {
                 color: hasVideoForSelected ? "#e6edf3" : "#8da3b7" }}>{currentVideoLabel}</span>
               {hasVideoForSelected && (
                 <span style={{ fontSize: 11, color: lc, background: `${lc}18`, padding: "1px 6px",
-                  borderRadius: 2, fontWeight: 700, letterSpacing: 1 }}>{isSourceDigest(sitrep)?"ATTRIBUTED DIGEST":"DATED ANALYSIS"}</span>
+                  borderRadius: 2, fontWeight: 700, letterSpacing: 1 }}>{isArchivedSourceDigest(sitrep)?"ARCHIVED DIGEST":isSourceDigest(sitrep)?"ATTRIBUTED DIGEST":"DATED ANALYSIS"}</span>
               )}
               <span style={{ fontSize: 11, color: "#8da3b7", marginLeft: "auto" }}>
                 {sitrep ? fmtDate(sitrep.generated_at) : briefEmptyText}
@@ -571,7 +575,7 @@ function SitrepBroadcastView({ style }: { style?: React.CSSProperties }) {
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <span style={{ fontSize: 11, fontWeight: 800, color: lc, background: `${lc}20`,
                         padding: "2px 8px", borderRadius: 2, letterSpacing: 1 }}>
-                        {sitrep.escalation_level}
+                        {briefLevel(sitrep)}
                       </span>
                       <span style={{ fontSize: 11, color: lc, fontFamily: mono, fontWeight: 700,
                         opacity: 0.7 }}>
@@ -683,7 +687,7 @@ function SitrepBroadcastView({ style }: { style?: React.CSSProperties }) {
                       {isSourceDigest(sitrep)?"OPEN SOURCE BRIEFING":"OPEN INTEL BRIEF"}
                     </span>
                     <span style={{ fontSize: 11, color: lc, opacity: 1, letterSpacing: 0.5 }}>
-                      {isSourceDigest(sitrep)?"Attributed report compilation · risk unassessed":"Generated situation analysis · unreviewed"}
+                      {isArchivedSourceDigest(sitrep)?"Archived digest · inspect cited sources":isSourceDigest(sitrep)?"Attributed report compilation · risk unassessed":"Generated situation analysis · unreviewed"}
                     </span>
                   </div>
                 </button>
@@ -808,7 +812,7 @@ function SitrepBroadcastView({ style }: { style?: React.CSSProperties }) {
                 </div>
               )}
               {sitrepEvents.map((evt: any, i: number) => {
-                const sev = evt.severity || 0;
+                const sev = assessedSeverity(evt) ?? 0;
                 const sc = sev >= 8 ? "#f85149" : sev >= 6 ? "#f0883e" : sev >= 4 ? "#d29922" : "#5a7a9a";
                 const hasUrl = !!safeUrl(evt.source_url) && !evt.source_url.includes("copernicus");
                 const isSatellite=sourceFamily(evt)==="sensor";
@@ -927,7 +931,7 @@ function SitrepBroadcastView({ style }: { style?: React.CSSProperties }) {
               <div>
                 <h2 id="expanded-brief-title" style={{fontSize:12,fontWeight:800,letterSpacing:2.5,color:"#e6edf3"}}>{isSourceDigest(sitrep)?"SOURCE BRIEFING":"INTEL BRIEF"}</h2>
                 <div style={{ fontSize: 11, color: lc, letterSpacing: 1.5, marginTop: 1 }}>
-                  SITREP #{sitrep.id} · {sitrep.escalation_level} · INDEX {briefIndexLabel(sitrep)} · {fmtDate(sitrep.generated_at)}
+                  SITREP #{sitrep.id} · {briefLevel(sitrep)} · INDEX {briefIndexLabel(sitrep)} · {fmtDate(sitrep.generated_at)}
                 </div>
               </div>
               <div style={{ marginLeft: "auto", display: "flex", gap: 8, alignItems: "center" }}>
@@ -1117,12 +1121,30 @@ function SitrepBroadcastView({ style }: { style?: React.CSSProperties }) {
 }
 
 export default function App() {
-  const { events, isConnected, loadFullHistory, historyStatus, recoveryStatus, historyTruncated, historyStart } = useEventStream();
+  const [access,setAccess]=useState<{readOnly:boolean;reports:boolean;tracking:boolean;observations:boolean;publicAircraft:boolean}|null>(null);
+  const operatorEnabled=access!==null&&!access.readOnly;
+  const reportsEnabled=SHOWCASE||!!access?.reports;
+  const trackingEnabled=SHOWCASE||!!access?.tracking;
+  const mixedLayersEnabled=reportsEnabled&&trackingEnabled;
+  const publicObservationsEnabled=!!access?.readOnly&&access.observations&&!SHOWCASE;
+  const publication=usePublicObservations(publicObservationsEnabled);
+  const publicAircraftEnabled=!!access?.readOnly&&access.publicAircraft&&!SHOWCASE;
+  const publicContextNotice=publicObservationsEnabled?
+    (publicAircraftEnabled?"NASA thermal context and selected aircraft observations · no verified strike, mission or complete conflict coverage claim.":"NASA thermal context · no verified strike, cause, actor or casualty claim."):
+    (publicAircraftEnabled?"Selected aircraft observations · identity, ownership, mission and intent are unverified; coverage is incomplete.":"Historical reports are withheld pending publication approval. No live coverage is claimed.");
+  const aircraftPublication=usePublicAircraft(publicAircraftEnabled);
+  const publicSceneReceipts=useMemo(()=>publicObservationsEnabled&&publicAircraftEnabled?{
+    observations:{batch_id:publication.data?.batch_id??null,status:publication.data?.status??"pending",failed:publication.failed,received_at:publication.receivedAt},
+    aircraft:{batch_id:aircraftPublication.data?.batch_id??null,status:aircraftPublication.data?.status??"pending",failed:aircraftPublication.failed,received_at:aircraftPublication.receivedAt},
+  }:undefined,[publicObservationsEnabled,publicAircraftEnabled,publication.data,publication.failed,publication.receivedAt,aircraftPublication.data,aircraftPublication.failed,aircraftPublication.receivedAt]);
+  const reportFilters = useReportFilters();
+  const { events, isConnected, loadFullHistory, historyStatus, recoveryStatus, historyTruncated, historyStart } = useEventStream(reportsEnabled);
   const [replayCursor, setReplayCursor] = useState<number | null>(null);
   const [activeRange, setActiveRange] = useState<{ start: Date; end: Date } | null>(
     () => ({ start: new Date(nowMs() - 24 * 3600000), end: new Date(nowMs()) })
   );
-  const { aircraft, jammingZones, vessels,loadingSnapshots,snapshotAt } = useTracking({
+  const { aircraft, jammingZones, vessels,loadingSnapshots,snapshotAt,trackingStatus } = useTracking({
+    enabled:trackingEnabled,replayEnabled:mixedLayersEnabled,
     replayCursor,
     replayWindow: replayCursor != null && activeRange ? {
       start: activeRange.start.getTime(), end: activeRange.end.getTime(),
@@ -1181,8 +1203,12 @@ export default function App() {
     const controller=new AbortController();
     apiFetch(`${API_BASE}/config`,{signal:controller.signal}).then(r => {if(!r.ok)throw new Error();return r.json();}).then(d => {
       if(controller.signal.aborted)return;
+      const readOnly=d.public_read_only===true;
+      setAccess({readOnly,reports:!readOnly,tracking:!readOnly,observations:readOnly&&d.public_observations_enabled===true,publicAircraft:readOnly&&d.public_aircraft_enabled===true});
+      if(readOnly){setShowSettings(false);setOperatorKey("");}
       setDemoMode(!!d.demo_mode);
-      setCollectionState(d.live_ingestion_enabled ? "Collection enabled · individual source freshness requires verification" : "Collection disabled · enable configured sources to collect live reports");
+      const publicDatasets=[d.public_observations_enabled===true?"thermal":null,d.public_aircraft_enabled===true?"aircraft":null].filter(Boolean);
+      setCollectionState(readOnly ? `Public research · ${publicDatasets.length?`${publicDatasets.join(" + ")} context enabled`:"datasets withheld"}` : d.live_ingestion_enabled ? "Collection enabled · individual source freshness requires verification" : "Collection disabled · enable configured sources to collect live reports");
       applyEarthConfig(d);
     }).catch(() => {if(!controller.signal.aborted)setCollectionState("Backend unavailable · displayed data may be stale");});
     return()=>controller.abort();
@@ -1190,6 +1216,7 @@ export default function App() {
 
   // Fetch NASA FIRMS thermal hotspots for satellite layer (refresh every 3h)
   useEffect(() => {
+    if(!mixedLayersEnabled){setFirmsHotspots([]);return;}
     const fetchHotspots = () => {
       apiFetch(`${API_BASE}/satellite/hotspots`)
         .then(r => r.json())
@@ -1203,8 +1230,9 @@ export default function App() {
     fetchHotspots();
     const interval = setInterval(fetchHotspots, 3 * 60 * 60 * 1000); // 3h
     return () => clearInterval(interval);
-  }, []);
+  }, [mixedLayersEnabled]);
   useEffect(() => {
+    if(!reportsEnabled){setTimeRange(null);return;}
     const fetchRange = () => {
       apiFetch(`${API_BASE}/events/time-range`).then(r => r.json())
         .then(d => { if (d.earliest && d.latest)
@@ -1214,7 +1242,7 @@ export default function App() {
     fetchRange();
     const interval = setInterval(fetchRange, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [reportsEnabled]);
 
   const filteredEvents = useMemo(() => {
     const start = activeRange?.start.getTime()??-Infinity;
@@ -1227,6 +1255,7 @@ export default function App() {
     });
   }, [events, activeRange, replayCursor, activeSources]);
 
+  const reportUnavailable=publicObservationsEnabled?<PublicObservationPanel data={publication.data} failed={publication.failed} aircraft={aircraftPublication.data} aircraftFailed={aircraftPublication.failed}/>:<div className="public-empty-state" role="status"><h2>{access?.readOnly?"Reports withheld":"Connecting to data services"}</h2><p>{access?.readOnly?"Private reports are not included in this public dataset. An empty layer does not establish absence of activity.":collectionState}</p></div>;
   const onRangeChange = useCallback((range: { start: Date; end: Date } | null) => {
     setActiveRange(range);
   }, []);
@@ -1234,40 +1263,40 @@ export default function App() {
   return (
     <>
       {SHOWCASE ? <ShowcaseBar view={viewMode} onView={setViewMode} /> : <div className="runtime-banner" role="status"><SourceStatus fallback={collectionState}/><a href="?showcase=true">Explore synthetic showcase ↗</a></div>}
-      <main aria-label="Conflict monitoring workspace" className={`${SHOWCASE ? "app-grid has-showcase" : "app-grid has-runtime"}${viewMode!=="earth"?" has-workspace-panel":""}${earthFocused&&viewMode==="earth"?" earth-focused":""}`}>
-        <Header
+      <main aria-label="Conflict monitoring workspace" className={`${SHOWCASE ? "app-grid has-showcase" : "app-grid has-runtime"}${access?.readOnly&&!SHOWCASE?" public-data-workspace":""}${viewMode!=="earth"?" has-workspace-panel":""}${earthFocused&&viewMode==="earth"?" earth-focused":""}`}>
+        <Header readOnly={!operatorEnabled}
           isConnected={isConnected} eventCount={filteredEvents.length}
-          aircraftCount={aircraft.length} vesselCount={vessels.length}
+          aircraftCount={publicAircraftEnabled?aircraftPublication.aircraft.length:aircraft.length} vesselCount={vessels.length}
           demoMode={demoMode}
           escalationLevel={escalationLevel} onAboutClick={() => setShowAbout(true)} onSettingsClick={() => setShowSettings(true)}
           viewMode={viewMode} onViewModeChange={setViewMode}
           activeSources={activeSources} onSourceToggle={toggleSource}
           earthFocused={earthFocused} onEarthFocusChange={()=>setEarthFocused(value=>!value)}
         />
-        <div className="market-strip-wrap"><MarketStrip /></div>
+        <div className={publicAircraftEnabled?"public-attribution-wrap":"market-strip-wrap"}>{operatorEnabled||SHOWCASE?<MarketStrip />:publicAircraftEnabled?<PublicDataAttribution aircraft={aircraftPublication.data}/>:<div className="public-scope-note">{access?.readOnly?"Public research workspace · Markets and generated briefings are not published":"Checking deployment capabilities…"}</div>}</div>
         <div ref={stageRef} inert={viewMode!=="earth"&&isOverlay} aria-hidden={viewMode!=="earth"&&isOverlay?true:undefined} className="earth-stage" style={{gridArea:"map",minWidth:0,minHeight:0,overflow:"hidden"}}>
           <Suspense fallback={<div className="earth-loading" role="status">Loading Earth workspace…</div>}>
-            <CesiumView focusEventId={focusEventId} googleKey={googleKey} googleEnabled={googleEnabled} onConfigure={()=>setShowSettings(true)} events={filteredEvents} aircraft={aircraft} vessels={vessels} jammingZones={jammingZones} firmsHotspots={firmsHotspots} replayCursor={replayCursor} windowStart={activeRange?.start.getTime()} loadingSnapshots={loadingSnapshots} snapshotAt={snapshotAt}/>
+            <CesiumView publicSceneReceipts={publicSceneReceipts} readOnly={!operatorEnabled} publicObservations={publicObservationsEnabled} publicAircraft={publicAircraftEnabled} focusEventId={focusEventId} googleKey={googleKey} googleEnabled={googleEnabled} onConfigure={()=>setShowSettings(true)} events={filteredEvents} aircraft={publicAircraftEnabled?aircraftPublication.aircraft:aircraft} vessels={vessels} jammingZones={jammingZones} firmsHotspots={publicObservationsEnabled?publication.hotspots:firmsHotspots} replayCursor={replayCursor} windowStart={publicObservationsEnabled?undefined:activeRange?.start.getTime()} loadingSnapshots={loadingSnapshots} snapshotAt={snapshotAt} trackingStatus={trackingEnabled?trackingStatus:undefined} operatorKey={operatorKey}/>
           </Suspense>
         </div>
         {viewMode!=="earth"&&<aside ref={panelRef} className="workspace-panel" aria-label={viewMode==="media"?"Media workspace panel":"Brief workspace panel"}>
           <div className="workspace-panel-header"><div><span>EARTH WORKSPACE</span><h2>{viewMode==="media"?"Media desk":"Source briefing"}</h2></div><button data-panel-close onClick={()=>setViewMode("earth")} aria-label="Back to Earth — close workspace panel">Back to Earth <span aria-hidden="true">×</span></button></div>
-          <div className="workspace-subnav" role="group" aria-label={viewMode==="media"?"Media tools":"Briefing tools"}>
+          {(operatorEnabled||SHOWCASE)&&<div className="workspace-subnav" role="group" aria-label={viewMode==="media"?"Media tools":"Briefing tools"}>
             {viewMode==="media"?<><button aria-pressed={mediaDesk==="sources"} onClick={()=>setMediaDesk("sources")}>Sources &amp; broadcasts</button><button aria-pressed={mediaDesk==="video"} onClick={()=>setMediaDesk("video")}>Narrated briefing</button></>:<><button aria-pressed={briefDesk==="sources"} onClick={()=>setBriefDesk("sources")}>Source briefing</button><button aria-pressed={briefDesk==="analysis"} onClick={()=>setBriefDesk("analysis")}>Local analysis</button></>}
-          </div>
+          </div>}
           <div className="workspace-panel-body">
-            {viewMode==="media"?(mediaDesk==="video"?<LocalBriefingPanel mode="video" operatorKey={operatorKey} onConfigureOperator={()=>setShowSettings(true)}/>:<Suspense fallback={<div role="status">Loading media desk…</div>}><IntelMediaView events={filteredEvents}/></Suspense>):briefDesk==="analysis"?<LocalBriefingPanel mode="analysis" operatorKey={operatorKey} onConfigureOperator={()=>setShowSettings(true)}/>:<SitrepBroadcastView style={{width:"100%",height:"100%",minHeight:0}}/>}
+            {!operatorEnabled&&!SHOWCASE?<section className="public-empty-state"><span>PUBLICATION REVIEW</span><h2>{viewMode==="media"?"Media is not published":"Briefings are not published"}</h2><p>Source permissions and generated artifacts need a separate publication review. This research workspace does not expose the operator’s media archive or generation tools.</p><button onClick={()=>setViewMode("earth")}>Explore Earth</button></section>:viewMode==="media"?(mediaDesk==="video"?<LocalBriefingPanel mode="video" operatorKey={operatorKey} onConfigureOperator={()=>setShowSettings(true)}/>:<Suspense fallback={<div role="status">Loading media desk…</div>}><IntelMediaView events={filteredEvents}/></Suspense>):briefDesk==="analysis"?<LocalBriefingPanel mode="analysis" operatorKey={operatorKey} onConfigureOperator={()=>setShowSettings(true)}/>:<SitrepBroadcastView style={{width:"100%",height:"100%",minHeight:0}}/>}
           </div>
         </aside>}
-        {viewMode==="earth"&&(!isMobile||isLandscape)&&<div className="sidebar"><div className="sidebar-feed"><LiveFeed selectedEventId={focusEventId} events={filteredEvents} allEvents={events} onEventClick={handleFeedEventClick}/></div></div>}
+        {viewMode==="earth"&&(!isMobile||isLandscape)&&<div className="sidebar"><div className="sidebar-feed">{!reportsEnabled?reportUnavailable:<LiveFeed readOnly={!operatorEnabled} filters={reportFilters} selectedEventId={focusEventId} events={filteredEvents} allEvents={events} onEventClick={handleFeedEventClick} operatorKey={operatorKey} onConfigureOperator={()=>setShowSettings(true)}/>}</div></div>}
 
         <div className="timeline-wrap" style={{ gridArea: "timeline" }}>
-          <TimelineScrubber
+          {reportsEnabled?<TimelineScrubber
             allEvents={events} timeRange={timeRange} activeRange={activeRange}
             onRangeChange={onRangeChange} onLoadHistory={loadFullHistory}
             historyStatus={historyStatus} recoveryStatus={recoveryStatus} historyTruncated={historyTruncated} historyStart={historyStart}
             replayCursor={replayCursor} onReplayCursorChange={setReplayCursor}
-          />
+          />:<div className="public-scope-note" role="status">{access?.readOnly?publicContextNotice:"Waiting for deployment capabilities."}</div>}
         </div>
 
       </main>
@@ -1281,14 +1310,14 @@ export default function App() {
       {/* Slide-up feed sheet — portrait mobile */}
       {isMobile && !isLandscape && showFeed && (
         <FeedSheet onClose={() => setShowFeed(false)}>
-          <LiveFeed selectedEventId={focusEventId} events={filteredEvents} allEvents={events} onEventClick={(evt) => {
+          {!reportsEnabled?reportUnavailable:<LiveFeed readOnly={!operatorEnabled} filters={reportFilters} selectedEventId={focusEventId} events={filteredEvents} allEvents={events} operatorKey={operatorKey} onConfigureOperator={()=>setShowSettings(true)} onEventClick={(evt) => {
             handleFeedEventClick(evt);
             setShowFeed(false);
-          }} />
+          }} />}
         </FeedSheet>
       )}
 
-      {showSettings && <SettingsPanel operatorKey={operatorKey} onOperatorKeyChange={setOperatorKey} googleKey={googleKey} googleEnabled={googleEnabled} onApply={(key,enabled)=>{applyEarthProvider(key,enabled);setShowSettings(false);}} onClose={()=>setShowSettings(false)} />}
+      {operatorEnabled&&showSettings && <SettingsPanel operatorKey={operatorKey} onOperatorKeyChange={setOperatorKey} googleKey={googleKey} googleEnabled={googleEnabled} onApply={(key,enabled)=>{applyEarthProvider(key,enabled);setShowSettings(false);}} onClose={()=>setShowSettings(false)} />}
       {showAbout && <AboutPanel onClose={() => setShowAbout(false)} />}
     </>
   );

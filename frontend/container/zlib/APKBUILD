@@ -1,0 +1,61 @@
+# Locally built and signed official zlib source; not an Alpine security release.
+maintainer="Conflict Monitor local build <private-build@example.invalid>"
+pkgname=zlib
+pkgver=1.4
+pkgrel=0
+pkgdesc="Compression library - official upstream 1.4, locally packaged"
+url="https://zlib.net/"
+arch="all"
+license="Zlib"
+subpackages="$pkgname-static $pkgname-dev $pkgname-doc"
+makedepends="build-base"
+source="zlib-1.4.tar.gz window_reset_probe.c"
+builddir="$srcdir/zlib-1.4"
+
+build() {
+    ./configure --prefix=/usr
+    make -j2
+}
+
+check() {
+    make test > "$startdir/upstream-tests.txt" 2>&1
+    make test64 >> "$startdir/upstream-tests.txt" 2>&1
+    make infcover >> "$startdir/upstream-tests.txt" 2>&1
+    ./infcover >> "$startdir/upstream-tests.txt" 2>&1
+    cat "$startdir/upstream-tests.txt"
+    # Use one executable against both SONAME-compatible libraries, with no
+    # undocumented zlib state access or deliberate out-of-bounds write.
+    cc -Wall -Wextra -Werror -I. "$srcdir/window_reset_probe.c" \
+        /usr/lib/libz.so.1 -o "$startdir/window-reset-probe"
+    status=0
+    "$startdir/window-reset-probe" > "$startdir/window-reset-old.txt" || status=$?
+    cat "$startdir/window-reset-old.txt"
+    printf "negative_control_exit=%s\n" "$status"
+    test "$status" = 42
+    grep -q '^zlib=1.3.2 invalid_window_reset_dictionary_length=65536 ' "$startdir/window-reset-old.txt"
+    LD_LIBRARY_PATH="$builddir" "$startdir/window-reset-probe" > "$startdir/window-reset-fixed.txt"
+    grep -q '^zlib=1.4 invalid_window_reset_dictionary_length=32768 ' "$startdir/window-reset-fixed.txt"
+    # Versioned names, type, binding, visibility and OBJECT/TLS sizes must be
+    # retained. This checks the exported contract, not every ABI/input path.
+    for which in old new; do
+        library=/usr/lib/libz.so.1
+        test "$which" = old || library=libz.so.1.4
+        readelf --dyn-syms --wide "$library" | awk 'NF >= 8 && $1 ~ /^[0-9]+:$/ && $7 != "UND" { print $8, $4, $5, $6, ($4 == "OBJECT" || $4 == "TLS" ? $3 : "-") }' | sort -u > "$startdir/abi-$which.txt"
+        readelf --version-info --wide "$library" > "$startdir/versions-$which.txt"
+    done
+    test "$(wc -l < "$startdir/abi-old.txt")" -ge 100
+    comm -23 "$startdir/abi-old.txt" "$startdir/abi-new.txt" > "$startdir/abi-missing.txt"
+    test ! -s "$startdir/abi-missing.txt"
+    readelf -d libz.so.1.4 | grep -F 'Library soname: [libz.so.1]' > "$startdir/soname.txt"
+    cat "$startdir/window-reset-old.txt" "$startdir/window-reset-fixed.txt" "$startdir/soname.txt"
+}
+
+package() {
+    make DESTDIR="$pkgdir" install
+    install -Dm644 LICENSE "$pkgdir/usr/share/licenses/zlib/LICENSE"
+}
+
+sha512sums="
+13f02285da85956ff722d814695b96807aff7a511ebf4b6d98cf708c353920666093cc18b6653cd7992c8e75c103f7b4baf2de3a105c2db9dcd62bab2c940859  zlib-1.4.tar.gz
+e29abe87f9a09a03a2008f5e5d9fedc416af0cbaef7185797c535720b61a17f47ce014e21ea99cd37b995efc7bf145d1486ad5a3879c63089afe4570440c08cc  window_reset_probe.c
+"

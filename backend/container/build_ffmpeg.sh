@@ -30,19 +30,35 @@ fetch() {
 }
 
 mkdir -p /build /opt/ffmpeg/share/source
+source_dir="$(cd "$(dirname "$0")" && pwd)/ffmpeg-source"
 cd /build
-fetch ffmpeg.tar.xz 120 30000000 "https://ffmpeg.org/releases/ffmpeg-${version}.tar.xz"
+if [ -d "$source_dir" ]; then
+    # A local bundle still has to pass the same pinned SHA and PGP gates.
+    # Fail closed on a partial or modified bundle.
+    test "$(wc -c < "$source_dir/ffmpeg-${version}.tar.xz")" -le 30000000
+    cp "$source_dir/ffmpeg-${version}.tar.xz" ffmpeg.tar.xz
+else
+    fetch ffmpeg.tar.xz 120 30000000 "https://ffmpeg.org/releases/ffmpeg-${version}.tar.xz"
+fi
 printf '%s  ffmpeg.tar.xz\n' "$archive_sha256" | sha256sum -c -
-fetch ffmpeg.tar.xz.asc 30 20000 "https://ffmpeg.org/releases/ffmpeg-${version}.tar.xz.asc"
-fetch ffmpeg-devel.asc 30 50000 https://ffmpeg.org/ffmpeg-devel.asc
+if [ -d "$source_dir" ]; then
+    test "$(wc -c < "$source_dir/ffmpeg.tar.xz.asc")" -le 20000
+    test "$(wc -c < "$source_dir/ffmpeg-devel.asc")" -le 50000
+    cp "$source_dir/ffmpeg.tar.xz.asc" "$source_dir/ffmpeg-devel.asc" .
+else
+    fetch ffmpeg.tar.xz.asc 30 20000 "https://ffmpeg.org/releases/ffmpeg-${version}.tar.xz.asc"
+    fetch ffmpeg-devel.asc 30 50000 https://ffmpeg.org/ffmpeg-devel.asc
+fi
 mkdir -m 700 /build/gnupg
-gpg --batch --homedir /build/gnupg --no-auto-key-retrieve --import ffmpeg-devel.asc
-gpg --batch --homedir /build/gnupg --no-auto-key-retrieve --status-fd 1 --verify ffmpeg.tar.xz.asc ffmpeg.tar.xz > signature.status
+gpg --batch --dearmor --output /build/gnupg/ffmpeg-keyring.gpg ffmpeg-devel.asc
+gpgv --homedir /build/gnupg --keyring /build/gnupg/ffmpeg-keyring.gpg \
+    --status-fd 1 ffmpeg.tar.xz.asc ffmpeg.tar.xz > signature.status
 grep -F "[GNUPG:] VALIDSIG ${key_fingerprint} " signature.status
 cp ffmpeg.tar.xz "/opt/ffmpeg/share/source/ffmpeg-${version}.tar.xz"
 cp ffmpeg.tar.xz.asc ffmpeg-devel.asc signature.status /opt/ffmpeg/share/source/
 tar -xJf ffmpeg.tar.xz
 cd "ffmpeg-${version}"
+sh /media-input/patch_ffmpeg.sh
 ./configure \
     --prefix=/opt/ffmpeg \
     --disable-autodetect --disable-everything --disable-network \
@@ -58,6 +74,7 @@ cd "ffmpeg-${version}"
     --enable-protocol=file,pipe \
     --enable-filter=scale,format,aresample,anull,null
 make -j2
+sh /media-input/check_ffmpeg_security.sh
 make install
 cp COPYING.GPLv2 COPYING.GPLv3 COPYING.LGPLv2.1 COPYING.LGPLv3 LICENSE.md /opt/ffmpeg/share/
 cp ffbuild/config.log /opt/ffmpeg/share/build-config.log
@@ -65,5 +82,4 @@ cp ffbuild/config.log /opt/ffmpeg/share/build-config.log
 /opt/ffmpeg/bin/ffmpeg -hide_banner -protocols > /opt/ffmpeg/share/protocols.txt 2>&1
 /opt/ffmpeg/bin/ffmpeg -hide_banner -demuxers > /opt/ffmpeg/share/demuxers.txt 2>&1
 /opt/ffmpeg/bin/ffmpeg -hide_banner -decoders > /opt/ffmpeg/share/decoders.txt 2>&1
-# The separately linked libx264 package retains its Debian copyright/source
-# information under /usr/share/doc in the runtime image.
+# The separately linked x264 package retains its own source and license terms.

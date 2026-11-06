@@ -67,6 +67,15 @@ class EventStore:
         if getattr(statement, "column_descriptions", [{}])[0].get("entity") is SourceReport:
             assert self.ledger is not None
             records = self.ledger.records
+            if len(statement.column_descriptions) == 2:
+                assert params.get("status_1") == "future_source_time"
+                return Result([(identity, row["report"].get("timestamp")) for identity, row in records.items()
+                    if identity in params["identity_1"] and row["status"] == "future_source_time"])
+            if params.get("status_1") == "received" and params.get("report_3") == "telegram_message_id":
+                scope = {params[f"report_{i}"]: params[f"param_{i}"] for i in (1, 2, 3)}
+                return Result([SimpleNamespace(identity=identity, **row) for identity, row in records.items()
+                    if row["status"] == "received" and all(str(row["report"][key]) == value
+                    for key, value in scope.items())][:params["param_4"]])
             if "identity_1" in params and isinstance(params["identity_1"], str):
                 row = records.get(params["identity_1"])
                 column = next(iter(statement.selected_columns)).name
@@ -107,11 +116,12 @@ class Ledger:
         self.order = order
 
     async def capture(self, report):
-        identity, _ = report_identity(report)
+        identity, content_hash = report_identity(report)
         self.order.append("capture")
         if identity in self.records:
             return None
-        self.records[identity] = {"report": copy.deepcopy(report), "status": "received", "event_id": None}
+        self.records[identity] = {"report": copy.deepcopy(report), "content_hash": content_hash,
+                                  "status": "received", "event_id": None}
         return identity
 
     async def finish(self, identity, status, event_id=None):
@@ -121,6 +131,9 @@ class Ledger:
 
 @pytest.fixture
 def pipeline(monkeypatch):
+    # Synthetic policy dependency for exercising the dormant extraction branch;
+    # the real Telegram permission guard is separately tested and stays closed.
+    monkeypatch.setattr(telegram,"ensure_artifact_source_permission",lambda value:None)
     monkeypatch.setattr(news_feeds.settings, "rss_processing_mode", "model")
     monkeypatch.setattr(telegram.settings, "telegram_processing_mode", "model")
     order = []
@@ -132,7 +145,12 @@ def pipeline(monkeypatch):
 
     async def classify(text):
         order.append("classify")
-        return dict(extracted)
+        value=classifier._post_process(classifier.ClassifierResult(event_type=extracted["event_type"],
+            severity=extracted["severity"],location_name=extracted["location_name"],summary=text,
+            evidence_quote=text,stance="reported"),text)
+        if "classification_status" not in extracted:
+            value.pop("classification_status",None)
+        return value
 
     model = AsyncMock(side_effect=classify)
     geocode = AsyncMock(return_value=None)
@@ -231,11 +249,11 @@ async def test_missing_extraction_status_cannot_publish(pipeline, kind):
 
 
 @pytest.mark.asyncio
-async def test_low_severity_rss_receipt_is_terminal(pipeline):
+async def test_low_impact_relevant_rss_report_is_preserved(pipeline):
     pipeline.extracted["severity"] = 2
     await ingest("rss")
-    assert not pipeline.store.events
-    assert next(iter(pipeline.ledger.records.values()))["status"] != "received"
+    assert len(pipeline.store.events)==1 and pipeline.store.events[0].severity==2
+    assert next(iter(pipeline.ledger.records.values()))["status"] == "extracted"
 
 
 @pytest.mark.asyncio

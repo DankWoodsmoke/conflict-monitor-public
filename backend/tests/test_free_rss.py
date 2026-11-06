@@ -25,10 +25,17 @@ def free(monkeypatch):
     monkeypatch.setattr(rss.settings, "live_ingestion_enabled", True)
     monkeypatch.setattr(rss.settings, "rss_sources", "bbc_mideast")
     monkeypatch.setattr(rss, "_feed_health", {})
+    monkeypatch.setattr(rss, "_retry_one_item_turn", {})
     monkeypatch.setattr(rss, "_clock", lambda: STAMP + timedelta(hours=1))
     monkeypatch.setattr(rss, "capture_report", ledger.capture)
     monkeypatch.setattr(rss, "finish_report", ledger.finish)
     monkeypatch.setattr(rss, "async_session", store.session)
+    async def defer(identity, report):
+        assert ledger.records[identity]["report"] == report
+        await ledger.finish(identity, "future_source_time")
+    monkeypatch.setattr(rss.rss_retries, "defer_report", defer)
+    monkeypatch.setattr(rss.rss_retries, "claim_due", AsyncMock(return_value=[]))
+    monkeypatch.setattr(rss.rss_retries, "refresh_status", AsyncMock())
     forbidden = AsyncMock(side_effect=AssertionError("Free reports must not invoke paid or inferred enrichment"))
     monkeypatch.setattr(rss, "classify_message", forbidden)
     monkeypatch.setattr(rss, "geocode", forbidden)

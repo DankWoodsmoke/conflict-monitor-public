@@ -6,7 +6,7 @@ from collections import OrderedDict
 import httpx
 import pytest
 
-from app.config import settings
+from app.config import Settings, settings
 from app.services import opensky as air
 from app.services.tracking_contract import iso
 
@@ -17,6 +17,7 @@ NOW = 1793232000.0
 def isolated(monkeypatch):
     monkeypatch.setattr(settings, "demo_mode", False)
     monkeypatch.setattr(settings, "live_ingestion_enabled", True)
+    monkeypatch.setattr(settings, "opensky_fallback_enabled", False)
     monkeypatch.setattr(air, "_regional_snapshots", {})
     monkeypatch.setattr(air, "_regional_health", {})
     monkeypatch.setattr(air, "_tracks", OrderedDict())
@@ -29,6 +30,44 @@ def snapshot(*rows, now=NOW):
     return air.normalize_adsb({"now": now * 1000, "ac": [
         {"hex": identity, "lat": latitude, "lon": longitude, "seen_pos": age, "alt_geom": 0}
         for identity, latitude, longitude, age in rows]}, received=now)
+
+
+def test_opensky_fallback_requires_explicit_configuration(monkeypatch):
+    monkeypatch.delenv("OPENSKY_FALLBACK_ENABLED", raising=False)
+    assert Settings(_env_file=None).opensky_fallback_enabled is False
+    monkeypatch.setenv("OPENSKY_FALLBACK_ENABLED", "true")
+    assert Settings(_env_file=None).opensky_fallback_enabled is True
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("enabled", [False, True])
+async def test_provider_failure_contacts_opensky_only_when_enabled(monkeypatch, enabled):
+    monkeypatch.setattr(settings, "opensky_fallback_enabled", enabled)
+    monkeypatch.setattr(air.time, "time", lambda: NOW)
+    requests = []
+
+    def respond(request):
+        requests.append(request.url.host)
+        if request.url.host == "api.adsb.lol":
+            return httpx.Response(503)
+        assert request.url.host == "opensky-network.org"
+        return httpx.Response(200, json={"time": NOW, "states": []})
+
+    client_factory = httpx.AsyncClient
+    monkeypatch.setattr(air.httpx, "AsyncClient", lambda **kwargs: client_factory(
+        transport=httpx.MockTransport(respond), **kwargs))
+
+    async def end_after_one_cycle(seconds):
+        assert seconds == air.POLL_INTERVAL
+        raise asyncio.CancelledError
+
+    monkeypatch.setattr(air.asyncio, "sleep", end_after_one_cycle)
+    with pytest.raises(asyncio.CancelledError):
+        await air.start_opensky_poller()
+
+    expected = ["api.adsb.lol", "opensky-network.org"] if enabled else ["api.adsb.lol"]
+    assert requests == expected
+    assert air._next_attempt["opensky"] == (NOW + air.OPENSKY_FALLBACK_INTERVAL if enabled else 0)
 
 
 def distance_nm(lat, lon, latitude, longitude):

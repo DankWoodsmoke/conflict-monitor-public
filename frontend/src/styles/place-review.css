@@ -1,0 +1,9 @@
+.place-mention-review{margin-top:12px;padding-top:10px;border-top:1px solid #29404e;overflow-wrap:anywhere}
+.place-mention-review button{min-height:44px;padding:8px 12px;background:#183440;border:1px solid #587b89;border-radius:5px;color:#d8ecf2;font:inherit;cursor:pointer}
+.place-mention-review button:focus-visible{outline:2px solid #b6e9ee;outline-offset:3px}
+.place-mention-review button:disabled{cursor:wait;opacity:.7}
+.place-mention-review ul{margin:8px 0;padding-left:18px}
+.place-mention-review li{margin:12px 0}
+.place-mention-review blockquote{margin:6px 0;padding:5px 9px;border-left:2px solid #648591;color:#c4d7de;white-space:pre-wrap}
+.place-mention-review mark{background:#cfdfab;color:#142423;padding:1px 2px}
+.place-mention-review [role=alert]{color:#ffb6ac}

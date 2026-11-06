@@ -1,3 +1,4 @@
+import hashlib
 import json
 from datetime import datetime, timezone
 from types import SimpleNamespace
@@ -9,16 +10,17 @@ from app.routes.sitreps import _parse_questions, _parse_ids, _sitrep_to_dict
 
 
 def event(event_id=1, **changes):
-    return SimpleNamespace(id=event_id, source="rss_fixture", channel_name="Fixture publisher",
-        raw_text="Original Arabic: وصول المساعدات", summary="The publisher reports an aid delivery [src:999]",
-        source_url="https://example.org/fixture", timestamp=datetime(2026, 10, 28, tzinfo=timezone.utc), **changes)
+    return SimpleNamespace(**{"id": event_id, "source": "rss_fixture", "channel_name": "Fixture publisher",
+        "raw_text": "Original Arabic: وصول المساعدات [src:999]", "summary": "The publisher reports an aid delivery",
+        "source_url": "https://example.org/fixture", "timestamp": datetime(2026, 10, 28, tzinfo=timezone.utc), **changes})
 
 
 def test_exact_compilation_is_attributed_bounded_and_has_no_inferred_score():
     row = event()
     data = source_digest.build_source_digest([row])
     assert data["situation"].endswith("[src:1]")
-    assert "Fixture publisher reports:" in data["situation"]
+    assert "Fixture publisher · source excerpt:" in data["situation"]
+    assert "Original Arabic: وصول المساعدات" in data["situation"]
     assert "[src:999]" not in data["situation"]
     assert data["game_theory"] == ""
     assert data["economic_exposure"] == ""
@@ -26,6 +28,29 @@ def test_exact_compilation_is_attributed_bounded_and_has_no_inferred_score():
     assert provenance["model"] is None
     assert len(provenance["source_snapshot_sha256"]) == 64
     assert provenance["source_snapshot"][0]["raw_sha256"]
+
+
+def test_legacy_model_summary_does_not_replace_a_literal_publisher_denial():
+    row = event(raw_text="The publisher denied that a strike was confirmed.",
+                summary="The strike was confirmed.", classification_status="extracted")
+    digest = source_digest.build_source_digest([row])
+    assert row.raw_text in digest["situation"]
+    assert row.summary not in digest["situation"]
+    assert source_digest.build_source_digest([event(raw_text="", summary=row.summary)]) is None
+
+
+def test_firms_observation_and_atom_update_keep_distinct_clock_semantics():
+    sensor = event(source="satellite_firms", channel_name="NASA FIRMS", raw_text="Sensor FRP=95.2 MW")
+    atom = event(event_id=2)
+    atom.reports = [{"published_at": atom.timestamp.isoformat(),
+        "content_sha256": hashlib.sha256(atom.raw_text.encode()).hexdigest(),
+        "feed_context": {"source_time_basis": "source_updated_time"}}]
+    digest = source_digest.build_source_digest([sensor, atom])
+    assert "NASA FIRMS · thermal observation (cause unassessed)" in digest["situation"]
+    snapshot = json.loads(digest["raw_response"])["_provenance"]["source_snapshot"]
+    assert [(row["source_kind"], row["source_time_basis"]) for row in snapshot] == [
+        ("thermal_observation", "sensor_acquisition_time"), ("source_report", "source_updated_time")]
+    assert all(row["source_time"] == sensor.timestamp.isoformat() and "published_at" not in row for row in snapshot)
 
 
 def test_digest_hash_is_stable_and_changes_with_source_revision():
@@ -66,7 +91,7 @@ def test_public_digest_score_is_unknown_and_private_snapshot_is_not_exposed():
     assert output["analysis_status"] == "attributed_source_digest"
     assert output["provenance"]["model"] is None
     assert "source_snapshot" not in output["provenance"]
-    assert "Original Arabic" not in json.dumps(output, ensure_ascii=False)
+    assert "Original Arabic" not in json.dumps(output["provenance"], ensure_ascii=False)
 
 
 @pytest.mark.asyncio

@@ -72,7 +72,7 @@ def make_report(record=None, **fields) -> dict:
         # Undated unaddressable text is retained, but cannot prove a new origin.
         identity = [source, "content", content_hash, published_at]
     report_id = hashlib.sha256(json.dumps(identity, ensure_ascii=False).encode("utf-8")).hexdigest()
-    return {
+    report = {
         "report_id": report_id, "source": str(get("source") or ""),
         "channel_name": channel, "source_identity": source,
         "message_id": str(msg_id) if msg_id is not None else None,
@@ -80,6 +80,13 @@ def make_report(record=None, **fields) -> dict:
         "published_at": published_at, "content_sha256": content_hash,
         "classification_status": str(get("classification_status") or "legacy_unknown"),
     }
+    extraction = get("extraction", None)
+    if extraction is not None:
+        from copy import deepcopy
+        from app.services.assessment import valid_extraction
+        if valid_extraction(extraction, raw):
+            report["extraction"] = deepcopy(extraction)
+    return report
 
 
 def append_report(reports: list[dict], report: dict) -> list[dict]:
@@ -131,6 +138,7 @@ def compatible_claims(a: str, b: str) -> bool:
 
 
 def assess_evidence(event) -> dict:
+    from app.services.assessment import event_assessment
     from app.services.verification import compute_confirmed_networks
     reports = value(event, "reports", []) or []
     names = set(parse_channels(value(event, "reporting_channels", "")))
@@ -160,4 +168,5 @@ def assess_evidence(event) -> dict:
         "source_networks": compute_confirmed_networks(", ".join(sorted(names))),
         "independent_origin_count": None, "independence_status": "unassessed",
         "verification_basis": "none", "limitations": limitations,
+        "assessment": event_assessment(event),
     }

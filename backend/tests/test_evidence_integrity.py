@@ -140,9 +140,10 @@ class ClassifierTests(unittest.IsolatedAsyncioTestCase):
                 classifier.ClassifierResult(**data)
 
     def test_unknown_location_stays_unknown_despite_flag(self):
+        raw="🇮🇷 Iranian officials announced an exercise abroad"
         result = classifier.ClassifierResult(event_type="military", severity=3,
-                                            summary="Officials reported an exercise", location_name="Unknown")
-        classified = classifier._post_process(result, "🇮🇷 Iranian officials announced an exercise abroad")
+                                            summary=raw, evidence_quote=raw, stance="reported",location_name="Unknown")
+        classified = classifier._post_process(result, raw)
         self.assertEqual(classified["location_name"], "Unknown")
 
     def test_short_report_and_promotional_suffix_are_not_blindly_dropped(self):
@@ -172,10 +173,10 @@ class ClassifierTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_batch_output_is_bound_to_input_ids(self):
         loop = asyncio.get_running_loop()
-        jobs = [classifier._ClassifyJob(str(i), "", str(i), loop.create_future()) for i in (1, 2)]
+        jobs = [classifier._ClassifyJob(f"Report {i}", "", f"Report {i}", loop.create_future()) for i in (1, 2)]
         def item(i):
             return {"input_id": i, "event_type": "military", "severity": 3,
-                    "location_name": "Unknown", "summary": f"Report {i}"}
+                    "location_name": "Unknown", "summary": f"Report {i}","evidence_quote":f"Report {i}","stance":"reported"}
         response = SimpleNamespace(content=[SimpleNamespace(text=json.dumps([item(2), item(1)]))], usage=None)
         client = SimpleNamespace(messages=SimpleNamespace(create=AsyncMock(return_value=response)))
         with patch.object(classifier, "_get_client", return_value=client), patch.object(classifier, "_log_usage_bg"):

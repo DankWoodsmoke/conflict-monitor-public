@@ -34,8 +34,11 @@ from app.services.anomaly import analyze_anomaly
 from app.services.broadcaster import broadcaster
 from app.schemas import EventRead, EventWS
 from app.services.classifier import classify_message
+from app.services.assessment import valid_classification
+from app.services.local_briefing import ensure_artifact_source_permission, SourcePermissionRequired
 from app.services.dedup import check_duplicate, merge_duplicate
 from app.services.geocoder import geocode
+from app.services import rss_retries
 
 logger = logging.getLogger(__name__)
 
@@ -280,14 +283,32 @@ async def _process_model_article(
     if resumed and await _recover_committed_report(report, receipt, "extracted"):
         return "recovered"
 
+    try:
+        ensure_artifact_source_permission({"source_platform":"rss","source_url":url})
+    except SourcePermissionRequired:
+        await finish_report(receipt,"source_permission_required")
+        return "source_permission_required"
+    # Corrections are retained before invoking a model; a model interpretation
+    # must not overwrite or swallow a revision of the same publisher URL.
+    async with async_session() as session:
+        previous = await session.execute(select(Event.id).where(Event.source_url == url).limit(1))
+        prior_id = previous.scalar_one_or_none()
+        if prior_id is not None:
+            await finish_report(receipt,"source_revision_needs_review",prior_id)
+            return "source_revision_needs_review"
+
     # Classify
     result = await classify_message(full_text)
     if result.get("classification_status", "invalid") != "extracted":
         await finish_report(receipt, result.get("classification_status", "invalid"))
         return
+    if not valid_classification(result,full_text):
+        await finish_report(receipt,"invalid")
+        return "invalid"
     report["summary"] = result.get("summary", "")
     report["classification_status"] = "extracted"
-    severity = result.get("severity", 5)
+    report["extraction"] = result["extraction"]
+    severity = result["severity"]
 
     # Classifier flagged this as noise/commentary
     if result.get("is_noise"):
@@ -295,14 +316,9 @@ async def _process_model_article(
         logger.debug("RSS: noise/commentary dropped: %s", title[:60])
         return
 
-    if severity < MIN_SEVERITY:
-        await finish_report(receipt, "below_threshold")
-        logger.debug("RSS: low severity (%d) — skipping: %s", severity, title[:60])
-        return
-
     # Geocode
-    location_name = result.get("location_name", "Unknown")
-    coords = await geocode(location_name)
+    location_name = "Unknown"
+    coords = None  # Model classification cannot authorize an incident position.
     if coords:
         lat, lon = coords
         is_geolocated = True
@@ -317,7 +333,7 @@ async def _process_model_article(
         existing = await check_duplicate(
             session,
             result.get("summary", ""),
-            result.get("event_type", "military"),
+            result["event_type"],
             lat, lon,
             published, source_name=source_name, report=report,
         )
@@ -344,7 +360,7 @@ async def _process_model_article(
             try:
                 anomaly = await analyze_anomaly(
                     summary=result.get("summary", ""),
-                    event_type=result.get("event_type", "military"),
+                    event_type=result["event_type"],
                     severity=severity,
                     location_name=location_name,
                     raw_text=full_text,
@@ -359,7 +375,7 @@ async def _process_model_article(
             channel_name=source_name,
             raw_text=full_text,
             summary=result.get("summary", full_text[:200]),
-            event_type=result.get("event_type", "military"),
+            event_type=result["event_type"],
             severity=severity,
             lat=lat,
             lon=lon,
@@ -397,6 +413,7 @@ _owned_receipt: ContextVar[str | None] = ContextVar("rss_owned_receipt", default
 _MAX_PARSED_ITEMS = 1000
 _FETCH_CONCURRENCY = 4
 _TERMINAL_RECEIPTS = frozenset({
+    "source_permission_required",
     "reported", "extracted", "source_revision_needs_review", "invalid_source_metadata",
     "input_too_large", "undated_source", "future_source_time", "noise", "below_threshold", "filtered",
 })
@@ -475,6 +492,17 @@ async def _capture_rss_report(report):
         return created, "received", None
     identity, _ = report_identity(report)
     status = await _receipt_status(identity)
+    # Reconsider a retained future clock only after that original clock is due.
+    # New feed metadata cannot rewrite the immutable source time or body.
+    if status == "future_source_time" and settings.rss_processing_mode == "reports":
+        if _owned_receipt.get() != identity:
+            return None, "pending_receipt", None
+        original = await _receipt_source(identity)
+        if not isinstance(original, dict) or report_identity(original)[0] != identity:
+            raise ValueError("Stored receipt source identity is invalid")
+        if _future_receipt_due(original):
+            return identity, status, original
+        return None, "future_source_time", None
     if status in _TERMINAL_RECEIPTS:
         return None, "duplicate", None
     if status in _RESUMABLE_RECEIPTS and _owned_receipt.get() == identity:
@@ -486,6 +514,11 @@ async def _capture_rss_report(report):
     return None, "pending_receipt", None
 
 
+def _future_receipt_due(report):
+    stamp = rss_retries.parse_source_clock(report.get("timestamp"))
+    return bool(stamp is not None and stamp <= _clock())
+
+
 async def _terminal_identities(reports):
     identities = {report_identity(report)[0] for report in reports}
     if not identities:
@@ -493,7 +526,17 @@ async def _terminal_identities(reports):
     async with async_session() as session:
         result = await session.execute(select(SourceReport.identity).where(
             SourceReport.identity.in_(identities), SourceReport.status.in_(_TERMINAL_RECEIPTS)))
-        return set(result.scalars().all())
+        terminal = set(result.scalars().all())
+        if settings.rss_processing_mode == "reports" and terminal:
+            # Read only retained clocks, not article bodies. This batch is
+            # bounded by the already-parsed feed, and future work does not
+            # consume the shared per-cycle processing quota before it is due.
+            future_rows = await session.execute(select(SourceReport.identity,
+                SourceReport.report["timestamp"].astext.label("timestamp")).where(
+                    SourceReport.identity.in_(terminal), SourceReport.status == "future_source_time"))
+            terminal.difference_update(identity for identity, stamp in future_rows.all()
+                if _future_receipt_due({"timestamp": stamp}))
+        return terminal
 
 
 async def _recover_committed_report(report, receipt, status):
@@ -554,6 +597,8 @@ def get_feed_status() -> dict:
         "configured_relevance_mode": settings.rss_relevance_mode,
         "poll_interval_seconds": settings.rss_poll_interval_seconds, "feeds": sources,
         "cycle": dict(_cycle_status),
+        "retry_queue": rss_retries.get_status([feed["source"] for feed in feeds],
+            settings.live_ingestion_enabled and settings.rss_processing_mode == "reports"),
         "coverage_limitation": "Selected publishers; unreviewed metadata, not incident verification. Source publication is not incident time. Conditional HTTP is deferred so unfinished feed items cannot disappear behind304 responses."}
 
 
@@ -594,9 +639,14 @@ async def _process_article_unlocked(title: str, description: str, url: str, publ
     receipt, retained, resumed = await _capture_rss_report(report)
     if receipt is None:
         return retained
-    if resumed is not None:
-        report, full_text = resumed, resumed["raw_text"]
-        title, published = resumed.get("summary", ""), _source_clock(resumed)
+    return await _publish_rss_snapshot(receipt, resumed or report, reliability, resumed is not None)
+
+
+async def _publish_rss_snapshot(receipt, report, reliability, resumed):
+    """Publish only a captured source snapshot, including an unchanged clock."""
+    full_text = report["raw_text"]
+    title, published = report.get("summary", ""), _source_clock(report)
+    source_name = report["channel_name"]
     if not title.strip() or not report["source_url"]:
         await finish_report(receipt, "invalid_source_metadata")
         return "invalid_source_metadata"
@@ -607,7 +657,10 @@ async def _process_article_unlocked(title: str, description: str, url: str, publ
         await finish_report(receipt, "undated_source")
         return "undated_source"
     if published > _clock() + timedelta(minutes=5):
-        await finish_report(receipt, "future_source_time")
+        if rss_retries.supported_report(report, receipt):
+            await rss_retries.defer_report(receipt, report)
+        else:
+            await finish_report(receipt, "future_source_time")
         return "future_source_time"
     if resumed and await _recover_committed_report(report, receipt, "reported"):
         return "recovered"
@@ -631,6 +684,72 @@ async def _process_article_unlocked(title: str, description: str, url: str, publ
         await finish_report(receipt, "reported", event.id)
         await broadcaster.broadcast(EventWS(type="new_event", event=EventRead.model_validate(event)).model_dump_json())
     return "reported"
+
+
+async def _process_retained_future(item, feed):
+    report = item.report
+    if (not rss_retries.supported_report(report, item.identity, item.content_hash)
+        or report["channel_name"] != feed["source"] or item.source_name != feed["source"]
+        or rss_retries.parse_source_clock(report["timestamp"]) != item.due_at):
+        return "invalid_retry_source"
+    if settings.rss_processing_mode != "reports":
+        return "policy_deferred"
+    if settings.rss_relevance_mode != "selected_sources" and not _is_conflict_relevant(report.get("summary", ""), report["raw_text"]):
+        return "policy_deferred"
+    async with _receipt_ownership(report) as owned:
+        if not owned:
+            return "pending_receipt"
+        receipt, retained, resumed = await _capture_rss_report(report)
+        if receipt is None:
+            return retained
+        if resumed is None:
+            raise ValueError("Deferred source receipt was not retained")
+        return await _publish_rss_snapshot(receipt, resumed, feed["reliability"], True)
+
+
+async def _drain_due_reports(feed, budget, processing_lock):
+    """Share ordinary processing quotas; a failed/empty feed cannot hide due work."""
+    if settings.rss_processing_mode != "reports" or budget <= 0:
+        return 0
+    source, now = feed["source"], _clock()
+    state = _feed_health.setdefault(source, {})
+    # Half of each source's quota (at most two) is reserved for due receipts.
+    # A one-item quota alternates, so backlog cannot permanently starve new work.
+    if budget == 1:
+        prefer_due = _retry_one_item_turn.get(source, True)
+        _retry_one_item_turn[source] = not prefer_due
+        quota = int(prefer_due)
+    else:
+        quota = min(rss_retries.MAX_PER_FEED, budget // 2)
+    attempted = 0
+    try:
+        items = await rss_retries.claim_due(source, quota, now)
+        for item in items:
+            attempted += 1
+            outcome, error_type = "retryable_error", None
+            try:
+                async with asyncio.timeout(30):
+                    if processing_lock is None:
+                        outcome = await _process_retained_future(item, feed)
+                    else:
+                        async with processing_lock:
+                            outcome = await _process_retained_future(item, feed)
+            except asyncio.CancelledError:
+                # The short durable claim expires; never acknowledge incomplete
+                # work or leave an unbounded background cleanup task running.
+                raise
+            except Exception as error:
+                error_type = type(error).__name__
+            await rss_retries.finish_attempt(item, outcome, _clock(), error_type)
+            state["retry_outcomes"][outcome] = state["retry_outcomes"].get(outcome, 0) + 1
+        await rss_retries.refresh_status(source, _clock())
+    except asyncio.CancelledError:
+        raise
+    except Exception as error:
+        rss_retries.failed_status(source, _clock(), error)
+        state["retry_error_type"] = type(error).__name__
+    state["retried_items"] = attempted
+    return attempted
 
 
 async def _read_feed_response(feed: dict, client: httpx.AsyncClient):
@@ -723,13 +842,17 @@ async def _poll_feed(feed: dict, http_client: httpx.AsyncClient, max_items: int 
     state = _feed_health.setdefault(source, {})
     budget = min(settings.rss_max_items_per_feed, max_items if max_items is not None else settings.rss_max_items_per_feed)
     state["attempt_quota"] = budget
+    state.update(attempted_items=0, retried_items=0, retry_outcomes={}, retry_error_type=None)
     if fetch_semaphore is None:
         fetched = await _fetch_feed(feed, http_client)
     else:
         async with fetch_semaphore:
             fetched = await _fetch_feed(feed, http_client)
-    if fetched is None or budget <= 0:
+    if budget <= 0:
         return 0
+    state["attempted_items"] = await _drain_due_reports(feed, budget, processing_lock)
+    if fetched is None:
+        return state["attempted_items"]
     articles, context = fetched
     try:
         selected = [article for article in articles if
@@ -1014,6 +1137,7 @@ async def start_x_poller():
 # ── BACKGROUND TASK ENTRYPOINT ─────────────────────────────────────────────────
 
 _poll_cursor = 0
+_retry_one_item_turn: dict[str, bool] = {}
 
 
 def _feed_quotas(count, per_feed, global_limit):

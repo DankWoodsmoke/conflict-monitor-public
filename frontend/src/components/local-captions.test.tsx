@@ -1,7 +1,7 @@
-import {act} from "react";
+import {act,StrictMode} from "react";
 import {createRoot,type Root} from "react-dom/client";
 import {afterEach,beforeEach,describe,expect,it,vi} from "vitest";
-import {LocalBriefingPanel} from "./LocalBriefingPanel";
+import {CaptionedVideo,LocalBriefingPanel} from "./LocalBriefingPanel";
 import {apiFetch} from "../lib/api";
 import {captionVtt,prepareBriefingCaptions,type CaptionPlan,type CaptionResult} from "../lib/briefingCaptions";
 
@@ -17,6 +17,7 @@ let host:HTMLDivElement,root:Root,mounted:boolean,current:ReturnType<typeof mani
 let createUrl:ReturnType<typeof vi.fn<(value:Blob|MediaSource)=>string>>,revokeUrl:ReturnType<typeof vi.fn<(value:string)=>void>>;
 const trackModes=new WeakMap<HTMLTrackElement,{mode:string}>(),trackLists=new WeakMap<HTMLMediaElement,EventTarget>();
 let oldTrack:PropertyDescriptor|undefined,oldList:PropertyDescriptor|undefined;
+let mediaCalls:Array<{element:HTMLMediaElement;method:"pause"|"load";src:string|null;tracks:Array<{src:string|null;mode:string}>}>,disposalError:boolean;
 function list(video:HTMLMediaElement){let value=trackLists.get(video);if(!value){value=new EventTarget();trackLists.set(video,value);}return value;}
 const click=(name:string)=>[...host.querySelectorAll<HTMLButtonElement>("button")].find(b=>b.textContent===name)!.click();
 beforeEach(()=>{
@@ -28,6 +29,14 @@ beforeEach(()=>{
  oldTrack=Object.getOwnPropertyDescriptor(HTMLTrackElement.prototype,"track");oldList=Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype,"textTracks");
  Object.defineProperty(HTMLTrackElement.prototype,"track",{configurable:true,get(){let value=trackModes.get(this);if(!value){value={mode:"disabled"};trackModes.set(this,value);}return value;}});
  Object.defineProperty(HTMLMediaElement.prototype,"textTracks",{configurable:true,get(){return list(this);}});
+ // JSDOM has no native media player. Record owned resource disposal; actual
+ // decoder/caption readiness and retention are exercised in real browsers.
+ mediaCalls=[];disposalError=false;
+ vi.spyOn(HTMLMediaElement.prototype,"pause").mockImplementation(function(this:HTMLMediaElement){mediaCalls.push({element:this,method:"pause",src:this.getAttribute("src"),tracks:[]});});
+ vi.spyOn(HTMLMediaElement.prototype,"load").mockImplementation(function(this:HTMLMediaElement){
+  mediaCalls.push({element:this,method:"load",src:this.getAttribute("src"),tracks:[...this.querySelectorAll("track")].map(t=>({src:t.getAttribute("src"),mode:t.track.mode}))});
+  if(disposalError&&!this.hasAttribute("src"))this.dispatchEvent(new Event("error"));
+ });
  host=document.createElement("div");document.body.append(host);root=createRoot(host);mounted=true;
 });
 afterEach(async()=>{
@@ -38,6 +47,37 @@ afterEach(async()=>{
 });
 
 describe("caption resource and playback lifecycle",()=>{
+ it("releases native media and caption sources on unmount without removing React-owned track nodes",async()=>{
+  const onError=vi.fn();await act(async()=>root.render(<CaptionedVideo video={current} src="/fixture-a.mp4" onError={onError} onLoadedMetadata={()=>{}}/>));
+  const video=host.querySelector("video")!,track=host.querySelector("track")!,url=track.src;
+  expect(mediaCalls).toEqual([]);expect(track.track.mode).toBe("showing");
+  await act(async()=>root.unmount());mounted=false;
+  expect(mediaCalls.map(c=>c.method)).toEqual(["pause","load"]);
+  expect(mediaCalls[1]).toMatchObject({element:video,src:null,tracks:[{src:null,mode:"disabled"}]});
+  expect(video.contains(track)).toBe(true);expect(video.hasAttribute("src")).toBe(false);expect(track.hasAttribute("src")).toBe(false);
+  expect(revokeUrl).toHaveBeenCalledExactlyOnceWith(url);expect(onError).not.toHaveBeenCalled();
+ });
+ it("restores the same video after StrictMode disposal and propagates only active media errors",async()=>{
+  disposalError=true;const onError=vi.fn(),onLoadedMetadata=vi.fn();
+  await act(async()=>root.render(<StrictMode><CaptionedVideo video={current} src="/fixture-a.mp4" onError={onError} onLoadedMetadata={onLoadedMetadata}/></StrictMode>));
+  const video=host.querySelector("video")!,track=host.querySelector("track")!;
+  expect(mediaCalls.map(c=>c.method)).toEqual(["pause","load"]);expect(mediaCalls[0].element).toBe(video);
+  expect(video.getAttribute("src")).toBe("/fixture-a.mp4");expect(track.track.mode).toBe("showing");expect(track.src).toBe(createUrl.mock.results.at(-1)?.value);expect(onError).not.toHaveBeenCalled();
+  await act(async()=>video.dispatchEvent(new Event("loadedmetadata")));expect(onLoadedMetadata).toHaveBeenCalledOnce();
+  await act(async()=>video.dispatchEvent(new Event("error")));expect(onError).toHaveBeenCalledOnce();
+  await act(async()=>track.dispatchEvent(new Event("error",{bubbles:true})));expect(onError).toHaveBeenCalledOnce();
+ });
+ it("does not dispose a source React already replaced or reset its caption preference",async()=>{
+  const onError=vi.fn(),onLoadedMetadata=vi.fn();const render=(src:string)=><CaptionedVideo video={current} src={src} onError={onError} onLoadedMetadata={onLoadedMetadata}/>;
+  await act(async()=>root.render(render("/fixture-a.mp4")));const video=host.querySelector("video")!,track=host.querySelector("track")!,url=track.src;video.currentTime=4;
+  await act(async()=>click("Hide captions"));await act(async()=>root.render(render("/fixture-b.mp4")));
+  expect(host.querySelector("video")).toBe(video);expect(video.getAttribute("src")).toBe("/fixture-b.mp4");expect(host.querySelector("track")).toBe(track);
+  expect(track.src).toBe(url);expect(track.track.mode).toBe("disabled");expect(mediaCalls).toEqual([]);expect(revokeUrl).not.toHaveBeenCalled();
+  await act(async()=>click("Show captions"));expect(track.track.mode).toBe("showing");
+  await act(async()=>video.dispatchEvent(new Event("loadedmetadata")));expect(onLoadedMetadata).toHaveBeenCalledOnce();
+  await act(async()=>video.dispatchEvent(new Event("error")));expect(onError).toHaveBeenCalledOnce();
+  await act(async()=>root.unmount());mounted=false;expect(mediaCalls.map(c=>c.method)).toEqual(["pause","load"]);expect(mediaCalls[0].src).toBe("/fixture-b.mp4");
+ });
  it("renders exact safe transcript, native captions and named controls without generation requests",async()=>{
   await act(async()=>root.render(<LocalBriefingPanel mode="video"/>));
   const track=host.querySelector("track")!;expect(track.kind).toBe("captions");expect(track.srclang).toBe("en");expect(track.default).toBe(true);expect(track.track.mode).toBe("showing");
@@ -50,7 +90,7 @@ describe("caption resource and playback lifecycle",()=>{
   await act(async()=>click("Hide captions"));
   await act(async()=>vi.advanceTimersByTimeAsync(45000));
   expect(host.querySelector("video")).toBe(video);expect(video.currentTime).toBe(4);expect(host.querySelector("track")).toBe(track);expect(track.track.mode).toBe("disabled");
-  expect(prepare).toHaveBeenCalledOnce();expect(createUrl).toHaveBeenCalledOnce();expect(revokeUrl).not.toHaveBeenCalled();expect(host.textContent).toContain("Show captions");
+  expect(prepare).toHaveBeenCalledOnce();expect(createUrl).toHaveBeenCalledOnce();expect(revokeUrl).not.toHaveBeenCalled();expect(host.textContent).toContain("Show captions");expect(mediaCalls).toEqual([]);
  });
  it("synchronises the explicit toggle with changes made through native caption controls",async()=>{
   await act(async()=>root.render(<LocalBriefingPanel mode="video"/>));const video=host.querySelector("video")!,track=host.querySelector("track")!;

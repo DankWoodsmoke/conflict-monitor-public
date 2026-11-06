@@ -71,6 +71,7 @@ jobs:
       - run: python tools/verify_database_role.py
       - run: python tools/verify_postgis.py
       - run: python tools/verify_live_pipeline.py
+      - run: python tools/verify_event_delivery.py
       - run: python tools/release_gate.py --scan-only
       - run: pip-audit
   container_profile:
@@ -150,17 +151,35 @@ jobs:
       - name: Verify actual runtime permissions and PostGIS TCP pipeline
         run: |
           set -o pipefail
-          for gate in verify_database_role.py verify_postgis.py verify_live_pipeline.py; do
+          for gate in verify_database_role.py verify_postgis.py verify_live_pipeline.py verify_event_delivery.py; do
             docker compose --env-file "$QUALIFY_DIR/fixture.env" -f docker-compose.yml -f "$QUALIFY_DIR/compose.override.yml" exec -T backend python "/qualification/tools/$gate" | tee "$QUALIFY_DIR/reports/$gate.log"
           done
       - name: Verify PID1, capability, mount and port boundaries
         run: |
-          python tools/verify_container_boundary.py --project "$COMPOSE_PROJECT_NAME" --compose-file docker-compose.yml --override-file "$QUALIFY_DIR/compose.override.yml" --env-file "$QUALIFY_DIR/fixture.env" --output "$QUALIFY_DIR/reports/container-boundary.json"
+          python tools/verify_container_boundary.py --project "$COMPOSE_PROJECT_NAME" --compose-file docker-compose.yml --override-file "$QUALIFY_DIR/compose.override.yml" --env-file "$QUALIFY_DIR/fixture.env" --database-uid 70 --output "$QUALIFY_DIR/reports/container-boundary.json"
       - name: Verify actual served security and cache headers
         run: |
           front=$(docker compose --env-file "$QUALIFY_DIR/fixture.env" -f docker-compose.yml -f "$QUALIFY_DIR/compose.override.yml" port frontend 80)
           back=$(docker compose --env-file "$QUALIFY_DIR/fixture.env" -f docker-compose.yml -f "$QUALIFY_DIR/compose.override.yml" port backend 8000)
           python tools/verify_http_headers.py --frontend-url "http://$front" --backend-url "http://$back" --output "$QUALIFY_DIR/reports/http-headers.json"
+      - name: Remove ordinary operator fixture before public qualification
+        run: docker compose --env-file "$QUALIFY_DIR/fixture.env" -f docker-compose.yml -f "$QUALIFY_DIR/compose.override.yml" down --volumes --remove-orphans
+      - name: Build public ingress and offline connector images
+        run: |
+          docker build --build-arg NGINX_CONFIG=nginx-public.conf --tag "$COMPOSE_PROJECT_NAME-public" frontend
+          docker pull cloudflare/cloudflared:2026.10.7@sha256:4955524aeaa379e154023d5a027c250f7b35041a2e7e950cf13f144bc9b9c5ba
+          docker build --tag "$COMPOSE_PROJECT_NAME-tunnel" tools/hosting
+      - name: Verify public Compose, two-table reader and authored packet pipeline
+        run: |
+          python -m pip install httpx==0.28.1
+          python tools/verify_hosting_profile.py --output "$QUALIFY_DIR/reports/hosting-profile.json"
+          python tools/verify_public_profile_ci.py --backend-image "$COMPOSE_PROJECT_NAME-backend" --database-image "$COMPOSE_PROJECT_NAME-db" --operator-image "$COMPOSE_PROJECT_NAME-frontend" --public-image "$COMPOSE_PROJECT_NAME-public" --output "$QUALIFY_DIR/reports/public-compose.json"
+      - name: Verify explicit ingress, gzip and offline connector provenance
+        run: |
+          python tools/verify_public_ingress.py --frontend-image "$COMPOSE_PROJECT_NAME-public" --backend-image "$COMPOSE_PROJECT_NAME-backend" --output "$QUALIFY_DIR/reports/public-ingress.json"
+          python tools/verify_hosted_edge.py --frontend-image "$COMPOSE_PROJECT_NAME-public" --backend-image "$COMPOSE_PROJECT_NAME-backend" --output "$QUALIFY_DIR/reports/hosted-edge.json"
+          tunnel_image=$(docker image inspect --format '{{.Id}}' "$COMPOSE_PROJECT_NAME-tunnel")
+          python tools/verify_cloudflared_static.py --image "$tunnel_image" --output "$QUALIFY_DIR/reports/cloudflared-offline.json"
       - name: Remove generated fixture secrets from retained reports
         id: sanitize_reports
         if: always() && env.QUALIFY_DIR != ''

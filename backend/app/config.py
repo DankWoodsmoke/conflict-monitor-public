@@ -1,10 +1,13 @@
 from typing import Literal
-from pydantic import Field
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
     database_url: str = "postgresql+asyncpg://postgres:postgres@db:5432/conflict_monitor"
+    telegram_transport: Literal["disabled", "bot", "session"] = "disabled"
+    telegram_bot_token: SecretStr = SecretStr("")
+    telegram_bot_channels: str = ""  # Explicit publisher consent; public handle:numeric chat ID.
     telegram_api_id: int = 0
     telegram_api_hash: str = ""
     telegram_phone: str = ""
@@ -15,8 +18,18 @@ class Settings(BaseSettings):
     telegram_startup_max_messages: int = Field(20, ge=1, le=100)
     opensky_username: str = ""
     opensky_password: str = ""
+    # Operational REST use requires prior written permission from OpenSky.
+    opensky_fallback_enabled: bool = False
     aisstream_api_key: str = ""
     demo_mode: bool = False
+    # Public hosting is an explicitly restricted reader, never an operator API.
+    public_read_only: bool = False
+    # Legacy flags retained for config compatibility; never unlock private data.
+    public_reports_enabled: bool = False
+    public_tracking_enabled: bool = False
+    # Independent fixed-source publication; never enables private-corpus access.
+    public_observation_publisher_enabled: bool = False
+    public_aircraft_publisher_enabled: bool = False
     # Collection and paid model work require explicit operator opt-in.
     live_ingestion_enabled: bool = False
     x_ingestion_enabled: bool = False

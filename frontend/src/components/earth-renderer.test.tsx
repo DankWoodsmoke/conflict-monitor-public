@@ -10,10 +10,12 @@ const fixture=vi.hoisted(()=>({viewer:null as any,options:null as any,fromUrl:vi
 vi.mock('cesium',async importOriginal=>{
  const real=await importOriginal<typeof import('cesium')>();
  return {...real,Cesium3DTileset:{fromUrl:fixture.fromUrl},Viewer:class {
-  scene:any;camera:any;canvas:any;dataSources={add:vi.fn()};screenSpaceEventHandler={setInputAction:vi.fn()};imageryLayers={addImageryProvider:vi.fn(()=>({fixtureLayer:true})),remove:vi.fn()};resolutionScale=0;destroyed=false;resize=vi.fn();flyTo=vi.fn();nativeNodes:HTMLElement[]=[];
+  scene:any;camera:any;canvas:any;clock=new real.Clock();dataSources={add:vi.fn()};dataSourceDisplay={update:vi.fn()};screenSpaceEventHandler={setInputAction:vi.fn()};imageryLayers={addImageryProvider:vi.fn(()=>({fixtureLayer:true})),remove:vi.fn()};resolutionScale=0;destroyed=false;resize=vi.fn();flyTo=vi.fn();nativeNodes:HTMLElement[]=[];
   constructor(_container:HTMLElement,options:unknown){fixture.viewer=this;fixture.options=options;
-   this.canvas={clientWidth:1118,clientHeight:757};this.scene={globe:{show:true},renderError:new real.Event(),preRender:new real.Event(),postRender:new real.Event(),requestRender:vi.fn(),primitives:{add:vi.fn(),remove:vi.fn()},pickPositionSupported:false};
-   this.camera={pitch:-Math.PI/2,heading:0,positionWC:real.Cartesian3.fromDegrees(44,29,2000000),positionCartographic:{height:2000000},setView:vi.fn(),flyToBoundingSphere:vi.fn(),pickEllipsoid:vi.fn(()=>real.Cartesian3.fromDegrees(44,29,0))};
+   this.canvas={clientWidth:1118,clientHeight:757};this.scene={canvas:this.canvas,drawingBufferWidth:1118,drawingBufferHeight:757,mode:real.SceneMode.SCENE3D,frameState:{mode:real.SceneMode.SCENE3D},ellipsoid:real.Ellipsoid.WGS84,mapProjection:new real.GeographicProjection(),globe:{show:true},renderError:new real.Event(),preRender:new real.Event(),postRender:new real.Event(),requestRender:vi.fn(),primitives:{add:vi.fn(),remove:vi.fn()},pickPositionSupported:false};
+   this.camera=new real.Camera(this.scene);this.scene.camera=this.camera;
+   this.camera.setView({destination:real.Cartesian3.fromDegrees(44,29,2000000),orientation:{heading:0,pitch:-Math.PI/2,roll:0}});
+   vi.spyOn(this.camera,'setView');this.camera.flyToBoundingSphere=vi.fn();this.camera.pickEllipsoid=vi.fn(()=>real.Cartesian3.fromDegrees(44,29,0));
    if(fixture.withCreditDOM){
     const overlay=document.createElement('div'),dialog=document.createElement('div'),close=document.createElement('a'),source=document.createElement('a'),expand=document.createElement('a');
     overlay.className='cesium-credit-lightbox-overlay';overlay.style.display='none';dialog.className='cesium-credit-lightbox';close.className='cesium-credit-lightbox-close';close.textContent='×';source.href='https://provider.example/attribution';source.textContent='Provider attribution';expand.className='cesium-credit-expand-link';expand.textContent='Data attribution';
@@ -31,6 +33,55 @@ async function frame(tile:ReturnType<typeof tiles>,visible=1){await act(async()=
 beforeEach(()=>{(globalThis as any).IS_REACT_ACT_ENVIRONMENT=true;fixture.fromUrl.mockReset();fixture.viewer=null;fixture.withCreditDOM=false;fixture.credit=null;vi.stubGlobal('devicePixelRatio',1.25);host=document.createElement('div');document.body.append(host);root=createRoot(host);});
 afterEach(async()=>{await act(async()=>root.unmount());host.remove();document.querySelectorAll('[data-credit-test-outside]').forEach(node=>node.remove());vi.useRealTimers();vi.restoreAllMocks();vi.unstubAllGlobals();});
 describe('Earth imagery rendering lifecycle',()=>{
+ it('coalesces layout measurements outside resize delivery and cancels pending work on unmount',async()=>{
+  const observers:{targets:Element[];callback:()=>void;disconnect:()=>void}[]=[],frames=new Map<number,FrameRequestCallback>();let nextFrame=1,stackHeight=90;
+  vi.stubGlobal('ResizeObserver',class{entry:{targets:Element[];callback:()=>void;disconnect:()=>void};constructor(callback:()=>void){this.entry={targets:[],callback,disconnect:vi.fn()};observers.push(this.entry);}observe(target:Element){this.entry.targets.push(target);}disconnect(){this.entry.disconnect();}});
+  vi.stubGlobal('requestAnimationFrame',(callback:FrameRequestCallback)=>{const id=nextFrame++;frames.set(id,callback);return id;});
+  vi.stubGlobal('cancelAnimationFrame',(id:number)=>frames.delete(id));
+  vi.spyOn(HTMLElement.prototype,'getBoundingClientRect').mockImplementation(function(this:HTMLElement){const height=this.classList.contains('earth-bottom-stack')?stackHeight:this.classList.contains('earth-contact-bar')?44:500;return {x:0,y:0,top:0,left:0,right:320,bottom:height,width:320,height,toJSON:()=>({})} as DOMRect;});
+  fixture.fromUrl.mockResolvedValue(tiles());await act(async()=>root.render(<CesiumView {...props}/>));
+  const node=host.querySelector<HTMLElement>('.earth-workspace')!,observer=observers.find(entry=>entry.targets.includes(node))!,render=fixture.viewer.scene.requestRender;
+  const flush=async()=>act(async()=>{for(const [id,callback] of [...frames]){frames.delete(id);callback(0);}});
+  const before=render.mock.calls.length;observer.callback();observer.callback();
+  expect(node.style.getPropertyValue('--earth-bottom-stack-height')).toBe('');expect(frames.size).toBe(1);expect(render.mock.calls.length).toBe(before);
+  await flush();expect(node.style.getPropertyValue('--earth-bottom-stack-height')).toBe('90px');expect(node.style.getPropertyValue('--earth-contact-bar-height')).toBe('44px');expect(render.mock.calls.length).toBe(before+1);
+  observer.callback();await flush();expect(render.mock.calls.length).toBe(before+1);expect(frames.size).toBe(0);
+  stackHeight=120;observer.callback();expect(frames.size).toBe(1);await act(async()=>root.render(<div>Replacement workspace</div>));expect(observer.disconnect).toHaveBeenCalled();expect(frames.size).toBe(0);expect(node.style.getPropertyValue('--earth-bottom-stack-height')).toBe('90px');
+ });
+ it('flushes horizon visibility through the public visualizer before the same frame renders',async()=>{
+  fixture.fromUrl.mockResolvedValue(tiles());await act(async()=>root.render(<CesiumView {...props}/>));
+  const viewer=fixture.viewer,source=viewer.dataSources.add.mock.calls.map((call:any[])=>call[0]).find((value:any)=>value.name==='earth-observations');
+  source.entities.add({id:'far-test',properties:new Cesium.PropertyBag({longitude:-136,latitude:-29})});
+  viewer.dataSourceDisplay.update.mockImplementation(()=>{expect(source.entities.getById('far-test').show).toBe(false);return true;});
+  await act(async()=>viewer.scene.preRender.raiseEvent());expect(viewer.dataSourceDisplay.update).toHaveBeenCalledWith(viewer.clock.currentTime);
+ });
+ it('advances the observation clock when a new tracking snapshot arrives between ten-second ticks',async()=>{
+  vi.useFakeTimers();vi.setSystemTime(new Date('2026-10-31T00:00:00Z'));fixture.fromUrl.mockResolvedValue(tiles());
+  await act(async()=>root.render(<CesiumView {...props}/>));
+  vi.setSystemTime(new Date('2026-10-31T00:00:05Z'));
+  const aircraft={icao24:'abc123',callsign:'CLOCK TEST',origin_country:'',lat:29,lon:44,altitude:1000,velocity:100,heading:90,on_ground:false,position_source:0,observed_at:'2026-10-31T00:00:04Z'};
+  await act(async()=>root.render(<CesiumView {...props} aircraft={[aircraft]}/>));
+  const source=fixture.viewer.dataSources.add.mock.calls.map((call:any[])=>call[0]).find((value:any)=>value.name==='earth-observations');
+  expect(source.entities.getById('aircraft-abc123').properties.getValue(Cesium.JulianDate.now()).positionState).toBe('fresh');
+  // Advancing the display clock does not relax future-observation rejection.
+  await act(async()=>root.render(<CesiumView {...props} aircraft={[{...aircraft,observed_at:'2026-10-31T00:02:00Z'}]}/>));
+  expect(source.entities.values).toHaveLength(0);
+ });
+ it('excludes legacy severity from Earth layer thresholds while retaining source-bound model estimates',async()=>{
+  fixture.fromUrl.mockResolvedValue(tiles());
+  const base={...buildShowcase(Date.now()).events[0],synthetic:false,severity:9,lat:30,lon:40};
+  const model={...base,evidence:{...base.evidence!,assessment:{status:'model_estimate' as const,event_type:base.event_type,severity:9,severity_label:'critical' as const,basis:'source_bound_model_extraction' as const,review_status:'unreviewed' as const,confirmed:false as const,critical_alert_eligible:false as const,model:'fixture-model',rubric_version:'fixture-v1',source_sha256:'a'.repeat(64),limitations:[]}}};
+  const legacy={...base,id:9999,evidence:undefined};
+  await act(async()=>root.render(<CesiumView {...props} events={[model,legacy]}/>));
+  const count=()=>host.querySelector('.earth-coverage')?.getAttribute('data-position-count');
+  expect(count()).toBe('2');
+  await act(async()=>[...host.querySelectorAll('button')].find(b=>b.textContent?.startsWith('Layers'))!.click());
+  const threshold=host.querySelector<HTMLSelectElement>('#earth-layers select')!;
+  await act(async()=>{threshold.value='9';threshold.dispatchEvent(new Event('change',{bubbles:true}));});
+  expect(count()).toBe('1');
+  await act(async()=>{threshold.value='0';threshold.dispatchEvent(new Event('change',{bubbles:true}));});
+  expect(count()).toBe('2');
+ });
  it('integrates native attribution with keyboard activation, modal focus/inert ownership, trapping and Escape return without rewriting credits',async()=>{
   fixture.withCreditDOM=true;fixture.fromUrl.mockResolvedValue(tiles());vi.spyOn(HTMLElement.prototype,'getClientRects').mockReturnValue([{width:100,height:30}] as any);await act(async()=>root.render(<CesiumView {...props}/>));const viewer=fixture.viewer,{overlay,dialog,close,source,expand}=fixture.credit;
   expect(dialog.hasAttribute('role')).toBe(false);expect(expand.getAttribute('role')).toBe('button');expect(expand.tabIndex).toBe(0);expect(expand.getAttribute('aria-haspopup')).toBe('dialog');expand.focus();
@@ -213,6 +264,18 @@ describe('renderer keyboard ownership and stable focus',()=>{
   for(let i=0;i<2;i++){await enterQuery('FOCUS123');await chooseFirst();expect(document.activeElement).toBe(host.querySelector('.earth-selection'));}
   button('Close selected position').focus();await pressEscape();expect(host.querySelector('.earth-selection')).toBeNull();expect(document.activeElement).toBe(host.querySelector('#earth-search'));expect(fixture.viewer).toBe(viewer);expect(fixture.fromUrl).toHaveBeenCalledOnce();
  });
+ it('searches aircraft and vessel identifiers through the actual React controls and exposes the correct identity and symbol meaning',async()=>{
+  const aircraft={...sample(),registration:'N123AB'};
+  const vessel={...buildShowcase(Date.now()).vessels[0],mmsi:'987654321',name:'HARBOR ONE',callsign:'BOAT7',imo:7654321,observed_at:new Date().toISOString(),heading:null};
+  await act(async()=>root.render(<CesiumView {...props} aircraft={[aircraft]} vessels={[vessel]}/>));const viewer=fixture.viewer;
+  for(const [query,identity,meaning] of [['abc123','ICAO abc123','Aircraft · direction unknown'],['N123AB','ICAO abc123','Aircraft · direction unknown'],['987654321','MMSI 987654321','Vessel · direction unknown'],['7654321','MMSI 987654321','Vessel · direction unknown']]){
+   await enterQuery(query);expect(host.querySelector('.earth-search-results')?.textContent).toContain(identity);await chooseFirst();
+   expect(host.querySelector('.earth-selection')?.textContent).toContain(identity);expect(host.querySelector('.earth-symbol-summary strong')?.textContent).toBe(meaning);
+   expect(document.activeElement).toBe(host.querySelector('.earth-selection'));
+   await act(async()=>button('Close selected position').click());expect(document.activeElement).toBe(host.querySelector('#earth-search'));
+  }
+  expect(fixture.viewer).toBe(viewer);expect(fixture.fromUrl).toHaveBeenCalledOnce();
+ });
  it('returns focus safely when a selected live track expires without stealing another control focus',async()=>{
   await act(async()=>root.render(<CesiumView {...props} aircraft={[sample()]}/>));await enterQuery('FOCUS123');await chooseFirst();
   await act(async()=>root.render(<CesiumView {...props} aircraft={[]}/>));expect(document.activeElement).toBe(host.querySelector('#earth-search'));
@@ -238,5 +301,34 @@ describe('renderer keyboard ownership and stable focus',()=>{
  it('does not steal a foreground dialog focus when an external report action arrives',async()=>{
   const report=buildShowcase(Date.now()).events[0];const view=(id:number|null)=><><CesiumView {...props} events={[report]} focusEventId={id}/><div role="dialog" aria-modal="true" aria-label="Foreground fixture"><input data-dialog-input/></div></>;
   await act(async()=>root.render(view(null)));const input=host.querySelector<HTMLInputElement>('[data-dialog-input]')!;input.focus();await act(async()=>root.render(view(report.id)));expect(host.querySelector('.earth-selection')).not.toBeNull();expect(document.activeElement).toBe(input);
+ });
+});
+
+
+describe('Public scene diagnostic frame ownership',()=>{
+ it('waits for a rendered frame, discards older hashes and cancels pending work on unmount',async()=>{
+  const pending:Array<(value:ArrayBuffer)=>void>=[];
+  vi.stubGlobal('crypto',{subtle:{digest:()=>new Promise<ArrayBuffer>(resolve=>pending.push(resolve))}});
+  fixture.fromUrl.mockResolvedValue(tiles());
+  const receipt=(id:string)=>({observations:{batch_id:id.repeat(64),status:'empty',failed:false,received_at:Date.now()},aircraft:{batch_id:id.repeat(64),status:'empty',failed:false,received_at:Date.now()}});
+  await act(async()=>root.render(<CesiumView {...props} publicSceneReceipts={receipt('a')}/>));
+  const node=host.querySelector<HTMLElement>('.earth-workspace')!,first=pending.splice(0);
+  expect(JSON.parse(node.dataset.publicScene!).state).toBe('synchronizing');expect(first.length).toBeGreaterThan(0);
+  await act(async()=>root.render(<CesiumView {...props} publicSceneReceipts={receipt('b')}/>));
+  const second=pending.splice(0);
+  await act(async()=>first.forEach(resolve=>resolve(new ArrayBuffer(32))));
+  await act(async()=>fixture.viewer.scene.postRender.raiseEvent());
+  expect(JSON.parse(node.dataset.publicScene!).state).toBe('synchronizing');
+  await act(async()=>second.forEach(resolve=>resolve(new ArrayBuffer(32))));
+  expect(JSON.parse(node.dataset.publicScene!).state).toBe('synchronizing');
+  await act(async()=>fixture.viewer.scene.postRender.raiseEvent());
+  expect(JSON.parse(node.dataset.publicScene!)).toMatchObject({state:'synchronized',aircraft:{batch_id:'b'.repeat(64),count:0}});
+  await act(async()=>root.render(<CesiumView {...props} publicSceneReceipts={receipt('c')}/>));
+  const cancelled=pending.splice(0),viewer=fixture.viewer;
+  await act(async()=>root.render(<div>Unmounted</div>));
+  const retained=node.dataset.publicScene;
+  await act(async()=>cancelled.forEach(resolve=>resolve(new ArrayBuffer(32))));
+  await act(async()=>viewer.scene.postRender.raiseEvent());
+  expect(node.dataset.publicScene).toBe(retained);
  });
 });

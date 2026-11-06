@@ -164,6 +164,7 @@ def draw_card(path, *, title, body, footer, generated_at, index, total):
 
     candidates = [
         "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/usr/share/fonts/ttf-dejavu/DejaVuSans.ttf",
         "C:/Windows/Fonts/arial.ttf",
     ]
     font_path = next((p for p in candidates if Path(p).is_file()), None)

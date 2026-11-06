@@ -45,6 +45,27 @@ def provider_summary(status):
     output["rss"]=[{k:v for k,v in row.items() if k in allowed|{"source","publication_in_future"}}
         for row in status.get("news_feeds",{}).get("feeds",[])]
     output["workers"]={name:row.get("state") for name,row in status.get("workers",{}).items()}
+    telegram = status.get("telegram", {})
+    if type(telegram.get("enabled")) is bool:
+        output["telegram"]["enabled"] = telegram["enabled"]
+    if telegram.get("transport") in ("disabled", "bot", "session"):
+        output["telegram"]["transport"] = telegram["transport"]
+    if telegram.get("checkpoint_policy") in ("none", "bot_update_queue", "legacy_model"):
+        output["telegram"]["checkpoint_policy"] = telegram["checkpoint_policy"]
+    if telegram.get("enabled") is True and telegram.get("checkpoint_policy") == "ordered_provider_page":
+        channels = telegram.get("selected_channels", [])
+        pages = telegram.get("channels", {})
+        if not isinstance(channels, list) or not all(isinstance(name, str) for name in channels):
+            channels = []
+        if not isinstance(pages, dict):
+            pages = {}
+        fields = ("status", "checkpoint_message_id", "provider_page_last_message_id", "blocked_message_id")
+        safe_pages = {name: page for name, page in pages.items() if isinstance(page, dict)}
+        output["telegram"].update(
+            checkpoint_policy="ordered_provider_page",
+            selected_channels=channels,
+            checkpoint_pages={name: {key: safe_pages.get(name, {}).get(key) for key in fields} for name in channels},
+        )
     return output
 
 
@@ -72,6 +93,8 @@ def deployment_identity(value, expected_containers, database_container):
 
 
 SQL = """SELECT json_build_object(
+'database_name',current_database(),
+'database_role',current_user,
 'postgresql_version',current_setting('server_version'),
 'postgis_version',postgis_lib_version(),
 'collation_version_matches',(SELECT datcollversion IS NOT DISTINCT FROM pg_database_collation_actual_version(oid) FROM pg_database WHERE datname=current_database()),
@@ -82,6 +105,7 @@ SQL = """SELECT json_build_object(
 'invalid_positions',(SELECT count(*) FROM events WHERE (lat IS NULL)<>(lon IS NULL) OR lat NOT BETWEEN -90 AND 90 OR lon NOT BETWEEN -180 AND 180),
 'position_geometry_mismatch',(SELECT count(*) FROM events WHERE (geometry IS NULL)<>(lat IS NULL) OR (geometry IS NOT NULL AND (ST_SRID(geometry)<>4326 OR ST_X(geometry)<>lon OR ST_Y(geometry)<>lat))),
 'duplicate_channel_message_ids',(SELECT count(*) FROM (SELECT source,channel_name,telegram_message_id FROM events WHERE telegram_message_id IS NOT NULL GROUP BY source,channel_name,telegram_message_id HAVING count(*)>1) d),
+'latest_telegram_event_id',(SELECT coalesce(max(id),0) FROM events WHERE source='telegram'),
 'checkpoint_behind_stored_message',(SELECT count(*) FROM (SELECT channel_name,max(telegram_message_id) max_id FROM events WHERE source='telegram' AND telegram_message_id IS NOT NULL GROUP BY channel_name) e LEFT JOIN channel_checkpoints c USING(channel_name) WHERE c.last_message_id IS NULL OR c.last_message_id<e.max_id),
 'usage_calls',(SELECT count(*) FROM usage_log),
 'snapshots',(SELECT count(*) FROM tracking_snapshots));"""
@@ -98,6 +122,14 @@ async def subprocess_output(arguments, timeout=15):
         return -1,""
 
 
+def database_command(container, database):
+    # An isolated qualification database must not silently read the live one.
+    if database not in {"conflict_monitor", "conflict_monitor_test"}:
+        raise ValueError("Unknown observation database")
+    return ["docker", "exec", container, "psql", "-X", "-v", "ON_ERROR_STOP=1",
+            "-U", "monitor", "-d", database, "-t", "-A", "-c", SQL]
+
+
 async def run(args):
     parsed=urlsplit(args.base_url)
     if parsed.hostname not in {"127.0.0.1","localhost"} or parsed.scheme!="http":
@@ -110,11 +142,13 @@ async def run(args):
     directory.mkdir(parents=True,exist_ok=True)
     started=time.monotonic()
     summary={"started_at":stamp(),"scope":"bounded_read_only_live_observation","requested_seconds":args.seconds,
-        "observer_version":3,"observer_sha256":hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),"interval_seconds":args.interval,
+        "observer_version":6,"observer_sha256":hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),"interval_seconds":args.interval,
         "base_url":args.base_url,"samples":0,"http_errors":0,"integrity_findings":0,"source_hash_changes":0,
         "ws_connects":0,"ws_disconnects":0,"ws_messages":0,"ws_payload_errors":0,"deployment_segments":[],
         "expected_containers":{"backend":args.backend_container,"frontend":args.frontend_container,"database":args.database_container},
-        "expected_database":{"postgresql":args.expected_postgresql,"postgis":args.expected_postgis,"data_volume":args.expected_data_volume},
+        "expected_database":{"postgresql":args.expected_postgresql,"postgis":args.expected_postgis,"data_volume":args.expected_data_volume,
+            "name":args.database_name},
+        "expect_telegram_disabled":args.expect_telegram_disabled,
         "status":"running","limitations":["Provider clocks/metadata and sampled application behavior, not factual truth.",
         "A deployment change creates a new segment; total elapsed time is not a final-image-only soak.",
         "No physical device, arbitrary video playback, or every code path is certified."]}
@@ -227,11 +261,14 @@ async def run(args):
                     else:
                         row['deployment_identity']={'status':'unavailable','exit_code':code}
                 if sample%10==0:
-                    code,value=await subprocess_output(["docker","exec",args.database_container,"psql","-U","monitor","-d","conflict_monitor","-t","-A","-c",SQL])
+                    code,value=await subprocess_output(database_command(args.database_container,args.database_name))
                     if code==0:
                         integrity=json.loads(value.strip())
                         row["sql_integrity"]=integrity
-                        for name in ("invalid_positions","position_geometry_mismatch","duplicate_channel_message_ids","checkpoint_behind_stored_message","synthetic_events"):
+                        fields = ["invalid_positions", "position_geometry_mismatch", "duplicate_channel_message_ids", "synthetic_events"]
+                        if row["providers"]["telegram"].get("checkpoint_policy") not in {"ordered_provider_page", "none", "bot_update_queue"}:
+                            fields.append("checkpoint_behind_stored_message")
+                        for name in fields:
                             if integrity.get(name):row["findings"].append({"kind":name,"count":integrity[name]})
                     else:row["sql_integrity"]={"status":"unavailable","exit_code":code}
                 summary["samples"]+=1
@@ -265,7 +302,9 @@ if __name__=="__main__":
     parser.add_argument("--backend-container",default="cmonitor-live-backend-1")
     parser.add_argument("--frontend-container",default="cmonitor-live-frontend-1")
     parser.add_argument("--database-container",default="cmonitor-live-db-1")
+    parser.add_argument("--database-name",choices=("conflict_monitor","conflict_monitor_test"),default="conflict_monitor")
     parser.add_argument("--expected-postgresql")
     parser.add_argument("--expected-postgis")
     parser.add_argument("--expected-data-volume")
+    parser.add_argument("--expect-telegram-disabled",action="store_true")
     asyncio.run(run(parser.parse_args()))

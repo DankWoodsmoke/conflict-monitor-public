@@ -10,6 +10,15 @@ beforeEach(()=>{(globalThis as any).IS_REACT_ACT_ENVIRONMENT=true;host=document.
 afterEach(async()=>{await act(async()=>root.unmount());host.remove();vi.useRealTimers();vi.restoreAllMocks();});
 
 describe("report timeline state",()=>{
+  it("labels the live window endpoint across UTC midnight instead of displaying yesterday beside LIVE",async()=>{
+    vi.useFakeTimers();vi.setSystemTime(new Date("2026-10-31T01:10:00Z"));
+    const range={start:new Date("2026-10-30T01:10:00Z"),end:new Date("2026-10-31T01:10:00Z")};
+    await act(async()=>root.render(<TimelineScrubber allEvents={[]} timeRange={null} activeRange={range} onRangeChange={()=>{}}/>));
+    const clock=host.querySelector('.timeline-time')!;
+    expect(clock.textContent).toContain("● LIVE");expect(clock.textContent).toContain("Through 31 OCT 01:10 UTC");
+    expect(clock.textContent).not.toContain("30 OCT");
+    expect(clock.querySelector('[title]')?.getAttribute('title')).toBe("Report window: 30 OCT 01:10 UTC → 31 OCT 01:10 UTC");
+  });
   it("keeps a 244-day history domain while bounding labels to readable desktop and phone spacing",async()=>{
     vi.useFakeTimers();vi.setSystemTime(new Date("2026-10-29T00:00:00Z"));
     const start=Date.parse("2026-02-28T00:00:00Z"),end=Date.now();

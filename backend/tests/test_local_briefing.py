@@ -386,6 +386,96 @@ def test_video_uuid_cannot_masquerade_as_a_content_address(monkeypatch, tmp_path
     assert TestClient(app).get(f"/briefing/video/{filename}").status_code == 503
 
 
+def test_video_checksum_limits_memory_and_reads_one_growth_detection_byte():
+    import io
+
+    from app.routes import briefing
+
+    data = b"qualification" * 30_000
+    sizes = []
+
+    class Stream(io.BytesIO):
+        def read(self, size=-1):
+            sizes.append(size)
+            return super().read(size)
+
+    class Path:
+        def open(self, mode):
+            assert mode == "rb"
+            return Stream(data)
+
+    expected_bytes = 200_000
+    assert briefing.video_checksum(Path(), expected_bytes) == hashlib.sha256(
+        data[: expected_bytes + 1]
+    ).hexdigest()
+    assert max(sizes) <= 65536 and sum(sizes) == expected_bytes + 1
+
+
+@pytest.mark.asyncio
+async def test_video_integrity_work_keeps_event_loop_available(monkeypatch, tmp_path):
+    import threading
+
+    from app.routes import briefing
+
+    data = b"transport responsiveness fixture"
+    digest = hashlib.sha256(data).hexdigest()
+    filename = digest[:32] + ".mp4"
+    (tmp_path / filename).write_bytes(data)
+    monkeypatch.setattr(local.settings, "briefing_artifact_dir", str(tmp_path))
+    monkeypatch.setattr(briefing, "artifact", lambda _: {
+        "filename": filename, "url": f"/api/briefing/video/{filename}",
+        "sha256": digest, "bytes": len(data),
+    })
+    started, release = threading.Event(), threading.Event()
+    original = briefing.video_checksum
+    loop_thread = threading.get_ident()
+    workers = []
+
+    def slow_checksum(path, size):
+        workers.append(threading.get_ident())
+        started.set()
+        assert release.wait(2), "Integrity work blocked the event loop"
+        return original(path, size)
+
+    monkeypatch.setattr(briefing, "video_checksum", slow_checksum)
+    task = asyncio.create_task(briefing.video_file(filename))
+    try:
+        assert await asyncio.to_thread(started.wait, 1)
+        await asyncio.sleep(0)
+        assert not task.done()
+        assert workers and workers[0] != loop_thread
+    finally:
+        release.set()
+        response = await task
+    assert response.path.name == filename
+    assert response.headers["cache-control"] == "no-store"
+
+
+@pytest.mark.asyncio
+async def test_video_io_race_fails_closed(monkeypatch, tmp_path):
+    from fastapi import HTTPException
+    from app.routes import briefing
+
+    data = b"transport race fixture"
+    digest = hashlib.sha256(data).hexdigest()
+    filename = digest[:32] + ".mp4"
+    (tmp_path / filename).write_bytes(data)
+    monkeypatch.setattr(local.settings, "briefing_artifact_dir", str(tmp_path))
+    monkeypatch.setattr(briefing, "artifact", lambda _: {
+        "filename": filename, "url": f"/api/briefing/video/{filename}",
+        "sha256": digest, "bytes": len(data),
+    })
+
+    def failed_checksum(*_):
+        raise OSError("File changed during verification")
+
+    monkeypatch.setattr(briefing, "video_checksum", failed_checksum)
+    with pytest.raises(HTTPException) as error:
+        await briefing.video_file(filename)
+    assert error.value.status_code == 503
+    assert error.value.detail == "Video integrity check failed"
+
+
 @pytest.mark.asyncio
 async def test_failed_video_preserves_previous_manifest(monkeypatch, tmp_path):
     monkeypatch.setattr(local.settings, "briefing_artifact_dir", str(tmp_path))

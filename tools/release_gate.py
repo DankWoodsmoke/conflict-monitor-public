@@ -17,19 +17,29 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ALLOWED_DIRS = {"backend", "frontend", "docs", "tools", ".github"}
 ALLOWED_ROOT = {"README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "SECURITY.md", "CONTRIBUTING.md",
-                "docker-compose.yml", ".env.example", ".gitignore", "sitrep_video.py", "gen_video_cron.sh"}
+                "docker-compose.yml", "compose.public.yml", "compose.publisher.yml", "compose.tunnel.yml", ".env.example", ".gitignore", "sitrep_video.py", "gen_video_cron.sh"}
 ALLOWED_SUFFIXES = {".py", ".tsx", ".ts", ".mjs", ".cjs", ".css", ".json", ".html", ".jpg", ".png", ".webp", ".svg", ".md", ".txt", ".ini", ".mako", ".yml", ".yaml", ".toml", ".ps1", ".sh", ".in", ".conf", ".patch"}
 ALLOWED_BASENAMES = {"Dockerfile", ".dockerignore", ".env.example", ".gitignore"}
+ALLOWED_EXACT = {"tools/postgis/APKBUILD", "tools/postgis/smoke.sql", "tools/postgis/session_probe.c",
+                 "tools/postgis/zlib/APKBUILD", "tools/postgis/zlib/window_reset_probe.c",
+                 "frontend/container/zlib/APKBUILD", "frontend/container/zlib/window_reset_probe.c",
+                 "backend/container/ffmpeg_security_probe.c"}
 EXCLUDED = {"node_modules", ".venv", ".git", "__pycache__", ".pytest_cache", "dist", "sessions", "artifacts", ".ruff_cache", "playwright-report", "test-results", "htmlcov"}
 PATTERNS = {
     "private_key": re.compile(rb"-----BEGIN (?:RSA |OPENSSH |EC |DSA |ENCRYPTED )?PRIVATE KEY-----"),
     "provider_credential": re.compile(rb"(?:sk-ant-|sk-proj-|sk-or-v1-|ghp_|github_pat_|xox[baprs]-)[A-Za-z0-9_\-]{16,}"),
+    "telegram_bot_token": re.compile(
+        rb"(?:"
+        rb"(?i:api\.telegram\.org/bot|TELEGRAM_BOT_TOKEN[\"']?[ \t]*[:=][ \t]*[\"']?)"
+        rb"\d{1,16}:[A-Za-z0-9_-]{20,100}|(?<!\d)\d{5,16}:[A-Za-z0-9_-]{35}"
+        rb")(?![A-Za-z0-9_-])"
+    ),
     "google_browser_key": re.compile(rb"AIza[0-9A-Za-z_\-]{30,45}"),
     "embedded_session": re.compile(rb"(?im)^[ \t]*(?:TWITTER_AUTH_TOKEN|TWITTER_CT0|TELEGRAM_SESSION|ANTHROPIC_API_KEY|ADMIN_API_KEY)[ \t]*[:=][ \t]*[A-Za-z0-9_\-]{20,}"),
 }
 
 
-ASSIGNMENT = re.compile(rb"(?i)\b(?:TELEGRAM_SESSION|TELEGRAM_API_HASH|ANTHROPIC_API_KEY|ADMIN_API_KEY|AISSTREAM_API_KEY|FIRMS_MAP_KEY|OPENSKY_PASSWORD|POSTGRES_PASSWORD|POSTGRES_APP_PASSWORD|PGPASSWORD|TWITTER_BEARER_TOKEN|TWITTER_AUTH_TOKEN|TWITTER_CT0|ELEVENLABS_API_KEY|REPLICATE_API_TOKEN|PASSWORD|API_KEY|ACCESS_TOKEN)[\"']?[ \t]*[:=][ \t]*[\"']?([A-Za-z0-9_+./=\-]{16,})")
+ASSIGNMENT = re.compile(rb"(?i)\b(?:TELEGRAM_SESSION|TELEGRAM_API_HASH|ANTHROPIC_API_KEY|ADMIN_API_KEY|AISSTREAM_API_KEY|FIRMS_MAP_KEY|OPENSKY_PASSWORD|POSTGRES_PASSWORD|POSTGRES_APP_PASSWORD|POSTGRES_PUBLIC_PASSWORD|PGPASSWORD|TWITTER_BEARER_TOKEN|TWITTER_AUTH_TOKEN|TWITTER_CT0|ELEVENLABS_API_KEY|REPLICATE_API_TOKEN|PASSWORD|API_KEY|ACCESS_TOKEN)[\"']?[ \t]*[:=][ \t]*[\"']?([A-Za-z0-9_+./=\-]{16,})")
 CREDENTIAL_URL = re.compile(rb"(?i)(?:postgresql(?:\+[a-z0-9]+)?|postgres|https?)://[^:/\s]+:([^@/\s]+)@")
 
 
@@ -75,9 +85,10 @@ def export_files():
             continue
         if p.name.endswith((".pyc", ".tsbuildinfo", ".bak", ".log")):
             continue
-        if p.suffix in {".pem", ".key", ".session", ".sql", ".gz", ".zip"}:
+        reviewed_build_input = rel.as_posix() in ALLOWED_EXACT
+        if p.suffix in {".pem", ".key", ".session", ".sql", ".gz", ".zip"} and not reviewed_build_input:
             raise ValueError(f"Private/runtime file type blocked: {rel}")
-        if p.name not in ALLOWED_BASENAMES and p.suffix not in ALLOWED_SUFFIXES and str(rel) not in ALLOWED_ROOT:
+        if not reviewed_build_input and p.name not in ALLOWED_BASENAMES and p.suffix not in ALLOWED_SUFFIXES and str(rel) not in ALLOWED_ROOT:
             raise ValueError(f"File format requires explicit review: {rel}")
         yield p
 

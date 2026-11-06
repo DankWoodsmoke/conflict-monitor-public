@@ -66,6 +66,8 @@ async def _run_provider(function, *args):
     uninterruptible provider I/O; process termination may still wait on threads.
     """
     global _executor
+    if settings.public_read_only:
+        raise RuntimeError("Market provider is disabled in public read-only mode")
     slots = _provider_slots
     await slots.acquire()
     loop = asyncio.get_running_loop()
@@ -172,7 +174,7 @@ async def get_market_data():
     """Bounded single-flight provider refresh; no network while disabled."""
     global _quote_task
     now = time.monotonic()
-    if not settings.live_ingestion_enabled or _stopping:
+    if settings.public_read_only or not settings.live_ingestion_enabled or _stopping:
         return {"data": [], "stale": True, "status": "disabled", "cached_ago": -1}
     if _cache is not None and now - _cache_ts < CACHE_TTL:
         return {"data": _cache, "stale": False, "status": "cached", "cached_ago": int(now - _cache_ts)}
@@ -240,7 +242,7 @@ async def _refresh_history(days: int):
 async def get_market_history(days: int = Query(default=30, ge=5, le=90)):
     if not isinstance(days, int) or not 5 <= days <= 90:
         raise HTTPException(422, "History days must be between 5 and 90")
-    if not settings.live_ingestion_enabled or _stopping:
+    if settings.public_read_only or not settings.live_ingestion_enabled or _stopping:
         return {"history": {}, "meta": SYMBOL_META, "status": "disabled", "stale": True, "cached_ago": -1}
     now = time.monotonic()
     stamp, cached = _hist_by_days.get(days, (0, {}))

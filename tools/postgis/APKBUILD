@@ -1,0 +1,51 @@
+# Private prototype derived from Alpine aports a9c3ba8b9129ec0f294d0a9bf538c2f1632bb016.
+# This is locally built/signed; it is NOT an Alpine-supported security update.
+maintainer="Private qualification <private-build@example.invalid>"
+pkgname=sqlite
+subpackages="$pkgname-static $pkgname-doc $pkgname-dev $pkgname-libs"
+pkgver=3.54.1
+pkgrel=0
+pkgdesc="SQLite shared library - private Alpine-native upstream 3.54.1 prototype"
+url="https://sqlite.org/"
+arch="all"
+license="blessing"
+makedepends="build-base readline-dev"
+source="sqlite-autoconf-3540100.tar.gz smoke.sql session_probe.c"
+builddir="$srcdir/sqlite-autoconf-3540100"
+_amalgamation="-DSQLITE_ENABLE_FTS3_PARENTHESIS -DSQLITE_ENABLE_COLUMN_METADATA -DSQLITE_SECURE_DELETE -DSQLITE_ENABLE_UNLOCK_NOTIFY -DSQLITE_ENABLE_RTREE -DSQLITE_ENABLE_GEOPOLY -DSQLITE_USE_URI -DSQLITE_ENABLE_DBSTAT_VTAB -DSQLITE_SOUNDEX -DSQLITE_MAX_VARIABLE_NUMBER=250000"
+
+build() {
+    export CFLAGS="${CFLAGS//-Os/-O2} $_amalgamation"
+    ./configure --build="$CBUILD" --host="$CHOST" --prefix=/usr \
+        --enable-threadsafe --enable-readline \
+        --with-readline-header=/usr/include/readline/readline.h \
+        --enable-session --enable-static --enable-fts3 --enable-fts4 --enable-fts5 \
+        --soname=legacy
+    make -j2
+}
+
+check() {
+    ./sqlite3 :memory: < "$srcdir/smoke.sql" > "$startdir/sqlite-smoke-output.txt"
+    cat "$startdir/sqlite-smoke-output.txt"
+    test "$(cat "$startdir/sqlite-smoke-output.txt")" = "3.54.1
+1
+1
+ok"
+    ln -sf libsqlite3.so libsqlite3.so.0
+    cc -DSQLITE_ENABLE_SESSION -DSQLITE_ENABLE_PREUPDATE_HOOK \
+        -I. "$srcdir/session_probe.c" -L. -Wl,-rpath,"$builddir" -lsqlite3 \
+        -o "$startdir/session-probe"
+    "$startdir/session-probe" > "$startdir/session-probe-output.txt"
+    cat "$startdir/session-probe-output.txt"
+    grep -q '^SESSION_ROUNDTRIP_OK 3.54.1 ' "$startdir/session-probe-output.txt"
+}
+
+package() {
+    make DESTDIR="$pkgdir" install
+}
+
+sha512sums="
+3df4348f54f5cd0554eec6d91e1d08a70535b7b78f497b2c6f24910b5087f6ef70483c9e35fa388bd8f38483cb8d1cb84e98ccdd58b9f525a10e0cf48c8c6742  sqlite-autoconf-3540100.tar.gz
+0e9418e9dee098d2ca6a199ab096dc919d738edc5c87ec85dc785582b387e1dce603e3356be386e19676a91c31d1ea12e37934c02de974549106af8d926e2b27  smoke.sql
+306ac79f263717430d7ab3d6dc44b96b3919e1acc2b653ec9bf91761fe20be84623190aad31605de289f29f48ababf0064be6daafd8400e91c9569f79cf9fa66  session_probe.c
+"

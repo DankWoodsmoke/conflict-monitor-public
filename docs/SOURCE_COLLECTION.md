@@ -70,7 +70,82 @@ retries, tokens or dollars in the optional legacy paid model mode. The free
 profile makes no such model call. Its data and pipeline checks are separate from
 AI semantic evaluation and from OS/database vulnerability review.
 
-Current scoped evidence: 85 focused RSS tests pass. Nine additional checks ran
+## Telegram without a personal session
+
+The default `TELEGRAM_TRANSPORT=disabled` leaves Telegram collection off.
+Previously retained reports remain readable. To receive posts from a public
+broadcast channel that explicitly authorized this deployment, select
+`TELEGRAM_TRANSPORT=bot`, keep `TELEGRAM_PROCESSING_MODE=reports`, set the
+deployment's `TELEGRAM_BOT_TOKEN`, and enter up to five
+`TELEGRAM_BOT_CHANNELS` pairs such as `publisher_handle:-1001234567890`.
+Each publisher must add the bot and authorize the intended collection,
+retention and display. A public username alone supplies none of those
+permissions. A bot used here needs one dedicated update consumer and no
+active webhook. This transport uses a deployment bot token and channel
+identifiers only. [Telegram Bot API](https://core.telegram.org/bots/api#getupdates)
+· [Telegram bot membership FAQ](https://core.telegram.org/bots/faq#what-messages-will-my-bot-get)
+
+The connector calls only `getUpdates`. It accepts original text or
+captions with the exact configured username and numeric channel ID.
+Private, forwarded, protected and paid content are excluded. There are no
+media downloads or Telegram AI calls. The original publication clock is
+preserved on edits. The immutable receipt records the Bot API collection
+method and an edit can enter revision review without overwriting the
+original Event. Keep Telegram material out of external AI and synthesized
+briefings. Operators must provide a retention and deletion process that
+covers source receipts and exported copies. [Bot developer terms](https://telegram.org/tos/bot-developers)
+· [Telegram content licensing](https://telegram.org/tos/content-licensing)
+
+Telegram retains pending updates for up to 24 hours. After the app durably
+processes an ordered prefix, the following poll confirms that prefix.
+An interruption before confirmation lets the provider redeliver, with
+the source ledger preventing duplicate Events. This delivery position
+does not advance the separate MTProto channel history checkpoint.
+The bot path has no historical backfill. A successful empty poll shows
+transport availability. Membership, complete coverage and factual accuracy
+remain separate. An arbitrary public channel can be cited by link or
+through a publisher-authorized syndication feed. [Telegram Bot API](https://core.telegram.org/bots/api#getting-updates)
+
+The legacy `TELEGRAM_TRANSPORT=session` remains an explicit opt-in for
+permitted operator sessions. Its listener reconnects with capped backoff
+after transport loss and repeats bounded forward catch-up only after the
+old connection and workers have closed. Authorization, flood and uncertain
+cleanup stop the supervisor. Existing session deployments must deliberately
+select that transport to retain their prior collection behavior.
+
+## November 4 spot check
+
+One read-only sample found 30 of 31 configured feeds in retrieval/parser state
+`ok`. Hellenic Shipping returned HTTP 403 and was in the normal retry schedule.
+Four feeds retrieved successfully with a latest publication over 24 hours old.
+The Telegram worker continued advancing its bounded ordered pages while some
+newly stored reports were from older provider pages. Keep publication, intake
+and connector status distinct.
+
+The earlier November 4 spot check found that one retained future-dated
+receipt stayed skipped after its original publication time passed.
+RC.3 schedules a durable retry for an eligible future-dated RSS receipt and
+preserves its original body and publisher clock. The retry works independently
+of later rolling-feed availability. The packaged backend and Alpine database
+passed 54 isolated PostgreSQL checks. A corrected publisher clock with the
+same body and URL remains a separate source-revision review. See
+[RSS due retries](RSS_DUE_RETRIES.md).
+
+Official maritime channels can add distinct notice and advisory coverage.
+UKMTO describes licensed content and third-party feeds in its terms. A bounded
+request to its Warnings index returned HTML with no detected RSS/Atom links
+or warning detail links. The MARAD metadata probe stopped after the site's
+robots request returned HTTP 403. IMO offers downloadable monthly reports
+and a registration-based incident module. These are connector research
+results. Validate format, revision identifiers, attribution and reuse
+boundaries before enabling any source. [UKMTO terms](https://www.ukmto.org/terms-and-conditions)
+· [UKMTO warnings](https://www.ukmto.org/ukmto-products/warnings)
+· [MARAD advisory index](https://www.maritime.dot.gov/msci-advisories)
+· [IMO piracy reports](https://www.imo.org/en/ourwork/security/pages/piracy-reports-default.aspx)
+
+## October 29 acquisition evidence
+
+The 85 focused RSS tests passed. Nine additional checks ran
 against real patched PostgreSQL/PostGIS using the ordinary runtime role in an
 isolated test database, including advisory exclusion/cancellation, immutable
 receipt recovery and original-clock preservation. These checks observed

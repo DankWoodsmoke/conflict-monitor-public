@@ -26,11 +26,11 @@ def test_aircraft_replay_filters_airlines_but_keeps_emergencies_and_boundary_pos
     assert rows[0]["callsign"] == " uae123 "  # caller-owned source snapshot is unchanged
 
 
-def test_vessel_replay_keeps_zero_positions_units_and_rounds_without_mutating_source():
+def test_vessel_replay_keeps_zero_positions_units_and_full_source_precision():
     source = {"mmsi": "123456789", "name": "TEST", "lat": 0, "lon": 1.12345678,
               "speed": 0, "heading": 0, "vessel_category": "civilian", "flag_code": "??"}
     assert subject._compact_vessels([source, {**source, "lon": None}]) == [{
-        "m": "123456789", "n": "TEST", "la": 0, "lo": 1.12346,
+        "m": "123456789", "n": "TEST", "la": 0, "lo": 1.12345678,
         "sp": 0, "h": 0, "k": "civilian", "f": "??", "st": ""}]
     assert source["lon"] == 1.12345678
 

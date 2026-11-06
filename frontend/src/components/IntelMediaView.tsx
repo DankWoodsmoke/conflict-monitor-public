@@ -1,8 +1,8 @@
-import {isSourceDigest} from "../lib/brief";
+import {briefLevel,isArchivedSourceDigest,isSourceDigest} from "../lib/brief";
 import { nowMs } from "../lib/clock";
 import { MediaFrame, ShowcaseBriefing } from "./MediaFrame";
 import { SHOWCASE, safeUrl } from "../lib/runtime";
-import {isScored,severityLabel} from "../lib/events";
+import {isScored,severityLabel,assessedSeverity} from "../lib/events";
 import {recentReports,sourceFamilyCounts,sourceAge} from "../lib/reportPresentation";
 import { apiFetch } from "../lib/api";
 import { API_BASE } from "../lib/runtime";
@@ -192,7 +192,7 @@ function LiveSitrepVideoCell() {
     }).catch(()=>{});
     return()=>{cancelled=true;};
   },[sitrep]);
-  const levelColor = sitrep ? (LEVEL_COLORS[sitrep.escalation_level] || "#91c9e8") : "#58a6ff";
+  const levelColor = sitrep ? (LEVEL_COLORS[briefLevel(sitrep)] || "#91c9e8") : "#58a6ff";
   const videoSrc=videoUrl ? `${VIDEO_BASE}${videoUrl}?t=${videoKey}` : null;
 
 
@@ -215,7 +215,7 @@ function LiveSitrepVideoCell() {
         {sitrep && (
           <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 700,
             color: levelColor, background: `${levelColor}22`, padding: "1px 6px", borderRadius: 2,
-            letterSpacing: 1 }}>{sitrep.escalation_level}</span>
+            letterSpacing: 1 }}>{briefLevel(sitrep)}</span>
         )}
         {sitrep && (
           <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "#8da3b7", marginLeft: "auto" }}>
@@ -227,7 +227,7 @@ function LiveSitrepVideoCell() {
       {briefState==="unavailable"&&<p role="status">Briefing service unavailable · any retained summary may be stale</p>}
       {/* Video player */}
       <div style={{ flex: 1, position: "relative", background: "#000" }}>
-        {videoSrc?<video ref={videoRef} key={videoKey} controls preload="metadata" style={{width:"100%",height:"100%",objectFit:"contain"}}><source src={videoSrc} type="video/mp4"/></video>:<div className="media-empty-state"><span>TEXT SOURCE BRIEFING</span><h2>{sitrep?.headline||(briefState==="unavailable"?"Briefing service unavailable":briefState==="loading"?"Loading source briefing…":"No source briefing yet")}</h2><p>{isSourceDigest(sitrep)?"An attributed compilation of collected reports is available in Brief. No model inference, recorded narration or video is implied.":"Open Brief to inspect collected sources and available analysis. No video is configured for this report."}</p></div>}
+        {videoSrc?<video ref={videoRef} key={videoKey} controls preload="metadata" style={{width:"100%",height:"100%",objectFit:"contain"}}><source src={videoSrc} type="video/mp4"/></video>:<div className="media-empty-state"><span>TEXT SOURCE BRIEFING</span><h2>{sitrep?.headline||(briefState==="unavailable"?"Briefing service unavailable":briefState==="loading"?"Loading source briefing…":"No source briefing yet")}</h2><p>{isArchivedSourceDigest(sitrep)?"Open Brief to inspect the cited sources for this archived digest.":isSourceDigest(sitrep)?"An attributed compilation of collected reports is available in Brief. No model inference, recorded narration or video is implied.":"Open Brief to inspect collected sources and available analysis. No video is configured for this report."}</p></div>}
       </div>
 
       {/* Headline ticker at bottom */}
@@ -268,7 +268,7 @@ function BreakingIntelPanel({ events,clock }: { events: ConflictEvent[];clock:nu
             textAlign: "center", marginTop: 12 }}>No loaded reports with source timestamps in the last 4h</div>
         )}
         {top.map(evt => {
-          const sev = evt.severity || 0;
+          const sev = assessedSeverity(evt) ?? 0;
           const sc = !isScored(evt)?"#a3b9ca":sev >= 8 ? "#f85149" : sev >= 6 ? "#f0883e" : "#d29922";
           const url=safeUrl(evt.source_url);const hasUrl=!!url;
           return (
@@ -289,7 +289,7 @@ function BreakingIntelPanel({ events,clock }: { events: ConflictEvent[];clock:nu
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center",
                 justifyContent: "center", gap: 2 }}>
                 <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 800,
-                  color: sc }}>{severityLabel(evt)}</span>
+                  color: sc,overflowWrap:"anywhere",textAlign:"center" }}>{severityLabel(evt)}</span>
 
               </div>
               <div style={{ minWidth: 0 }}>
@@ -611,7 +611,7 @@ export function IntelMediaView({ events }: { events: ConflictEvent[] }) {
         <div style={{ flex: 1, display: "flex", gap: 6, padding: "5px 10px",
           overflowX: "auto", overflowY: "hidden", alignItems: "stretch" }}>
           {sitrepEvents.map((evt: any) => {
-            const sev = evt.severity || 0;
+            const sev = assessedSeverity(evt) ?? 0;
             const sc = !isScored(evt)?"#a3b9ca":sev >= 8 ? "#f85149" : sev >= 6 ? "#f0883e" : sev >= 4 ? "#d29922" : "#91c9e8";
             const url=safeUrl(evt.source_url);const hasUrl=!!url;
             const srcLabel = (evt.source || "")

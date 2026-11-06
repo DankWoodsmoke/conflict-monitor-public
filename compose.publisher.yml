@@ -1,0 +1,136 @@
+# Apply directly after docker-compose.yml (NOT compose.public.yml).
+# One private collector/writer and a separate SELECT-only public reader.
+# All host bindings are loopback; compose.tunnel.yml removes the public binding.
+services:
+  db:
+    networks: [default, public_reader]
+    restart: unless-stopped
+    mem_limit: 1g
+    cpus: "1.0"
+    pids_limit: 128
+    logging: &bounded_logs
+      driver: json-file
+      options: {max-size: 10m, max-file: "3"}
+  migrate:
+    environment:
+      PUBLIC_READ_ONLY: "true"
+      POSTGRES_PUBLIC_PASSWORD: ${POSTGRES_PUBLIC_PASSWORD:?Set a distinct 64-character hex POSTGRES_PUBLIC_PASSWORD}
+    networks: [default]
+    mem_limit: 512m
+    cpus: "1.0"
+    pids_limit: 64
+    logging: *bounded_logs
+  backend:
+    # Dedicated shared-PC pilot: no inherited model/provider/session secrets.
+    # The ordinary operator profile in docker-compose.yml is unchanged.
+    env_file: !reset []
+    volumes: !reset []
+    environment:
+      PUBLIC_READ_ONLY: "false"
+      DEMO_MODE: "false"
+      LIVE_INGESTION_ENABLED: "true"
+      PUBLIC_OBSERVATION_PUBLISHER_ENABLED: "true"
+      PUBLIC_AIRCRAFT_PUBLISHER_ENABLED: ${PUBLIC_AIRCRAFT_PUBLISHER_ENABLED:-false}
+      # Shared-PC publication does not start paid or GPU/model jobs.
+      ENABLE_LOCAL_AI: "false"
+      ENABLE_VIDEO_GENERATION: "false"
+      ENABLE_SITREP_GENERATION: "false"
+      RSS_PROCESSING_MODE: reports
+      TELEGRAM_PROCESSING_MODE: reports
+      X_INGESTION_ENABLED: "false"
+      TELEGRAM_TRANSPORT: disabled
+      TELEGRAM_API_ID: "0"
+      TELEGRAM_API_HASH: ""
+      TELEGRAM_PHONE: ""
+      TELEGRAM_SESSION: ""
+      TELEGRAM_BOT_TOKEN: ""
+      ANTHROPIC_API_KEY: ""
+      ADMIN_API_KEY: ""
+      OPENAI_API_KEY: ""
+      ELEVENLABS_API_KEY: ""
+      REPLICATE_API_TOKEN: ""
+      AISSTREAM_API_KEY: ""
+      FIRMS_MAP_KEY: ""
+      OPENSKY_USERNAME: ""
+      OPENSKY_PASSWORD: ""
+      TWITTER_BEARER_TOKEN: ""
+      TWITTER_AUTH_TOKEN: ""
+      TWITTER_CT0: ""
+      LOCAL_AI_URL: ""
+      LOCAL_AI_MODEL: ""
+      PIPER_MODEL_PATH: ""
+      NOMINATIM_URL: ""
+      SENTINEL_HUB_INSTANCE_ID: ""
+      OPENSKY_FALLBACK_ENABLED: "false"
+      GOOGLE_EARTH_ENABLED: ${GOOGLE_EARTH_ENABLED:-false}
+      GOOGLE_MAPS_BROWSER_KEY: ${GOOGLE_MAPS_BROWSER_KEY:-}
+      CORS_ORIGINS: ${CORS_ORIGINS:-}
+      CONFLICT_START_DATE: ${CONFLICT_START_DATE:-2026-02-28}
+    ports: !reset []
+    networks: [default]
+    restart: unless-stopped
+    mem_limit: 1g
+    cpus: "2.0"
+    pids_limit: 128
+    logging: *bounded_logs
+  frontend:
+    networks: [default]
+    restart: unless-stopped
+    mem_limit: 128m
+    cpus: "0.5"
+    pids_limit: 64
+    logging: *bounded_logs
+  reader:
+    # Reuse the explicit public environment and filesystem isolation contract.
+    extends: {file: compose.public.yml, service: backend}
+    build: ./backend
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    environment:
+      PUBLIC_REPORTS_ENABLED: "false"
+      PUBLIC_TRACKING_ENABLED: "false"
+      PUBLIC_AIRCRAFT_PUBLISHER_ENABLED: "false"
+    command: [uvicorn, app.main:app, --host, 0.0.0.0, --port, "8000", --ws-max-size, "4096"]
+    networks:
+      public_reader:
+        aliases: [backend]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    restart: unless-stopped
+    mem_limit: 512m
+    cpus: "0.5"
+    pids_limit: 64
+    logging: *bounded_logs
+  publicfrontend:
+    build:
+      context: ./frontend
+      args: {NGINX_CONFIG: nginx-public.conf}
+    user: "101:101"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs:
+      - /var/cache/nginx:uid=101,gid=101,mode=0700
+      - /var/run:uid=101,gid=101,mode=0700
+    # Docker does not publish ports for an internal-only network endpoint.
+    # Only nginx joins this ingress bridge; reader and DB stay internal.
+    networks: [public_reader, public_ingress]
+    ports:
+      - "127.0.0.1:${PUBLIC_FRONTEND_PORT:-5180}:80"
+    depends_on:
+      reader: {condition: service_healthy}
+    restart: unless-stopped
+    mem_limit: 128m
+    cpus: "0.5"
+    pids_limit: 64
+    logging: *bounded_logs
+networks:
+  public_ingress: {}
+  public_reader:
+    internal: true

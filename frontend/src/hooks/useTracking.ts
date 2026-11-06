@@ -15,8 +15,11 @@ export interface Aircraft {
   altitude: number | null;
   velocity: number | null;
   heading: number | null;
+  heading_basis?: "true_heading" | "course_over_ground" | null;
+  nic?: number | null;
+  nac_p?: number | null;
   on_ground: boolean;
-  position_source: number;
+  position_source: number | null;
   age_seconds?:number|null;
   observed_at?:string|null;
   received_at?:string|null;
@@ -63,7 +66,7 @@ export interface Vessel {
   heading: number | null;
   heading_basis?: string | null;
   course: number | null;
-  nav_status: number;
+  nav_status: number | null;
   age_seconds?:number|null;
   received_age_seconds?:number|null;
   observed_at?:string|null;
@@ -86,13 +89,14 @@ interface SnapshotData {
   aircraft: Array<{
     i: string; c: string; la: number; lo: number;
     a: number | null; h: number | null; v: number | null;
-    t: string; k: string; e: boolean; s: string;
+    t: string; k: string; ec?: string; e: boolean; s: string;
     observed_at?:string|null;received_at?:string|null;source?:string;altitude_reference?:string;
+    heading_basis?:"true_heading"|"course_over_ground"|null;nic?:number|null;nac_p?:number|null;registration?:string;position_source?:number|null;
   }>;
   vessels: Array<{
     m: string; n: string; la: number; lo: number;
     sp: number | null; h: number | null; k: string; f: string; st: string;
-    observed_at?:string|null;received_at?:string|null;
+    observed_at?:string|null;received_at?:string|null;heading_basis?:"true_heading"|"course_over_ground"|null;course?:number|null;nav_status?:number|null;
   }>;
   jamming: Array<{
     la: number; lo: number; r: number; c: number; i: number;
@@ -110,11 +114,14 @@ function expandAircraft(compact: SnapshotData["aircraft"],snapshotAt:string): Ai
     lon: a.lo,
     altitude: a.a,
     heading: a.h,
+    heading_basis:a.heading_basis,nic:a.nic,nac_p:a.nac_p,registration:a.registration,
     velocity: a.v,
     on_ground: false,
-    position_source: 0,
+    position_source: typeof a.position_source==="number"&&Number.isInteger(a.position_source)&&a.position_source>=0&&a.position_source<=3?a.position_source:null,
     type: a.t,
     aircraft_category: a.k,
+    // Legacy rows lack raw emitter category; never infer it from heuristic k.
+    category: typeof a.ec==="string"?a.ec:undefined,
     is_emergency: a.e,
     squawk: a.s,
   }));
@@ -129,10 +136,10 @@ function expandVessels(compact: SnapshotData["vessels"],snapshotAt:string): Vess
     lon: v.lo,
     speed: v.sp,
     heading: v.h,
-    // The recorder retains only h, which may be heading or course. Its basis
-    // and the independent course field are not present in this contract.
-    course: null,
-    nav_status: 0,
+    // Older rows omit these; do not infer their direction basis or course.
+    heading_basis:v.heading_basis,
+    course: typeof v.course==="number"&&Number.isFinite(v.course)&&v.course>=0&&v.course<360?v.course:null,
+    nav_status: typeof v.nav_status==="number"&&Number.isInteger(v.nav_status)&&v.nav_status>=0&&v.nav_status<=15?v.nav_status:null,
     vessel_category: v.k,
     flag_code: v.f,
     ship_type_name: v.st,
@@ -167,18 +174,22 @@ const VESSEL_POLL_MS = 10_000;
 
 
 interface UseTrackingOptions {
+  enabled?: boolean;
+  replayEnabled?: boolean;
   replayCursor?: number | null;
   replayWindow?: { start: number; end: number } | null;
 }
 
 export function useTracking(options?: UseTrackingOptions) {
+  const enabled=options?.enabled??true;
+  const replayEnabled=enabled&&(options?.replayEnabled??true);
   const replayCursor = options?.replayCursor ?? null;
   const replayWindow = options?.replayWindow ?? null;
   const isReplaying = replayCursor != null;
 
-  const {data:liveAircraft,status:aircraftStatus}=useArrayPoll<Aircraft>(`${API_BASE}/tracking/aircraft`,AIRCRAFT_POLL_MS,120000,!isReplaying);
-  const {data:liveVessels,status:vesselStatus}=useArrayPoll<Vessel>(`${API_BASE}/tracking/vessels`,VESSEL_POLL_MS,600000,!isReplaying);
-  const {data:liveJamming,status:navigationStatus}=useArrayPoll<JammingZone>(`${API_BASE}/tracking/jamming`,JAMMING_POLL_MS,120000,!isReplaying);
+  const {data:liveAircraft,status:aircraftStatus}=useArrayPoll<Aircraft>(`${API_BASE}/tracking/aircraft`,AIRCRAFT_POLL_MS,120000,enabled&&!isReplaying);
+  const {data:liveVessels,status:vesselStatus}=useArrayPoll<Vessel>(`${API_BASE}/tracking/vessels`,VESSEL_POLL_MS,600000,enabled&&!isReplaying);
+  const {data:liveJamming,status:navigationStatus}=useArrayPoll<JammingZone>(`${API_BASE}/tracking/jamming`,JAMMING_POLL_MS,120000,enabled&&!isReplaying);
   // Orbital elements remain an optional backend API; unqualified orbital markers are not part of Earth.
   const tleData:TLERecord[]=[];
   const [snapshots,setSnapshots]=useState<SnapshotData[]>([]);
@@ -187,7 +198,7 @@ export function useTracking(options?: UseTrackingOptions) {
 
   // Six-hour slices retain the recorder's full cadence and work for a months-long report domain.
   // Bucket by logical replay time, not every animation frame, to bound requests during playback.
-  const bucket=isReplaying?Math.floor(replayCursor/(2*3600000)):null;
+  const bucket=isReplaying&&replayEnabled?Math.floor(replayCursor/(2*3600000)):null;
   const requestStart=bucket==null?null:Math.max(replayWindow?.start??0,(bucket-1)*2*3600000);
   const requestEnd=bucket==null?null:Math.min(replayWindow?.end??Infinity,(bucket+2)*2*3600000);
   useEffect(()=>{
@@ -225,5 +236,5 @@ export function useTracking(options?: UseTrackingOptions) {
     return isReplaying ? [] : liveJamming;
   }, [snapshotResult, liveJamming, isReplaying,replayCursor]);
 
-  return { aircraft, tleData, jammingZones, vessels, loadingSnapshots, snapshotAt:snapshotResult?.ts??null, trackingStatus:{aircraft:aircraftStatus,vessels:vesselStatus,navigation:navigationStatus} };
+  return { aircraft:enabled?aircraft:[], tleData, jammingZones:enabled?jammingZones:[], vessels:enabled?vessels:[], loadingSnapshots, snapshotAt:snapshotResult?.ts??null, trackingStatus:{aircraft:aircraftStatus,vessels:vesselStatus,navigation:navigationStatus} };
 }

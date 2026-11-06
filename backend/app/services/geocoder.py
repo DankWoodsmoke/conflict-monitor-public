@@ -1,23 +1,10 @@
-"""Geocoding service — resolves location names to lat/lon coordinates.
+"""Conservative reference lookup using an inherited, unverified gazetteer.
 
-Pipeline:
-  1. LRU cache (in-memory, 500 entries)
-  2. Hardcoded precision table (~400 Middle East locations, facilities, districts)
-  3. Directional qualifier resolution ("southern Lebanon" → Tyre region)
-  4. Nominatim / OpenStreetMap API (rate-limited to 1 req/sec per ToS)
-
-PRECISION PHILOSOPHY:
-  OSINT messages name specific facilities, neighborhoods, and bases — not just
-  countries. This table prioritises sub-city precision. "Dahieh" resolves to
-  the Dahieh district of Beirut (~4km south of city centre), not Beirut centre.
-  "Natanz" resolves to the actual enrichment facility (33.72N, 51.73E), not
-  the nearby city of Isfahan.
-
-  Coordinate sources:
-  - Military/nuclear sites: cross-referenced from declassified NGA data,
-    Google Earth, and GlobalSecurity.org
-  - Urban districts: OpenStreetMap centroid
-  - Chokepoints/straits: standard nautical waypoints
+No source IDs, survey dates or positional accuracy were recovered for the local
+table. Its points are references, not incident coordinates. Actors, ambiguous
+aliases, relative phrases and partial/multiple mentions stay unresolved. External
+lookup is disabled unless an operator configures a provider; bulk public
+Nominatim use is not a supported backfill strategy. See docs/LOCATION_REVIEW.md.
 """
 
 import asyncio
@@ -27,6 +14,7 @@ from collections import OrderedDict
 import httpx
 import math
 import re
+from urllib.parse import urlsplit
 from app.config import settings
 
 logger = logging.getLogger(__name__)
@@ -779,10 +767,32 @@ _nominatim_semaphore = asyncio.Semaphore(1)
 _last_nominatim_call = 0.0
 _VIEWBOX = "25,8,70,42"  # lon_min, lat_min, lon_max, lat_max  (wider Middle East)
 
+# These inherited aliases identify actors or conflate a locality with a facility.
+# Preserve the historical table for review, but never promote them to positions.
+NON_PLACE_ALIASES = frozenset({
+    "khomeini", "central command", "centcom", "us central command",
+    "fifth fleet", "us fifth fleet", "iaf", "idf", "irgc", "aerospace force", "irgc aerospace",
+})
+AMBIGUOUS_PLACE_ALIASES = frozenset({"natanz", "arak", "shahroud", "semnan", "bagheri", "hemmat", "imam ali"})
+_RELATIVE_OR_MULTIPLE = re.compile(
+    r"\b(?:near|nearby|around|outside|between|towards?|versus|or|and)\b|"
+    r"\b(?:north|south|east|west|northeast|northwest|southeast|southwest)\s+of\b|[;/]",
+    re.I,
+)
+
 
 async def _query_nominatim(location_name: str) -> tuple[float, float] | None:
     global _last_nominatim_call
     if not settings.nominatim_url:
+        return None
+    try:
+        host = (urlsplit(settings.nominatim_url).hostname or "").rstrip(".").lower()
+    except ValueError:
+        return None
+    if not host or host == "nominatim.openstreetmap.org":
+        # This function is called by automatic collectors. The donated public
+        # service is not a generic recurring/bulk enrichment backend. Use an
+        # operator-controlled endpoint; never relax this by increasing retries.
         return None
 
     async with _nominatim_semaphore:
@@ -799,7 +809,7 @@ async def _query_nominatim(location_name: str) -> tuple[float, float] | None:
                     params={
                         "q": location_name,
                         "format": "json",
-                        "limit": 1,
+                        "limit": 5,
                         "viewbox": "25,42,70,8",   # lon_min,lat_max,lon_max,lat_min (Nominatim format)
                         "bounded": "0",             # prefer viewbox but allow outside results
                     },
@@ -807,11 +817,13 @@ async def _query_nominatim(location_name: str) -> tuple[float, float] | None:
                         "User-Agent": settings.nominatim_user_agent,
                     },
                 )
-                _last_nominatim_call = time.monotonic()
-
                 if resp.status_code == 200:
                     results = resp.json()
-                    if results:
+                    # A search rank is not an incident-location decision. Retain
+                    # ambiguity instead of silently selecting the first hit.
+                    if isinstance(results, list) and len(results) == 1 and isinstance(results[0], dict):
+                        if isinstance(results[0].get("lat"), bool) or isinstance(results[0].get("lon"), bool):
+                            return None
                         lat = float(results[0]["lat"])
                         lon = float(results[0]["lon"])
                         if not (math.isfinite(lat) and math.isfinite(lon) and -90 <= lat <= 90 and -180 <= lon <= 180):
@@ -821,7 +833,10 @@ async def _query_nominatim(location_name: str) -> tuple[float, float] | None:
                 else:
                     logger.warning("Nominatim HTTP %d for '%s'", resp.status_code, location_name)
         except Exception as e:
-            logger.error("Nominatim error for '%s': %s", location_name, e)
+            logger.warning("Nominatim request failed: %s", type(e).__name__)
+        finally:
+            # Failed requests also consume the provider's rate allowance.
+            _last_nominatim_call = time.monotonic()
 
     return None
 
@@ -831,20 +846,25 @@ async def _query_nominatim(location_name: str) -> tuple[float, float] | None:
 # =========================================================================
 
 async def geocode(location_name: str) -> tuple[float, float] | None:
-    """Resolve a location name to (lat, lon).
+    """Conservative legacy reference lookup, never an impact-location proof.
 
-    Pipeline:
-      1. Cache
-      2. Directional region table ("southern Lebanon" → Tyre region)
-      3. Precision facility table (400+ entries)
-      4. Partial match (longest matching substring wins)
-      5. Nominatim API
+    Only exact local place keys or a single external search result qualify.
+    Partial mentions, actors, ambiguous aliases and relative descriptions remain
+    unresolved. The separate location_candidates module retains those mentions
+    for review without moving an event or asserting geographic precision.
     """
-    if not location_name or location_name.strip().lower() in ("unknown", "n/a", "", "various", "multiple"):
+    if not isinstance(location_name, str) or len(location_name) > 240 or location_name.strip().lower() in ("unknown", "n/a", "", "various", "multiple"):
         return None
 
     name = location_name.strip()
     normalized = name.lower()
+
+    if normalized in NON_PLACE_ALIASES | AMBIGUOUS_PLACE_ALIASES or _RELATIVE_OR_MULTIPLE.search(normalized):
+        return None
+    if normalized not in KNOWN_LOCATIONS and normalized not in _DIRECTIONAL_REGIONS:
+        for known_name in (*KNOWN_LOCATIONS, *_DIRECTIONAL_REGIONS):
+            if re.search(r"(?<!\w)" + re.escape(known_name) + r"(?!\w)", normalized):
+                return None
 
     # 1. Cache
     cached = _cache_get(name)
@@ -865,35 +885,11 @@ async def geocode(location_name: str) -> tuple[float, float] | None:
         logger.debug("Precision table exact '%s' → %s", name, coords)
         return coords
 
-    # 4. Partial match — find longest known name contained in the query
-    #    (handles "strike near Natanz" → "natanz", "Fordow enrichment complex" → "fordow enrichment")
-    best_match: tuple[float, float] | None = None
-    best_len = 0
-    for known_name, coords in KNOWN_LOCATIONS.items():
-        if re.search(r"(?<!\w)" + re.escape(known_name) + r"(?!\w)", normalized) and len(known_name) > best_len:
-            best_match = coords
-            best_len = len(known_name)
-    if not best_match:
-        for known_name, coords in _DIRECTIONAL_REGIONS.items():
-            if re.search(r"(?<!\w)" + re.escape(known_name) + r"(?!\w)", normalized) and len(known_name) > best_len:
-                best_match = coords
-                best_len = len(known_name)
-    if best_match:
-        _cache_set(name, best_match)
-        logger.debug("Partial match '%s' (len=%d) → %s", name, best_len, best_match)
-        return best_match
-
+    # A sentence containing a known name is not an exact place query. In
+    # particular, do not geocode an actor, source attribution or destination.
     # 5. Nominatim
     result = await _query_nominatim(name)
-    if result is not None:
-        in_water, water_name = _is_in_water(result[0], result[1])
-        if in_water:
-            logger.warning(
-                "Geocoder: Nominatim returned water coordinate (%.4f, %.4f) in %s for '%s' — rejected",
-                result[0], result[1], water_name, name,
-            )
-            # Ambiguous/water candidates remain unresolved.
-            _cache_set(name, None)
-            return None
+    # The old rectangular water heuristic includes land and excludes legitimate
+    # maritime places. It cannot validate a coordinate and must not relocate it.
     _cache_set(name, result)
     return result

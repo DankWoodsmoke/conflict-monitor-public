@@ -15,11 +15,42 @@ from app.db import async_session
 from app.models import TrackingSnapshot
 from app.services.opensky import get_aircraft, get_jamming_zones
 from app.services.maritime import get_vessels
+from app.services.tracking_contract import coordinates, number
 
 logger = logging.getLogger(__name__)
 
 SNAPSHOT_INTERVAL = 120  # 2 minutes
 RETENTION_DAYS = 30
+
+
+def _snapshot_metadata(row: dict) -> dict:
+    """Keep source clocks and direction basis, without manufacturing legacy data."""
+    result = {}
+    for key in ("observed_at", "received_at"):
+        stamp = row.get(key)
+        if not isinstance(stamp, str) or len(stamp) > 64:
+            continue
+        try:
+            parsed = datetime.fromisoformat(stamp)
+            if parsed.tzinfo is not None:
+                result[key] = stamp
+        except ValueError:
+            pass
+    for key in ("source", "altitude_reference", "registration"):
+        field = row.get(key)
+        if isinstance(field, str) and len(field) <= 120:
+            result[key] = field
+    if row.get("heading_basis") in ("true_heading", "course_over_ground"):
+        result["heading_basis"] = row["heading_basis"]
+    for key in ("nic", "nac_p"):
+        code = number(row.get(key), 0, 11)
+        if code is not None and code.is_integer():
+            result[key] = int(code)
+    for key, maximum in (("position_source", 3), ("nav_status", 15)):
+        code = number(row.get(key), 0, maximum)
+        if code is not None and code.is_integer():
+            result[key] = int(code)
+    return result
 
 
 def _compact_aircraft(aircraft: list[dict]) -> list[dict]:
@@ -37,7 +68,7 @@ def _compact_aircraft(aircraft: list[dict]) -> list[dict]:
     for ac in aircraft:
         if ac.get("on_ground"):
             continue
-        lat, lon = ac.get("lat"), ac.get("lon")
+        lat, lon = coordinates(ac.get("lat"), ac.get("lon"))
         if lat is None or lon is None:
             continue
         # Conflict bounding box
@@ -52,15 +83,18 @@ def _compact_aircraft(aircraft: list[dict]) -> list[dict]:
         result.append({
             "i": ac.get("icao24", ""),
             "c": cs,
-            "la": round(lat, 5),
-            "lo": round(lon, 5),
+            "la": lat,
+            "lo": lon,
             "a": ac.get("altitude"),
             "h": ac.get("heading"),
             "v": ac.get("velocity"),
             "t": ac.get("type", ""),
             "k": cat,
+            # Optional raw emitter category for future rows; k is a separate heuristic.
+            **({"ec": ac["category"]} if isinstance(ac.get("category"), str) else {}),
             "e": ac.get("is_emergency", False),
             "s": ac.get("squawk", ""),
+            **_snapshot_metadata(ac),
         })
     return result
 
@@ -69,19 +103,21 @@ def _compact_vessels(vessels: list[dict]) -> list[dict]:
     """Strip vessels to essential fields for replay."""
     result = []
     for v in vessels:
-        lat, lon = v.get("lat"), v.get("lon")
+        lat, lon = coordinates(v.get("lat"), v.get("lon"))
         if lat is None or lon is None:
             continue
         result.append({
             "m": v.get("mmsi", ""),             # mmsi
             "n": v.get("name", ""),             # name
-            "la": round(lat, 5),                # lat
-            "lo": round(lon, 5),                # lon
-            "sp": v.get("speed", 0),            # speed
-            "h": v.get("heading", 0),           # heading
+            "la": lat,                         # source latitude, without extra rounding
+            "lo": lon,                         # source longitude, without extra rounding
+            "sp": v.get("speed"),              # absent speed is unknown, not stopped
+            "h": v.get("heading"),             # absent direction is unknown, not north
             "k": v.get("vessel_category", ""),   # category
             "f": v.get("flag_code", ""),         # flag
             "st": v.get("ship_type_name", ""),   # ship type name
+            **_snapshot_metadata(v),
+            **({"course": v["course"]} if number(v.get("course"), 0, 359.999999999) is not None else {}),
         })
     return result
 

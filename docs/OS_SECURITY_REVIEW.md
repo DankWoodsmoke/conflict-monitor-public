@@ -1,6 +1,149 @@
 # Scoped container OS security review
 
-Updated on 2026-10-30 UTC. This review retains unresolved findings; it is not a zero-CVE, exploitability or whole-system security clearance. Python/npm advisory checks cover different dependency sets and do not audit database images, OS packages, builder stages or the host kernel. Historical scans below remain dated evidence rather than claims about a later image.
+Updated on 2026-11-06 UTC. Python and npm advisory checks cover application dependencies. Image scanning covers packages and detected components in the exact image. The supplemental checks cover named native components. Historical scans below apply to their recorded image identities.
+
+## Additional native repairs prepared on November 6
+
+The source now includes real local repairs for glibc CVE-2026-84243,
+nghttp2 CVE-2026-27135 and FFmpeg CVE-2026-107676/107677/107678, plus the
+official zlib 1.4 release for the backend's bundled and shared library.
+These changes preserve original package/version records where a native
+overlay or backport is used. They do not edit scanner output or relax a gate.
+The [source recipes and provenance](../backend/container/README.md) describe
+the exact inputs, original negative controls and corresponding-source files.
+
+The glibc source stage passed its 24 internationalization tests and a separate
+broader run with 1057 passes, 79 explicit unsupported cases and zero failures.
+Two unsupported IDN cases require a shared libidn2 not installed in that stage.
+The original runtime fails the upstream traversal regression; the rebuilt
+library passes with the original distributor loader. All 3169 exported-symbol
+contracts match, with the documented limits of that comparison. The
+[maintainer review](https://sourceware.org/pipermail/libc-alpha/2026-November/181723.html)
+supports the local patch; it is not represented as a released vendor update.
+
+The nghttp2 backport passes 214 primary tests and five allocation-failure
+tests. Reversing only its security patch makes the new state-machine case
+fail; restoring it passes again. zlib 1.4 passes 18 upstream tests and the
+shared-library contract comparison. The [official release](https://github.com/madler/zlib/releases/tag/v1.4)
+also addresses invalid-window/reset and other memory defects beyond the
+previously cataloged compression finding. Actual final TLS/HTTP2 and media
+linkage checks remain separate from these source-stage results.
+
+The explicit BoringSSL source review identified two additional repairs missing
+from the July 8 pin: the official CVE-2026-35189 CRL-distribution-point fix and
+the upstream RNG thread-local cleanup fix. The former applies to ordinary
+TLS clients verifying server certificates, according to the
+[BoringSSL advisory](https://boringssl.googlesource.com/boringssl/+/refs/heads/main/docs/advisories/2026-09-29.md).
+The source recipe now retains both complete upstream fixes, their exact source
+and patch hashes, and the ordinary upstream certificate/RNG test prerequisite.
+Context adaptations affect comments or unchanged surrounding lines only.
+No BoringSSL attack reproduction or failure-injection result is claimed.
+The patched source stage passes 117 ordinary certificate/RNG tests with zero
+failures or skips and local Chrome/Safari/Firefox HTTP compatibility. The test
+prerequisite includes two unchanged upstream C++ ownership-helper declarations;
+the initial compile failure without them is retained. Final TLS/HTTP2 and
+immutable-image binding remain required before admission. Commit-only scanner matching and an
+empty GitHub advisory page do not establish BoringSSL security clearance.
+
+All three FFmpeg probes distinguish the original and repaired code. An actual
+MP4 containing 12,000 `pssh` boxes times out after five seconds on the original
+ffprobe and parses on the repaired prototype in approximately 0.05 seconds
+under the same bounded stack and memory profile. The full encryption repair
+includes both iterative freeing and linear-time MOV side-data append; the
+upstream encryption-info test also passes. Network and format capabilities
+remain restricted.
+
+Source/build/binary evidence supports a separate excluded-component assessment
+for SQLite's standalone recovery shell, FFmpeg RTSP/libssh and nghttpx's proxy.
+Their absence must be rebound to every final image; nominal library matches
+remain in raw reports. PostGIS's earlier FlatGeobuf backport also requires the
+final database regression binding. BusyBox's Medium advisory and Python's
+separate Low advisory remain recorded. Final exact-image scans, independent
+applicability review, complete pipeline tests and soak qualification are still
+required before these source-stage results can support publication.
+
+## Fresh baseline and native Python repair on November 6
+
+Grype 0.121.2 with the checksummed official database built November 5 at
+06:21:06 UTC rescanned the running RC.4 images by immutable ID. Backend
+`461a1de0b150` has **two High, one Medium and one Low**; database `ce9ac0177644`
+has **one High and three Medium**; frontend `f69b04afa3c9` has **three Medium**.
+No ignore rule was used. Backend and database still fail the raw High gate.
+These findings describe the running baseline, not subsequent source builds.
+
+The newly reported backend records are glibc **CVE-2026-84243** (High) and
+CPython **CVE-2026-116566** (Medium). The glibc advisory requires attacker
+control of `LANGUAGE`, an appropriate non-C locale and a readable crafted
+catalog. The measured runtime has `LC_MESSAGES=C`, `LANG=C.UTF-8` and only
+C.utf8 locale data. That context does not patch the library; the current
+upstream advisory has no fixed commit and the distributor recipe remains
+unchanged. [GNU libc advisory](https://sourceware.org/cgit/glibc/plain/advisories/GLIBC-SA-2026-0025)
+
+A network-disabled test confirmed that the original Python module silently
+truncates NUL-containing numeric hosts and services. The source Dockerfile now
+has a separate native build stage applying the exact pending upstream 3.12
+backport. The isolated prototype passes the upstream malformed-input regression;
+its socket suite reports 733 tests: **671 passed and 62 explicit
+platform/resource skips**. The original module fails the malformed-input
+negative control. The final source stage
+also passes its offline build-time regression and rejects altered archive,
+patch and Python-version fixtures. Final runtime integration is a separate
+qualification. The Python APK version and raw scanner match remain visible.
+[Upstream fix](https://github.com/python/cpython/commit/131a3a66c5f400b588f9fd2732a5ed4e89623ee3) ·
+[Pending 3.12 backport](https://github.com/python/cpython/pull/160975) ·
+[Source recipe](../backend/container/README.md#native-python-socket-security-backport)
+
+The final local candidate 3 was separately qualified on November 6. Its backend
+is `sha256:eacb139a6fc8c19664acb578a40e8fbf9dda4448b1eb49615961f88613dc9638`
+and its public frontend is
+`sha256:a5a5495bcf6d4c5687b86898ac9cb9f9ed9a781309e68ec6afa53b45c21411b9`.
+The exact backend passed the 15 malformed-input subcases and the full socket
+suite with **671 passed and 62 skipped**, using only a read-only upstream test
+mount, with no application-source override. Installed native bytes, embedded
+patch provenance and the unchanged Python package version were verified.
+
+Fresh scans of those two exact images with the same November 5 advisory snapshot
+retain **two High, one Medium and one Low backend records** and **three Medium
+public-frontend records**. The backend High records are SQLite
+CVE-2026-119586 and glibc CVE-2026-84243; the nominal Python Medium record remains
+visible despite the qualified native backport. The three frontend records are
+one CVE, CVE-2025-60876, matched to `busybox`, `busybox-binsh` and `ssl_client`.
+Package-match counts are not distinct-vulnerability counts. No ignore rule or
+release-gate change was used; the backend raw High gate still fails. These are
+local candidate results, not evidence of a public deployment or website admission.
+
+Fresh supplemental native scans retain FFmpeg **one High/four Medium**,
+curl's bundled libraries **one High/two Medium**, and database native
+components **two High/one Medium**, including separately assessed nominal
+PostGIS and SQLite matches. None of these records was suppressed by the
+Python repair or SQLite component analysis. Candidate 3's FFmpeg, ffprobe,
+curl binding and SQLite shared-library hashes match the previously inventoried
+bytes, binding the supplemental assessments to that backend. Supplemental and
+image-match counts must not be added as if they were distinct vulnerabilities.
+
+## RC.4 SQLite admission
+
+The backend build rejects an installed SQLite shell package, an executable
+on the command path, or a file or symlink named `sqlite3` under the runtime
+paths checked by its Dockerfile. Independent negative controls exercised
+each kind of shell presence. The SQLite library supports the live market
+cache in the backend and PROJ coordinate transformations in the database.
+
+The fresh baseline scans retain the same SQLite-wide High match. A harmless
+CLI reproducer on released 3.54.1 and a pinned 3.55.0 development check-in
+confirmed that both shells still emit the injected recovery-output line.
+Neither shell ships in the measured runtime. The raw severity threshold
+remains a publication gate. [SQLite release history](https://www.sqlite.org/changes.html) · [Published CVE record](https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2026/119xxx/CVE-2026-119586.json)
+
+## RC.3 candidate on November 4
+
+Grype 0.121.1 used the official advisory database built on November 4 at 06:20 UTC. The Wolfi backend has one High and one Low. The reduced Alpine database image has one High and three Medium. The nginx frontend has three Medium and zero High or Critical. These raw counts include all matches in scope, with no ignore rules. Both backend and database still fail the release's raw High threshold.
+
+The same scanner and advisory database found two Critical and 78 High on the prior local Debian backend, and 12 Critical and 138 High on the prior Trixie database. The two RC.3 replacements have zero Critical. This comparison uses exact runtime image IDs and reports scanner records.
+
+The backend retains a digest-pinned Python 3.12 base, signature-verified FFmpeg with local file and pipe protocols, and nonroot UID 10001. The database retains PostgreSQL 17.11, reduced PostGIS 3.6.4 with the reviewed FlatGeobuf backport, and a locally built signed SQLite 3.54.1 shared-library package with its true upstream origin. It uses the signed Alpine su-exec package to drop to UID 70. The shipped Compose check measured zero effective capabilities and no published database port.
+
+The remaining raw High in both images is CVE-2026-119586. The advisory names the SQLite CLI recovery functionality. The measured images contain the linked library, and the SQLite shell executable is absent. The supplemental native database scan also retains the nominal PostGIS FlatGeobuf version match and the backport evidence separately. Raw scanner findings stay visible. See the [published CVE record](https://raw.githubusercontent.com/CVEProject/cvelistV5/main/cves/2026/119xxx/CVE-2026-119586.json) and [database upgrade notes](DB_UPGRADE.md).
 
 ## Backend remediation qualified separately on October 30
 

@@ -3,7 +3,8 @@ import {createRoot,type Root} from "react-dom/client";
 import {beforeEach,afterEach,describe,expect,it,vi} from "vitest";
 import {useTracking} from "./useTracking";
 import {apiFetch} from "../lib/api";
-import {trackClock} from "../lib/earth";
+import {trackClock,earthMarkers} from "../lib/earth";
+import {earthSymbol} from "../lib/earthSymbols";
 
 vi.mock("../lib/api",()=>({apiFetch:vi.fn()}));
 const fetchMock=vi.mocked(apiFetch);
@@ -15,6 +16,20 @@ beforeEach(()=>{(globalThis as any).IS_REACT_ACT_ENVIRONMENT=true;vi.useFakeTime
 afterEach(async()=>{await act(async()=>root.unmount());host.remove();vi.useRealTimers();});
 
 describe("recorded tracking time slices",()=>{
+ it("carries newly recorded observation clocks, quality and direction basis into Earth without rounding",async()=>{
+  const row=snapshot(time),observed=new Date(time-5000).toISOString(),received=new Date(time-2000).toISOString();
+  const recorded={...row,aircraft:[{...row.aircraft[0],la:30.12345678,lo:45.87654321,observed_at:observed,received_at:received,source:"adsb.lol",heading_basis:"course_over_ground",nic:8,nac_p:10,registration:"TEST-REG",altitude_reference:"geometric_reported"}],vessels:[{...row.vessels[0],h:55,course:0,heading_basis:"true_heading",observed_at:observed,received_at:received}]};
+  fetchMock.mockImplementation(async(url)=>Response.json(String(url).includes("/snapshots?")?[recorded]:[]));
+  await act(async()=>root.render(<Harness cursor={time+30000}/>));
+  expect(latest.aircraft[0]).toMatchObject({lat:30.12345678,lon:45.87654321,observed_at:observed,received_at:received,heading_basis:"course_over_ground",nic:8,nac_p:10});
+  expect(latest.vessels[0]).toMatchObject({heading:55,course:0,heading_basis:"true_heading",observed_at:observed});
+  const markers=earthMarkers({events:[],aircraft:latest.aircraft,vessels:latest.vessels,hotspots:[],navigation:[],clock:time+30000,replaying:true});
+  const ac=markers.find(m=>m.kind==="aircraft")!;
+  expect(ac.lat).toBe(30.12345678);expect(ac.lon).toBe(45.87654321);expect(ac.positionState).toBe("recorded");
+  expect(ac.details).toContainEqual(["Direction basis","Course over ground reported by provider"]);
+  expect(ac.details).toContainEqual(["Reported position quality","NIC 8 / NACp 10 · provider categories, not a validated error radius"]);
+  expect(ac.details.find(([key])=>key==="Observed")?.[1]).toContain("35s before displayed clock");
+ });
  it("requests at most six hours around a replay cursor even when report history spans eight months",async()=>{
   await act(async()=>root.render(<Harness cursor={time}/>));
   const calls=fetchMock.mock.calls.filter(([url])=>String(url).includes("/snapshots?"));expect(calls).toHaveLength(1);
@@ -40,6 +55,20 @@ describe("recorded tracking time slices",()=>{
   fetchMock.mockImplementation(async(url)=>Response.json(String(url).includes("/snapshots?")?[row]:[]));
   await act(async()=>root.render(<Harness cursor={time+60000}/>));
   expect(latest.vessels.map(v=>v.heading)).toEqual([0,125]);
-  for(const vessel of latest.vessels){expect(vessel.course).toBeNull();expect(vessel.heading_basis).toBeUndefined();expect(vessel.lat).toBe(0);expect(vessel.lon).toBe(0);}
+  for(const vessel of latest.vessels){expect(vessel.course).toBeNull();expect(vessel.heading_basis).toBeUndefined();expect(vessel.nav_status).toBeNull();expect(vessel.lat).toBe(0);expect(vessel.lon).toBe(0);}
+  expect(latest.aircraft[0].position_source).toBeNull();
+ });
+ it("preserves optional raw emitter category in future snapshots and never derives it from legacy heuristic k",async()=>{
+  const row=snapshot(time),base=row.aircraft[0];
+  const recorded={...row,aircraft:[{...base,i:"~894f5d",k:"civilian",ec:"C2"},{...base,i:"~894f54",k:"ground"},{...base,i:"abc123",k:"C3",ec:null}]};
+  fetchMock.mockImplementation(async(url)=>Response.json(String(url).includes("/snapshots?")?[recorded]:[]));
+  await act(async()=>root.render(<Harness cursor={time+60000}/>));
+  expect(latest.aircraft.map(a=>a.category)).toEqual(["C2",undefined,undefined]);
+  expect(latest.aircraft.map(a=>a.aircraft_category)).toEqual(["civilian","ground","C3"]);
+  const markers=earthMarkers({events:[],aircraft:latest.aircraft,vessels:[],hotspots:[],navigation:[],clock:time+60000,replaying:true}).filter(m=>m.kind==="aircraft");
+  expect(markers.map(earthSymbol)).toEqual(["ground","aircraft","aircraft"]);
+  expect(markers.every(m=>m.positionState==="recorded")).toBe(true);
+  expect(latest.aircraft.every(a=>a.observed_at===undefined&&a.snapshot_at===recorded.ts)).toBe(true);
+  expect(markers.map(m=>m.id)).toEqual(["aircraft-~894f5d","aircraft-~894f54","aircraft-abc123"]);
  });
 });

@@ -1,4 +1,59 @@
-# 0.2.0-rc.2 — imagery continuity, native controls and source-bound narration
+# 0.2.0-rc.4 local review candidate
+
+The optional receive-only Telegram Bot API connector works without a
+personal account session. A publisher authorizes a deployment bot and
+the operator configures the exact public handle and channel ID. The
+connector acknowledges ordered updates after durable receipt processing
+and retains immutable edits. The separate legacy account connector
+reconnects with bounded backoff and one transport owner. The local
+profile retired its personal Telegram configuration and has Telegram
+disabled while it awaits a publisher-authorized bot deployment.
+
+The private GOOL operator CLI ran an authored review through the
+explicit Azure model route. It validated three cited questions. The
+primary Hermes route timed out and a separate Mistral attempt returned
+404. The operator guide records the provider choices, costs and limits.
+[GOOL review](GOOL_REVIEW.md)
+
+The new frontend and backend use the preserved database schema and
+volume. Exact image tests cover delivery, the Bot API fixture, PostGIS,
+the UI and media. The independent four-hour live confirmation passed
+3,840 REST requests, 48 SQL checks, 27 committed delivery offsets and
+automatic Google Earth session renewal. The first run's readiness and
+identity-observation findings remain preserved. Mobile checks use
+browser/device-profile emulation, with physical hardware unmeasured.
+The SQLite shell build guard passed, and the
+backend and database each retain one raw High scanner match.
+The latest public release remains [RC.2](https://github.com/DankWoodsmoke/conflict-monitor-public/releases/tag/v0.2.0-rc.2).
+
+## 0.2.0-rc.3 local review candidate
+
+Live report recovery follows committed delivery offsets. The browser can
+recover a late database commit after losing its WebSocket and REST connection.
+Deletions use explicit tombstones. Ordinary history retains the original report
+clock and source bytes.
+
+Future-dated free RSS receipts now have durable due-time retries. A missing
+article or failed rolling feed no longer prevents due recovery. A conflicting
+publisher revision stays in review. The current live profile observed held
+receipts publish only after their original timestamps, with exact original
+body hashes verified through the delivery API.
+
+The persistent Earth canvas uses live Google photographic tiles where
+configured. The mobile selection panel leaves room for primary map controls.
+Media releases video and captions on workspace changes and restores the
+retained briefing when selected again. Firefox paused-caption repaint can
+require a user resume.
+
+The candidate uses an independently rehearsed logical restore into a fresh
+Alpine PostgreSQL/PostGIS volume. Three-engine mobile emulation, packaged
+pipeline checks and the exact security findings are recorded in
+[verification](VERIFICATION.md). Source rights, physical-device behavior,
+fresh local inference and the remaining raw High findings require separate
+admission. The published prerelease remains
+[0.2.0-rc.2](https://github.com/DankWoodsmoke/conflict-monitor-public/releases/tag/v0.2.0-rc.2).
+
+## 0.2.0-rc.2 — imagery continuity, native controls and source-bound narration
 
 One Google/Cesium Earth canvas persists across Earth, Media and Brief. Close-view
 imagery/detail settings, visible provider availability, proactive access refresh

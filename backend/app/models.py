@@ -1,13 +1,35 @@
 import datetime
 
 from geoalchemy2 import Geometry
-from sqlalchemy import DateTime, Float, Integer, String, Text, UniqueConstraint, func
+from sqlalchemy import BigInteger, DateTime, Float, ForeignKey, Index, Integer, String, Text, UniqueConstraint, func, text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
 class Base(DeclarativeBase):
     pass
+
+
+class PublicObservationBatch(Base):
+    """Dedicated publication receipts; never contains private event references."""
+    __tablename__ = "public_observation_batches"
+    __table_args__ = (Index("ix_public_observation_source_time", "source", "published_at"),)
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    source: Mapped[str] = mapped_column(String(50), nullable=False)
+    published_at: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    status: Mapped[str] = mapped_column(String(16), nullable=False)
+    payload: Mapped[dict] = mapped_column(JSONB, nullable=False)
+
+
+class PublicAircraftBatch(Base):
+    """Independent ODbL derivative snapshots; never combined with report data."""
+    __tablename__ = "public_aircraft_batches"
+    __table_args__ = (Index("ix_public_aircraft_source_time", "source", "published_at"),)
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    source: Mapped[str] = mapped_column(String(50), nullable=False)
+    published_at: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    status: Mapped[str] = mapped_column(String(16), nullable=False)
+    payload: Mapped[dict] = mapped_column(JSONB, nullable=False)
 
 
 class Event(Base):
@@ -19,8 +41,8 @@ class Event(Base):
     channel_name: Mapped[str] = mapped_column(String(255), default="")
     raw_text: Mapped[str] = mapped_column(Text, default="")
     summary: Mapped[str] = mapped_column(Text, default="")
-    event_type: Mapped[str] = mapped_column(String(50), default="military")
-    severity: Mapped[int] = mapped_column(Integer, default=5)
+    event_type: Mapped[str] = mapped_column(String(50), default="unclassified")
+    severity: Mapped[int] = mapped_column(Integer, default=0)
     lat: Mapped[float | None] = mapped_column(Float, nullable=True)
     lon: Mapped[float | None] = mapped_column(Float, nullable=True)
     geometry: Mapped[str | None] = mapped_column(
@@ -41,7 +63,7 @@ class Event(Base):
     anomaly_score: Mapped[int] = mapped_column(Integer, default=0)
     anomaly_analysis: Mapped[str] = mapped_column(Text, default="")
     confirmed_networks: Mapped[str] = mapped_column(Text, default="")
-    classification_status: Mapped[str] = mapped_column(String(30), default="legacy_unknown")
+    classification_status: Mapped[str] = mapped_column(String(30), default="not_requested")
     geolocation_precision: Mapped[str] = mapped_column(String(30), default="unknown")
     reports: Mapped[list] = mapped_column(JSONB, default=list)
 
@@ -139,3 +161,55 @@ class SourceReport(Base):
     received_at: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     status: Mapped[str] = mapped_column(String(30), default="received", index=True)
     event_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
+
+
+class TelegramBackfillJob(Base):
+    """Explicit bounded history scan; never a live-collection checkpoint."""
+    __tablename__ = "telegram_backfill_jobs"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    request_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    channel_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    start_at: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    end_at: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    max_messages: Mapped[int] = mapped_column(Integer, nullable=False)
+    status: Mapped[str] = mapped_column(String(30), nullable=False, default="queued")
+    source_entity_id: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    upper_message_id: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    cursor_message_id: Mapped[int] = mapped_column(BigInteger, nullable=False, default=0)
+    processed_messages: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    outcomes: Mapped[dict] = mapped_column(JSONB, nullable=False, default=dict)
+    last_error_type: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    blocked_message_id: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    created_at: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    completed_at: Mapped[datetime.datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class TelegramBackfillItem(Base):
+    """Hashes and outcomes link the history cursor to preserved source receipts."""
+    __tablename__ = "telegram_backfill_items"
+    job_id: Mapped[str] = mapped_column(ForeignKey("telegram_backfill_jobs.id"), primary_key=True)
+    message_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    content_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    source_report_identity: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    source_timestamp: Mapped[datetime.datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    outcome: Mapped[str] = mapped_column(String(40), nullable=False)
+    recorded_at: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class SourceReportRetry(Base):
+    """Operational retry state; the source receipt remains immutable."""
+    __tablename__ = "source_report_retries"
+    __table_args__ = (Index("ix_source_retry_pending_due", "source_name", "next_attempt_at", "identity",
+                           postgresql_where=text("finished_at IS NULL")),)
+    identity: Mapped[str] = mapped_column(ForeignKey("source_reports.identity"), primary_key=True)
+    source_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    due_at: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    next_attempt_at: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    attempts: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0")
+    claim_token: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    last_attempt_at: Mapped[datetime.datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_outcome: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    last_error_type: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    created_at: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    finished_at: Mapped[datetime.datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

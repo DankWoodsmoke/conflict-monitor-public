@@ -1,0 +1,77 @@
+{
+  "status": "DEVELOPMENT_QUALIFIED_PUBLICATION_BLOCKED",
+  "qualified_at": "2026-11-06T02:21:41.699095+00:00",
+  "release_identity": "Development after 0.2.0-rc.4; not a new release or live cutover",
+  "images": {
+    "backend": "sha256:eacb139a6fc8c19664acb578a40e8fbf9dda4448b1eb49615961f88613dc9638",
+    "operator": "sha256:c442f03c415d986bbf523bfb6569c3696a60a3490f97f21d35c93d7926fde6ce",
+    "public": "sha256:a5a5495bcf6d4c5687b86898ac9cb9f9ed9a781309e68ec6afa53b45c21411b9"
+  },
+  "database_image": "sha256:ce9ac017764478516a994d75555d5d171b12431a59452aca2f2f7d405f23794e",
+  "checks": {
+    "backend_tests": 1080,
+    "backend_subtests": 29,
+    "frontend_tests": 416,
+    "operator_google_cases": 12,
+    "public_google_cases": 9,
+    "public_ingress_cases": 96,
+    "public_role_positive_checks": 48,
+    "public_live_source_records_admitted": 0,
+    "operator_rss_reports": 59,
+    "operator_rss_feeds_received": 31,
+    "new_multi_hour_soak": false,
+    "physical_device": false
+  },
+  "raw_security_package_records": {
+    "backend": {
+      "High": 2,
+      "Medium": 1,
+      "Low": 1
+    },
+    "database": {
+      "High": 1,
+      "Medium": 3
+    },
+    "public_frontend": {
+      "Medium": 3
+    }
+  },
+  "security_scope": "Package matches are not unique CVE counts. Public frontend has one BusyBox CVE across three packages. Native supplemental records retained separately.",
+  "media_scope": "Eleven offline checks on candidate2; identical media implementation and native component bytes rebound to candidate3. Not a second render.",
+  "blockers_and_limits": [
+    "Raw High dependency findings remain; no suppression or release-gate waiver.",
+    "Public source redistribution and approved whole publication dataset remain unqualified.",
+    "Private process-local tracking has no qualified shared public publication path.",
+    "Target host, TLS/DNS, trusted-edge identity/limits, backup/restore and external load remain unqualified.",
+    "No new multi-hour soak or physical-device test is claimed for candidate3."
+  ],
+  "evidence_sha256": {
+    "candidate_build": "d6728cf0b977db7885d2e546808618d2ac1fa9eec046c40b6eabadb9e505b77a",
+    "exact_image_backend_tests": "07cef6f95215f15b35127f7120bcd6e97ea0abd9f3b5f95317e2d081e74cc753",
+    "backend_host_tests": "ae8cf2a6e2c95598374d0551293f2dfd1ea5ea9b50ec513deaf923e5bdc19d18",
+    "frontend_tests": "7fbab8fd90cf782cee9b1414b0239bc79e04cd3aea7317848c80100fff8d3886",
+    "operator_postgis_pipeline": "b9874318b3f5084ffa0063934aad51f45e75a153ef2c4ffe01a7b9257f2d5f6d",
+    "operator_google_live": "d49ef5e879f8f95a1e944bf9b4e89675cb70e71e5d57b0dd8b485f6d91de103d",
+    "operator_google_matrix": "b0ae942960c0899626add52f3086578b0bf30a97b6aad3dfcadcd1255c81ca3c",
+    "custom_origin": "7fef425befdc736b2bf728d94956d4493532d1d73757878c344987ac322b15ba",
+    "origin_negative_control": "bc882c19ea0cd71dc12a49f07531fa6918a773a6bb20532411bc4eda17420bfb",
+    "public_google_matrix": "dd5b1fab868c16fbace501e3db1e61c42706a24823fa93557915fa4559ee2c08",
+    "public_ingress": "3090ad982efa4320b5e0db3b6e743a0e08a6a7edd53f96264e960053bbe342f8",
+    "public_runtime": "a54b6e76e86186fe44663b18ffc2ad1fc675079fe8660dafcb6101ef6d69d0f9",
+    "public_role_empty": "bc8e546814e26c4e0c85fb9c08f81738e04c9482dfc6e77c4241634a699f4a9a",
+    "public_role_positive": "7dd282e53941a1c4aa70c70fc1dd1e5c7e54d574136a7ec28136ee4ccad90411",
+    "public_positive_http": "d27a615907e87779fcfa8a66717deff42ed5628087e6b6237f8683f1b7569563",
+    "public_default_load": "499a5a031ebbba6a1e6673b88e3efc13be293235bf8fdf7e5783362cce713710",
+    "public_enabled_load": "e27fc5e7a810e1c9de8c2cf38c5c9b5a0f8a6a0d632d115d2cdb75fea847c853",
+    "public_fixture_cleanup": "361c116dc2cbaf5fad583d50bff1ae6cc81cc6349533200a0b9818e2e049b5b7",
+    "media_runtime_prior": "e0871911119ef3dbc0bb0d71fd2b5ff7b76128383723992671926fa9e2ecaa3d",
+    "media_rebind": "e5611ef5bb639d1f6be68a4d4cc8528dd87f3f88783eee9cd118dfef85cc13dc",
+    "final_native_security": "5d8ceb45866c623c2158bb746eb706054adca690cfbe5c5dfd5aa70920a4c10c",
+    "database_scan": "b833ef8f6fc41315c641c3e5c779ffcf2a4f08ecae3d2b2bbef45af86e4aa28d",
+    "website_handoff": "7dfcf3c7f12dc302832442ffc7eec656cd63135dc665bc754acebc3fe05346f5",
+    "live_preservation": "cb1b3c9b414f99de7414cdec8606bc3ca346898ca50c2257a9e17ff59506253c"
+  },
+  "owned_final_fixtures_removed": true,
+  "admitted_live_runtime_and_rc4_archive_unchanged": true,
+  "website_dns_cloudflare_github_changed": false
+}

@@ -13,6 +13,9 @@ router = APIRouter()
 
 @router.websocket("/ws/events")
 async def websocket_events(ws: WebSocket):
+    if settings.public_read_only:
+        await ws.close(code=1008)
+        return
     origin = ws.headers.get("origin")
     allowed = {s.strip() for s in settings.cors_origins.split(",") if s.strip()} or {"http://localhost:5173", "http://127.0.0.1:5173"}
     if origin:
