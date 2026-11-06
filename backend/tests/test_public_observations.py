@@ -190,7 +190,7 @@ async def test_database_recovery_is_prompt_and_stored_due_gate_prevents_refetch(
     factory, fetch, sleep = configure_publisher(monkeypatch, [failed, recovered], sleeps=2)
     with pytest.raises(asyncio.CancelledError):
         await pub.start_public_observation_publisher()
-    assert sleep.await_args_list == [call(30), call(3 * 3600)]
+    assert sleep.await_args_list == [call(30), call(30 if previous is not None else 3 * 3600)]
     assert factory.call_count == 2
     failed_transaction.__aexit__.assert_awaited_once()
     recovered_transaction.__aexit__.assert_awaited_once()
@@ -209,7 +209,7 @@ async def test_uncertain_commit_rechecks_persisted_cadence_before_another_fetch(
         await pub.start_public_observation_publisher()
     transaction.__aexit__.assert_awaited_once_with(None, None, None)
     assert first.execute.await_count == 4 and factory.call_count == 2
-    assert sleep.await_args_list == [call(30), call(3 * 3600)]
+    assert sleep.await_args_list == [call(30), call(30 if commit_visible else 3 * 3600)]
     # A lost commit response may already have persisted the attempt. A rollback
     # has no persisted due marker, so the bounded fetch can legitimately repeat.
     assert fetch.await_count == (1 if commit_visible else 2)
@@ -230,14 +230,14 @@ async def test_recorded_provider_failure_keeps_normal_three_hour_cadence(monkeyp
 
 
 @pytest.mark.asyncio
-async def test_advisory_ownership_contention_never_fetches_or_short_retries(monkeypatch):
+async def test_advisory_ownership_contention_rechecks_without_fetching(monkeypatch):
     session, transaction = publication_session(locked=False)
     _, fetch, sleep = configure_publisher(monkeypatch, [session])
     with pytest.raises(asyncio.CancelledError):
         await pub.start_public_observation_publisher()
     assert session.execute.await_count == 1
     fetch.assert_not_awaited()
-    sleep.assert_awaited_once_with(3 * 3600)
+    sleep.assert_awaited_once_with(30)
     transaction.__aexit__.assert_awaited_once_with(None, None, None)
 
 
@@ -266,3 +266,76 @@ async def test_unexpected_publisher_error_keeps_existing_normal_delay(monkeypatc
         await pub.start_public_observation_publisher()
     attempt.assert_awaited_once()
     sleep.assert_awaited_once_with(3 * 3600)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize('remaining_seconds', [0.1, 29.9])
+async def test_near_due_attempt_rechecks_and_fetches_after_stored_deadline(monkeypatch, remaining_seconds):
+    previous = NOW - timedelta(seconds=pub.POLL_SECONDS - remaining_seconds)
+    early, early_transaction = publication_session(previous=previous)
+    due, due_transaction = publication_session(previous=previous)
+    _, fetch, _ = configure_publisher(monkeypatch, [early, due])
+    current = [NOW]
+    waits = []
+    monkeypatch.setattr(pub, 'utcnow', lambda: current[0])
+
+    async def advance_or_stop(seconds):
+        waits.append(seconds)
+        if len(waits) == 1:
+            # The real stored due check executes again against this changed clock.
+            assert early.execute.await_count == 2
+            fetch.assert_not_awaited()
+            current[0] += timedelta(seconds=seconds)
+            return
+        raise asyncio.CancelledError()
+
+    monkeypatch.setattr(pub.asyncio, 'sleep', advance_or_stop)
+    with pytest.raises(asyncio.CancelledError):
+        await pub.start_public_observation_publisher()
+    assert waits == [30, 3 * 3600]
+    assert (current[0] - previous).total_seconds() >= pub.POLL_SECONDS
+    fetch.assert_awaited_once()
+    assert early.execute.await_count == 2 and due.execute.await_count == 4
+    early_transaction.__aexit__.assert_awaited_once_with(None, None, None)
+    due_transaction.__aexit__.assert_awaited_once_with(None, None, None)
+    recorded = due.execute.await_args_list[2].args[0].compile().params
+    assert recorded['status'] == 'ok' and recorded['published_at'] == current[0]
+
+
+@pytest.mark.asyncio
+async def test_recent_committed_attempt_rechecks_without_early_provider_requests(monkeypatch):
+    first, _ = publication_session(previous=NOW)
+    second, _ = publication_session(previous=NOW)
+    _, fetch, _ = configure_publisher(monkeypatch, [first, second])
+    current = [NOW]
+    waits = []
+    monkeypatch.setattr(pub, 'utcnow', lambda: current[0])
+
+    async def advance_or_stop(seconds):
+        waits.append(seconds)
+        if len(waits) == 1:
+            current[0] += timedelta(seconds=seconds)
+            return
+        raise asyncio.CancelledError()
+
+    monkeypatch.setattr(pub.asyncio, 'sleep', advance_or_stop)
+    with pytest.raises(asyncio.CancelledError):
+        await pub.start_public_observation_publisher()
+    assert waits == [30, 30]
+    assert first.execute.await_count == second.execute.await_count == 2
+    fetch.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize('holder_committed', [True, False])
+async def test_contended_owner_recheck_reads_committed_cadence_before_fetch(monkeypatch, holder_committed):
+    locked, transaction = publication_session(locked=False)
+    acquired, _ = publication_session(previous=NOW if holder_committed else None)
+    _, fetch, sleep = configure_publisher(monkeypatch, [locked, acquired], sleeps=2)
+    with pytest.raises(asyncio.CancelledError):
+        await pub.start_public_observation_publisher()
+    assert sleep.await_args_list == [call(30), call(30 if holder_committed else 3 * 3600)]
+    assert locked.execute.await_count == 1
+    assert acquired.execute.await_count == (2 if holder_committed else 4)
+    assert fetch.await_count == (0 if holder_committed else 1)
+    transaction.__aexit__.assert_awaited_once_with(None, None, None)

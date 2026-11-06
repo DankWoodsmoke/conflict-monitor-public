@@ -19,6 +19,7 @@ def module(name,path):
     spec=importlib.util.spec_from_file_location(name,path);value=importlib.util.module_from_spec(spec);spec.loader.exec_module(value);return value
 gate=module('packager',FOLDER/'prepare_release_publication.py')
 export=module('export',FOLDER/'release_gate.py')
+scoped=module('scoped_test_fixtures',FOLDER/'test_release_proof_fixtures.py')
 workflow=yaml.safe_load(WORKFLOW_PATH.read_text(encoding='utf8'))
 INLINE_SOURCE=next(step for step in workflow['jobs']['publish_qualified_prerelease']['steps'] if 'GH_TOKEN' in step.get('env',{}))['run'].split("python3 - <<'PY'\n",1)[1].rsplit('\nPY',1)[0]
 from types import ModuleType
@@ -37,7 +38,7 @@ def fixture(proof_override=None,ready_override=None):
         proof={'status':'PASS','runtime_source_sha256':runtime_hash,'qualified_images':images,'source_receipt_sha256':'a'*64,'execution':'fresh'}
         if name=='full_pipeline_soak':proof=admission_soak();proof['runtime_source_sha256']=runtime_hash
         if name=='security':proof=admission_security();proof['runtime_source_sha256']=runtime_hash
-        if name=='media_replay':proof.update(qualified_engines=3,implicit_generation_requests=0)
+        if name in {'google_operator','google_public','media_replay','backup_restore'}:proof=scoped.scoped_fixture(name);proof['runtime_source_sha256']=runtime_hash
         if proof_override and name in proof_override:
             override=proof_override[name]
             if callable(override):override(proof)
@@ -90,7 +91,7 @@ def admission_security():
         'reference_verification': {'status':'INDEPENDENT_REFERENCE_BYTES_VERIFIED','receipt_sha256':ADMISSION_H,'verified_sha256s':[ADMISSION_H]},
         'scans': scans, 'dispositions': dispositions,
         'residuals': [{'role': 'backend', 'vulnerability': 'CVE-2099-0002', 'severity': 'Low'}], 'non_cve_issues': [],
-        'final_refresh': {'status': 'COMPLETE_NO_UNRESOLVED_HIGH_CRITICAL', 'completed_at': '2026-11-06T05:02:00Z',
+        'final_refresh': {'status': 'COMPLETE_NO_UNRESOLVED_HIGH_CRITICAL', 'started_at':'2026-11-06T05:01:00Z', 'completed_at': '2026-11-06T05:02:00Z',
                           'official_database_sha256': ADMISSION_H, 'upstream_review_sha256': ADMISSION_H, 'receipt_sha256': ADMISSION_H}}
     return proof
 
@@ -226,8 +227,8 @@ class PackagingAdmissionTests(unittest.TestCase):
             with self.subTest(name=name,fields=fields),self.assertRaises(ValueError):gate.qualify(fixture({name:fields}),gate.VERSION)
 
     def test_explicit_rebound_and_browser_limit_preserve_original_scope(self):
-        value=fixture({'backup_restore':{'execution':'rebound','equivalence_sha256':'b'*64},'media_replay':{'status':'QUALIFIED_WITH_LIMITATIONS'}})
-        self.assertTrue(gate.qualify(value,gate.VERSION)['ready'])
+        self.assert_both_gates_reject('backup_restore', {'execution':'rebound','equivalence_sha256':'b'*64})
+        self.assertTrue(gate.qualify(fixture({'media_replay':{'status':'QUALIFIED_WITH_LIMITATIONS'}}),gate.VERSION)['ready'])
 
     def test_zip_metadata_is_deterministic(self):
         values=fixture();rows=[{'path':p,'bytes':len(v),'sha256':gate.checksum(v)} for p,v in values.items()]
@@ -239,11 +240,12 @@ class PublisherDataTests(unittest.TestCase):
         self.temporary=tempfile.TemporaryDirectory();self.folder=Path(self.temporary.name)/'assets';self.folder.mkdir()
         self.snapshots=fixture();ready=json.loads(self.snapshots[gate.READY]);rows=[{'path':p,'bytes':len(v),'sha256':gate.checksum(v)} for p,v in self.snapshots.items()]
         archive=export.candidate_archive(self.snapshots,rows,gate.VERSION);filename='conflict-monitor-'+gate.VERSION+'-source.zip'
+        notes=gate.release_notes(gate.VERSION,'a'*40,ready['limitations'])
         (self.folder/filename).write_bytes(archive);(self.folder/(filename+'.sha256')).write_text(gate.checksum(archive)+'  '+filename+'\n',newline='\n')
         verification={'schema':1,'status':'READY_FOR_PRERELEASE','repository':gate.REPOSITORY,'source_commit':'a'*40,'release_ref':gate.BRANCH,'tag':'v'+gate.VERSION,
             'archive':{'name':filename,'bytes':len(archive),'sha256':gate.checksum(archive)},'ready_receipt_sha256':gate.checksum(self.snapshots[gate.READY]),'source_manifest_sha256':ready['source_manifest_sha256'],
-            **{key:ready[key] for key in ['runtime_source_sha256','images','evidence','limitations']},'release_notes_sha256':gate.checksum(b'Authored fixture; never publish.\n'),'ci':gate.ci_identity('123456','1')}
-        raw=gate.canonical(verification);(self.folder/'verification.json').write_bytes(raw);(self.folder/'RELEASE_NOTES.txt').write_bytes(b'Authored fixture; never publish.\n')
+            **{key:ready[key] for key in ['runtime_source_sha256','images','evidence','limitations']},'release_notes_sha256':gate.checksum(notes),'ci':gate.ci_identity('123456','1')}
+        raw=gate.canonical(verification);(self.folder/'verification.json').write_bytes(raw);(self.folder/'RELEASE_NOTES.txt').write_bytes(notes)
         self.env={'GITHUB_EVENT_NAME':'push','GITHUB_REF':gate.BRANCH,'GITHUB_REPOSITORY':gate.REPOSITORY,'GITHUB_SHA':'a'*40,'GITHUB_ACTOR':'DankWoodsmoke',
             'EXPECTED_ARCHIVE_SHA256':gate.checksum(archive),'EXPECTED_VERIFICATION_SHA256':gate.checksum(raw),'EXPECTED_TAG':'v'+gate.VERSION,'GH_TOKEN':'offline-test-placeholder','GITHUB_RUN_ID':'123456','GITHUB_RUN_ATTEMPT':'1','PUBLISHER_RECEIPT':str(self.folder.parent/'publication-receipt.json')}
 

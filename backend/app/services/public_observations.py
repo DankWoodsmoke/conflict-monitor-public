@@ -210,7 +210,11 @@ async def start_public_observation_publisher():
     while True:
         delay = POLL_SECONDS
         try:
-            await publish_once()
+            outcome = await publish_once()
+            if outcome in {"not_due", "already_running"}:
+                # Recheck skipped database work promptly. The stored due gate
+                # still prevents provider requests before three hours elapse.
+                delay = DB_RETRY_SECONDS
         except (SQLAlchemyError, OSError) as exc:
             # Retry database/connection availability promptly. Each attempt still
             # takes the advisory lock and checks the stored cadence before HTTP.

@@ -243,9 +243,10 @@ def ap_validate_security(proof):
         ap_hashes(row['evidence_sha256s'])
         ap_require(set(row['evidence_sha256s']) <= evidence, 'Non-CVE evidence is unbound')
     refresh = s['final_refresh']
-    ap_keys(refresh, 'status completed_at official_database_sha256 upstream_review_sha256 receipt_sha256', 'final refresh')
+    ap_keys(refresh, 'status started_at completed_at official_database_sha256 upstream_review_sha256 receipt_sha256', 'final refresh')
     ap_require(refresh['status'] == 'COMPLETE_NO_UNRESOLVED_HIGH_CRITICAL', 'Final advisory review incomplete')
     completed = ap_clock(refresh['completed_at'])
+    ap_require(ap_clock(refresh['started_at'])<=completed, 'Final refresh starts after completion')
     ap_require(completed >= reviewed_at, 'Final refresh predates component review')
     for field in ('official_database_sha256', 'upstream_review_sha256', 'receipt_sha256'):
         ap_hash_value(refresh[field])
@@ -342,9 +343,391 @@ def ap_validate_pair(security_proof, soak_proof):
     security, soak = ap_validate_security(security_proof), ap_validate_soak(soak_proof)
     ap_require(security_proof['qualified_images'] == soak_proof['qualified_images'] and security_proof['runtime_source_sha256'] == soak_proof['runtime_source_sha256'], 'Security/soak artifact binding differs')
     ap_require(security['candidate_receipt_sha256'] == soak['candidate_receipt_sha256'], 'Candidate receipts differ')
-    ap_require(ap_clock(security['final_refresh']['completed_at']) >= ap_clock(soak['ended_at']), 'Final advisory review must follow the full soak')
+    ap_require(ap_clock(security['final_refresh']['started_at']) > ap_clock(soak['ended_at']), 'Final advisory review must follow the full soak')
     return True
 # END REVIEWED ADMISSION POLICY
+
+# BEGIN SCOPED BROWSER AND RESTORE POLICY
+# Structural admission of reviewed, hash-bound projections; never execution evidence by itself.
+ev_COMMON = 'status execution source_receipt_sha256 runtime_source_sha256 qualified_images'
+ev_ENGINES = {'chromium': '158.0.8127.18', 'firefox': '159.0', 'webkit': '27.2'}
+ev_OPERATOR_CHECKS = set('actual_google_tiles_connected_with_attribution native_attribution_text_pointer_access_and_popup_open_close all_three_workspaces_fit_and_preserve_same_earth_canvas coordinate_bounds_and_zero_position last_known_position_count_and_optional_aging_visibility_control layer_and_settings_dialog_layout_and_keyboard_dismissal unobscured_composed_earth_pixels_are_nonblank_and_textured all_four_configured_regions_have_successful_bounded_collection_receipts'.split())
+ev_PUBLIC_CHECKS = set('actual_nonempty_NASA_and_ADSB_public_capabilities real_google_ready_native_attribution_visible_clickable public_panel_actual_thermal_aircraft_counts_citation_exact_NASA_download visible_ODbL_attribution_exact_aircraft_download_both_enabled_nonempty_Earth_layers all_tabs_explicit_publication_states_same_earth_canvas_no_operator_controls public_source_health_scope_and_mobile_dialog unobscured_composed_earth_pixels_are_nonblank_and_textured 35_second_settle_no_hidden_data_media_operator_polls_or_websockets_no_page_errors'.split())
+ev_MEDIA_CHECKS = set('google_native_attribution_visible_and_operable actual_validated_source_id_and_exact_original_excerpt_visible native_user_play_advances_actual_h264_aac_artifact native_caption_cues_exact_text_measured_timings_and_visible_on_off_pixels exact_complete_transcript_keyboard_scroll_and_native_track_state_sync native_decoded_frames_and_user_resume_pause persistent_earth_no_implicit_jobs_and_mobile_layout'.split())
+ev_RESTORE_CHECKS = set('all_snapshot_tables_rows_indexes_revision_locale_equal sequence_definitions_and_non_mvcc_bounds restored_sequences_cover_snapshot_keys bootstrap_preserves_all_snapshot_data reader_exact_unprivileged_identity reader_two_table_only_and_negative_sql reader_no_dml_creation writer_exact_identity_and_publication_grants restore_has_no_host_ports_or_external_networks reader_collection_generation_explicitly_disabled main_image_start_identity_unchanged bound_helpers_unchanged reviewed_source_inventory_unchanged'.split())
+ev_RASTER_THRESHOLDS = {'samples': 16, 'bright_fraction': .25, 'stddev': 10, 'color_bins': 16}
+ev_RANGE_TRANSFORM = 'Fixed studio RGB (c-16)*255/219, clipped and rounded; independently tested with separate tagged known-color H264 control'
+ev_FF_REQUIREMENT = 'Paused caption enable repaints without resuming'
+ev_WK_REQUIREMENT = 'Unadjusted video RGB identity with independent reference decoder'
+
+
+def ev_text(value, maximum=1200):
+    ap_require(type(value) is str and 1 <= len(value) <= maximum and not any(ord(c)<32 for c in value), 'Bounded plain text required')
+
+
+def ev_limits(value, minimum=1):
+    ap_require(type(value) is list and minimum <= len(value) <= 25, 'Explicit scoped limitations required')
+    for item in value: ev_text(item)
+    ap_require(len(set(value)) == len(value), 'Duplicate limitation')
+
+
+def ev_set(value, expected, name):
+    ap_require(type(value) is list and all(type(v) is str for v in value) and len(value) == len(expected) and set(value) == expected, name + ' inventory differs')
+
+
+def ev_zero(value): ap_integer(value, 0, 0)
+
+
+def ev_true_checks(value, expected):
+    ap_keys(value, ' '.join(expected), 'check set')
+    ap_require(all(v is True for v in value.values()), 'A required check failed or is incomplete')
+
+
+def ev_fresh(proof, status='PASS'):
+    ap_require(type(proof) is dict and proof.get('status') == status and proof.get('execution') == 'fresh', 'Fresh final scoped proof required')
+    ap_images(proof.get('qualified_images'))
+    for key in ['runtime_source_sha256', 'source_receipt_sha256']: ap_hash_value(proof.get(key))
+
+
+def ev_times(start, end, minimum=0, maximum=3600):
+    seconds = (ap_clock(end)-ap_clock(start)).total_seconds()
+    ap_number(seconds, minimum, maximum)
+    return seconds
+
+
+def ev_raster(row, minima=False):
+    ap_keys(row, 'samples bright_fraction stddev color_bins' + ('' if minima else ' mean'), 'composed raster')
+    ap_integer(row['samples'], 16, 713)
+    ap_number(row['bright_fraction'], .25, 1)
+    ap_number(row['stddev'], 10, 255)
+    ap_integer(row['color_bins'], 16, row['samples'])
+    if not minima: ap_number(row['mean'], 0, 255)
+
+
+def ev_validate_raster(proof, name):
+    row = proof['supplemental_raster']
+    ap_keys(row, 'schema status execution gate artifact_profile browser version candidate_receipt_sha256 source_receipt_sha256 summary_sha256 samples_sha256 observer_sha256 raster_helper_sha256 started_at ended_at requested_seconds elapsed_seconds samples raster_samples findings cadence thresholds minima checks observed_services unobserved_image_roles limitations', 'supplemental raster')
+    ap_integer(row['schema'], 1, 1)
+    ap_require(row['gate']==name and row['artifact_profile']==('operator-free' if name=='google_operator' else 'public-context') and row['browser']=='chromium' and row['version']==ev_ENGINES['chromium'],'Raster observer/profile binding differs')
+    ap_require(row['status'] == 'completed_sample' and row['execution'] == 'fresh', 'Actual completed raster observation required')
+    for key in ['candidate_receipt_sha256','source_receipt_sha256','summary_sha256','samples_sha256','observer_sha256','raster_helper_sha256']: ap_hash_value(row[key])
+    ap_require(row['candidate_receipt_sha256'] == proof['candidate_receipt_sha256'], 'Raster candidate differs')
+    span = ev_times(row['started_at'], row['ended_at'], 14400, 14760)
+    ap_integer(row['requested_seconds'],14400,14400)
+    ap_number(row['elapsed_seconds'],14400,14600)
+    ap_require(abs(span-row['elapsed_seconds']) <= 90, 'Raster wall and monotonic clocks differ')
+    ap_integer(row['samples'],479,600)
+    ap_integer(row['raster_samples'],row['samples'],row['samples'])
+    ev_zero(row['findings'])
+    ap_keys(row['cadence'], 'first_seconds maximum_gap_seconds final_gap_seconds', 'raster cadence')
+    for value in row['cadence'].values(): ap_number(value,0,90)
+    ap_keys(row['thresholds'], ' '.join(ev_RASTER_THRESHOLDS), 'raster thresholds')
+    for key, value in ev_RASTER_THRESHOLDS.items():
+        ap_number(row['thresholds'][key],value,value)
+    ev_raster(row['minima'],True)
+    ev_true_checks(row['checks'], {'no_findings','all_samples_have_raster','identities_stable','sources_unchanged','private_helpers_unchanged','browser_closed','no_implicit_generation','all_tabs_observed','google_provider_and_attribution_retained'})
+    ap_keys(row['observed_services'], ' '.join(ap_SERVICES), 'raster services')
+    identities=[]
+    for service, role in ap_SERVICES.items():
+        observed=row['observed_services'][service]
+        ap_keys(observed,'image identity_sha256 started_at','raster service')
+        ap_require(observed['image']==proof['qualified_images'][role],'Raster image differs')
+        ap_hash_value(observed['identity_sha256']);identities.append(observed['identity_sha256'])
+        ap_require(ap_clock(observed['started_at'])<=ap_clock(row['started_at']),'Service started after raster observation')
+    ap_require(len(set(identities))==5,'Raster service identities collapse')
+    ev_set(row['unobserved_image_roles'],{'tunnel'},'raster unobserved roles')
+    ev_limits(row['limitations'])
+    return row
+
+
+def ev_validate_direct_google_binding(review):
+    ap_keys(review,'mode status binding_receipt_sha256 independent_review_sha256 independent_review_status immutable_inventory_before_sha256 immutable_inventory_after_sha256 unchanged_browser_input_files added_files removed_files unchanged_source_files unchanged_executed_helpers checks generated_output','direct Google binding')
+    ap_require(review['mode']=='direct_immutable_browser_binding' and review['status']=='passed','Direct Google binding did not pass')
+    ap_require(review['independent_review_status']=='PASS_DIRECT_IMMUTABLE_BROWSER_BINDING','Independent direct binding review missing')
+    for key in ['binding_receipt_sha256','independent_review_sha256','immutable_inventory_before_sha256','immutable_inventory_after_sha256']:ap_hash_value(review[key])
+    ap_require(review['binding_receipt_sha256']!=review['independent_review_sha256'],'Binding and independent review must differ')
+    ap_require(review['immutable_inventory_before_sha256']==review['immutable_inventory_after_sha256'],'Immutable browser membership or bytes changed')
+    for key,value in [('unchanged_browser_input_files',1030),('unchanged_source_files',545),('unchanged_executed_helpers',4)]:ap_integer(review[key],value,value)
+    ev_zero(review['added_files']);ev_zero(review['removed_files'])
+    ev_true_checks(review['checks'],set('immutable_files_and_membership_equal original_frozen_source_unchanged current_source_unchanged private_helpers_unchanged five_services_unchanged all_cases_passed owned_browser_jobs_closed generated_output_retained_privately'.split()))
+    generated=review['generated_output'];ap_keys(generated,'path before after contents_exported','separate generated output')
+    ap_require(generated['path']=='chromium_headless_shell-1254/chrome-headless-shell-win64/debug.log' and generated['contents_exported'] is False,'Only exact generated diagnostic output may be excluded')
+    for row in [generated['before'],generated['after']]:
+        ap_keys(row,'sha256 bytes utf8_diagnostic_lines','retained generated log measurement');ap_hash_value(row['sha256'])
+        ap_integer(row['bytes'],0,2000000);ap_integer(row['utf8_diagnostic_lines'],1 if row['bytes'] else 0,row['bytes'])
+        if row['bytes']==0:ap_require(row['sha256']==sha256(b'').hexdigest(),'Empty diagnostic log hash differs')
+    if generated['before']['sha256']==generated['after']['sha256']:ap_require(generated['before']==generated['after'],'Equal log hashes have contradictory measurements')
+
+
+def ev_validate_google(proof, name, require_raster=True):
+    ev_fresh(proof)
+    ap_require(name in {'google_operator','google_public'} and proof.get('gate')==name,'Google gate differs')
+    fields=ev_COMMON+' candidate_receipt_sha256 gate started_at ended_at cases_passed cases_failed cases observed_image_roles unobserved_image_roles browser_tool_version browser_manifest_sha256 binding_review limitations'
+    ap_keys(proof,fields+(' supplemental_raster' if require_raster or 'supplemental_raster' in proof else ''),'Google proof')
+    ap_hash_value(proof['candidate_receipt_sha256']);ap_hash_value(proof['browser_manifest_sha256'])
+    ap_require(proof['browser_tool_version']=='1.65.0','Unreviewed browser tool version')
+    ev_times(proof['started_at'],proof['ended_at'],1,3600)
+    ev_set(proof['observed_image_roles'],{'backend','database','operator','public'},'Google observed roles')
+    ev_set(proof['unobserved_image_roles'],{'tunnel'},'Google unobserved roles')
+    ev_limits(proof['limitations'],3)
+    for required in ['Browser/viewport emulation, not a physical phone test.','Raster sampling is a blank/flat-render guard, not source-location ground truth.','Five-image identity names the complete candidate; the tunnel image was not exercised by this browser gate.']:
+        ap_require(required in proof['limitations'],'Google scope limitation omitted')
+    sizes={(320,740),(390,844),(768,1024),(844,390)} if name=='google_operator' else {(320,740),(390,844),(1440,900)}
+    expected={(browser,*size) for browser in ev_ENGINES for size in sizes}
+    ap_integer(proof['cases_passed'],len(expected),len(expected));ev_zero(proof['cases_failed'])
+    ap_require(type(proof['cases']) is list and len(proof['cases'])==len(expected),'Google measured case inventory incomplete')
+    seen=set()
+    for case in proof['cases']:
+        ap_keys(case,'browser version viewport status checks composed_earth_raster screenshot_sha256 page_errors'+(' google_provider_end_state' if name=='google_operator' else ' network source_counts exact_downloads'),'Google case')
+        ap_require(case['browser'] in ev_ENGINES and case['version']==ev_ENGINES[case['browser']] and case['status']=='passed','Google engine failed or differs')
+        ap_keys(case['viewport'],'width height','viewport')
+        for v in case['viewport'].values(): ap_integer(v,1,3000)
+        key=(case['browser'],case['viewport']['width'],case['viewport']['height'])
+        ap_require(key in expected and key not in seen,'Duplicate or unmeasured viewport');seen.add(key)
+        expected_checks=ev_OPERATOR_CHECKS | ({'actual_farside_positions_hidden_and_region_restores_visible_hemisphere'} if key[1:]==(390,844) else set()) if name=='google_operator' else ev_PUBLIC_CHECKS
+        ev_set(case['checks'],expected_checks,'Google assertions')
+        ev_raster(case['composed_earth_raster']);ap_hash_value(case['screenshot_sha256']);ev_zero(case['page_errors'])
+        if name=='google_operator': ap_require(case['google_provider_end_state']=='ready','Google imagery unavailable')
+        else:
+            network=case['network']
+            ap_keys(network,'config_requests status_requests forbidden_api_requests media_requests publication_observation_requests publication_aircraft_requests application_nonread_requests websockets google_roots_ok google_tiles_ok','public network')
+            for k in ['forbidden_api_requests','media_requests','application_nonread_requests','websockets']: ev_zero(network[k])
+            for k,minimum in [('config_requests',1),('status_requests',2),('publication_observation_requests',1),('publication_aircraft_requests',3),('google_roots_ok',1),('google_tiles_ok',1)]: ap_integer(network[k],minimum,10000)
+            ap_keys(case['source_counts'],'aircraft observations','source counts');ap_keys(case['exact_downloads'],'aircraft observations','downloads')
+            for kind, cap in [('aircraft',5000),('observations',10000)]:
+                ap_integer(case['source_counts'][kind],1,2000 if kind=='observations' else cap)
+                download=case['exact_downloads'][kind];ap_keys(download,'status records','download')
+                ap_integer(download['status'],200,200);ap_integer(download['records'],1,cap)
+                ap_require(case['source_counts'][kind]<=download['records'],'Displayed source count exceeds linked packet inventory')
+    ap_require(seen==expected,'Missing Google case')
+    ap_require(len({case['screenshot_sha256'] for case in proof['cases']})==len(expected),'Repeated screenshot evidence')
+    review=proof['binding_review']
+    if type(review) is dict and review.get('mode')=='direct_immutable_browser_binding':
+        ev_validate_direct_google_binding(review)
+    else:
+        ap_keys(review,'original_status original_failure original_failed_receipt_sha256 original_receipt_modified independent_addendum_sha256 independent_addendum_status generated_output unchanged_browser_input_files added_files removed_files unchanged_source_files unchanged_executed_helpers','log binding review')
+        ap_require(review['original_status']=='failed' and review['original_failure']=='Installed browser bytes changed' and review['original_receipt_modified'] is False,'Original binding failure must remain explicit')
+        for key in ['original_failed_receipt_sha256','independent_addendum_sha256']: ap_hash_value(review[key])
+        ap_require(review['original_failed_receipt_sha256']!=review['independent_addendum_sha256'],'Original and review receipts must differ')
+        ap_require(review['independent_addendum_status']=='PASS_WITH_EXPLICIT_GENERATED_LOG_BINDING_ADDENDUM','Independent log-only admission required')
+        for key,value in [('unchanged_browser_input_files',1030),('unchanged_source_files',545),('unchanged_executed_helpers',4)]: ap_integer(review[key],value,value)
+        ev_zero(review['added_files']);ev_zero(review['removed_files'])
+        generated=review['generated_output']
+        ap_keys(generated,'path before_sha256 after_sha256 bytes utf8_diagnostic_lines contents_exported','generated output')
+        ap_require(generated['path']=='chromium_headless_shell-1254/chrome-headless-shell-win64/debug.log' and generated['contents_exported'] is False,'Only exact generated diagnostic output may differ')
+        for key in ['before_sha256','after_sha256']: ap_hash_value(generated[key])
+        ap_require(generated['before_sha256']!=generated['after_sha256'],'Expected observed log append absent')
+        ap_integer(generated['bytes'],3072,3072);ap_integer(generated['utf8_diagnostic_lines'],16,16)
+    if require_raster or 'supplemental_raster' in proof: ev_validate_raster(proof,name)
+    return proof
+
+
+def ev_validate_backup(proof):
+    ev_fresh(proof);ap_keys(proof,ev_COMMON+' backup_restore','restore proof')
+    row=proof['backup_restore']
+    ap_keys(row,'schema candidate_receipt_sha256 started_at finished_at elapsed_seconds snapshot_seconds snapshot_lifetime_cap_seconds provider_requests main_service_mutations executed_restore_image_roles checks cleanup_verified archive snapshot_table_count snapshot_fingerprints_sha256 sequence_count sequence_evidence_sha256 cached_public_packets limits','restore')
+    ap_integer(row['schema'],1,1);ap_hash_value(row['candidate_receipt_sha256'])
+    span=ev_times(row['started_at'],row['finished_at'],1,600)
+    ap_number(row['elapsed_seconds'],1,600);ap_require(abs(span-row['elapsed_seconds'])<=.01,'Restore clocks differ')
+    ap_integer(row['snapshot_lifetime_cap_seconds'],240,240);ap_number(row['snapshot_seconds'],.001,240)
+    ap_require(row['snapshot_seconds']<=row['elapsed_seconds'],'Snapshot lifetime exceeds execution')
+    ev_zero(row['provider_requests']);ev_zero(row['main_service_mutations'])
+    ev_set(row['executed_restore_image_roles'],{'backend','database'},'Restore executed roles')
+    ev_true_checks(row['checks'],ev_RESTORE_CHECKS);ap_require(row['cleanup_verified'] is True,'Restore cleanup incomplete')
+    archive=row['archive'];ap_keys(archive,'bytes format ownership_acl_included rows_bound_to_same_exported_snapshot sha256','restore archive')
+    ap_integer(archive['bytes'],1,100_000_000);ap_hash_value(archive['sha256'])
+    ap_require(archive['format']=='postgresql-custom' and archive['ownership_acl_included'] is False and archive['rows_bound_to_same_exported_snapshot'] is True,'Snapshot/ACL scope differs')
+    ap_integer(row['snapshot_table_count'],17,17);ap_integer(row['sequence_count'],6,6)
+    ap_hash_value(row['snapshot_fingerprints_sha256']);ap_hash_value(row['sequence_evidence_sha256'])
+    ap_keys(row['cached_public_packets'],'aircraft observations','restored packets')
+    for kind,cap in [('aircraft',5000),('observations',10000)]:
+        packet=row['cached_public_packets'][kind]
+        ap_keys(packet,'batch_id display_status displayed_rows stored_rows download_sha256 sql_download_exact','restored packet')
+        ap_hash_value(packet['batch_id']);ap_hash_value(packet['download_sha256'])
+        ap_integer(packet['stored_rows'],1,cap);ap_integer(packet['displayed_rows'],1,packet['stored_rows'])
+        ap_require(packet['display_status']=='fresh' and packet['sql_download_exact'] is True,'Restored packet verification failed')
+    ev_limits(row['limits'],4)
+    for required in ['Sequence values are non-MVCC; exact snapshot-time equality is not claimed.','Local isolated restore only; encrypted off-machine backup and host disaster recovery were not tested.']:
+        ap_require(required in row['limits'],'Restore scope limitation omitted')
+    return row
+
+
+def ev_pixel(row, video):
+    extra=' range_normalized_content' if 'range_normalized_content' in row else ''
+    ap_keys(row,'media_time width height reference_scale actual_rgba_sha256 reference_rgba_sha256 video_sha256 pixel_buffers_retained mean_absolute_rgb_error p99_absolute_rgb_error reference_rgb_standard_deviation mean_limit p99_limit unadjusted_status'+extra,'native decoded pixels')
+    ap_number(row['media_time'],.001,60)
+    for k in ['width','height']: ap_integer(row[k],64,4096)
+    for k in ['actual_rgba_sha256','reference_rgba_sha256','video_sha256']: ap_hash_value(row[k])
+    ap_require(row['video_sha256']==video and type(row['pixel_buffers_retained']) is bool,'Decoded artifact binding differs')
+    ap_require(row['reference_scale'] in {'none','bilinear to observed native dimensions'},'Unreviewed reference scaling')
+    ev_error_metrics(row)
+    return row['mean_absolute_rgb_error']<=2 and row['p99_absolute_rgb_error']<=12
+
+
+def ev_error_metrics(row):
+    ap_number(row['mean_absolute_rgb_error'],0,255);ap_number(row['p99_absolute_rgb_error'],0,255)
+    ap_number(row['reference_rgb_standard_deviation'],10,255)
+    ap_number(row['mean_limit'],2,2);ap_number(row['p99_limit'],12,12)
+
+
+def ev_validate_media(proof):
+    ev_fresh(proof,'QUALIFIED_WITH_LIMITATIONS')
+    ap_keys(proof,ev_COMMON+' candidate_receipt_sha256 gate qualified_engines implicit_generation_requests raw_engines_passed started_at ended_at browser_receipt_sha256 browser_cases observed_image_roles unobserved_image_roles artifact_provenance independent_color_control provider_generation_calls database_connected api_audit api_execution_scope owned_cleanup_verified temporary_key_inputs_removed bound_inputs_unchanged limitations','Media proof')
+    ap_require(proof['gate']=='media_replay','Media gate differs');ap_hash_value(proof['candidate_receipt_sha256']);ap_hash_value(proof['browser_receipt_sha256'])
+    ev_times(proof['started_at'],proof['ended_at'],1,600)
+    ap_integer(proof['qualified_engines'],3,3);ap_integer(proof['raw_engines_passed'],1,1)
+    ev_zero(proof['implicit_generation_requests']);ev_zero(proof['provider_generation_calls'])
+    for key in ['owned_cleanup_verified','temporary_key_inputs_removed','bound_inputs_unchanged']: ap_require(proof[key] is True,'Replay cleanup or input binding failed')
+    ap_require(proof['database_connected'] is False,'Replay must not imply DB execution')
+    ev_set(proof['observed_image_roles'],{'backend','operator'},'Replay observed roles');ev_set(proof['unobserved_image_roles'],{'database','public','tunnel'},'Replay unobserved roles')
+    scope=proof['api_execution_scope']
+    ap_keys(scope,'mode candidate_backend_image_used entrypoint_overridden production_fastapi_routes_executed database_connected new_model_or_media_generation meaning','Replay API scope')
+    ap_require(scope['mode']=='isolated_read_only_replay_server' and scope['candidate_backend_image_used'] is True and scope['entrypoint_overridden'] is True and all(scope[k] is False for k in ['production_fastapi_routes_executed','database_connected','new_model_or_media_generation']),'Replay production API claim forbidden')
+    ev_text(scope['meaning']);ev_limits(proof['limitations'],5)
+    for required in ['Retained analysis/video replay, not fresh model success or report truth.','No physical-device, Safari or listener-audibility qualification.','Imagery includes Google and the explicitly allowed Esri reference fallback; this is not a Google-only network claim.']:
+        ap_require(required in proof['limitations'],'Media scope limitation omitted')
+    artifact=proof['artifact_provenance'];ap_keys(artifact,'execution capture_receipt_sha256 capture_started_at video_sha256 video_bytes measured_segments duration_seconds','retained artifact')
+    ap_require(artifact['execution'] in {'historical artifact replayed freshly on exact candidate16','historical artifact replayed freshly on exact candidate17'},'Historical artifact provenance omitted')
+    ap_require(ap_clock(artifact['capture_started_at'])<ap_clock(proof['started_at']),'Artifact capture is not historical')
+    ap_hash_value(artifact['capture_receipt_sha256']);ap_hash_value(artifact['video_sha256']);ap_integer(artifact['video_bytes'],1,30_000_000)
+    ap_integer(artifact['measured_segments'],3,3);ap_number(artifact['duration_seconds'],1,300)
+    ap_require(type(proof['browser_cases']) is list and len(proof['browser_cases'])==3,'Three exact native cases required')
+    seen=set()
+    for case in proof['browser_cases']:
+        ap_keys(case,'browser version viewport status checks generation_posts blocked_mutations blocked_external page_errors imagery_requests native_decoded_pixels decoded_frames frame_callback callback_measurement_scope caption_metadata paused_caption_restore native_user_pause_resume engine_limitations captions'+(' caption_user_resume callback_cause' if case.get('browser')=='firefox' else ''),'Media case')
+        engine=case['browser'];ap_require(engine in ev_ENGINES and engine not in seen and case['version']==ev_ENGINES[engine],'Missing/duplicate/different Media engine');seen.add(engine)
+        ap_keys(case['viewport'],'width height','Media viewport')
+        ap_integer(case['viewport']['width'],390,390);ap_integer(case['viewport']['height'],844,844)
+        ap_require(case['status']==('passed' if engine=='chromium' else 'qualified_with_limitations'),'Raw native outcome relabeled')
+        ev_set(case['checks'],ev_MEDIA_CHECKS,'Media assertions')
+        for k in ['generation_posts','blocked_mutations','blocked_external','page_errors']: ev_zero(case[k])
+        ap_keys(case['imagery_requests'],'google esri_reference','imagery traffic')
+        for value in case['imagery_requests'].values(): ap_integer(value,1,10000)
+        pixel=case['native_decoded_pixels'];raw_pass=ev_pixel(pixel,artifact['video_sha256'])
+        ap_require(pixel['pixel_buffers_retained'] is (engine=='webkit'),'Native raw-buffer retention scope differs')
+        ap_require(pixel['media_time']<artifact['duration_seconds'],'Sample beyond artifact')
+        ap_require(raw_pass==(engine!='webkit') and pixel['unadjusted_status']==('PASS' if raw_pass else 'FAIL'),'Raw RGB outcome differs from measured errors')
+        if engine=='webkit':
+            normalized=pixel.get('range_normalized_content');ap_keys(normalized,'transform status mean_absolute_rgb_error p99_absolute_rgb_error reference_rgb_standard_deviation mean_limit p99_limit','range diagnostic')
+            ev_error_metrics(normalized)
+            ap_require(normalized['status']=='PASS_CONTENT_WITH_RANGE_LIMITATION' and normalized['transform']==ev_RANGE_TRANSFORM and normalized['mean_absolute_rgb_error']<=2 and normalized['p99_absolute_rgb_error']<=12,'Fixed-range content qualification failed')
+        else: ap_require('range_normalized_content' not in pixel,'Unexpected fitted/normalized raw result')
+        captions=case['caption_metadata'];ap_keys(captions,'cue_count timings audio_container_delta_seconds exact_cue_text default_showing video_sha256','captions')
+        ap_integer(captions['cue_count'],3,3);ap_require(captions['exact_cue_text'] is True and captions['default_showing'] is True and captions['video_sha256']==artifact['video_sha256'],'Caption source identity failed')
+        ap_number(captions['audio_container_delta_seconds'],0,.1)
+        ap_require(type(captions['timings']) is list and len(captions['timings'])==3,'All measured cues required')
+        prior=0
+        for cue in captions['timings']:
+            ap_keys(cue,'start end','caption cue');ap_number(cue['start'],0,300);ap_number(cue['end'],.001,300)
+            ap_require(abs(cue['start']-prior)<.00001 and cue['end']>cue['start'],'Caption cue gap/overlap');prior=cue['end']
+        ap_require(abs(artifact['duration_seconds']-prior-captions['audio_container_delta_seconds'])<=.002,'Caption duration disagrees with retained media')
+        pause=case['paused_caption_restore'];ap_keys(pause,'native_mode same_frame status','paused caption')
+        ap_require(pause['native_mode']=='showing' and pause['same_frame'] is True and pause['status']==('FAIL' if engine=='firefox' else 'PASS'),'Paused-caption raw outcome relabeled')
+        rendered=case['captions'];ap_keys(rendered,'cue_count timings audio_container_delta_seconds transcript_sha256 exact_transcript default_showing rendered_caption_on_off_pixels paused_render_restore frame_time native_off_custom_on_state_sync transcript_keyboard_scroll pixel_buffers_retained private_debug_frames_retained limits','caption rendering')
+        for key in ['cue_count','timings','audio_container_delta_seconds']: ap_require(ap_canonical(rendered[key])==ap_canonical(captions[key]),'Caption rendering metadata differs')
+        ap_hash_value(rendered['transcript_sha256'])
+        for key in ['exact_transcript','default_showing','rendered_caption_on_off_pixels','native_off_custom_on_state_sync']: ap_require(rendered[key] is True,'Caption rendering assertion failed')
+        ap_require(rendered['paused_render_restore'] is (engine!='firefox'),'Raw paused-render outcome relabeled')
+        for key in ['pixel_buffers_retained','private_debug_frames_retained']: ap_require(rendered[key] is False,'Caption diagnostic buffers were not retained by this execution')
+        ap_number(rendered['frame_time'],0,artifact['duration_seconds']);ev_text(rendered['limits'])
+        scroll=rendered['transcript_keyboard_scroll'];ap_keys(scroll,'top height scroll_height after','transcript scroll')
+        for value in scroll.values(): ap_number(value,0,100000)
+        ap_require(scroll['height']>0 and scroll['scroll_height']>=scroll['height'] and scroll['after']<=scroll['scroll_height'],'Transcript dimensions invalid')
+        if scroll['scroll_height']>scroll['height']: ap_require(scroll['after']>scroll['top'],'Scrollable transcript did not move')
+        if engine=='firefox':
+            recovery=case['caption_user_resume'];ap_keys(recovery,'status native_user_play_and_pause from_time to_time guidance_visible_before guidance_cleared_on_playing','caption recovery')
+            for key in ['native_user_play_and_pause','guidance_visible_before','guidance_cleared_on_playing']: ap_require(recovery[key] is True,'Actual caption recovery incomplete')
+            for key in ['from_time','to_time']: ap_number(recovery[key],0,artifact['duration_seconds'])
+            ap_require(recovery['status']=='PASS' and recovery['to_time']>=recovery['from_time']+.5,'Caption recovery did not advance')
+        resume=case['native_user_pause_resume'];ap_keys(resume,'before after passed','user resume')
+        for value in [resume['before'],resume['after']]: ap_number(value,0,artifact['duration_seconds'])
+        ap_require(resume['passed'] is True and resume['after']>=resume['before']+.5,'Actual user-resume recovery absent')
+        expected_scope={'chromium':'presented_advancing_callbacks','firefox':'unsupported_unqualified_raw_observation','webkit':'unavailable_no_callback_evidence'}[engine]
+        ap_require(case['callback_measurement_scope']==expected_scope,'Native callback scope differs')
+        if engine=='firefox':
+            ap_require(case['callback_cause']=='UNVERIFIED','Unsupported callback cause is unverified')
+            ap_require('Firefox reported one callback media_time outside the retained video duration. Its cause is UNVERIFIED; the unsupported callback does not qualify playback or frame time.' in proof['limitations'],'Unsupported out-of-range callback limitation omitted')
+        callback=case['frame_callback'];ap_keys(callback,'status samples','frame callback')
+        ap_integer(case['decoded_frames'],1 if engine=='chromium' else 0,100000)
+        ap_require(type(callback['samples']) is list and len(callback['samples'])<=2,'Bounded native callback evidence required')
+        for sample in callback['samples']:
+            ap_keys(sample,'callback_time height media_time presented_frames width','callback sample')
+            for key in ['callback_time','media_time']: ap_number(sample[key],0,1e9)
+            for key in ['height','width','presented_frames']: ap_integer(sample[key],1,100000)
+        if engine=='chromium':
+            ap_require(callback['status']=='presented' and len(callback['samples'])==2,'Advancing native callbacks absent')
+            first,last=callback['samples'];ap_require(last['media_time']>first['media_time'] and last['media_time']<artifact['duration_seconds'] and last['presented_frames']>first['presented_frames'],'Frozen or out-of-range native callback')
+            ap_require(all(sample['width']==pixel['width'] and sample['height']==pixel['height'] for sample in callback['samples']),'Native callback dimensions differ')
+        else:
+            ev_zero(case['decoded_frames'])
+            ap_require(callback['status']==('No two callbacks within 2 seconds' if engine=='firefox' else 'API unavailable'),'Unsupported counter limitation relabeled')
+            ap_require(len(callback['samples'])==(1 if engine=='firefox' else 0),'Native callback evidence differs')
+            if engine=='firefox':ap_require(callback['samples'][0]['media_time']>artifact['duration_seconds'],'Original unsupported out-of-range observation was altered')
+        limits=case['engine_limitations'];ap_require(type(limits) is list and len(limits)==(0 if engine=='chromium' else 1),'Native limitation omitted')
+        if limits:
+            ap_keys(limits[0],'requirement status handling','native limitation')
+            ap_require(limits[0]['status']=='FAIL' and limits[0]['requirement']==(ev_FF_REQUIREMENT if engine=='firefox' else ev_WK_REQUIREMENT),'Raw engine failure omitted')
+            ev_text(limits[0]['handling'])
+            ap_require(engine+': '+limits[0]['requirement']+' remains FAIL. '+limits[0]['handling'] in proof['limitations'],'Top-level native limitation omitted')
+    ev_validate_control(proof['independent_color_control'],artifact['video_sha256'])
+    audit=proof['api_audit'];ap_keys(audit,'reads video_reads video_ranges unknown_reads unknown_read_routes','replay API audit')
+    for k in ['reads','video_reads','video_ranges']: ap_integer(audit[k],1,10000)
+    ap_integer(audit['unknown_reads'],1,audit['reads']);ap_keys(audit['unknown_read_routes'],'/costs/summary /ws/events <other>','replay denied routes')
+    total=0
+    for route in ['/costs/summary','/ws/events']:
+        ap_require(type(audit['unknown_read_routes'][route]) is dict and set(audit['unknown_read_routes'][route])=={'GET 404'},'Denied local route fields differ')
+        value=audit['unknown_read_routes'][route]['GET 404'];ap_integer(value,1,10000);total+=value
+    ap_require(audit['unknown_read_routes']['<other>']=={} and total==audit['unknown_reads'],'Unknown local read not accounted for')
+    return proof
+
+
+def ev_validate_control(control, report_video):
+    ap_keys(control,'execution binding_sha256 receipt_sha256 video_sha256 decoder_sha256 playwright_version cases limits scope binding_checks','independent control')
+    ap_require(control['execution']=='separate prior Playwright1.65 control; all original inputs rehashed for this replay' and control['playwright_version']=='1.65.0','Control provenance differs')
+    for key in ['binding_sha256','receipt_sha256','video_sha256','decoder_sha256']: ap_hash_value(control[key])
+    ap_require(control['scope']=='Independent known-color H264 control, explicit BT709 limited-range metadata; no report artifact modification','Control source/encoding scope differs')
+    binding=control['binding_checks'];ap_keys(binding,'status exit_code owned_browser_job_closed inputs_unchanged','control execution binding')
+    ap_require(binding['status']=='measured' and binding['owned_browser_job_closed'] is True and binding['inputs_unchanged'] is True,'Control execution incomplete')
+    ev_zero(binding['exit_code'])
+    ap_require(control['video_sha256']!=report_video,'Independent control cannot be report artifact')
+    ev_limits(control['limits'],2)
+    ap_require(type(control['cases']) is list and len(control['cases'])==2,'Both color-control engines required')
+    seen=set();references=set();canvas_sizes=set()
+    for case in control['cases']:
+        ap_keys(case,'browser browser_version status actual_sample actual_sha256 reference_sha256 raw_interior fixed_studio_to_full_interior','color control')
+        engine=case['browser'];ap_require(engine in {'chromium','webkit'} and engine not in seen and case['browser_version']==ev_ENGINES[engine] and case['status']=='MEASURED','Control engine mismatch');seen.add(engine)
+        for key in ['actual_sha256','reference_sha256']: ap_hash_value(case[key])
+        sample=case['actual_sample'];ap_keys(sample,'canvas_height canvas_width native_height native_width time','control sample')
+        for key in ['canvas_height','canvas_width','native_height','native_width']: ap_integer(sample[key],64,4096)
+        ap_number(sample['time'],.001,10)
+        references.add(case['reference_sha256']);canvas_sizes.add((sample['canvas_width'],sample['canvas_height']))
+        for key in ['raw_interior','fixed_studio_to_full_interior']:
+            row=case[key];ap_keys(row,'mae p99 samples','control errors');ap_number(row['mae'],0,255);ap_number(row['p99'],0,255);ap_integer(row['samples'],7200,7200)
+        raw=case['raw_interior'];fixed=case['fixed_studio_to_full_interior']
+        raw_pass=raw['mae']<=2 and raw['p99']<=12;fixed_pass=fixed['mae']<=2 and fixed['p99']<=12
+        ap_require(raw_pass==(engine=='chromium') and fixed_pass==(engine=='webkit'),'Independent range control/negative control did not reproduce scope')
+    ap_require(len(references)==1 and canvas_sizes=={(1280,720)},'Same independent reference/control canvas identity must agree')
+
+
+def ev_validate_proof_set(proofs):
+    security=proofs['security']['security'];soak=proofs['full_pipeline_soak']['soak']
+    candidate=security['candidate_receipt_sha256']
+    ap_require(soak['candidate_receipt_sha256']==candidate,'Soak candidate differs')
+    for name in ['google_operator','google_public','media_replay']:
+        ap_require(proofs[name]['candidate_receipt_sha256']==candidate,'Browser candidate differs')
+    ap_require(proofs['backup_restore']['backup_restore']['candidate_receipt_sha256']==candidate,'Restore candidate differs')
+    operator,public=proofs['google_operator'],proofs['google_public']
+    ap_require(operator['binding_review']==public['binding_review'] and operator['browser_manifest_sha256']==public['browser_manifest_sha256'],'Matrix source/addendum binding differs')
+    for key in ['summary_sha256','samples_sha256']:
+        ap_require(operator['supplemental_raster'][key]!=public['supplemental_raster'][key],'Separate operator/public raster executions required')
+    for key in ['source_receipt_sha256','observer_sha256','raster_helper_sha256']:
+        ap_require(operator['supplemental_raster'][key]==public['supplemental_raster'][key],'Raster parent/source binding differs')
+    for proof in [operator,public]:
+        raster=proof['supplemental_raster']
+        ap_require(raster['observed_services']==soak['observed_services'],'Supplemental raster must observe the same stable service incarnations')
+        ap_require(ap_clock(security['final_refresh']['started_at'])>ap_clock(raster['ended_at']),'Final security refresh must follow both independent raster soaks')
+    return True
+# END SCOPED BROWSER AND RESTORE POLICY
 
 
 def qualify(snapshots,version):
@@ -382,11 +765,21 @@ def qualify(snapshots,version):
         admitted_proofs[name]=proof
         if name=='full_pipeline_soak':ap_validate_soak(proof)
         if name=='security':ap_validate_security(proof)
-        if name=='media_replay' and (type(proof.get('qualified_engines')) is not int or proof['qualified_engines']!=3 or type(proof.get('implicit_generation_requests')) is not int or proof['implicit_generation_requests']!=0):raise ValueError('Native replay UI gate incomplete')
+        if name in {'google_operator','google_public'}:ev_validate_google(proof,name)
+        if name=='media_replay':ev_validate_media(proof)
+        if name=='backup_restore':ev_validate_backup(proof)
     ap_validate_pair(admitted_proofs['security'],admitted_proofs['full_pipeline_soak'])
+    ev_validate_proof_set(admitted_proofs)
     limits=ready.get('limitations')
     if not isinstance(limits,list) or not 1<=len(limits)<=20 or any(not isinstance(x,str) or not 1<=len(x)<=600 or '\n' in x for x in limits):raise ValueError('Bounded explicit release limitations required')
     return ready
+
+
+def release_notes(version,commit,limitations):
+    intro=('RC.5 brings Google Earth imagery and clearer source-specific identifiers into one workspace. '
+           'Public context uses separate NASA FIRMS thermal observations and ADSB.lol snapshots, with attribution and downloads of the exact published batches. '
+           'Reconnect and recovery repairs, restricted public access and native dependency fixes are covered by the scoped browser, pipeline and four-hour qualification recorded with this prerelease.')
+    return (intro+'\n\nVerified source prerelease '+version+'\n\nSource commit: '+commit+'\n\n'+'\n'.join('- '+item for item in limitations)+'\n').encode('utf-8')
 
 
 def ci_identity(run_id,attempt):
@@ -425,7 +818,7 @@ def package(root,out,event,ref,repository,commit,actor,run_id,attempt):
     filename=f'conflict-monitor-{version}-source.zip'
     (out/filename).write_bytes(archive)
     (out/(filename+'.sha256')).write_text(checksum(archive)+'  '+filename+'\n',encoding='utf8',newline='\n')
-    notes=('Verified source prerelease '+version+'\n\nSource commit: '+commit+'\n\n'+'\n'.join('- '+item for item in ready['limitations'])+'\n').encode()
+    notes=release_notes(version,commit,ready['limitations'])
     verification={'schema':1,'status':'READY_FOR_PRERELEASE','repository':repository,'source_commit':commit,'release_ref':ref,'tag':'v'+version,
         'archive':{'name':filename,'bytes':len(archive),'sha256':checksum(archive)},'source_manifest_sha256':ready['source_manifest_sha256'],
         'ready_receipt_sha256':checksum(snapshots[READY]),'runtime_source_sha256':ready['runtime_source_sha256'],'images':ready['images'],
