@@ -11,6 +11,14 @@ afterEach(async()=>{await act(async()=>root.unmount());host.remove();});
 async function type(value:string){const input=host.querySelector("input")!;await act(async()=>{Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value")!.set!.call(input,value);input.dispatchEvent(new Event("input",{bubbles:true}));});}
 const buttons=()=>host.querySelectorAll<HTMLButtonElement>("[data-contact-id]");
 describe("dense contact access",()=>{
+ it("keeps a C0 contact visibly unspecified even when its callsign suggests a vehicle",async()=>{
+  const marker={...markers[0],emitterCategory:"C0",name:"GROUND01",heading:90};
+  await act(async()=>root.render(<EarthContactsPanel markers={[marker]} areaGroup onChoose={()=>{}} onZoom={()=>{}} onClose={()=>{}}/>));
+  expect(buttons()).toHaveLength(1);
+  expect(buttons()[0].textContent).toContain("ADS-B emitter · type unspecified");
+  expect(buttons()[0].textContent).not.toMatch(/Ground emitter|Aircraft position|Vessel position/);
+  expect(buttons()[0].textContent).toContain("GROUND01");
+ });
  it("lets long source text shrink inside the grid without removing its accessible content",async()=>{
   const longName="Contact "+"LONG-NAME-".repeat(30),longClock="2026-10-31 01:00:00 UTC · "+"source observation context ".repeat(20);
   const marker={...markers[0],name:longName,details:[["Observed",longClock]] as [string,string][]},choose=vi.fn();

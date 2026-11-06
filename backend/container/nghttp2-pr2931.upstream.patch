@@ -1,0 +1,133 @@
+From f05a55ec47b7eb3f2428603a94475673e6413508 Mon Sep 17 00:00:00 2001
+From: Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+Date: Thu, 22 Oct 2026 23:31:35 +0900
+Subject: [PATCH] Fix signed integer overflow in
+ nghttp2_session_get_stream_local_window_size
+
+The fix is not ideal, but due to the convoluted nghttp2 window
+management APIs, I do not want to spent more time on this.  If you are
+looking for the better alternative, check nghttp2-v2.
+---
+ lib/nghttp2_session.c        | 17 ++++++++++--
+ tests/nghttp2_session_test.c | 54 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 68 insertions(+), 3 deletions(-)
+
+diff --git a/lib/nghttp2_session.c b/lib/nghttp2_session.c
+index aa210d4eb0..568f7e1203 100644
+--- a/lib/nghttp2_session.c
++++ b/lib/nghttp2_session.c
+@@ -4221,6 +4221,11 @@ static int update_local_initial_window_size_func(void *entry, void *ptr) {
+     return NGHTTP2_ERR_FLOW_CONTROL;
+   }
+ 
++  if ((int64_t)stream->local_window_size - (int64_t)stream->recv_window_size >
++      NGHTTP2_MAX_WINDOW_SIZE) {
++    return NGHTTP2_ERR_FLOW_CONTROL;
++  }
++
+   if (stream->window_update_queued) {
+     return 0;
+   }
+@@ -7756,13 +7761,13 @@ nghttp2_session_get_stream_effective_local_window_size(nghttp2_session *session,
+ int32_t nghttp2_session_get_stream_local_window_size(nghttp2_session *session,
+                                                      int32_t stream_id) {
+   nghttp2_stream *stream;
+-  int32_t size;
++  int64_t size;
+   stream = nghttp2_session_get_stream(session, stream_id);
+   if (stream == NULL) {
+     return -1;
+   }
+ 
+-  size = stream->local_window_size - stream->recv_window_size;
++  size = (int64_t)stream->local_window_size - (int64_t)stream->recv_window_size;
+ 
+   /* size could be negative if local endpoint reduced
+      SETTINGS_INITIAL_WINDOW_SIZE */
+@@ -7770,7 +7775,13 @@ int32_t nghttp2_session_get_stream_local_window_size(nghttp2_session *session,
+     return 0;
+   }
+ 
+-  return size;
++  /* In this case, GOAWAY with NGHTTP2_FLOW_CONTROL_ERROR has already
++     been queued or sent */
++  if (size > NGHTTP2_MAX_WINDOW_SIZE) {
++    return NGHTTP2_MAX_WINDOW_SIZE;
++  }
++
++  return (int32_t)size;
+ }
+ 
+ int32_t
+diff --git a/tests/nghttp2_session_test.c b/tests/nghttp2_session_test.c
+index ac00d7fe2b..c5baca17ec 100644
+--- a/tests/nghttp2_session_test.c
++++ b/tests/nghttp2_session_test.c
+@@ -6891,6 +6891,9 @@ void test_nghttp2_submit_window_update_local_window_size(void) {
+   };
+   nghttp2_outbound_item *item;
+   nghttp2_stream *stream;
++  nghttp2_settings_entry iv;
++  nghttp2_frame frame;
++  int rv;
+ 
+   nghttp2_session_client_new(&session, &callbacks, NULL);
+   stream = open_recv_stream(session, 2);
+@@ -6971,6 +6974,57 @@ void test_nghttp2_submit_window_update_local_window_size(void) {
+                                           NGHTTP2_MAX_WINDOW_SIZE));
+ 
+   nghttp2_session_del(session);
++
++  /* Very large window */
++  nghttp2_session_client_new(&session, &callbacks, NULL);
++  open_sent_stream(session, 1);
++
++  rv = nghttp2_submit_window_update(session, NGHTTP2_FLAG_NONE, 1,
++                                    INT32_MAX - NGHTTP2_INITIAL_WINDOW_SIZE);
++
++  assert_int(0, ==, rv);
++
++  stream = nghttp2_session_find_stream(session, 1);
++
++  assert_not_null(stream);
++  assert_int32(INT32_MAX, ==, stream->local_window_size);
++  assert_int32(0, ==, stream->recv_window_size);
++
++  rv = nghttp2_submit_window_update(session, NGHTTP2_FLAG_NONE, 1, -INT32_MAX);
++
++  assert_int(0, ==, rv);
++  assert_int32(0, ==, stream->local_window_size);
++  assert_int32(-INT32_MAX, ==, stream->recv_window_size);
++
++  iv = (nghttp2_settings_entry){
++    .settings_id = NGHTTP2_SETTINGS_INITIAL_WINDOW_SIZE,
++    .value = INT32_MAX,
++  };
++  rv = nghttp2_submit_settings(session, NGHTTP2_FLAG_NONE, &iv, 1);
++
++  assert_int(0, ==, rv);
++
++  rv = nghttp2_session_send(session);
++
++  assert_int(0, ==, rv);
++
++  nghttp2_frame_settings_init(&frame.settings, NGHTTP2_FLAG_ACK, NULL, 0);
++
++  rv = nghttp2_session_on_settings_received(session, &frame, 0);
++
++  assert_int(0, ==, rv);
++
++  item = nghttp2_outbound_queue_top(&session->ob_reg);
++
++  assert_not_null(item);
++  assert_uint8(NGHTTP2_GOAWAY, ==, item->frame.hd.type);
++  assert_uint32(NGHTTP2_FLOW_CONTROL_ERROR, ==, item->frame.goaway.error_code);
++  assert_int32(2147418112, ==, stream->local_window_size);
++  assert_int32(-INT32_MAX, ==, stream->recv_window_size);
++  assert_int32(INT32_MAX, ==,
++               nghttp2_session_get_stream_local_window_size(session, 1));
++
++  nghttp2_session_del(session);
+ }
+ 
+ void test_nghttp2_submit_shutdown_notice(void) {

@@ -168,11 +168,18 @@ describe("source-bound Earth symbols",()=>{
     }
   });
 
-  it.each([["C0","ground"],["C1","ground"],["C2","ground"],["C3","obstacle"]])("uses only reported %s category for the neutral %s glyph",(category,symbol)=>{
+  it.each([["A0","emitter_unknown"],["B0","emitter_unknown"],["C0","emitter_unknown"],["C1","ground"],["C2","ground"],["C3","obstacle"]])("uses only reported %s category for the neutral %s glyph",(category,symbol)=>{
     const aircraft={...fixture.aircraft[0],icao24:"~894f5d",callsign:"SYNTHETIC",category,heading:36.56,on_ground:true,observed_at:new Date(now-60000).toISOString()};
     const marker=earthMarkers({...base,aircraft:[aircraft]}).find(row=>row.kind==="aircraft")!;
     expect(marker.kind).toBe("aircraft");expect(marker.positionState).toBe("last_known");expect(marker.emitterCategory).toBe(category);expect(earthSymbol(marker)).toBe(symbol);
     expect(marker.details.find(([key])=>key==="Reported emitter category")?.[1]).toMatch(new RegExp(`^${category} · `));
+    if(["A0","B0","C0"].includes(category)){
+      expect(earthMarkerLabel(marker)).toContain("ADS-B emitter · type unspecified");
+      expect(earthMarkerLabel(marker)).not.toMatch(/Aircraft|Ground emitter|Obstruction/);
+      expect(marker.details).toContainEqual(["Reported emitter category",`${category} · No emitter category information`]);
+      expect(earthSymbolImage(earthSymbol(marker),marker.color)).not.toBe(earthSymbolImage("ground",marker.color));
+      expect(earthSymbolImage(earthSymbol(marker),marker.color)).not.toBe(earthSymbolImage("aircraft",marker.color));
+    }
     const source=new Cesium.CustomDataSource();syncEarthEntities(source,[marker]);const entity=source.entities.getById("aircraft-~894f5d")!,time=Cesium.JulianDate.now();
     expect(entity.properties!.getValue(time).directionShown).toBe(false);expect(entity.billboard!.rotation!.getValue(time)).toBe(0);expect(entity.billboard!.alignedAxis!.getValue(time)).toEqual(Cesium.Cartesian3.ZERO);
     expect(entity.position!.getValue(time)).toEqual(Cesium.Cartesian3.fromDegrees(aircraft.lon,aircraft.lat,0));
@@ -193,10 +200,10 @@ describe("source-bound Earth symbols",()=>{
   it("provides a native expandable text legend with decorative icons and explicit interpretation limits",()=>{
     const host=document.createElement("div");host.innerHTML=renderToStaticMarkup(<EarthSymbolLegend/>);
     expect(host.querySelector("details:not([open]) > summary")?.textContent).toBe("Symbols and identifiers");
-    expect(host.querySelectorAll('ul[aria-label="Earth symbol meanings"] li')).toHaveLength(17);
+    expect(host.querySelectorAll('ul[aria-label="Earth symbol meanings"] li')).toHaveLength(18);
     expect([...host.querySelectorAll("img")].every(img=>img.alt===""&&img.src.startsWith("data:image/svg+xml"))).toBe(true);
     expect(host.textContent).toContain("not live observations");expect(host.textContent).toContain("not a verified impact");expect(host.textContent).toContain("direction unknown");
-    expect(host.textContent).toContain("Hollow, dashed tracks");
+    expect(host.textContent).toContain("Dashed borders mark last-known or recorded tracks");
     expect(host.textContent).toContain("Bracket frame / AREA REF");
   });
 });

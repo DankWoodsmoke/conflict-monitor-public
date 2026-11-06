@@ -64,8 +64,28 @@ native extension from the pinned curl-impersonate 2.3.1 source. The nghttp2
 the [upstream CVE-2026-27135 fix](https://github.com/nghttp2/nghttp2/commit/5c7df8fa815ac1004d9ecb9d1f7595c4d37f46e1)
 and its prerequisites instead of inventing a higher version. The upstream
 regression is adapted only for 1.63 test registration and explicit priority
-setup. All 214 primary and five allocation-failure cases must pass; removing
-the security patch must make its regression fail before the patch is restored.
+setup. The current build also retains six reviewed client-library changes from
+upstream PRs [2826](https://github.com/nghttp2/nghttp2/pull/2826),
+[2829](https://github.com/nghttp2/nghttp2/pull/2829),
+[2926](https://github.com/nghttp2/nghttp2/pull/2926),
+[2931](https://github.com/nghttp2/nghttp2/pull/2931),
+[2934](https://github.com/nghttp2/nghttp2/pull/2934), and
+[2945](https://github.com/nghttp2/nghttp2/pull/2945): outbound queue/frame bounds,
+window arithmetic, allocation sizes, and DATA window accounting. Exact original
+patches, adapted patch, source before/after hashes and context differences are
+retained in `nghttp2-client-hardening.json` and the corresponding-source bundle.
+All 217 ordinary upstream main-suite cases must execute and pass without skips.
+The current build does not reverse patches or run allocation-failure injection;
+previous negative-control results remain historical evidence, not new executions.
+
+This preserves RFC 7540 priorities used by the pinned curl-impersonate source.
+nghttp2 1.65 and later make those APIs no-ops, so a version-only upgrade to 1.71
+would silently change browser behavior. This backport is not full 1.71 equivalence.
+PR 2943 changes a handler that asserts server mode; curl uses client sessions.
+PR 2856 remains an explicitly unintegrated CONNECT validation change because its
+complete implementation requires newer glitch-rate machinery absent from 1.63.
+CONNECT through an HTTP/2 proxy is not proven unreachable; no immunity is claimed.
+No server/nghttpx capability or additional protocol is enabled.
 
 The bundled and shared zlib libraries are built from the official
 [1.4 release](https://github.com/madler/zlib/releases/tag/v1.4). Its 18 upstream

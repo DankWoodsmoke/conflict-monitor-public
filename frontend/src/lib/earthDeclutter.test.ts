@@ -26,7 +26,7 @@ function partition(points:ProjectedEarthTrack[],width:number,height:number,pin:{
 
 describe("screen area groups preserve source identities and display semantics",()=>{
   it.each([[320,740],[412,915],[1200,800],[1920,1080]])("preserves every mixed-domain member without badge/single/pin collisions at %sx%s",(width,height)=>{
-    const points=Array.from({length:480},(_,i)=>track(`source-${i}`,8+((i*47)%Math.floor(width-16)),8+((i*79)%Math.floor(height-16)),(["aircraft","vessel","ground","obstacle"] as const)[i%4],(["fresh","last_known","recorded","unknown"] as const)[i%4]));
+    const points=Array.from({length:480},(_,i)=>track(`source-${i}`,8+((i*47)%Math.floor(width-16)),8+((i*79)%Math.floor(height-16)),(["aircraft","vessel","ground","obstacle","unknown"] as const)[i%5],(["fresh","last_known","recorded","unknown"] as const)[i%4]));
     const before=JSON.stringify(points),result=partition(points,width,height,{x:width/2,y:height/2});
     expect(result.groups.length).toBeGreaterThan(0);expect(result.groups.length+result.individualIds.length).toBeLessThan(480/2);
     expect(JSON.stringify(points)).toBe(before);expect(planEarthGroups(points.slice().reverse(),width,height,{x:width/2,y:height/2})).toEqual(result);
@@ -66,6 +66,18 @@ function viewerFixture(){
   return{scene,camera,clock:new Cesium.Clock()} as unknown as Cesium.Viewer;
 }
 describe("real Cesium projection and source-entity ownership",()=>{
+  it("keeps an unspecified C0 emitter out of aircraft and ground group counts",()=>{
+    const viewer=viewerFixture(),source=new Cesium.CustomDataSource(),controller=createEarthDeclutter(viewer);
+    const markers:EarthMarker[]=["C0","C1","C3","A3"].map((category,i)=>({id:`category-${category}`,kind:"aircraft",name:category,emitterCategory:category,heading:45,lat:29,lon:44+i*.001,height:0,color:"#aabbcc",positionState:"fresh",details:[]}));
+    syncEarthEntities(source,markers);const result=controller.sync(source,markers,null,true);
+    expect(result.groups).toHaveLength(1);
+    expect(result.groups[0].counts).toEqual({aircraft:1,vessel:0,ground:1,obstacle:1,unknown:1});
+    expect(result.groups[0].memberIds).toEqual(markers.map(m=>m.id).sort());
+    const emitter=source.entities.getById("category-C0")!;
+    expect(emitter.properties!.getValue(viewer.clock.currentTime).directionShown).toBe(false);
+    expect(emitter.position!.getValue(viewer.clock.currentTime)).toEqual(Cesium.Cartesian3.fromDegrees(44,29,0));
+    controller.destroy();
+  });
   it("requests one settling frame after replacement graphics, then stays idle and removes its pending listener on destroy",()=>{
     const viewer=viewerFixture(),request=vi.fn();viewer.scene.requestRender=request;
     const source=new Cesium.CustomDataSource(),controller=createEarthDeclutter(viewer);

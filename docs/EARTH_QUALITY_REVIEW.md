@@ -11,6 +11,23 @@ imagery and observations easy to inspect. A visually sharp building is not evide
 that the building still exists, was recently photographed or was correctly located
 by a report.
 
+## November 6 category interpretation correction
+
+The later candidate incorrectly described ADS-B C0 as an explicitly reported
+ground installation or vehicle. Category zero supplies no category information,
+including in set C. A0, B0 and C0 now use a fixed neutral emitter diamond, an unspecified
+type label and its own group count. C1/C2 remain reported surface vehicles and
+C3 remains a reported obstruction; names and callsigns never select these types.
+Source coordinates and observation clocks are unchanged. Dataset headings say
+ADS-B positions because the feed can contain aircraft and surface emitters.
+[Original ADS-B decoding reference](https://mode-s.org/1090mhz/content/ads-b/2-identification.html).
+
+The source correction passed 433 frontend tests and TypeScript checking. Its
+regressions include actual Cesium entity positions/direction, mixed group counts
+and contact labels. Qualification of the new built images is recorded separately
+in [VERIFICATION.md](VERIFICATION.md); the earlier browser checks do not prove a
+subsequently changed frontend.
+
 ## Reproducible baseline
 
 The audited baseline is public release `v0.2.0-rc.1`, commit

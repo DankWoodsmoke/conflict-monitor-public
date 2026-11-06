@@ -5,7 +5,7 @@ import {earthSymbol} from "./earthSymbols";
 
 export const EARTH_GROUP_WIDTH=112,EARTH_GROUP_HEIGHT=64;
 const CELL_WIDTH=128,CELL_HEIGHT=80,PIN_HALF_SIZE=20;
-export type EarthGroupCounts={aircraft:number;vessel:number;ground:number;obstacle:number};
+export type EarthGroupCounts={aircraft:number;vessel:number;ground:number;obstacle:number;unknown:number};
 export type EarthGroupStates={fresh:number;last_known:number;recorded:number;unknown:number};
 export type EarthGroup={
   id:string;memberIds:string[];counts:EarthGroupCounts;states:EarthGroupStates;anchorId:string;
@@ -17,7 +17,7 @@ export type ProjectedEarthTrack={id:string;x:number;y:number;lat:number;lon:numb
 type Point={x:number;y:number};
 type Slot=Point&{index:number};
 type WorkingGroup={members:ProjectedEarthTrack[];slot:Slot};
-const emptyCounts=():EarthGroupCounts=>({aircraft:0,vessel:0,ground:0,obstacle:0});
+const emptyCounts=():EarthGroupCounts=>({aircraft:0,vessel:0,ground:0,obstacle:0,unknown:0});
 const emptyStates=():EarthGroupStates=>({fresh:0,last_known:0,recorded:0,unknown:0});
 const distance2=(a:Point,b:Point)=>(a.x-b.x)**2+(a.y-b.y)**2;
 const overlaps=(a:Point,aw:number,ah:number,b:Point,bw:number,bh:number)=>Math.abs(a.x-b.x)<(aw+bw)/2+4&&Math.abs(a.y-b.y)<(ah+bh)/2+4;
@@ -103,7 +103,7 @@ export function createEarthDeclutter(viewer:Cesium.Viewer){
         if(marker.id===selectedId)selected=pixel;
         if(marker.kind!=="aircraft"&&marker.kind!=="vessel")continue;
         visibleIds.push(marker.id);if(marker.id===selectedId)continue;
-        const symbol=earthSymbol(marker),kind:keyof EarthGroupCounts=symbol==="ground"?"ground":symbol==="obstacle"?"obstacle":marker.kind;
+        const symbol=earthSymbol(marker),kind:keyof EarthGroupCounts=symbol==="emitter_unknown"?"unknown":symbol==="ground"?"ground":symbol==="obstacle"?"obstacle":marker.kind;
         const state=marker.positionState&&["fresh","last_known","recorded"].includes(marker.positionState)?marker.positionState as keyof EarthGroupStates:"unknown";
         projected.set(marker.id,{id:marker.id,x:pixel.x,y:pixel.y,lat:marker.lat,lon:marker.lon,kind,state});
       }

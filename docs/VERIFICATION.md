@@ -1,28 +1,30 @@
 # Release-candidate verification
 
-## November 6, 2026: CI review draft; qualification remains incomplete
+## November 6, 2026: candidate 14 CI review; release qualification pending
 
-This branch carries development candidate 13 for hosted CI review. The dated
-candidate 3 and RC.4 sections below are historical and superseded for this source;
-they do not qualify the current build. This draft is not a new release, launch
-approval or completed four-hour soak. Final verification documentation will follow.
+This draft carries the exact candidate 14 runtime source plus reviewed release
+workflow/tools. Earlier candidate 3 and RC.4 results below are historical; they
+do not qualify this build. No new release, site deployment or completed four-hour
+soak is claimed by this branch.
 
-The current public reader has SELECT access only to `public_observation_batches`
-and `public_aircraft_batches` in the application database. It cannot read private
-report or delivery tables; this is not a universal database-cluster sandbox.
-The backend passed 1,243 tests and 29 subtests in candidate 11; exact full RootFS,
-runtime configuration and architecture equality binds that execution to the
-unchanged candidate 13 backend through measured candidate 11-to-12-to-13 identity. The frontend passed 429 tests. These are
-scoped checks, not evidence that every deployment or device works.
+The installed candidate backend passed 1,249 tests and 29 subtests with zero
+skips. The frontend passed 433 tests; the actual nonroot CPU voice/MP4 gate
+passed 11 checks, and installed native transport passed 32 checks. Unknown ADS-B
+emitter categories now use neutral symbols and separate group counts. Source
+coordinates, ages and provider category are not independent factual verification.
 
-Independent source/binary review bound known High findings to implemented fixes
-or absent affected code. Original Grype High matches and nonzero raw gate results
-remain retained; Python Low and BusyBox Medium residuals are not suppressed.
-This is a product-specific applicability assessment, not a zero-vulnerability
-claim or vendor approval. Updated Google Earth/mobile browser qualification,
-the new four-hour live soak, post-soak advisory refresh, hosted CI and public
-hosting activation remain pending. No DNS, tunnel or production site is launched
-by this branch. See [public hosting](PUBLIC_HOSTING.md) for operating boundaries.
+Six compatible official nghttp2 fixes are installed with their source and test
+provenance. The full newer library is incompatible with the pinned transport's
+priority semantics; remaining upstream scope limits stay explicit. Complete raw
+security scans are being refreshed against the November 6 advisory database;
+version matches and residual findings remain retained rather than suppressed.
+
+The new release publisher fails closed without final source/evidence admission,
+four real hours across five observers, post-soak security review and exact
+hosted CI. Its write job checks uploaded assets while draft and downloads them
+again after publication. This review branch cannot invoke that job. Final Google
+Earth/mobile qualification, full soak, security review and final documentation
+remain pending. No DNS, tunnel or production website changes are included.
 
 ## November 5 evening public-hosting and native security candidate
 

@@ -1,12 +1,13 @@
 import type {EarthMarker} from "./earth";
 
-export type EarthSymbolId="aircraft"|"aircraft_unknown"|"ground"|"obstacle"|"vessel"|"vessel_unknown"|"airstrike"|"explosion"|"military"|"diplomatic"|"economic"|"cyber"|"humanitarian"|"protest"|"thermal"|"reference"|"navigation"|"report";
+export type EarthSymbolId="aircraft"|"aircraft_unknown"|"emitter_unknown"|"ground"|"obstacle"|"vessel"|"vessel_unknown"|"airstrike"|"explosion"|"military"|"diplomatic"|"economic"|"cyber"|"humanitarian"|"protest"|"thermal"|"reference"|"navigation"|"report";
 type SymbolDefinition={label:string;description:string;path:string;detailPath?:string};
 /** Fixed, application-owned artwork. Source text never becomes SVG markup. */
 export const EARTH_SYMBOLS:Record<EarthSymbolId,SymbolDefinition>={
   aircraft:{label:"Aircraft position",description:"Aircraft silhouette follows the reported direction; track or heading basis may be unknown.",path:"M16 2 C17 2 18 4 18 6 L18 11 L31 20 L31 23 L18 18 L18 25 L23 29 L23 31 L16 28 L9 31 L9 29 L14 25 L14 18 L1 23 L1 20 L14 11 L14 6 C14 4 15 2 16 2 Z"},
   aircraft_unknown:{label:"Aircraft · direction unknown",description:"Fixed side-profile aircraft with a tail and wing is an identifier. Its nose does not indicate a reported travel direction.",path:"M2 17 L7 17 L4 8 L8 8 L14 17 L25 17 Q29 17 30 20 L20 22 L13 30 L9 30 L13 22 L5 22 Z"},
-  ground:{label:"Ground emitter · reported",description:"Explicit ADS-B category C0–C2 reports a ground installation or vehicle. No ownership or active emergency is inferred; the icon is not directional.",path:"M7 10 H25 V23 H7 Z M4 27 H28 M11 23 V27 M21 23 V27 M11 14 H21 M11 18 H21"},
+  emitter_unknown:{label:"ADS-B emitter · type unspecified",description:"A0, B0 and C0 provide no emitter category information. The neutral diamond does not establish an aircraft, vehicle or obstruction, and does not imply direction.",path:"M16 5 L27 16 L16 27 L5 16 Z M13 12 Q13 9 16 9 Q20 9 20 13 Q20 15 16 17 V19 M16 22 V23"},
+  ground:{label:"Ground emitter · reported",description:"Explicit ADS-B category C1–C2 reports a surface vehicle. No ownership or active emergency is inferred; the icon is not directional.",path:"M7 10 H25 V23 H7 Z M4 27 H28 M11 23 V27 M21 23 V27 M11 14 H21 M11 18 H21"},
   obstacle:{label:"Obstruction · reported",description:"Explicit ADS-B category C3 reports a fixed ground or tethered obstruction. This is not an independently surveyed obstacle or directional track.",path:"M16 7 L8 27 H24 Z M11 19 H21 M9 24 H23 M16 7 V3 M12 3 H20 M4 28 H28"},
   vessel:{label:"Vessel position",description:"Pointed bow and flat stern follow the reported direction; inspect details for true heading versus course.",path:"M16 2 C21 6 24 10 24 16 L22 29 H10 L8 16 C8 10 11 6 16 2 Z M12 14 H20 V22 H12 Z"},
   vessel_unknown:{label:"Vessel · direction unknown",description:"Fixed side-profile hull and waves identify a vessel without implying a heading or sea condition.",path:"M2 18 H30 L25 26 H8 Z",detailPath:"M8 18 V11 H24 V18 M13 11 V7 H20 V11 M3 29 Q6 26 9 29 T15 29 T21 29 T27 29"},
@@ -30,7 +31,8 @@ export function hasReportedDirection(marker:Pick<EarthMarker,"heading">){
 
 export function earthSymbol(marker:EarthMarker):EarthSymbolId{
   if(marker.kind==="aircraft"){
-    if(["C0","C1","C2"].includes(marker.emitterCategory||""))return "ground";
+    if(["A0","B0","C0"].includes(marker.emitterCategory||""))return "emitter_unknown";
+    if(["C1","C2"].includes(marker.emitterCategory||""))return "ground";
     if(marker.emitterCategory==="C3")return "obstacle";
     return hasReportedDirection(marker)?"aircraft":"aircraft_unknown";
   }
@@ -71,7 +73,7 @@ export function earthSymbolImage(symbol:EarthSymbolId,color:string,historical=fa
 
 export function earthMarkerLabel(marker:EarthMarker){
   const symbol=earthSymbol(marker);
-  const kind=marker.kind==="aircraft"?(symbol==="ground"?"Ground emitter":symbol==="obstacle"?"Obstruction":"Aircraft"):marker.kind==="vessel"?"Vessel":"";
+  const kind=marker.kind==="aircraft"?(symbol==="emitter_unknown"?"ADS-B emitter · type unspecified":symbol==="ground"?"Ground emitter":symbol==="obstacle"?"Obstruction":"Aircraft"):marker.kind==="vessel"?"Vessel":"";
   const identity=[marker.identifier,kind,marker.name!==marker.identifier?marker.name:null].filter(Boolean).join(" · ");
   return `${marker.positionState==="last_known"?"LAST KNOWN · ":marker.positionState==="recorded"?"RECORDED · ":isAreaReference(marker)?"AREA REF · ":""}${identity}`;
 }

@@ -11,7 +11,7 @@ function markup(admitted:boolean,publicMode=admitted){return `<style>${css}</sty
  <main class="app-grid has-runtime ${publicMode?"public-data-workspace":""}">
   <header class="app-header" style="grid-area:header">Conflict Monitor</header>
   <div class="${admitted?"public-attribution-wrap":"market-strip-wrap"}">${admitted?
-   '<div class="public-scope-note public-data-attribution">Thermal: NASA FIRMS · Aircraft: <a href="#provider">adsb.lol</a> · <a href="#license">ODbL 1.0</a> · <a href="#download">Download aircraft dataset</a> · Partial coverage</div>':'Operator market strip'}</div>
+   '<div class="public-scope-note public-data-attribution">Thermal: NASA FIRMS · ADS-B: <a href="#provider">adsb.lol</a> · <a href="#license">ODbL 1.0</a> · <a href="#download">Download ADS-B dataset</a> · Partial coverage</div>':'Operator market strip'}</div>
   <div class="earth-stage" style="grid-area:map;min-width:0;min-height:0;overflow:hidden"><div class="earth-workspace">
    <canvas class="earth-canvas"></canvas><div class="earth-bottom-stack"><div class="earth-attribution"><a href="#imagery">Imagery attribution fixture</a></div></div>
   </div></div>
@@ -39,7 +39,7 @@ async function checkAttribution(page:Page){
  expect(geometry.top).toBeGreaterThanOrEqual(geometry.headerBottom-1);
  expect(geometry.bottom).toBeLessThanOrEqual(geometry.stageTop+1);
  expect(geometry.stageHeight).toBeGreaterThan(80);
- for(const label of ["adsb.lol","ODbL 1.0","Download aircraft dataset"]){
+ for(const label of ["adsb.lol","ODbL 1.0","Download ADS-B dataset"]){
   const link=attribution.getByRole("link",{name:label,exact:true});await expect(link).toBeVisible();
   expect(await link.evaluate(node=>{
    const box=node.getBoundingClientRect(),parent=node.parentElement!.getBoundingClientRect();
@@ -48,7 +48,7 @@ async function checkAttribution(page:Page){
     &&box.bottom<=innerHeight&&(top===node||node.contains(top));
   })).toBe(true);
  }
- await attribution.getByRole("link",{name:"Download aircraft dataset",exact:true}).click();
+ await attribution.getByRole("link",{name:"Download ADS-B dataset",exact:true}).click();
  await expect(page).toHaveURL(/#download$/);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
  await checkFooter(page);

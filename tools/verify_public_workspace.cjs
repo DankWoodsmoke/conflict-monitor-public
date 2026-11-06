@@ -168,7 +168,7 @@ async function run(){
         }
         if(requirePublicData){
           const panel=page.getByRole('region',{name:'Public thermal observations',exact:true});
-          await panel.getByRole('heading',{name:'Reported aircraft positions',exact:true}).waitFor();
+          await panel.getByRole('heading',{name:'Reported ADS-B positions',exact:true}).waitFor();
           await panel.getByRole('heading',{name:'Thermal observations available',exact:true}).waitFor();
           assert.match(await panel.textContent(),/[1-9][0-9]* positions in the latest published snapshot/,'Nonempty aircraft panel not rendered');
           assert.match(await panel.textContent(),/[1-9][0-9]* of [1-9][0-9]* eligible pixels/,'Nonempty NASA panel not rendered');
@@ -187,7 +187,7 @@ async function run(){
           const attribution=page.locator('.public-data-attribution');await attribution.waitFor({state:'visible'});
           assert.equal(await attribution.getByRole('link',{name:'adsb.lol',exact:true}).getAttribute('href'),'https://www.adsb.lol/docs/open-data/api');
           assert.equal(await attribution.getByRole('link',{name:'ODbL 1.0',exact:true}).getAttribute('href'),'https://opendatacommons.org/licenses/odbl/1-0/');
-          const link=attribution.getByRole('link',{name:'Download aircraft dataset',exact:true});assert(await link.isVisible(),'Aircraft derivative download inaccessible');
+          const link=attribution.getByRole('link',{name:'Download ADS-B dataset',exact:true});assert(await link.isVisible(),'Aircraft derivative download inaccessible');
           const href=await link.getAttribute('href');assert.match(href,/^\/api\/publication\/aircraft\/download\/[a-f0-9]{64}$/,'Aircraft link is not exact-batch');
           row.downloads.aircraft=await checkDownload(context,href,'aircraft');
           await page.waitForFunction(()=>Number(document.querySelector('.earth-coverage')?.getAttribute('data-position-count'))>0,null,{timeout:20000});
@@ -198,7 +198,7 @@ async function run(){
           await page.getByRole('button',{name:/^Layers /}).click();
           const layers=page.getByRole('region',{name:'Spatial layers',exact:true});
           row.earth_source_counts={};
-          for(const [kind,label] of [['aircraft','Aircraft projections'],['observations','Thermal observations']]){
+          for(const [kind,label] of [['aircraft','ADS-B positions'],['observations','Thermal observations']]){
             const checkbox=layers.getByRole('checkbox',{name:new RegExp(`^${label} `)});
             assert(await checkbox.isChecked(),`${label} layer is not enabled`);
             const count=Number(await checkbox.locator('..').locator('b').textContent());

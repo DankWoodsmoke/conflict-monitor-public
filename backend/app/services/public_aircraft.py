@@ -159,7 +159,7 @@ def describe(row, now, download=False):
     result={"source":SOURCE,"source_url":SOURCE_URL,"license":"ODbL-1.0","license_url":LICENSE_URL,"attribution":ATTRIBUTION,
         "status":"awaiting_publication","batch_id":None,"published_at":None,"aircraft":[],"coverage":REGIONS,
         "position_expires_after_seconds":TTL,"packet_retention_seconds":3600,"download_url":None,
-        "limitations":"Selected receiver circles, not global coverage. Reported positions and identifiers are unverified. Surface projections; no inferred motion, ownership, mission or intent."}
+        "limitations":"Selected query regions, not global coverage. Reported positions and identifiers are unverified. Surface projections; no inferred motion, ownership, mission or intent."}
     if row is None:return result
     if row.source!=SOURCE or row.status not in {"ok","failed"} or row.published_at.tzinfo is None or (now-row.published_at).total_seconds() < -5:
         raise ValueError("Invalid publication envelope")

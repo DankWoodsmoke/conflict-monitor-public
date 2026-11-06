@@ -6,9 +6,9 @@
       "sha256": "12284d3a0f4984f891cae4e0ffa8f67dd54e6db3c99b0b495aa377a4707bd88c"
     },
     {
-      "bytes": 13252,
+      "bytes": 67905,
       "path": ".github/workflows/verify.yml",
-      "sha256": "1f97c9d2180f2b707ea8cb06b699b0954d8bc7fafc3875f8fe15f72eaa7fe40e"
+      "sha256": "e7b9709244c94ac1a28a00e9933aff04e41deda1329b174bfc0fa3324269e962"
     },
     {
       "bytes": 312,
@@ -21,9 +21,9 @@
       "sha256": "ffc354b94ff7e64fd24763ca5567fcf0c80bb5d99babfb045af68808d77e2886"
     },
     {
-      "bytes": 17559,
+      "bytes": 17608,
       "path": "README.md",
-      "sha256": "118bc116f0649091aeee872516f7d06f8cd533c52a7821776f159c3945762163"
+      "sha256": "a898d2164b527f20f5768b5a54a7e2860e7c6f7fb6b327959e87c2d461486207"
     },
     {
       "bytes": 8289,
@@ -31,9 +31,9 @@
       "sha256": "d929f58aea0eafd296c6ca4db5e1159607e647478ddf7e502ffe641e73ccd76e"
     },
     {
-      "bytes": 8439,
+      "bytes": 9004,
       "path": "THIRD_PARTY_NOTICES.md",
-      "sha256": "87010bbc4064081be6c44286fb17afc668c936fad88f9a463a92b4fc3c601550"
+      "sha256": "7599bd0dba277c8f53d734b219cc90e71e2978b8b535a56b3f70ef247bfdfc81"
     },
     {
       "bytes": 48,
@@ -41,9 +41,9 @@
       "sha256": "b056de9141378ca5aac27e14bcfa4e48d222be097977b6f625c9212e7303bc7c"
     },
     {
-      "bytes": 5608,
+      "bytes": 5953,
       "path": "backend/Dockerfile",
-      "sha256": "0a92c9a48ec16793b750a2ce678f26390015aa0485e44279c772bc80acc5df81"
+      "sha256": "85498aa93db4cbe01e3bec38765fff158a1e7ad428f9a7a67afaa23716af1502"
     },
     {
       "bytes": 649,
@@ -326,9 +326,9 @@
       "sha256": "5c8c8e185c6744e122bddff41302d8c97ba66bbbc8e72a56efefe279a6d67c4a"
     },
     {
-      "bytes": 10149,
+      "bytes": 10146,
       "path": "backend/app/services/public_aircraft.py",
-      "sha256": "1d91d22d545a33709b8a8acfbe192c920b65cb21fa2aaf3e635fcdd6ba2198ba"
+      "sha256": "5f4ad20f8c55afb6b65fffcf4cbd1f8254260de68004df641c5d5be63a4dc8ad"
     },
     {
       "bytes": 15816,
@@ -441,9 +441,9 @@
       "sha256": "ce8488c15ca46365ca76cc80ab79b742dfd6c18aeb250d3b6dfc6b03eb4b3a96"
     },
     {
-      "bytes": 10235,
+      "bytes": 11641,
       "path": "backend/container/README.md",
-      "sha256": "a733588999f747edb4d3e0690753c7366a9bd1960c3843a130c67e3b164b0d16"
+      "sha256": "098a02b3477a6d39283d07f63d44b8e5dd93876640662d7d52269b1475556ca8"
     },
     {
       "bytes": 9478,
@@ -476,9 +476,9 @@
       "sha256": "798f08abe3007c84db401e6854c38bd8604208c873c266a5c8eb679176af7acb"
     },
     {
-      "bytes": 22821,
+      "bytes": 25128,
       "path": "backend/container/build_curl_patch.py",
-      "sha256": "c3d7fc5fa90a6454f78c94aff9878720b9e05d947216ef7c8383f6b2bc65d18d"
+      "sha256": "78cefd51fdfb9fbfc8b8253d7db1e58edcd07a152272c3ac484b1e15e647169f"
     },
     {
       "bytes": 4147,
@@ -554,6 +554,46 @@
       "bytes": 1717,
       "path": "backend/container/nghttp2-altsvc.patch",
       "sha256": "08892a36793baedaf255745f7e6ce00fa32434cbfbfdd8ae35a9a95408c86327"
+    },
+    {
+      "bytes": 10405,
+      "path": "backend/container/nghttp2-client-hardening.json",
+      "sha256": "b42456bbbf2adec1a165f7b778efc75ae592d6a40e573159f6cbd401e4e5e638"
+    },
+    {
+      "bytes": 40115,
+      "path": "backend/container/nghttp2-client-hardening.patch",
+      "sha256": "80becb9e367b07f9162b6ddd53eb7a1e38decf805fef9c951810d6eec24b3227"
+    },
+    {
+      "bytes": 7408,
+      "path": "backend/container/nghttp2-pr2826.upstream.patch",
+      "sha256": "e5c3b3b4fec4567025a536099de6df7a995c435906145661f75aa03a22d26ae4"
+    },
+    {
+      "bytes": 5275,
+      "path": "backend/container/nghttp2-pr2829.upstream.patch",
+      "sha256": "fd9aa7d84449ddafa257925c095c80065f3b3bb617d7a3429941ba84beb2a3b3"
+    },
+    {
+      "bytes": 6415,
+      "path": "backend/container/nghttp2-pr2926.upstream.patch",
+      "sha256": "5ab9cd9ac981e8128d7d6064cacd0a41026e39c5ec491df80d38857693a5bd1e"
+    },
+    {
+      "bytes": 4574,
+      "path": "backend/container/nghttp2-pr2931.upstream.patch",
+      "sha256": "be6f90047d3ef0375253047330a323e53659348f0ff0b497baaf5990d63902ff"
+    },
+    {
+      "bytes": 4947,
+      "path": "backend/container/nghttp2-pr2934.upstream.patch",
+      "sha256": "f2eae3c306995d272cae9b2856386998dece854a34663d2fcd95e1398cbc23bf"
+    },
+    {
+      "bytes": 21855,
+      "path": "backend/container/nghttp2-pr2945.upstream.patch",
+      "sha256": "b72a20a647e299cb5d48f53f686382b705279915c5de0525eecb54b2974bf64c"
     },
     {
       "bytes": 1818,
@@ -761,9 +801,9 @@
       "sha256": "893cf94c1574e1cee14d351dac242760428bf58fef00860cd2a6ccbd1cb3210b"
     },
     {
-      "bytes": 7149,
+      "bytes": 9957,
       "path": "backend/tests/test_native_build_security.py",
-      "sha256": "06bfcf2b9673ab8a324dcbd42b3389fd0853f16150e0f3931474afc363c49951"
+      "sha256": "0e8e401dfb2ee17b521d13b19c42bd634dfc4074ebc16d215de56e09a1b904b3"
     },
     {
       "bytes": 7570,
@@ -971,9 +1011,9 @@
       "sha256": "eccdb82eab9fb6cdd3d80e42c1e4da5bd8e5498be996b48eac01e6b1deae54e9"
     },
     {
-      "bytes": 26075,
+      "bytes": 27092,
       "path": "docs/EARTH_QUALITY_REVIEW.md",
-      "sha256": "005f7d04e0bf63bdcf4aae713d1bf0218b11100914ebb90e64e7c8d99607dbd2"
+      "sha256": "5b1317c625e059f10f47f7ce96a04939862ab05b1aaf421967ddb81ffbeaaf73"
     },
     {
       "bytes": 4581,
@@ -1086,9 +1126,9 @@
       "sha256": "c56b46890190bf941c5d2c0d5bc6aadd067e0e788485f14b3e790694bae90879"
     },
     {
-      "bytes": 51584,
+      "bytes": 51569,
       "path": "docs/VERIFICATION.md",
-      "sha256": "a42aacefbc4391637ecbe146ecf7b202ad11b5a5e133c73a991d914fa2eaee1f"
+      "sha256": "17e6b79feeb319df6f1efb9589f483f1c85365d8ec740a455e1afdc4feb4878b"
     },
     {
       "bytes": 9372,
@@ -1721,9 +1761,9 @@
       "sha256": "aa8041bebb5902895884e91088d434045eb02db3eab9694cf26c4e98ebaca72b"
     },
     {
-      "bytes": 6999,
+      "bytes": 6987,
       "path": "frontend/e2e/public-attribution.pw.ts",
-      "sha256": "4018fb221901fa2e74d57f6d389235b6c5b63a846cd066de0bdd560b41d3dd00"
+      "sha256": "928ba4e9cf11f09cdf0241b27146e5428630b95e4719ef8867ed9df46daf8456"
     },
     {
       "bytes": 8403,
@@ -1866,9 +1906,9 @@
       "sha256": "a9c66a3c384aa9945de61bf524feebf4f93910ba1a70ea2b05e4ba590b199e21"
     },
     {
-      "bytes": 44877,
+      "bytes": 45137,
       "path": "frontend/src/components/CesiumView.tsx",
-      "sha256": "7c1ddcecda9bf616d5098b1ceb884c3135731ac3668f979f6271bb79b6d06159"
+      "sha256": "ec4d55ce241caf293c3cec16376bab6a053f255b8bb9a404bb6df20a93013219"
     },
     {
       "bytes": 5610,
@@ -1876,9 +1916,9 @@
       "sha256": "cc2c08d17246b2c750d7378d42b2e3d0a01c58d061b166ecb07422e253ee50c1"
     },
     {
-      "bytes": 2728,
+      "bytes": 2863,
       "path": "frontend/src/components/EarthSymbolLegend.tsx",
-      "sha256": "d96060d57d8bb5ed9428aa73279c1bdbdc954ef084c57b3376e23a6e2286245a"
+      "sha256": "db832363198276ab5a1f84cee9b8a7421c5b6f87eeacde3324903a54d11ae7f3"
     },
     {
       "bytes": 2332,
@@ -1921,9 +1961,9 @@
       "sha256": "e0bf48a1a916913b5e4dfcd6da56e577884b241ee6af936ef77aee4650d4818b"
     },
     {
-      "bytes": 4207,
+      "bytes": 4230,
       "path": "frontend/src/components/PublicObservationPanel.tsx",
-      "sha256": "5620e2b04282767cd718b6a7eba7e0dc4585e272f047a18141d7440bb44f6e3e"
+      "sha256": "9b4215c3afeb699470a68a00ebbf2662f494a293611f4b07afa57337338197be"
     },
     {
       "bytes": 15199,
@@ -1956,9 +1996,9 @@
       "sha256": "dc325e9d6b30414ba7ed0e31aff823a4a343c712dd1a7990b35a66895f3bba3c"
     },
     {
-      "bytes": 10092,
+      "bytes": 10691,
       "path": "frontend/src/components/earth-contacts.test.tsx",
-      "sha256": "7efbc40570d43671a6fac573db789e6e016815c57b28ed630289719fbedfbf99"
+      "sha256": "52429d7cf260987e51251283768bdcfa5e4f68d10ebd1f5c18b8fcf55441f7f6"
     },
     {
       "bytes": 45095,
@@ -2141,19 +2181,19 @@
       "sha256": "380b7a8750393eff095747649a267a9112ef9299b4f71d0149757bdcd7bdaffd"
     },
     {
-      "bytes": 13773,
+      "bytes": 13907,
       "path": "frontend/src/lib/earth.ts",
-      "sha256": "740c5653c0d4a037da1cb913eb065711c1127129adc4504f796a464d8b811e9d"
+      "sha256": "e867a4ea89a8a00e3ff5cba565562124babfb18979080f401f886f86183cae14"
     },
     {
-      "bytes": 10173,
+      "bytes": 11148,
       "path": "frontend/src/lib/earthDeclutter.test.ts",
-      "sha256": "16290f7474dc0b51fa06c97417cd1bc1e9a7c7deee379cf01e61b41fa07cf34e"
+      "sha256": "cb6441bb854dea4de6d8fdce9e270138a7a02b24c4a37d55214288461eea3a17"
     },
     {
-      "bytes": 11001,
+      "bytes": 11063,
       "path": "frontend/src/lib/earthDeclutter.ts",
-      "sha256": "2363fddfddc7de398ef0aa782af19e87ef429e8d293cc5409a710e5db740e185"
+      "sha256": "745004fbd2392309ebb4068b174f5e50bb58c1a460d726313dd01c23d431c43a"
     },
     {
       "bytes": 4910,
@@ -2171,14 +2211,14 @@
       "sha256": "94f3567b4892211ec25a14669b599e33886e1764418d0aade443e8ae26c2ce8f"
     },
     {
-      "bytes": 18907,
+      "bytes": 19582,
       "path": "frontend/src/lib/earthSymbols.test.tsx",
-      "sha256": "e1209b496141eca386bb216fa72619e2b61bc38188e3ffc8ce44a7e6374aa87b"
+      "sha256": "e5bbd943b03157e8f5b651b0b793d4342b12e8d0a77ba6be862271b462ff74fd"
     },
     {
-      "bytes": 9711,
+      "bytes": 10190,
       "path": "frontend/src/lib/earthSymbols.ts",
-      "sha256": "b97470b75fad46b55a31696856d7fe606926baeedd0f07c168d5759ce83e5fc2"
+      "sha256": "013935ae9c309672f3fc3a44de3f4c82495beaaee899757392599f97f482846a"
     },
     {
       "bytes": 3229,
@@ -2461,6 +2501,11 @@
       "sha256": "aa8041bebb5902895884e91088d434045eb02db3eab9694cf26c4e98ebaca72b"
     },
     {
+      "bytes": 32317,
+      "path": "tools/prepare_release_publication.py",
+      "sha256": "18d6d3c8e8fdd77aabc0470247f42ff31a58de063a9930b625c8439fa73f250d"
+    },
+    {
       "bytes": 10044,
       "path": "tools/release_gate.py",
       "sha256": "9211dce2084817d65e2f4095e3698dade233f049cf1213ac4cd695244fd4253e"
@@ -2474,6 +2519,11 @@
       "bytes": 19897,
       "path": "tools/summarize_live_soak.py",
       "sha256": "582d18d33a4b1b764434a722f448bf65fb33bb60fe481377f7f7c4b08220b252"
+    },
+    {
+      "bytes": 32214,
+      "path": "tools/test_release_publication.py",
+      "sha256": "f62a0eda068a306afe92cfd788e16c52c1adb6bea7b3dfc277bc6d6b947739bd"
     },
     {
       "bytes": 16092,
@@ -2591,9 +2641,9 @@
       "sha256": "0aea234ed19ed5b2fb36f1e0dd835c14c2ed02f6beda34632e58b9820bc02a92"
     },
     {
-      "bytes": 23001,
+      "bytes": 22990,
       "path": "tools/verify_public_workspace.cjs",
-      "sha256": "32a8f20e708dc84500a7a9b38e2a01332bf22e06ec441559a66436e8940e0a1d"
+      "sha256": "8ba0359b527669df7dcc7b14f7189dbce6083c85bc25d48599b3a9cc7bd0da3e"
     },
     {
       "bytes": 4616,

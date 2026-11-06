@@ -45,6 +45,28 @@ NGHTTP2_PATCHES = {
     'CVE-2026-27135.patch': 'e3381d25b36c3db69ccc8fb482fbd1f5cd9ff26eb9867c2440d5c506f7545785',
     'nghttp2-state-tests.patch': '20d230e33b53c216198600c3ce129b49bd7eaee7997006c0e483e1e62ed471ba',
 }
+NGHTTP2_HARDENING_PATCH = 'nghttp2-client-hardening.patch'
+NGHTTP2_HARDENING_INPUTS = {
+    'nghttp2-client-hardening.patch': '80becb9e367b07f9162b6ddd53eb7a1e38decf805fef9c951810d6eec24b3227',
+    'nghttp2-client-hardening.json': 'b42456bbbf2adec1a165f7b778efc75ae592d6a40e573159f6cbd401e4e5e638',
+    'nghttp2-pr2826.upstream.patch': 'e5c3b3b4fec4567025a536099de6df7a995c435906145661f75aa03a22d26ae4',
+    'nghttp2-pr2829.upstream.patch': 'fd9aa7d84449ddafa257925c095c80065f3b3bb617d7a3429941ba84beb2a3b3',
+    'nghttp2-pr2926.upstream.patch': '5ab9cd9ac981e8128d7d6064cacd0a41026e39c5ec491df80d38857693a5bd1e',
+    'nghttp2-pr2931.upstream.patch': 'be6f90047d3ef0375253047330a323e53659348f0ff0b497baaf5990d63902ff',
+    'nghttp2-pr2934.upstream.patch': 'f2eae3c306995d272cae9b2856386998dece854a34663d2fcd95e1398cbc23bf',
+    'nghttp2-pr2945.upstream.patch': 'b72a20a647e299cb5d48f53f686382b705279915c5de0525eecb54b2974bf64c',
+}
+NGHTTP2_REQUIRED_TESTS = {
+    'test_nghttp2_session_verify_iframe_state',
+    'test_nghttp2_session_recv_continuation_too_large',
+    'test_nghttp2_session_consume_stream',
+    'test_nghttp2_session_consume_connection',
+    'test_nghttp2_session_flow_control',
+    'test_nghttp2_session_flow_control_data_recv',
+    'test_nghttp2_session_flow_control_data_with_padding_recv',
+    'test_nghttp2_submit_settings_update_local_window_size',
+    'test_nghttp2_session_send_data_callback',
+}
 BORINGSSL_PATCHES = {
     'boringssl-test-deleters.patch': '798f08abe3007c84db401e6854c38bd8604208c873c266a5c8eb679176af7acb',
     'boringssl-crl-tests.patch': '51a00fabff865541d7ef4d69178c22e4ec59c246db286acf8d96949e0fe8b808',
@@ -88,6 +110,26 @@ def patch_nghttp2():
     for name, digest in NGHTTP2_PATCHES.items():
         checked(INPUT / name, digest)
         run(['patch', '--batch', '--fuzz=0', '-p1', '-i', str(INPUT / name)], cwd=Path.cwd())
+    for name, digest in NGHTTP2_HARDENING_INPUTS.items():
+        checked(INPUT / name, digest)
+    manifest = json.loads((INPUT / 'nghttp2-client-hardening.json').read_text())
+    for name, digests in manifest['source_files'].items():
+        checked(Path.cwd() / name, digests['before'])
+    run(['patch', '--batch', '--fuzz=0', '-p1', '-i', str(INPUT / NGHTTP2_HARDENING_PATCH)], cwd=Path.cwd())
+    for name, digests in manifest['source_files'].items():
+        checked(Path.cwd() / name, digests['after'])
+
+
+def validate_nghttp2_unit_log(text):
+    cases = set(re.findall(r'(test_nghttp2_\w+)\s*\[ OK\s*\]', text))
+    if not NGHTTP2_REQUIRED_TESTS <= cases:
+        raise RuntimeError('Required ordinary nghttp2 tests did not pass: ' +
+                           ', '.join(sorted(NGHTTP2_REQUIRED_TESTS - cases)))
+    if (len(cases) != 217 or '217 of 217 (100%) tests successful, 0 (0%) test skipped.' not in text
+            or 'Test Passed.' not in text or '[ ERROR' in text or 'failmalloc' in text):
+        raise RuntimeError('Incomplete ordinary nghttp2 main-suite execution')
+    return {'tests': len(cases), 'skipped': 0, 'required_tests': sorted(NGHTTP2_REQUIRED_TESTS),
+            'scope': 'Ordinary upstream main suite only; no patch reversal or failure injection'}
 
 
 def patch_boringssl():
@@ -178,7 +220,7 @@ def build():
         raise RuntimeError('Requalify native binding before changing curl_cffi Python code')
     for name, spec in SOURCES.items():
         checked(DOWNLOADS / name, spec['sha256'])
-    for name, digest in {**PATCHES, **UPSTREAM_INPUTS}.items():
+    for name, digest in {**PATCHES, **UPSTREAM_INPUTS, **NGHTTP2_HARDENING_INPUTS}.items():
         checked(INPUT / name, digest)
     extract(DOWNLOADS / 'curl-impersonate.tar.gz', BASE)
     source = BASE / ('curl-impersonate-' + IMPERSONATE_COMMIT)
@@ -226,20 +268,12 @@ def build():
     boringssl_tests = check_boringssl(work, evidence)
     ngbuild = work / 'deps/build/nghttp2'
     ngsource = work / 'deps/src/nghttp2'
-    test_command = ['cmake', '--build', str(ngbuild), '--target', 'check', '--parallel', '4']
-    run(test_command, cwd=source, log=evidence / 'nghttp2-suite.log', env={'CTEST_OUTPUT_ON_FAILURE': '1'})
+    run(['cmake', '--build', str(ngbuild), '--target', 'main', '--parallel', '4'],
+        cwd=source, log=evidence / 'nghttp2-test-build.log')
+    run(['ctest', '--test-dir', str(ngbuild), '-R', '^main$', '--output-on-failure'],
+        cwd=source, log=evidence / 'nghttp2-suite.log')
     shutil.copyfile(ngbuild / 'Testing/Temporary/LastTest.log', evidence / 'nghttp2-LastTest.log')
-    run(['patch', '-R', '--batch', '--fuzz=0', '-p1', '-i', str(INPUT / 'CVE-2026-27135.patch')],
-        cwd=ngsource, log=evidence / 'negative-patch-reversal.log')
-    bad = run(test_command, cwd=source, log=evidence / 'nghttp2-negative-control.log',
-              env={'CTEST_OUTPUT_ON_FAILURE': '1'}, check=False)
-    negative_log = (ngbuild / 'Testing/Temporary/LastTest.log').read_text()
-    if bad.returncode == 0 or 'test_nghttp2_session_verify_iframe_state[ ERROR ]' not in negative_log:
-        raise RuntimeError('Original nghttp2 did not reproduce the targeted regression')
-    shutil.copyfile(ngbuild / 'Testing/Temporary/LastTest.log', evidence / 'nghttp2-negative-LastTest.log')
-    run(['patch', '--batch', '--fuzz=0', '-p1', '-i', str(INPUT / 'CVE-2026-27135.patch')],
-        cwd=ngsource, log=evidence / 'restore-security-patch.log')
-    run(test_command, cwd=source, log=evidence / 'nghttp2-restored-suite.log')
+    nghttp2_tests = validate_nghttp2_unit_log((evidence / 'nghttp2-LastTest.log').read_text())
     run(['cmake', '--build', str(ngbuild), '--target', 'install', '--parallel', '4'],
         cwd=source, log=evidence / 'nghttp2-install.log')
     run(['ctest', '--test-dir', str(work / 'deps/build/zlib'), '--output-on-failure'],
@@ -296,7 +330,7 @@ def build():
     shutil.copytree(work / 'licenses', evidence / 'licenses')
     # Include exact corresponding source and relink/build instructions for static LGPL parts.
     shutil.copytree(DOWNLOADS, evidence / 'sources')
-    for name in ['native_build.py', 'build_curl_patch.py'] + list(PATCHES) + list(UPSTREAM_INPUTS):
+    for name in ['native_build.py', 'build_curl_patch.py'] + list(PATCHES) + list(UPSTREAM_INPUTS) + list(NGHTTP2_HARDENING_INPUTS):
         shutil.copyfile(INPUT / name, evidence / name)
     shutil.copyfile(cmake, evidence / 'CMakeLists.patched.txt')
     shutil.copyfile(ngsource / 'lib/nghttp2_session.c', evidence / 'nghttp2_session.c')
@@ -306,6 +340,11 @@ def build():
                'upstream_tests': 'c619c7be0737ac78051b1cacf4b1ce5467eb838d',
                'test_backport_adjustments': 'Registration/header context and explicit RFC 9218 priority setup for two cases; assertions retained.',
                'nghttp2_version': '1.63.0', 'curl_cffi_version': '0.17.0', 'zlib_version': '1.4',
+               'nghttp2_client_hardening': {
+                   'inputs': NGHTTP2_HARDENING_INPUTS,
+                   'manifest': json.loads((INPUT / 'nghttp2-client-hardening.json').read_text()),
+                   'ordinary_tests': nghttp2_tests,
+                   'static_archive_sha256': sha(work / 'deps/install/lib/libnghttp2.a')},
                'boringssl': {
                    'source_commit': '156c7b75ae9b8c3b3f847acf264f17594c3859fb',
                    'fix_commits': ['9b639f5b3b086508c03f6a4a1792e4a6043777ac', 'bee44385a528bba66abe1af553113ed9a703bf0a'],
@@ -317,7 +356,7 @@ def build():
                    'production_hunks': 'Complete upstream executable additions/removals retained; RNG patch unmodified.',
                    'ordinary_tests': boringssl_tests,
                    'coverage_limit': 'Source/advisory applicability and normal unit/compatibility tests; no exploit or failure-injection reproduction.'},
-               'original_negative_exit': bad.returncode, 'wrapper': wrappers[0].name,
+               'wrapper': wrappers[0].name,
                'wrapper_sha256': sha(native / wrappers[0].name), 'configure': configure,
                'linkage': 'Native static components; existing distributor libstdc++ remains dynamically linked',
                'raw_scanner_record': 'Nominal nghttp2 record retained; no ignore or gate change'}

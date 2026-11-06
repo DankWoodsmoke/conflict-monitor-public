@@ -2,7 +2,10 @@
 import hashlib
 import importlib.util
 import io
+import json
+from collections import Counter
 from pathlib import Path
+import re
 import socket
 import ssl
 import urllib.error
@@ -134,7 +137,8 @@ def test_every_native_backport_file_matches_its_reviewed_pin(native, name):
     spec = importlib.util.spec_from_file_location(name, folder / (name + '.py'))
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    for patch, digest in {**module.PATCHES, **getattr(module, 'UPSTREAM_INPUTS', {})}.items():
+    for patch, digest in {**module.PATCHES, **getattr(module, 'UPSTREAM_INPUTS', {}),
+                          **getattr(module, 'NGHTTP2_HARDENING_INPUTS', {})}.items():
         native.checked(folder / patch, digest)
 
 
@@ -146,3 +150,54 @@ def test_boringssl_context_adaptation_preserves_every_executable_change(stem):
                 if line.startswith(('+', '-')) and not line.startswith(('+++ ', '--- '))
                 and not line[1:].lstrip().startswith('//')]
     assert executable_changes(folder / (stem + '.patch')) == executable_changes(folder / (stem + '.upstream.patch'))
+
+
+def test_nghttp2_adaptation_retains_all_upstream_executable_additions_and_applicable_removals():
+    folder = Path(__file__).resolve().parents[1] / 'container'
+    manifest = json.loads((folder / 'nghttp2-client-hardening.json').read_text())
+    def changes(text):
+        result = {'+': Counter(), '-': Counter()}
+        path = ''
+        for line in text.splitlines():
+            if line.startswith('+++ b/'):
+                path = line[6:]
+                continue
+            if not path.startswith('lib/') or not line or line[0] not in '+-' or line.startswith(('+++', '---')):
+                continue
+            code = line[1:].strip()
+            if not code or code.startswith(('/*', '*', '//')):
+                continue
+            result[line[0]].update(re.findall(r'[A-Za-z_]\w*|[0-9]+|[^\s]', code))
+        return result
+    upstream = changes('\n'.join((folder / row['input']).read_text() for row in manifest['upstream_changes']))
+    adapted = changes((folder / manifest['patch']).read_text())
+    assert upstream['+'] == adapted['+']
+    # Both older DATA payload handlers lack this upstream-deleted block.
+    # Exact original/applied file hashes separately bind the reviewed context.
+    absent_original = Counter(re.findall(r'[A-Za-z_]\w*|[0-9]+|[^\s]',
+        'if (iframe->state == NGHTTP2_IB_IGN_ALL) { return (nghttp2_ssize)inlen; }'))
+    assert upstream['-'] == adapted['-'] + absent_original + absent_original
+    assert len(manifest['source_files']) == 11
+    assert manifest['source_files']['lib/nghttp2_session.c']['before'] == '78969d777e6f221bcbaf06e1827a3afd71b68dc545d08443b6082162957c5b52'
+
+
+@pytest.mark.parametrize('damage', [None, 'required_missing', 'skipped', 'aggregate_only', 'error'])
+def test_nghttp2_unit_gate_requires_actual_named_successes_and_zero_skips(native, damage):
+    import build_curl_patch as build
+    names = sorted(build.NGHTTP2_REQUIRED_TESTS)
+    names += ['test_nghttp2_fixture_' + str(i) for i in range(217 - len(names))]
+    text = '\n'.join(name + '[ OK    ]' for name in names)
+    text += '\n217 of 217 (100%) tests successful, 0 (0%) test skipped.\nTest Passed.\n'
+    if damage == 'required_missing':
+        text = text.replace(names[0], 'test_nghttp2_other_fixture')
+    elif damage == 'skipped':
+        text = text.replace('0 (0%) test skipped.', '1 (1%) test skipped.')
+    elif damage == 'aggregate_only':
+        text = text[text.index('217 of 217'):]
+    elif damage == 'error':
+        text += '[ ERROR ]'
+    if damage:
+        with pytest.raises(RuntimeError):
+            build.validate_nghttp2_unit_log(text)
+    else:
+        assert build.validate_nghttp2_unit_log(text)['tests'] == 217

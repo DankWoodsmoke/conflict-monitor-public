@@ -1,0 +1,186 @@
+From 5694e39141468c0a9265737deb6e945d455b4da9 Mon Sep 17 00:00:00 2001
+From: Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+Date: Wed, 5 Aug 2026 23:04:37 +0900
+Subject: [PATCH] Add option to limit the maximum outbound queue size
+
+---
+ doc/Makefile.am                |  1 +
+ lib/includes/nghttp2/nghttp2.h | 23 +++++++++++++++++++----
+ lib/nghttp2_option.c           |  6 ++++++
+ lib/nghttp2_option.h           |  5 +++++
+ lib/nghttp2_session.c          | 27 +++++++++++++++++++++++++--
+ lib/nghttp2_session.h          |  5 +++++
+ 6 files changed, 61 insertions(+), 6 deletions(-)
+
+diff --git a/doc/Makefile.am b/doc/Makefile.am
+index 3260c30343..a28706b44a 100644
+--- a/doc/Makefile.am
++++ b/doc/Makefile.am
+@@ -79,6 +79,7 @@ APIDOCS= \
+ 	nghttp2_option_set_user_recv_extension_type.rst \
+ 	nghttp2_option_set_max_continuations.rst \
+ 	nghttp2_option_set_max_outbound_ack.rst \
++	nghttp2_option_set_max_outbound_queue_size.rst \
+ 	nghttp2_option_set_max_settings.rst \
+ 	nghttp2_option_set_stream_reset_rate_limit.rst \
+ 	nghttp2_option_set_glitch_rate_limit.rst \
+diff --git a/lib/includes/nghttp2/nghttp2.h b/lib/includes/nghttp2/nghttp2.h
+index 2a494894d2..ee16a81c52 100644
+--- a/lib/includes/nghttp2/nghttp2.h
++++ b/lib/includes/nghttp2/nghttp2.h
+@@ -465,10 +465,10 @@ typedef enum {
+   /**
+    * Possible flooding by peer was detected in this HTTP/2 session.
+    * Flooding is measured by how many PING and SETTINGS frames with
+-   * ACK flag set are queued for transmission.  These frames are
+-   * response for the peer initiated frames, and peer can cause memory
+-   * exhaustion on server side to send these frames forever and does
+-   * not read network.
++   * ACK flag set are queued for transmission, and the size of the
++   * outbound queue.  These frames are response for the peer initiated
++   * frames, and peer can cause memory exhaustion on server side to
++   * send these frames forever and does not read network.
+    */
+   NGHTTP2_ERR_FLOODED = -904,
+   /**
+@@ -3258,6 +3258,21 @@ NGHTTP2_EXTERN void nghttp2_option_set_glitch_rate_limit(nghttp2_option *option,
+                                                          uint64_t burst,
+                                                          uint64_t rate);
+ 
++/**
++ * @function
++ *
++ * This function sets the maximum number of frames allowed in the
++ * outbound queue.  The limit is checked after
++ * `nghttp2_session_mem_recv2()` and `nghttp2_session_recv()`.  The
++ * current queue size (excluding deferred DATA frames) can be obtained
++ * by `nghttp2_session_get_outbound_queue_size()`.  If it exceeds
++ * |val|, `nghttp2_session_mem_recv2()` and `nghttp2_session_recv()`
++ * return :enum:`nghttp2_error.NGHTTP2_ERR_FLOODED`.  The default
++ * value is 5000.
++ */
++NGHTTP2_EXTERN void
++nghttp2_option_set_max_outbound_queue_size(nghttp2_option *option, size_t val);
++
+ /**
+  * @function
+  *
+diff --git a/lib/nghttp2_option.c b/lib/nghttp2_option.c
+index 7e44a241ba..a1aa2738eb 100644
+--- a/lib/nghttp2_option.c
++++ b/lib/nghttp2_option.c
+@@ -162,3 +162,9 @@ void nghttp2_option_set_glitch_rate_limit(nghttp2_option *option,
+   option->glitch_burst = burst;
+   option->glitch_rate = rate;
+ }
++
++void nghttp2_option_set_max_outbound_queue_size(nghttp2_option *option,
++                                                size_t val) {
++  option->opt_set_mask |= NGHTTP2_OPT_MAX_OUTBOUND_QUEUE_SIZE;
++  option->max_outbound_queue_size = val;
++}
+diff --git a/lib/nghttp2_option.h b/lib/nghttp2_option.h
+index db739b609e..d53dd98f0b 100644
+--- a/lib/nghttp2_option.h
++++ b/lib/nghttp2_option.h
+@@ -73,6 +73,7 @@
+ #define NGHTTP2_OPT_STREAM_RESET_RATE_LIMIT 0x8000U
+ #define NGHTTP2_OPT_MAX_CONTINUATIONS 0x010000U
+ #define NGHTTP2_OPT_GLITCH_RATE_LIMIT 0x020000U
++#define NGHTTP2_OPT_MAX_OUTBOUND_QUEUE_SIZE 0x040000U
+ 
+ /**
+  * Struct to store option values for nghttp2_session.
+@@ -108,6 +109,10 @@ struct nghttp2_option {
+    * NGHTTP2_OPT_MAX_CONTINUATIONS
+    */
+   size_t max_continuations;
++  /**
++   * NGHTTP2_OPT_MAX_OUTBOUND_QUEUE_SIZE
++   */
++  size_t max_outbound_queue_size;
+   /**
+    * Bitwise OR of NGHTTP2_OPT_* values to determine which fields are
+    * specified.
+diff --git a/lib/nghttp2_session.c b/lib/nghttp2_session.c
+index 66e07e21e1..bce4b0de10 100644
+--- a/lib/nghttp2_session.c
++++ b/lib/nghttp2_session.c
+@@ -498,6 +498,8 @@ static int session_new(nghttp2_session **session_ptr,
+   (*session_ptr)->max_outbound_ack = NGHTTP2_DEFAULT_MAX_OBQ_FLOOD_ITEM;
+   (*session_ptr)->max_settings = NGHTTP2_DEFAULT_MAX_SETTINGS;
+   (*session_ptr)->max_continuations = NGHTTP2_DEFAULT_MAX_CONTINUATIONS;
++  (*session_ptr)->max_outbound_queue_size =
++    NGHTTP2_DEFAULT_MAX_OUTBOUND_QUEUE_SIZE;
+ 
+   if (option) {
+     if ((option->opt_set_mask & NGHTTP2_OPT_NO_AUTO_WINDOW_UPDATE) &&
+@@ -578,6 +580,10 @@ static int session_new(nghttp2_session **session_ptr,
+       nghttp2_ratelim_init(&(*session_ptr)->glitch_ratelim,
+                            option->glitch_burst, option->glitch_rate);
+     }
++
++    if (option->opt_set_mask & NGHTTP2_OPT_MAX_OUTBOUND_QUEUE_SIZE) {
++      (*session_ptr)->max_outbound_queue_size = option->max_outbound_queue_size;
++    }
+   }
+ 
+   rv = nghttp2_hd_deflate_init2(&(*session_ptr)->hd_deflater,
+@@ -5423,8 +5429,8 @@ ssize_t nghttp2_session_mem_recv(nghttp2_session *session, const uint8_t *in,
+   return (ssize_t)nghttp2_session_mem_recv2(session, in, inlen);
+ }
+ 
+-nghttp2_ssize nghttp2_session_mem_recv2(nghttp2_session *session,
+-                                        const uint8_t *in, size_t inlen) {
++static nghttp2_ssize session_mem_recv(nghttp2_session *session,
++                                      const uint8_t *in, size_t inlen) {
+   const uint8_t *first, *last;
+   nghttp2_inbound_frame *iframe = &session->iframe;
+   size_t readlen;
+@@ -7094,6 +7100,23 @@ nghttp2_ssize nghttp2_session_mem_recv2(nghttp2_session *session,
+   return (nghttp2_ssize)(in - first);
+ }
+ 
++nghttp2_ssize nghttp2_session_mem_recv2(nghttp2_session *session,
++                                        const uint8_t *in, size_t inlen) {
++  nghttp2_ssize nread;
++
++  nread = session_mem_recv(session, in, inlen);
++  if (nread < 0 && nghttp2_is_fatal((int)nread)) {
++    return nread;
++  }
++
++  if (nghttp2_session_get_outbound_queue_size(session) >
++      session->max_outbound_queue_size) {
++    return NGHTTP2_ERR_FLOODED;
++  }
++
++  return nread;
++}
++
+ int nghttp2_session_recv(nghttp2_session *session) {
+   uint8_t buf[NGHTTP2_INBOUND_BUFFER_LENGTH];
+   while (1) {
+diff --git a/lib/nghttp2_session.h b/lib/nghttp2_session.h
+index 1b04464cda..c385ddf20d 100644
+--- a/lib/nghttp2_session.h
++++ b/lib/nghttp2_session.h
+@@ -110,6 +110,9 @@ typedef struct {
+    HEADER frame. */
+ #define NGHTTP2_DEFAULT_MAX_CONTINUATIONS 8
+ 
++/* The default maximum size of the outbound queue. */
++#define NGHTTP2_DEFAULT_MAX_OUTBOUND_QUEUE_SIZE 5000
++
+ /* Internal state when receiving incoming frame */
+ typedef enum {
+   /* Receiving frame header */
+@@ -280,6 +283,8 @@ struct nghttp2_session {
+   /* The number of CONTINUATION frames following an incoming HEADER
+      frame.  This variable is reset when END_HEADERS flag is seen. */
+   size_t num_continuations;
++  /* The maximum size of the outbound queue. */
++  size_t max_outbound_queue_size;
+   /* Next Stream ID. Made unsigned int to detect >= (1 << 31). */
+   uint32_t next_stream_id;
+   /* The last stream ID this session initiated.  For client session,

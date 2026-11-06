@@ -42,7 +42,11 @@ COPY container/native_build.py container/build_curl_patch.py container/CVE-2026-
     container/nghttp2-prerequisite.patch container/nghttp2-altsvc.patch \
     container/nghttp2-state-tests.patch container/boringssl-test-deleters.patch container/boringssl-crl-tests.patch \
     container/boringssl-crl-tests.upstream.patch container/boringssl-CVE-2026-35189.patch \
-    container/boringssl-CVE-2026-35189.upstream.patch container/boringssl-rng-thread-local.patch /curl-security-input/
+    container/boringssl-CVE-2026-35189.upstream.patch container/boringssl-rng-thread-local.patch \
+    container/nghttp2-client-hardening.patch container/nghttp2-client-hardening.json \
+    container/nghttp2-pr2826.upstream.patch container/nghttp2-pr2829.upstream.patch \
+    container/nghttp2-pr2926.upstream.patch container/nghttp2-pr2931.upstream.patch \
+    container/nghttp2-pr2934.upstream.patch container/nghttp2-pr2945.upstream.patch /curl-security-input/
 RUN /opt/monitor/bin/python /curl-security-input/build_curl_patch.py fetch
 RUN --network=none /opt/monitor/bin/python /curl-security-input/build_curl_patch.py build
 

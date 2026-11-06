@@ -1,0 +1,203 @@
+{
+  "nghttp2_version": "1.63.0",
+  "patch": "nghttp2-client-hardening.patch",
+  "patch_sha256": "80becb9e367b07f9162b6ddd53eb7a1e38decf805fef9c951810d6eec24b3227",
+  "upstream_changes": [
+    {
+      "pull_request": 2826,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2826",
+      "patch_url": "https://github.com/nghttp2/nghttp2/pull/2826.patch",
+      "input": "nghttp2-pr2826.upstream.patch",
+      "sha256": "e5c3b3b4fec4567025a536099de6df7a995c435906145661f75aa03a22d26ae4",
+      "commits": [
+        "5694e39141468c0a9265737deb6e945d455b4da9"
+      ],
+      "merged": true,
+      "merged_at": "2026-08-05T15:21:39Z",
+      "merge_commit_sha": "378dbe539faf31d2c6e53cfdad3b3b22223ad208",
+      "patch_head_sha": "5694e39141468c0a9265737deb6e945d455b4da9",
+      "release_comparison": "v1.71.0",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_is_ancestor_of_release": true,
+      "merge_patch_url": "https://github.com/nghttp2/nghttp2/commit/378dbe539faf31d2c6e53cfdad3b3b22223ad208.patch",
+      "merge_patch_sha256": "e5c3b3b4fec4567025a536099de6df7a995c435906145661f75aa03a22d26ae4",
+      "merge_patch_executable_delta_matches_PR": true
+    },
+    {
+      "pull_request": 2829,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2829",
+      "patch_url": "https://github.com/nghttp2/nghttp2/pull/2829.patch",
+      "input": "nghttp2-pr2829.upstream.patch",
+      "sha256": "fd9aa7d84449ddafa257925c095c80065f3b3bb617d7a3429941ba84beb2a3b3",
+      "commits": [
+        "bb37182517c32886502d84d0a6c0d00ee04d1bdb"
+      ],
+      "merged": true,
+      "merged_at": "2026-08-15T05:23:40Z",
+      "merge_commit_sha": "9711d0b7b0619e06b00b0ca934e11c268ade4c5d",
+      "patch_head_sha": "bb37182517c32886502d84d0a6c0d00ee04d1bdb",
+      "release_comparison": "v1.71.0",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_is_ancestor_of_release": true,
+      "merge_patch_url": "https://github.com/nghttp2/nghttp2/commit/9711d0b7b0619e06b00b0ca934e11c268ade4c5d.patch",
+      "merge_patch_sha256": "fd9aa7d84449ddafa257925c095c80065f3b3bb617d7a3429941ba84beb2a3b3",
+      "merge_patch_executable_delta_matches_PR": true
+    },
+    {
+      "pull_request": 2926,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2926",
+      "patch_url": "https://github.com/nghttp2/nghttp2/pull/2926.patch",
+      "input": "nghttp2-pr2926.upstream.patch",
+      "sha256": "5ab9cd9ac981e8128d7d6064cacd0a41026e39c5ec491df80d38857693a5bd1e",
+      "commits": [
+        "f790273f9bb64f0c497c4ffe3a97a857b3875208"
+      ],
+      "merged": true,
+      "merged_at": "2026-10-20T13:03:49Z",
+      "merge_commit_sha": "9c6a1c85cb71d6ebfda826f7208d0ae436fc208b",
+      "patch_head_sha": "f790273f9bb64f0c497c4ffe3a97a857b3875208",
+      "release_comparison": "v1.71.0",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_is_ancestor_of_release": true,
+      "merge_patch_url": "https://github.com/nghttp2/nghttp2/commit/9c6a1c85cb71d6ebfda826f7208d0ae436fc208b.patch",
+      "merge_patch_sha256": "5ab9cd9ac981e8128d7d6064cacd0a41026e39c5ec491df80d38857693a5bd1e",
+      "merge_patch_executable_delta_matches_PR": true
+    },
+    {
+      "pull_request": 2931,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2931",
+      "patch_url": "https://github.com/nghttp2/nghttp2/pull/2931.patch",
+      "input": "nghttp2-pr2931.upstream.patch",
+      "sha256": "be6f90047d3ef0375253047330a323e53659348f0ff0b497baaf5990d63902ff",
+      "commits": [
+        "f05a55ec47b7eb3f2428603a94475673e6413508"
+      ],
+      "merged": true,
+      "merged_at": "2026-10-23T10:11:54Z",
+      "merge_commit_sha": "ccfc7bcfcd6df0879496b30e02e75de238f6496d",
+      "patch_head_sha": "f05a55ec47b7eb3f2428603a94475673e6413508",
+      "release_comparison": "v1.71.0",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_is_ancestor_of_release": true,
+      "merge_patch_url": "https://github.com/nghttp2/nghttp2/commit/ccfc7bcfcd6df0879496b30e02e75de238f6496d.patch",
+      "merge_patch_sha256": "be6f90047d3ef0375253047330a323e53659348f0ff0b497baaf5990d63902ff",
+      "merge_patch_executable_delta_matches_PR": true
+    },
+    {
+      "pull_request": 2934,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2934",
+      "patch_url": "https://github.com/nghttp2/nghttp2/pull/2934.patch",
+      "input": "nghttp2-pr2934.upstream.patch",
+      "sha256": "f2eae3c306995d272cae9b2856386998dece854a34663d2fcd95e1398cbc23bf",
+      "commits": [
+        "fe2a1df34b3ef1312a07778d3237e5d1abdae18e"
+      ],
+      "merged": true,
+      "merged_at": "2026-10-23T12:38:04Z",
+      "merge_commit_sha": "3baf9561e09f7ac8b0dce6e84132ce3909309ef0",
+      "patch_head_sha": "fe2a1df34b3ef1312a07778d3237e5d1abdae18e",
+      "release_comparison": "v1.71.0",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_is_ancestor_of_release": true,
+      "merge_patch_url": "https://github.com/nghttp2/nghttp2/commit/3baf9561e09f7ac8b0dce6e84132ce3909309ef0.patch",
+      "merge_patch_sha256": "f2eae3c306995d272cae9b2856386998dece854a34663d2fcd95e1398cbc23bf",
+      "merge_patch_executable_delta_matches_PR": true
+    },
+    {
+      "pull_request": 2945,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2945",
+      "patch_url": "https://github.com/nghttp2/nghttp2/pull/2945.patch",
+      "input": "nghttp2-pr2945.upstream.patch",
+      "sha256": "b72a20a647e299cb5d48f53f686382b705279915c5de0525eecb54b2974bf64c",
+      "commits": [
+        "59d60407508ecfe6774f77640e400a7c272d610f",
+        "d8114a32dfc1e9269e26c4b6bf33b939b3ed923f"
+      ],
+      "merged": true,
+      "merged_at": "2026-11-01T13:10:21Z",
+      "merge_commit_sha": "240ace7d936785825626c1dbf697bccfce58cb97",
+      "patch_head_sha": "d8114a32dfc1e9269e26c4b6bf33b939b3ed923f",
+      "release_comparison": "v1.71.0",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_is_ancestor_of_release": true,
+      "merge_patch_url": "https://github.com/nghttp2/nghttp2/commit/240ace7d936785825626c1dbf697bccfce58cb97.patch",
+      "merge_patch_sha256": "b72a20a647e299cb5d48f53f686382b705279915c5de0525eecb54b2974bf64c",
+      "merge_patch_executable_delta_matches_PR": true
+    }
+  ],
+  "source_files": {
+    "doc/Makefile.am": {
+      "before": "e4b161d39511226f02358c7bc172b7d66cb982a198d71240d3949f353b4ddad9",
+      "after": "ec6f3e830cb9f2eb2004208e36fb32f457d5b01a388cefbce04ea9032c59073b"
+    },
+    "lib/includes/nghttp2/nghttp2.h": {
+      "before": "174f10925337dcfb18d0ecba735e483870777af75f1ca015360ffbe98d0617c0",
+      "after": "16818a01498d96d0ae8f68bd199bbb68d5f1b77d5d5dab48944111ec3d8512d8"
+    },
+    "lib/nghttp2_frame.c": {
+      "before": "f332f8f7aada08c58e67b8fddb191523f218de568b0ecc2fc2063c1cce180992",
+      "after": "eae5f6d228ef35f35467b03f5b12fd54d7212acb0e1b096bc17c16066cbbf3cc"
+    },
+    "lib/nghttp2_frame.h": {
+      "before": "08d559b7809d9dbd9c70b8dd0d7374a60bac853bf256fb8d2f7b38ba4852ee52",
+      "after": "fa9927fa919bf0ebed0aa28456417ead2bf54640686623b79d4a3fceaac80cb2"
+    },
+    "lib/nghttp2_helper.c": {
+      "before": "d8fac032a7f7967160342aac760a09321cc21fb179fee0e30a7ec940ba0564ca",
+      "after": "8ffd0386af1201f21df9060236e1973d7e223efb6d31e7e87c8ab99491b325f2"
+    },
+    "lib/nghttp2_option.c": {
+      "before": "4283ae107b108d2a132ae4c6d1200719c8615d584d8c4dba47e2813ee048735d",
+      "after": "8fb1caa6b05afa4ed9e7416b5ca96dca9f7a8807c4a360718bd23c67aa21d7b6"
+    },
+    "lib/nghttp2_option.h": {
+      "before": "bbfa7459d7647dd948a57e9f2af41856d890720de2d369e1dfcba5d769534c88",
+      "after": "3e9434ae570a1d5476ffc1b4a8b84517273752ddf1a26125cd392a7e427260e3"
+    },
+    "lib/nghttp2_session.c": {
+      "before": "78969d777e6f221bcbaf06e1827a3afd71b68dc545d08443b6082162957c5b52",
+      "after": "2dfdcf606398497f354fa5f754d533bd6b8d0dc46dfad6c875b179e2eb8a233a"
+    },
+    "lib/nghttp2_session.h": {
+      "before": "7a47a6d75491d4a12e518ae09d44961f28a48e11684f91c6e70c83917a6d17e1",
+      "after": "565fbc20dd1cb4087bbc21ed6a1a21ab3e3343ed38f6dd5874017b634af08ba6"
+    },
+    "tests/nghttp2_session_test.c": {
+      "before": "3ab925d63298b03bdfbcd9c0bfc4f090d4c71bb66122547e0ce65a80455c424a",
+      "after": "0d385fb6d7bdf17ea8b76c367e4851ef60e00ce08f2c30c99a4410c82eea185d"
+    },
+    "tests/nghttp2_session_test.h": {
+      "before": "62e56e317713765e7bafeeddec90cf4cb4633536707c1214baddc0e3f9bc05b6",
+      "after": "34b55c2e531872cee624318c20828c628d208863f40145c475249cc833046e0e"
+    }
+  },
+  "adaptations": [
+    "1.63 declaration/registration and whitespace context; production additions retained.",
+    "CONTINUATION guard remains after header unpack/type validation, before payload handling; 1.63 continuation counter increments earlier.",
+    "Maximum outbound queue option uses original upstream bit 0x040000, distinct from all 1.63 options.",
+    "2934 obsolete public-header documentation context excluded; executable changes retained.",
+    "2945 removes payload accounting from older 1.63 handlers; two upstream-deleted IGN_ALL guard blocks were already absent in those original handlers. Both complete new receive/send window helper functions and calls retained.",
+    "Ordinary upstream tests retain assertions; variable declarations and callback initializer placement adapted to 1.63."
+  ],
+  "not_applied": [
+    {
+      "pull_request": 2943,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2943",
+      "sha256": "26545a09212437e421c20705c78daeb4e6d7a9d346ee919d6b41beb6b15998d3",
+      "disposition": "Outside selected curl client path: nghttp2_session_on_priority_update_received asserts session->server. Server API code remains in the static library; no code-absence claim."
+    },
+    {
+      "pull_request": 2856,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2856",
+      "sha256": "386f36233f0504d81e26b497ad9151b3b31ab2293d9acdf67478e5b34aa30149",
+      "disposition": "Unintegrated CONNECT validation hardening: complete upstream HEADERS fix calls session_update_glitch_ratelim, absent from 1.63. CONNECT via HTTP2 proxy is not proven unreachable. No partial implementation or unsupported immunity claim."
+    }
+  ],
+  "qualification_scope": "Ordinary upstream main suite only. No patch reversal, failmalloc or attack reproduction in this build. Prior execution evidence remains historical. These six changes are not a claim of full 1.71 equivalence."
+}
