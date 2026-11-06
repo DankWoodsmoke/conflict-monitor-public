@@ -171,14 +171,28 @@ def test_nghttp2_adaptation_retains_all_upstream_executable_additions_and_applic
         return result
     upstream = changes('\n'.join((folder / row['input']).read_text() for row in manifest['upstream_changes']))
     adapted = changes((folder / manifest['patch']).read_text())
-    assert upstream['+'] == adapted['+']
     # Both older DATA payload handlers lack this upstream-deleted block.
     # Exact original/applied file hashes separately bind the reviewed context.
     absent_original = Counter(re.findall(r'[A-Za-z_]\w*|[0-9]+|[^\s]',
         'if (iframe->state == NGHTTP2_IB_IGN_ALL) { return (nghttp2_ssize)inlen; }'))
-    assert upstream['-'] == adapted['-'] + absent_original + absent_original
+    # Follow-up corrections intentionally remove earlier additions (including
+    # counter placement/defaults); compare signed net changes, retaining zeros
+    # and negative counts. This is supplemental conservation evidence, not a
+    # semantic proof: exact source hashes and ordinary upstream suites gate it.
+    upstream_net = upstream['+'].copy()
+    upstream_net.subtract(upstream['-'])
+    adapted_net = adapted['+'].copy()
+    adapted_net.subtract(adapted['-'])
+    adapted_net.subtract(absent_original)
+    adapted_net.subtract(absent_original)
+    assert dict(sorted((k, v) for k, v in upstream_net.items() if v)) == dict(
+        sorted((k, v) for k, v in adapted_net.items() if v))
     assert len(manifest['source_files']) == 11
     assert manifest['source_files']['lib/nghttp2_session.c']['before'] == '78969d777e6f221bcbaf06e1827a3afd71b68dc545d08443b6082162957c5b52'
+    assert {row['pull_request'] for row in manifest['upstream_changes']} == {
+        2826, 2829, 2926, 2931, 2934, 2945,
+        2485, 2488, 2508, 2509, 2510, 2598, 2599, 2607, 2856,
+    }
 
 
 @pytest.mark.parametrize('damage', [None, 'required_missing', 'skipped', 'aggregate_only', 'error'])

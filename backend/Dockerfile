@@ -46,7 +46,12 @@ COPY container/native_build.py container/build_curl_patch.py container/CVE-2026-
     container/nghttp2-client-hardening.patch container/nghttp2-client-hardening.json \
     container/nghttp2-pr2826.upstream.patch container/nghttp2-pr2829.upstream.patch \
     container/nghttp2-pr2926.upstream.patch container/nghttp2-pr2931.upstream.patch \
-    container/nghttp2-pr2934.upstream.patch container/nghttp2-pr2945.upstream.patch /curl-security-input/
+    container/nghttp2-pr2934.upstream.patch container/nghttp2-pr2945.upstream.patch \
+    container/nghttp2-pr2485.upstream.patch container/nghttp2-pr2488.upstream.patch \
+    container/nghttp2-pr2508.upstream.patch container/nghttp2-pr2509.upstream.patch \
+    container/nghttp2-pr2510.upstream.patch container/nghttp2-pr2598.upstream.patch \
+    container/nghttp2-pr2599.upstream.patch container/nghttp2-pr2607.upstream.patch \
+    container/nghttp2-pr2856.upstream.patch /curl-security-input/
 RUN /opt/monitor/bin/python /curl-security-input/build_curl_patch.py fetch
 RUN --network=none /opt/monitor/bin/python /curl-security-input/build_curl_patch.py build
 

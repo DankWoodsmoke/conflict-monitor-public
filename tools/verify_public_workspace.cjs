@@ -2,6 +2,7 @@
  * traces, storage, credentials, provider URLs or report payloads are emitted. */
 const {chromium,firefox,webkit}=require('../frontend/node_modules/playwright');
 const assert=require('node:assert/strict');
+const {measureVisibleEarthRaster}=require('./browser_raster.cjs');
 const fs=require('node:fs');
 const path=require('node:path');
 const base=new URL(process.env.CM_BASE_URL||'http://127.0.0.1:5197');
@@ -224,6 +225,8 @@ async function run(){
         row.checks.push('public_source_health_scope_and_mobile_dialog');
         await page.waitForTimeout(settleMs);await settleLayout(page);
         await checkLayout(page,'Settled Earth');await checkNoOperatorControls(page);
+        row.composed_earth_raster=await measureVisibleEarthRaster(page);
+        row.checks.push('unobscured_composed_earth_pixels_are_nonblank_and_textured');
         assert(await page.evaluate(node=>node===document.querySelector('.cesium-widget canvas'),handle),'Earth canvas remounted during observation');
         assert.equal(await page.locator('.earth-workspace').getAttribute('data-earth-provider'),'ready','Google imagery ceased to be ready');
         assert(row.network.google_roots_ok>0&&row.network.google_tiles_ok>0,'No actual successful Google root and content requests were observed');

@@ -1,6 +1,6 @@
 /* Bounded, read-only browser lifecycle observation. Never queues generation. */
 const {chromium}=require('../frontend/node_modules/playwright');
-const {captureProjection,validatePublicScene,assertFinalSampleGap}=require('./browser_public_projection.cjs');
+const {captureProjection,validatePublicScene,assertFinalSampleGap,createGoogleTileCounters}=require('./browser_public_projection.cjs');
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),cp=require('node:child_process'),crypto=require('node:crypto');
 const base=process.env.CM_BASE_URL||'http://127.0.0.1:5190';
 const output=process.env.CM_BROWSER_OUTPUT||'artifacts/browser-lifecycle';
@@ -92,8 +92,13 @@ function captionMetrics(video){
    if(request.method()==='POST'&&/^\/api\/(?:briefing\/(?:analyze|video)|report-analysis\/\d+)\/?$/.test(pathname))summary.generation_posts++;
   });
   if(longSession){
-   page.on('request',request=>{const u=new URL(request.url());if(u.hostname!=='tile.googleapis.com')return;if(u.pathname==='/v1/3dtiles/root.json'){firstRootMono??=performance.now();summary.root_requests.push({at:new Date().toISOString(),elapsed_seconds:elapsed()});}else if(firstRootMono!==null&&performance.now()-firstRootMono>=10800000)summary.child_requests_after_three_hours++;});
-   page.on('response',response=>{const u=new URL(response.url());if(u.hostname!=='tile.googleapis.com')return;if(u.pathname==='/v1/3dtiles/root.json')summary.root_response_statuses.push({elapsed_seconds:elapsed(),status:response.status()});else if(firstRootMono!==null&&performance.now()-firstRootMono>=10800000&&response.status()>=200&&response.status()<300)summary.child_successes_after_three_hours++;});
+   const tiles=createGoogleTileCounters();
+   const saveTileCounts=()=>{Object.assign(summary,{child_requests_total:tiles.counts.requests_total,child_responses_total:tiles.counts.responses_total,
+    child_requests_after_three_hours:tiles.counts.requests_after_cutoff,child_successful_responses_after_three_hours_raw:tiles.counts.successful_responses_after_cutoff_raw,
+    child_successes_after_three_hours:tiles.counts.successful_requests_after_cutoff});};
+   saveTileCounts();
+   page.on('request',request=>{const u=new URL(request.url());if(u.hostname!=='tile.googleapis.com')return;if(u.pathname==='/v1/3dtiles/root.json'){firstRootMono??=performance.now();summary.root_requests.push({at:new Date().toISOString(),elapsed_seconds:elapsed()});}else{tiles.request(request,firstRootMono===null?null:performance.now()-firstRootMono);saveTileCounts();}});
+   page.on('response',response=>{const u=new URL(response.url());if(u.hostname!=='tile.googleapis.com')return;if(u.pathname==='/v1/3dtiles/root.json')summary.root_response_statuses.push({elapsed_seconds:elapsed(),status:response.status()});else{tiles.response(response.request(),response.status(),firstRootMono===null?null:performance.now()-firstRootMono);saveTileCounts();}});
   }
   await page.addInitScript(()=>localStorage.setItem('cm_seen_methods_v2','1'));
   await page.goto(base+'/?view=earth',{waitUntil:'domcontentloaded'});

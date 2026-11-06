@@ -19,6 +19,10 @@ jobs:
       - run: npm run test:compat
       - run: npm test
       - run: npm run build
+      - name: Install browser engines for offline rendering checks
+        run: npx playwright install --with-deps chromium firefox webkit
+      - name: Verify visible WebGL and public attribution across browser engines
+        run: npx playwright test e2e/webgl-raster.pw.ts e2e/public-attribution.pw.ts
       - run: npm audit --audit-level=moderate
   backend:
     runs-on: ubuntu-latest

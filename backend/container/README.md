@@ -82,9 +82,19 @@ This preserves RFC 7540 priorities used by the pinned curl-impersonate source.
 nghttp2 1.65 and later make those APIs no-ops, so a version-only upgrade to 1.71
 would silently change browser behavior. This backport is not full 1.71 equivalence.
 PR 2943 changes a handler that asserts server mode; curl uses client sessions.
-PR 2856 remains an explicitly unintegrated CONNECT validation change because its
-complete implementation requires newer glitch-rate machinery absent from 1.63.
-CONNECT through an HTTP/2 proxy is not proven unreachable; no immunity is claimed.
+The complete upstream CONNECT validation change in [PR 2856](https://github.com/nghttp2/nghttp2/pull/2856)
+is applied with the glitch-counter series 2485, 2488, 2508, 2509, 2510, 2598,
+2599 and 2607. The fatal-result ordering in 2607 was already supplied by the
+earlier state-machine repair and is checked in the recorded source hashes.
+All production counter sites, configurable options, termination checks and
+corrective removals are retained. Upstream defaults are a 10,000-token burst
+and 330 tokens per second. This also rate-limits very frequent received
+PRIORITY frames; existing priority processing remains enabled. Client CONNECT
+responses are covered, including the complete HEADERS and PUSH_PROMISE guards.
+The build requires the existing ordinary upstream CONNECT/trailer, push,
+unknown-frame and extension tests to pass, in addition to the complete main suite.
+This is source-backed remediation and ordinary compatibility evidence, not an
+exploit reproduction or a claim that every library path has been exercised.
 No server/nghttpx capability or additional protocol is enabled.
 
 The bundled and shared zlib libraries are built from the official

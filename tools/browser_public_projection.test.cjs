@@ -1,5 +1,5 @@
 const {test}=require('node:test'),assert=require('node:assert/strict');
-const {captureProjection,expectedProjection,validatePublicScene,assertFinalSampleGap}=require('./browser_public_projection.cjs');
+const {captureProjection,expectedProjection,validatePublicScene,assertFinalSampleGap,createGoogleTileCounters}=require('./browser_public_projection.cjs');
 const now=Date.parse('2026-11-06T12:00:00Z');
 function fixture(){
  const observation={lat:29,lon:44,ts:new Date(now-60000).toISOString()},aircraft={icao24:'abc123',lat:30,lon:45,observed_at:new Date(now-10000).toISOString()};
@@ -32,4 +32,24 @@ test('fails stalled network, stale rendered frame, missing diagnostics and missi
  const next=fixture();next.scene.rendered_at=now-45000;assert.throws(()=>validatePublicScene(next.scene,next.history,now),/frame stalled/);
  assert.throws(()=>validatePublicScene(null,next.history,now));
  assertFinalSampleGap(14400,14370);assert.throws(()=>assertFinalSampleGap(14400,NaN));assert.throws(()=>assertFinalSampleGap(14400,14000));
+});
+test('precutoff request completed after three hours is raw evidence, not new tile work',()=>{
+ const counters=createGoogleTileCounters(),request={};
+ counters.request(request,10799999);counters.response(request,200,10800001);
+ assert.equal(counters.counts.successful_responses_after_cutoff_raw,1);
+ assert.equal(counters.counts.requests_after_cutoff,0);assert.equal(counters.counts.successful_requests_after_cutoff,0);
+ assert.equal(counters.counts.requests_total,1);assert.equal(counters.counts.responses_total,1);
+});
+test('only matching successful postcutoff requests qualify; failures and unrelated responses do not',()=>{
+ const counters=createGoogleTileCounters(),success={},failure={};
+ counters.request(success,10800000);counters.request(failure,10800001);
+ counters.response(success,206,10800003);counters.response(failure,503,10800004);counters.response({},200,10800005);
+ assert.equal(counters.counts.requests_after_cutoff,2);assert.equal(counters.counts.successful_requests_after_cutoff,1);
+ assert.equal(counters.counts.successful_responses_after_cutoff_raw,2);assert.equal(counters.counts.responses_total,3);
+ counters.response(success,200,10800006);assert.equal(counters.counts.successful_requests_after_cutoff,1);
+});
+test('tile counters reject nonfinite clocks and do not admit preroot requests',()=>{
+ const counters=createGoogleTileCounters(),request={};counters.request(request,null);counters.response(request,200,10800001);
+ assert.equal(counters.counts.successful_requests_after_cutoff,0);
+ assert.throws(()=>counters.request({},NaN),/Invalid Google request clock/);
 });

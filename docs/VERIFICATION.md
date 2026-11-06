@@ -1,30 +1,19 @@
 # Release-candidate verification
 
-## November 6, 2026: candidate 14 CI review; release qualification pending
+## November 6, 2026: candidate 15 CI review; release qualification pending
 
-This draft carries the exact candidate 14 runtime source plus reviewed release
-workflow/tools. Earlier candidate 3 and RC.4 results below are historical; they
-do not qualify this build. No new release, site deployment or completed four-hour
-soak is claimed by this branch.
+This draft carries the exact frozen candidate 15 source, including the complete
+reviewed upstream CONNECT/glitch-counter hardening and Playwright 1.65's Windows
+WebKit resize repair. Older verification sections describe their stated builds;
+they do not qualify this candidate. Current installed-image, mobile/Google and
+full live-pipeline evidence is retained separately until final admission.
 
-The installed candidate backend passed 1,249 tests and 29 subtests with zero
-skips. The frontend passed 433 tests; the actual nonroot CPU voice/MP4 gate
-passed 11 checks, and installed native transport passed 32 checks. Unknown ADS-B
-emitter categories now use neutral symbols and separate group counts. Source
-coordinates, ages and provider category are not independent factual verification.
-
-Six compatible official nghttp2 fixes are installed with their source and test
-provenance. The full newer library is incompatible with the pinned transport's
-priority semantics; remaining upstream scope limits stay explicit. Complete raw
-security scans are being refreshed against the November 6 advisory database;
-version matches and residual findings remain retained rather than suppressed.
-
-The new release publisher fails closed without final source/evidence admission,
-four real hours across five observers, post-soak security review and exact
-hosted CI. Its write job checks uploaded assets while draft and downloads them
-again after publication. This review branch cannot invoke that job. Final Google
-Earth/mobile qualification, full soak, security review and final documentation
-remain pending. No DNS, tunnel or production website changes are included.
+Raw security scanner findings remain visible. Source-pinned fixes and code
+absence require exact-image evidence; residual findings are not suppressed.
+The release publisher requires final security review after four real hours
+across five observers, a matching source manifest and exact hosted CI. This
+review branch cannot invoke its publication job. No release, completed soak,
+public tunnel, DNS or website deployment is claimed by this draft.
 
 ## November 5 evening public-hosting and native security candidate
 

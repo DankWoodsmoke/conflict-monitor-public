@@ -40,4 +40,16 @@ function validatePublicScene(scene,history,now){
 function assertFinalSampleGap(now,lastSample,limit=90){
  assert(Number.isFinite(now)&&Number.isFinite(lastSample)&&now>=lastSample&&now-lastSample<limit,'Final observation gap exceeded bound');
 }
-module.exports={captureProjection,expectedProjection,validatePublicScene,assertFinalSampleGap};
+function createGoogleTileCounters(){
+ const eligible=new WeakSet(),counts={requests_total:0,responses_total:0,requests_after_cutoff:0,successful_responses_after_cutoff_raw:0,successful_requests_after_cutoff:0};
+ const afterCutoff=elapsed=>{assert(elapsed===null||Number.isFinite(elapsed)&&elapsed>=0,'Invalid Google request clock');return elapsed!==null&&elapsed>=10800000;};
+ return {counts,
+  request(request,elapsed){counts.requests_total++;if(afterCutoff(elapsed)){counts.requests_after_cutoff++;eligible.add(request);}},
+  response(request,status,elapsed){
+   counts.responses_total++;const successful=status>=200&&status<300,after=afterCutoff(elapsed);
+   if(after&&successful)counts.successful_responses_after_cutoff_raw++;
+   if(eligible.delete(request)&&after&&successful)counts.successful_requests_after_cutoff++;
+  }
+ };
+}
+module.exports={captureProjection,expectedProjection,validatePublicScene,assertFinalSampleGap,createGoogleTileCounters};

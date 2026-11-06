@@ -47,16 +47,31 @@ NGHTTP2_PATCHES = {
 }
 NGHTTP2_HARDENING_PATCH = 'nghttp2-client-hardening.patch'
 NGHTTP2_HARDENING_INPUTS = {
-    'nghttp2-client-hardening.patch': '80becb9e367b07f9162b6ddd53eb7a1e38decf805fef9c951810d6eec24b3227',
-    'nghttp2-client-hardening.json': 'b42456bbbf2adec1a165f7b778efc75ae592d6a40e573159f6cbd401e4e5e638',
+    'nghttp2-client-hardening.patch': 'e4d45333186e4652392445a0cf92d626fe869d8337d33d4f4f98cf77ac793121',
+    'nghttp2-client-hardening.json': '95502148f59dffac379373a990f2671bcb8cfad1869ab0d13ad1be01c78e7879',
     'nghttp2-pr2826.upstream.patch': 'e5c3b3b4fec4567025a536099de6df7a995c435906145661f75aa03a22d26ae4',
     'nghttp2-pr2829.upstream.patch': 'fd9aa7d84449ddafa257925c095c80065f3b3bb617d7a3429941ba84beb2a3b3',
     'nghttp2-pr2926.upstream.patch': '5ab9cd9ac981e8128d7d6064cacd0a41026e39c5ec491df80d38857693a5bd1e',
     'nghttp2-pr2931.upstream.patch': 'be6f90047d3ef0375253047330a323e53659348f0ff0b497baaf5990d63902ff',
     'nghttp2-pr2934.upstream.patch': 'f2eae3c306995d272cae9b2856386998dece854a34663d2fcd95e1398cbc23bf',
     'nghttp2-pr2945.upstream.patch': 'b72a20a647e299cb5d48f53f686382b705279915c5de0525eecb54b2974bf64c',
+    'nghttp2-pr2485.upstream.patch': 'c9c361ca9868fca56ae1bd5b3faa78361c1473bff6e396b8ce4b043abebbb562',
+    'nghttp2-pr2488.upstream.patch': '814defea5f59dca8845020383bb86e4979fe10e36f9f926ee06092da5c1636a2',
+    'nghttp2-pr2508.upstream.patch': 'be6c62f5ca3c132faed6024fcdc681a7da6d251b6a50c7adf5b835fa6241a49d',
+    'nghttp2-pr2509.upstream.patch': '79b083f49c3c837806a3fdd921ef2fdf807c8eb59dd049bf89698a231ba4a486',
+    'nghttp2-pr2510.upstream.patch': '976a86258e9306406042b0cc321f6998ead7d881afb443c11a84108d869631e1',
+    'nghttp2-pr2598.upstream.patch': 'e9c78d756f9756b942236c17d8c208035c753c88410da69074df909e3c382281',
+    'nghttp2-pr2599.upstream.patch': '7a6e631f495034fe795e67ad1753d5b91fb53af6d3f2ed8b3ea158ec854bd7ce',
+    'nghttp2-pr2607.upstream.patch': '4425e3e264c14888eec4fca0feeb92ec47415a3382d970e7fb7a0e15ee9256fe',
+    'nghttp2-pr2856.upstream.patch': '386f36233f0504d81e26b497ad9151b3b31ab2293d9acdf67478e5b34aa30149',
 }
 NGHTTP2_REQUIRED_TESTS = {
+    'test_nghttp2_session_recv_unknown_frame',
+    'test_nghttp2_session_recv_altsvc',
+    'test_nghttp2_session_recv_origin',
+    'test_nghttp2_session_on_push_promise_received',
+    'test_nghttp2_http_trailer_headers',
+
     'test_nghttp2_session_verify_iframe_state',
     'test_nghttp2_session_recv_continuation_too_large',
     'test_nghttp2_session_consume_stream',
