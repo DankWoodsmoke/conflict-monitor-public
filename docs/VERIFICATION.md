@@ -1,10 +1,11 @@
 # Release-candidate verification
 
-## November 6, 2026: candidate 15 CI review; release qualification pending
+## November 6, 2026: candidate 16 CI review; release qualification pending
 
-This draft carries the exact frozen candidate 15 source, including the complete
+This draft carries the exact frozen candidate 16 source, including the complete
 reviewed upstream CONNECT/glitch-counter hardening and Playwright 1.65's Windows
-WebKit resize repair. Older verification sections describe their stated builds;
+WebKit resize repair. The Linux Firefox WebGL test uses a virtual display,
+with its exact composed-pixel checks retained. Older verification sections describe their stated builds;
 they do not qualify this candidate. Current installed-image, mobile/Google and
 full live-pipeline evidence is retained separately until final admission.
 

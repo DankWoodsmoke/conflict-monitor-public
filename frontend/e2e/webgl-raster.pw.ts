@@ -14,17 +14,26 @@ test("raster gate rejects blank, flat and undersampled evidence",()=>{
 
 for(const engine of ["chromium","firefox","webkit"] as const){
  test(`composed WebGL pixels survive buffer resize in ${engine}`,async()=>{
-  const browser=await({chromium,firefox,webkit}[engine]).launch({headless:true,channel:undefined,args:[]});
+  // Linux Firefox needs an X display for this WebGL check; CI supplies Xvfb.
+  // Other engine/platform paths retain their native headless behavior.
+  const headless=!(process.platform==="linux"&&engine==="firefox");
+  const browser=await({chromium,firefox,webkit}[engine]).launch({headless,channel:undefined,args:[]});
   try{for(let repeat=0;repeat<3;repeat++){
    const context=await browser.newContext({viewport:{width:390,height:664}});
    try{
     await context.route("**/*",route=>route.abort());const page=await context.newPage();
     await page.setContent(`<body style="margin:0;background:white"><canvas id="c"></canvas><script>
-      const gl=document.querySelector('canvas').getContext('webgl');
+      window.webglDiagnostic={created:false,creationErrors:[]};
+      const canvas=document.querySelector('canvas');
+      canvas.addEventListener('webglcontextcreationerror',event=>window.webglDiagnostic.creationErrors.push(event.statusMessage));
+      const gl=canvas.getContext('webgl');window.webglDiagnostic.created=!!gl;
+      if(gl){
       function resize(){gl.canvas.width=innerWidth;gl.canvas.height=innerHeight;gl.viewport(0,0,innerWidth,innerHeight)}
       addEventListener('resize',resize);resize();
-      function frame(){gl.clearColor(1,0,0,1);gl.clear(gl.COLOR_BUFFER_BIT);requestAnimationFrame(frame)}frame();
+      function frame(){gl.clearColor(1,0,0,1);gl.clear(gl.COLOR_BUFFER_BIT);requestAnimationFrame(frame)}frame();}
     </script>`);
+    const diagnostic=await page.evaluate(()=>Reflect.get(window,"webglDiagnostic"));
+    expect(diagnostic,`${engine} repeat ${repeat}: WebGL context creation`).toEqual({created:true,creationErrors:[]});
     for(const viewport of [{width:390,height:664},{width:390,height:844},{width:844,height:390}]){
      await page.setViewportSize(viewport);await page.waitForTimeout(300);
      const png=await page.screenshot({scale:"css"});
@@ -34,7 +43,7 @@ for(const engine of ["chromium","firefox","webkit"] as const){
       const ctx=c.getContext("2d")!;ctx.drawImage(image,0,0);
       return Array.from(ctx.getImageData(c.width>>1,c.height>>1,1,1).data);
      },png.toString("base64"));
-     expect(pixel).toEqual([255,0,0,255]);
+     expect(pixel,`${engine} repeat ${repeat} ${viewport.width}x${viewport.height}: composed WebGL pixel`).toEqual([255,0,0,255]);
     }
     // Visible DOM labels cannot make an absent Earth canvas pass the same gate
     // used by the live matrix. The authored texture then proves the positive path.

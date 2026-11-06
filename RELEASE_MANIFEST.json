@@ -6,9 +6,9 @@
       "sha256": "12284d3a0f4984f891cae4e0ffa8f67dd54e6db3c99b0b495aa377a4707bd88c"
     },
     {
-      "bytes": 68214,
+      "bytes": 68226,
       "path": ".github/workflows/verify.yml",
-      "sha256": "0609d4b803a72bdbf0bf93292b05638fa577e8246e41217cb470b838d3c43b81"
+      "sha256": "ea6da695bf6edceb56ad2a8b7fffeb95b49b19e45e3f000367aa0442eb7839ca"
     },
     {
       "bytes": 312,
@@ -23,7 +23,7 @@
     {
       "bytes": 17583,
       "path": "README.md",
-      "sha256": "7215385b0d7b40063ecbf883a715a1c49c5d2ea589093eba0095c8629b12434b"
+      "sha256": "f9c1fb1c2e5125c648916d1fc2d26ff853f7bfde15dd146df9bb0b213de19ff1"
     },
     {
       "bytes": 8289,
@@ -1171,9 +1171,9 @@
       "sha256": "c56b46890190bf941c5d2c0d5bc6aadd067e0e788485f14b3e790694bae90879"
     },
     {
-      "bytes": 50879,
+      "bytes": 50979,
       "path": "docs/VERIFICATION.md",
-      "sha256": "91acebeb72afe82fad1eb72d7561e871988a65ebeb1aae45a9cc5adcc82eb55d"
+      "sha256": "d5d5aa1196b213263d2406d247097b6cbb10e938b69fd003d16c09aa7de574d5"
     },
     {
       "bytes": 9372,
@@ -1811,9 +1811,9 @@
       "sha256": "928ba4e9cf11f09cdf0241b27146e5428630b95e4719ef8867ed9df46daf8456"
     },
     {
-      "bytes": 3352,
+      "bytes": 4190,
       "path": "frontend/e2e/webgl-raster.pw.ts",
-      "sha256": "2a2095ea65e62df9dfcaa577e8da3ed895b1eca822f79b8d2a261a33e985c494"
+      "sha256": "6ef75c1de9cfa5f2a4d943f97c769a98646e92f200418540876f517033964a8c"
     },
     {
       "bytes": 8403,
