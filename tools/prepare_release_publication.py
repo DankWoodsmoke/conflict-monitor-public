@@ -440,14 +440,16 @@ def ev_validate_raster(proof, name):
     return row
 
 
-def ev_validate_direct_google_binding(review):
+def ev_validate_direct_google_binding(review, candidate_receipt_sha256):
     ap_keys(review,'mode status binding_receipt_sha256 independent_review_sha256 independent_review_status immutable_inventory_before_sha256 immutable_inventory_after_sha256 unchanged_browser_input_files added_files removed_files unchanged_source_files unchanged_executed_helpers checks generated_output','direct Google binding')
     ap_require(review['mode']=='direct_immutable_browser_binding' and review['status']=='passed','Direct Google binding did not pass')
     ap_require(review['independent_review_status']=='PASS_DIRECT_IMMUTABLE_BROWSER_BINDING','Independent direct binding review missing')
     for key in ['binding_receipt_sha256','independent_review_sha256','immutable_inventory_before_sha256','immutable_inventory_after_sha256']:ap_hash_value(review[key])
     ap_require(review['binding_receipt_sha256']!=review['independent_review_sha256'],'Binding and independent review must differ')
     ap_require(review['immutable_inventory_before_sha256']==review['immutable_inventory_after_sha256'],'Immutable browser membership or bytes changed')
-    for key,value in [('unchanged_browser_input_files',1030),('unchanged_source_files',545),('unchanged_executed_helpers',4)]:ap_integer(review[key],value,value)
+    source_counts={'9a4e12bb8d52cba94f38174bb8291c51a89a3d7fb5697d519fa5974167883649':545,'65b92f66754f0e1c20e5df66082361421074e5d57742ecc2e2d791388aef41cf':556}
+    ap_require(candidate_receipt_sha256 in source_counts,'Unreviewed direct Google candidate receipt')
+    for key,value in [('unchanged_browser_input_files',1030),('unchanged_source_files',source_counts[candidate_receipt_sha256]),('unchanged_executed_helpers',4)]:ap_integer(review[key],value,value)
     ev_zero(review['added_files']);ev_zero(review['removed_files'])
     ev_true_checks(review['checks'],set('immutable_files_and_membership_equal original_frozen_source_unchanged current_source_unchanged private_helpers_unchanged five_services_unchanged all_cases_passed owned_browser_jobs_closed generated_output_retained_privately'.split()))
     generated=review['generated_output'];ap_keys(generated,'path before after contents_exported','separate generated output')
@@ -503,7 +505,7 @@ def ev_validate_google(proof, name, require_raster=True):
     ap_require(len({case['screenshot_sha256'] for case in proof['cases']})==len(expected),'Repeated screenshot evidence')
     review=proof['binding_review']
     if type(review) is dict and review.get('mode')=='direct_immutable_browser_binding':
-        ev_validate_direct_google_binding(review)
+        ev_validate_direct_google_binding(review,proof['candidate_receipt_sha256'])
     else:
         ap_keys(review,'original_status original_failure original_failed_receipt_sha256 original_receipt_modified independent_addendum_sha256 independent_addendum_status generated_output unchanged_browser_input_files added_files removed_files unchanged_source_files unchanged_executed_helpers','log binding review')
         ap_require(review['original_status']=='failed' and review['original_failure']=='Installed browser bytes changed' and review['original_receipt_modified'] is False,'Original binding failure must remain explicit')
@@ -587,7 +589,7 @@ def ev_validate_media(proof):
     for required in ['Retained analysis/video replay, not fresh model success or report truth.','No physical-device, Safari or listener-audibility qualification.','Imagery includes Google and the explicitly allowed Esri reference fallback; this is not a Google-only network claim.']:
         ap_require(required in proof['limitations'],'Media scope limitation omitted')
     artifact=proof['artifact_provenance'];ap_keys(artifact,'execution capture_receipt_sha256 capture_started_at video_sha256 video_bytes measured_segments duration_seconds','retained artifact')
-    ap_require(artifact['execution'] in {'historical artifact replayed freshly on exact candidate16','historical artifact replayed freshly on exact candidate17'},'Historical artifact provenance omitted')
+    ap_require(artifact['execution'] in {'historical artifact replayed freshly on exact candidate16','historical artifact replayed freshly on exact candidate17','historical artifact replayed freshly on exact candidate18'},'Historical artifact provenance omitted')
     ap_require(ap_clock(artifact['capture_started_at'])<ap_clock(proof['started_at']),'Artifact capture is not historical')
     ap_hash_value(artifact['capture_receipt_sha256']);ap_hash_value(artifact['video_sha256']);ap_integer(artifact['video_bytes'],1,30_000_000)
     ap_integer(artifact['measured_segments'],3,3);ap_number(artifact['duration_seconds'],1,300)

@@ -27,10 +27,10 @@ class SemanticProofTests(unittest.TestCase):
 
     def test_exact_historical_media_candidate_labels_only(self):
         for module in [support.gate,support.publisher]:
-            for label in ['historical artifact replayed freshly on exact candidate16','historical artifact replayed freshly on exact candidate17']:
+            for label in ['historical artifact replayed freshly on exact candidate16','historical artifact replayed freshly on exact candidate17','historical artifact replayed freshly on exact candidate18']:
                 snapshots=support.fixture({'media_replay':lambda proof:set_path(proof,['artifact_provenance','execution'],label)})
                 self.assertTrue(module.qualify(snapshots,module.VERSION)['ready'])
-        for label in ['historical artifact replayed freshly on exact candidate18','fresh generation on candidate17','historical artifact replayed freshly on exact candidate170','',True,None]:
+        for label in ['historical artifact replayed freshly on exact candidate19','fresh generation on candidate17','historical artifact replayed freshly on exact candidate170','',True,None]:
             self.reject('media_replay',['artifact_provenance','execution'],label)
 
     def test_drafts_and_extra_failure_statuses_cannot_be_admitted(self):
@@ -163,8 +163,31 @@ class SemanticProofTests(unittest.TestCase):
 class DirectGoogleBindingTests(unittest.TestCase):
     def direct(self):
         return {'mode':'direct_immutable_browser_binding','status':'passed','binding_receipt_sha256':'1'*64,'independent_review_sha256':'2'*64,'independent_review_status':'PASS_DIRECT_IMMUTABLE_BROWSER_BINDING','immutable_inventory_before_sha256':'3'*64,'immutable_inventory_after_sha256':'3'*64,'unchanged_browser_input_files':1030,'unchanged_source_files':545,'unchanged_executed_helpers':4,'added_files':0,'removed_files':0,'checks':{name:True for name in 'immutable_files_and_membership_equal original_frozen_source_unchanged current_source_unchanged private_helpers_unchanged five_services_unchanged all_cases_passed owned_browser_jobs_closed generated_output_retained_privately'.split()},'generated_output':{'path':'chromium_headless_shell-1254/chrome-headless-shell-win64/debug.log','before':{'sha256':'4'*64,'bytes':123,'utf8_diagnostic_lines':2},'after':{'sha256':'5'*64,'bytes':234,'utf8_diagnostic_lines':4},'contents_exported':False}}
-    def snapshots(self,review):
-        return support.fixture({name:lambda proof:proof.update(binding_review=copy.deepcopy(review)) for name in ['google_operator','google_public']})
+    def snapshots(self,review,candidate='9a4e12bb8d52cba94f38174bb8291c51a89a3d7fb5697d519fa5974167883649'):
+        def bind(proof):
+            def visit(value):
+                if type(value)is dict:
+                    for key,item in value.items():
+                        if key=='candidate_receipt_sha256':value[key]=candidate
+                        else:visit(item)
+                elif type(value)is list:
+                    for item in value:visit(item)
+            visit(proof)
+            if 'security'in proof and type(candidate)is str and len(candidate)==64:
+                proof['security']['verified_evidence_sha256s'].append(candidate)
+                proof['security']['reference_verification']['verified_sha256s'].append(candidate)
+            if proof.get('gate')in {'google_operator','google_public'}:proof['binding_review']=copy.deepcopy(review)
+        return support.fixture({name:bind for name in support.gate.GATES})
+    def test_direct_binding_count_is_exactly_bound_to_reviewed_candidate(self):
+        for module in [support.gate,support.publisher]:
+            for candidate,count in [('9a4e12bb8d52cba94f38174bb8291c51a89a3d7fb5697d519fa5974167883649',545),('65b92f66754f0e1c20e5df66082361421074e5d57742ecc2e2d791388aef41cf',556)]:
+                review=self.direct();review['unchanged_source_files']=count
+                self.assertTrue(module.qualify(self.snapshots(review,candidate),module.VERSION)['ready'])
+                for wrong in [True,545 if count==556 else 556,544,555,557,0]:
+                    review['unchanged_source_files']=wrong
+                    with self.subTest(candidate=candidate,count=wrong),self.assertRaises(ValueError):module.qualify(self.snapshots(review,candidate),module.VERSION)
+            for candidate in ['a'*64,'',None,True]:
+                with self.subTest(candidate=candidate),self.assertRaises(ValueError):module.qualify(self.snapshots(self.direct(),candidate),module.VERSION)
     def test_direct_binding_accepts_actual_bounds_without_inventing_legacy_failure_or_append(self):
         for module in [support.gate,support.publisher]:
             for changed in [True,False]:

@@ -1,1 +1,546 @@
-{"api_audit":{"reads":110,"unknown_read_routes":{"/costs/summary":{"GET 404":3},"/ws/events":{"GET 404":20},"<other>":{}},"unknown_reads":23,"video_ranges":5,"video_reads":1},"api_execution_scope":{"candidate_backend_image_used":true,"database_connected":false,"entrypoint_overridden":true,"meaning":"Fresh exact-frontend playback against retained analysis/video fixtures; this run does not establish production FastAPI serving, ingestion, persistence or generation behavior.","mode":"isolated_read_only_replay_server","new_model_or_media_generation":false,"production_fastapi_routes_executed":false},"artifact_provenance":{"capture_receipt_sha256":"4d56aca8809b1ead38dd9bc4edf3d38a0bf44cdfb70815ef2653e39d7caef673","capture_started_at":"2026-11-06T05:25:43.479865+00:00","duration_seconds":38.379801,"execution":"historical artifact replayed freshly on exact candidate17","measured_segments":3,"video_bytes":759731,"video_sha256":"c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e"},"bound_inputs_unchanged":true,"browser_cases":[{"blocked_external":0,"blocked_mutations":0,"browser":"chromium","callback_measurement_scope":"presented_advancing_callbacks","caption_metadata":{"audio_container_delta_seconds":0.020435920634923832,"cue_count":3,"default_showing":true,"exact_cue_text":true,"timings":[{"end":11.633,"start":0},{"end":24.474,"start":11.633},{"end":38.359,"start":24.474}],"video_sha256":"c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e"},"captions":{"audio_container_delta_seconds":0.020435920634923832,"cue_count":3,"default_showing":true,"exact_transcript":true,"frame_time":1.931522,"limits":"Segment boundaries, not word alignment. Native TextTrack API sync is not a test of every browser CC menu.","native_off_custom_on_state_sync":true,"paused_render_restore":true,"pixel_buffers_retained":false,"private_debug_frames_retained":false,"rendered_caption_on_off_pixels":true,"timings":[{"end":11.633,"start":0},{"end":24.474,"start":11.633},{"end":38.359,"start":24.474}],"transcript_keyboard_scroll":{"after":0,"height":201,"scroll_height":201,"top":0},"transcript_sha256":"a65d6923ce81d762c99a0919bd3a563574ae0637781893c235a425ddb7c813d2"},"checks":["google_native_attribution_visible_and_operable","actual_validated_source_id_and_exact_original_excerpt_visible","native_user_play_advances_actual_h264_aac_artifact","native_caption_cues_exact_text_measured_timings_and_visible_on_off_pixels","exact_complete_transcript_keyboard_scroll_and_native_track_state_sync","native_decoded_frames_and_user_resume_pause","persistent_earth_no_implicit_jobs_and_mobile_layout"],"decoded_frames":47,"engine_limitations":[],"frame_callback":{"samples":[{"callback_time":7214.9,"height":720,"media_time":1.879801,"presented_frames":45,"width":1280},{"callback_time":7265,"height":720,"media_time":1.921468,"presented_frames":46,"width":1280}],"status":"presented"},"generation_posts":0,"imagery_requests":{"esri_reference":23,"google":62},"native_decoded_pixels":{"actual_rgba_sha256":"ed47ab56d5c84bfd2e13889c5c6e0200b09fa3e311dfd71699f66a3696e49b2e","height":720,"mean_absolute_rgb_error":0.7924276620370371,"mean_limit":2,"media_time":1.533092,"p99_absolute_rgb_error":5,"p99_limit":12,"pixel_buffers_retained":false,"reference_rgb_standard_deviation":30.725953657367853,"reference_rgba_sha256":"1e61c5059780d68a262639e8bc8f58b3a6da542acd7bad9df56360a24fdac8b6","reference_scale":"none","unadjusted_status":"PASS","video_sha256":"c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e","width":1280},"native_user_pause_resume":{"after":2.449707,"before":1.931522,"passed":true},"page_errors":0,"paused_caption_restore":{"native_mode":"showing","same_frame":true,"status":"PASS"},"status":"passed","version":"158.0.8127.18","viewport":{"height":844,"width":390}},{"blocked_external":0,"blocked_mutations":0,"browser":"firefox","callback_cause":"UNVERIFIED","callback_measurement_scope":"unsupported_unqualified_raw_observation","caption_metadata":{"audio_container_delta_seconds":0.020435920634923832,"cue_count":3,"default_showing":true,"exact_cue_text":true,"timings":[{"end":11.633,"start":0},{"end":24.474,"start":11.633},{"end":38.359,"start":24.474}],"video_sha256":"c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e"},"caption_user_resume":{"from_time":3.860145,"guidance_cleared_on_playing":true,"guidance_visible_before":true,"native_user_play_and_pause":true,"status":"PASS","to_time":4.617082},"captions":{"audio_container_delta_seconds":0.020435920634923832,"cue_count":3,"default_showing":true,"exact_transcript":true,"frame_time":3.860145,"limits":"Segment boundaries, not word alignment. Native TextTrack API sync is not a test of every browser CC menu.","native_off_custom_on_state_sync":true,"paused_render_restore":false,"pixel_buffers_retained":false,"private_debug_frames_retained":false,"rendered_caption_on_off_pixels":true,"timings":[{"end":11.633,"start":0},{"end":24.474,"start":11.633},{"end":38.359,"start":24.474}],"transcript_keyboard_scroll":{"after":0,"height":202,"scroll_height":202,"top":0},"transcript_sha256":"a65d6923ce81d762c99a0919bd3a563574ae0637781893c235a425ddb7c813d2"},"checks":["google_native_attribution_visible_and_operable","actual_validated_source_id_and_exact_original_excerpt_visible","native_user_play_advances_actual_h264_aac_artifact","native_caption_cues_exact_text_measured_timings_and_visible_on_off_pixels","exact_complete_transcript_keyboard_scroll_and_native_track_state_sync","native_decoded_frames_and_user_resume_pause","persistent_earth_no_implicit_jobs_and_mobile_layout"],"decoded_frames":0,"engine_limitations":[{"handling":"Exact transcript remains available; explicit guidance and actual user-resume paint recovery passed. No automatic play, seek or synthetic event was used.","requirement":"Paused caption enable repaints without resuming","status":"FAIL"}],"frame_callback":{"samples":[{"callback_time":5596.88,"height":720,"media_time":170.770263,"presented_frames":2,"width":1280}],"status":"No two callbacks within 2 seconds"},"generation_posts":0,"imagery_requests":{"esri_reference":22,"google":62},"native_decoded_pixels":{"actual_rgba_sha256":"eee5a0b5ddcb924653d1c0f7866549b86c89684d72c414e675b0d29c190845ec","height":720,"mean_absolute_rgb_error":0.8232313368055556,"mean_limit":2,"media_time":1.513416,"p99_absolute_rgb_error":8,"p99_limit":12,"pixel_buffers_retained":false,"reference_rgb_standard_deviation":30.725953657367853,"reference_rgba_sha256":"1e61c5059780d68a262639e8bc8f58b3a6da542acd7bad9df56360a24fdac8b6","reference_scale":"none","unadjusted_status":"PASS","video_sha256":"c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e","width":1280},"native_user_pause_resume":{"after":5.132623,"before":4.617082,"passed":true},"page_errors":0,"paused_caption_restore":{"native_mode":"showing","same_frame":true,"status":"FAIL"},"status":"qualified_with_limitations","version":"159.0","viewport":{"height":844,"width":390}},{"blocked_external":0,"blocked_mutations":0,"browser":"webkit","callback_measurement_scope":"unavailable_no_callback_evidence","caption_metadata":{"audio_container_delta_seconds":0.020435920634923832,"cue_count":3,"default_showing":true,"exact_cue_text":true,"timings":[{"end":11.633,"start":0},{"end":24.474,"start":11.633},{"end":38.359,"start":24.474}],"video_sha256":"c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e"},"captions":{"audio_container_delta_seconds":0.020435920634923832,"cue_count":3,"default_showing":true,"exact_transcript":true,"frame_time":1.8405832,"limits":"Segment boundaries, not word alignment. Native TextTrack API sync is not a test of every browser CC menu.","native_off_custom_on_state_sync":true,"paused_render_restore":true,"pixel_buffers_retained":false,"private_debug_frames_retained":false,"rendered_caption_on_off_pixels":true,"timings":[{"end":11.633,"start":0},{"end":24.474,"start":11.633},{"end":38.359,"start":24.474}],"transcript_keyboard_scroll":{"after":0,"height":201,"scroll_height":201,"top":0},"transcript_sha256":"a65d6923ce81d762c99a0919bd3a563574ae0637781893c235a425ddb7c813d2"},"checks":["google_native_attribution_visible_and_operable","actual_validated_source_id_and_exact_original_excerpt_visible","native_user_play_advances_actual_h264_aac_artifact","native_caption_cues_exact_text_measured_timings_and_visible_on_off_pixels","exact_complete_transcript_keyboard_scroll_and_native_track_state_sync","native_decoded_frames_and_user_resume_pause","persistent_earth_no_implicit_jobs_and_mobile_layout"],"decoded_frames":0,"engine_limitations":[{"handling":"This Windows WebKit build exposes studio-range RGB. Independently encoded tagged known-color control reproduced it. Fixed standard range conversion verifies decoded content within unchanged error limits; raw color mismatch remains unqualified. No product encoding change or Safari/iPhone equivalence is claimed.","requirement":"Unadjusted video RGB identity with independent reference decoder","status":"FAIL"}],"frame_callback":{"samples":[],"status":"API unavailable"},"generation_posts":0,"imagery_requests":{"esri_reference":26,"google":62},"native_decoded_pixels":{"actual_rgba_sha256":"0fe227a2b5cc659bfba883af40785699e64a43a662dc0718ef02930753bff434","height":201,"mean_absolute_rgb_error":13.982758460954075,"mean_limit":2,"media_time":1.5430624,"p99_absolute_rgb_error":18,"p99_limit":12,"pixel_buffers_retained":true,"range_normalized_content":{"mean_absolute_rgb_error":1.2375320788978756,"mean_limit":2,"p99_absolute_rgb_error":12,"p99_limit":12,"reference_rgb_standard_deviation":24.51857485927109,"status":"PASS_CONTENT_WITH_RANGE_LIMITATION","transform":"Fixed studio RGB (c-16)*255/219, clipped and rounded; independently tested with separate tagged known-color H264 control"},"reference_rgb_standard_deviation":24.51857485927109,"reference_rgba_sha256":"beb98889ddfbeb832add9ab3cd7077d56a0bb905aac47b319bcf79fa9bb3b59e","reference_scale":"bilinear to observed native dimensions","unadjusted_status":"FAIL","video_sha256":"c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e","width":358},"native_user_pause_resume":{"after":2.3482498,"before":1.8405832,"passed":true},"page_errors":0,"paused_caption_restore":{"native_mode":"showing","same_frame":true,"status":"PASS"},"status":"qualified_with_limitations","version":"27.2","viewport":{"height":844,"width":390}}],"browser_receipt_sha256":"db2dd97c55662eaec328922f1a933c73fc28bcde288a0691e2c0ed700664d525","candidate_receipt_sha256":"9a4e12bb8d52cba94f38174bb8291c51a89a3d7fb5697d519fa5974167883649","database_connected":false,"ended_at":"2026-11-06T12:47:33.949708+00:00","execution":"fresh","gate":"media_replay","implicit_generation_requests":0,"independent_color_control":{"binding_checks":{"exit_code":0,"inputs_unchanged":true,"owned_browser_job_closed":true,"status":"measured"},"binding_sha256":"dea97fcbde1e2fc04931651f07d2398dcda8b632b267f1598624b1c2e40e762d","cases":[{"actual_sample":{"canvas_height":720,"canvas_width":1280,"native_height":720,"native_width":1280,"time":0.5286},"actual_sha256":"376b333aaec857cdb99a545f4d6388cda8b80ae6dd08ec5c88e68bd467c7cac6","browser":"chromium","browser_version":"158.0.8127.18","fixed_studio_to_full_interior":{"mae":9.3,"p99":20,"samples":7200},"raw_interior":{"mae":0.8333333333333334,"p99":8,"samples":7200},"reference_sha256":"563903914a59ee65d4f9bd3df48d4f1a102aa014f54e34a3d70e45a74f0a9f53","status":"MEASURED"},{"actual_sample":{"canvas_height":720,"canvas_width":1280,"native_height":201,"native_width":358,"time":0.5140426},"actual_sha256":"1845df12855f2eea583cac60b4619ed259732c17ebca0a23cf8155622930562e","browser":"webkit","browser_version":"27.2","fixed_studio_to_full_interior":{"mae":0.4,"p99":2,"samples":7200},"raw_interior":{"mae":12.4,"p99":20,"samples":7200},"reference_sha256":"563903914a59ee65d4f9bd3df48d4f1a102aa014f54e34a3d70e45a74f0a9f53","status":"MEASURED"}],"decoder_sha256":"d1e2a156261ecc675081943197a85f08f2868784a0af499171ede89353edad31","execution":"separate prior Playwright1.65 control; all original inputs rehashed for this replay","limits":["Windows native engines only; not physical Safari/iPhone.","Range-normalized error is separate diagnostic evidence, never raw-pixel identity."],"playwright_version":"1.65.0","receipt_sha256":"7536bd69d886c8f57feb314045c01a8b392d2034e7888d54e3f796139b36afd4","scope":"Independent known-color H264 control, explicit BT709 limited-range metadata; no report artifact modification","video_sha256":"7d5a79afd81c7cfc7a1cc413b8ccc9f2be6e53d9e6d533f9ecf4f7688cb4dd80"},"limitations":["Retained analysis/video replay, not fresh model success or report truth.","No physical-device, Safari or listener-audibility qualification.","Isolated replay costs/WebSocket reads are unavailable404; bounded local route/status audit is distinct from unknown external requests.","firefox: Paused caption enable repaints without resuming remains FAIL. Exact transcript remains available; explicit guidance and actual user-resume paint recovery passed. No automatic play, seek or synthetic event was used.","webkit: Unadjusted video RGB identity with independent reference decoder remains FAIL. This Windows WebKit build exposes studio-range RGB. Independently encoded tagged known-color control reproduced it. Fixed standard range conversion verifies decoded content within unchanged error limits; raw color mismatch remains unqualified. No product encoding change or Safari/iPhone equivalence is claimed.","Native frame counters/callback availability are engine-dependent; decoded canvas/reference content comparison is separately recorded.","Imagery includes Google and the explicitly allowed Esri reference fallback; this is not a Google-only network claim.","Only backend/operator images were used by replay; the complete five-image map is candidate identity, not five-role replay coverage.","Firefox reported one callback media_time outside the retained video duration. Its cause is UNVERIFIED; the unsupported callback does not qualify playback or frame time.","The exact candidate backend image hosted a Python read-only replay server through an overridden entrypoint, not the production FastAPI application. Actual packaged-backend, production API, database and offline encoding checks are separate evidence."],"observed_image_roles":["backend","operator"],"owned_cleanup_verified":true,"provider_generation_calls":0,"qualified_engines":3,"qualified_images":{"backend":"sha256:872cb9a8c9a34ac863d8db9bd4373d51bb8f893369ba5da6dc9c433fccf1cda9","database":"sha256:6ab01325b27ce25b1c7da75c20a12d49bf96dc38c53ad519bab66a735c8475ae","operator":"sha256:129c0ce54b9a74637a0a62ad64c1a57ac9e0b6e5a0f60aedfb3f75cf5cfdaef8","public":"sha256:c3f87024649fb1a13705717026518ee78228b8efecda15e1d25afe925bf5c0f7","tunnel":"sha256:bfb6f3c1f3f5dd930710689f205bf37af8f3d9db32f2e9588f2fae2c9d050670"},"raw_engines_passed":1,"runtime_source_sha256":"933a01925d3843bf2a51e2e32d78d548e92e4e7bb88ad575dfdf38d451daa219","source_receipt_sha256":"9d3341d9726ff718fa91889b87ead7a7ec578511a5d406470714b70799f83809","started_at":"2026-11-06T12:46:25.289103+00:00","status":"QUALIFIED_WITH_LIMITATIONS","temporary_key_inputs_removed":true,"unobserved_image_roles":["database","public","tunnel"]}
+{
+  "api_audit": {
+    "reads": 99,
+    "unknown_read_routes": {
+      "/costs/summary": {
+        "GET 404": 3
+      },
+      "/ws/events": {
+        "GET 404": 17
+      },
+      "<other>": {}
+    },
+    "unknown_reads": 20,
+    "video_ranges": 5,
+    "video_reads": 1
+  },
+  "api_execution_scope": {
+    "candidate_backend_image_used": true,
+    "database_connected": false,
+    "entrypoint_overridden": true,
+    "meaning": "Fresh exact-frontend playback against retained analysis/video fixtures; this run does not establish production FastAPI serving, ingestion, persistence or generation behavior.",
+    "mode": "isolated_read_only_replay_server",
+    "new_model_or_media_generation": false,
+    "production_fastapi_routes_executed": false
+  },
+  "artifact_provenance": {
+    "capture_receipt_sha256": "4d56aca8809b1ead38dd9bc4edf3d38a0bf44cdfb70815ef2653e39d7caef673",
+    "capture_started_at": "2026-11-06T05:25:43.479865+00:00",
+    "duration_seconds": 38.379801,
+    "execution": "historical artifact replayed freshly on exact candidate18",
+    "measured_segments": 3,
+    "video_bytes": 759731,
+    "video_sha256": "c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e"
+  },
+  "bound_inputs_unchanged": true,
+  "browser_cases": [
+    {
+      "blocked_external": 0,
+      "blocked_mutations": 0,
+      "browser": "chromium",
+      "callback_measurement_scope": "presented_advancing_callbacks",
+      "caption_metadata": {
+        "audio_container_delta_seconds": 0.020435920634923832,
+        "cue_count": 3,
+        "default_showing": true,
+        "exact_cue_text": true,
+        "timings": [
+          {
+            "end": 11.633,
+            "start": 0
+          },
+          {
+            "end": 24.474,
+            "start": 11.633
+          },
+          {
+            "end": 38.359,
+            "start": 24.474
+          }
+        ],
+        "video_sha256": "c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e"
+      },
+      "captions": {
+        "audio_container_delta_seconds": 0.020435920634923832,
+        "cue_count": 3,
+        "default_showing": true,
+        "exact_transcript": true,
+        "frame_time": 1.859331,
+        "limits": "Segment boundaries, not word alignment. Native TextTrack API sync is not a test of every browser CC menu.",
+        "native_off_custom_on_state_sync": true,
+        "paused_render_restore": true,
+        "pixel_buffers_retained": false,
+        "private_debug_frames_retained": false,
+        "rendered_caption_on_off_pixels": true,
+        "timings": [
+          {
+            "end": 11.633,
+            "start": 0
+          },
+          {
+            "end": 24.474,
+            "start": 11.633
+          },
+          {
+            "end": 38.359,
+            "start": 24.474
+          }
+        ],
+        "transcript_keyboard_scroll": {
+          "after": 0,
+          "height": 201,
+          "scroll_height": 201,
+          "top": 0
+        },
+        "transcript_sha256": "a65d6923ce81d762c99a0919bd3a563574ae0637781893c235a425ddb7c813d2"
+      },
+      "checks": [
+        "google_native_attribution_visible_and_operable",
+        "actual_validated_source_id_and_exact_original_excerpt_visible",
+        "native_user_play_advances_actual_h264_aac_artifact",
+        "native_caption_cues_exact_text_measured_timings_and_visible_on_off_pixels",
+        "exact_complete_transcript_keyboard_scroll_and_native_track_state_sync",
+        "native_decoded_frames_and_user_resume_pause",
+        "persistent_earth_no_implicit_jobs_and_mobile_layout"
+      ],
+      "decoded_frames": 47,
+      "engine_limitations": [],
+      "frame_callback": {
+        "samples": [
+          {
+            "callback_time": 4254.9,
+            "height": 720,
+            "media_time": 1.838135,
+            "presented_frames": 44,
+            "width": 1280
+          },
+          {
+            "callback_time": 4288.2,
+            "height": 720,
+            "media_time": 1.879801,
+            "presented_frames": 45,
+            "width": 1280
+          }
+        ],
+        "status": "presented"
+      },
+      "generation_posts": 0,
+      "imagery_requests": {
+        "esri_reference": 16,
+        "google": 62
+      },
+      "native_decoded_pixels": {
+        "actual_rgba_sha256": "ed47ab56d5c84bfd2e13889c5c6e0200b09fa3e311dfd71699f66a3696e49b2e",
+        "height": 720,
+        "mean_absolute_rgb_error": 0.7924276620370371,
+        "mean_limit": 2,
+        "media_time": 1.520338,
+        "p99_absolute_rgb_error": 5,
+        "p99_limit": 12,
+        "pixel_buffers_retained": false,
+        "reference_rgb_standard_deviation": 30.725953657367853,
+        "reference_rgba_sha256": "1e61c5059780d68a262639e8bc8f58b3a6da542acd7bad9df56360a24fdac8b6",
+        "reference_scale": "none",
+        "unadjusted_status": "PASS",
+        "video_sha256": "c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e",
+        "width": 1280
+      },
+      "native_user_pause_resume": {
+        "after": 2.374759,
+        "before": 1.859331,
+        "passed": true
+      },
+      "page_errors": 0,
+      "paused_caption_restore": {
+        "native_mode": "showing",
+        "same_frame": true,
+        "status": "PASS"
+      },
+      "status": "passed",
+      "version": "158.0.8127.18",
+      "viewport": {
+        "height": 844,
+        "width": 390
+      }
+    },
+    {
+      "blocked_external": 0,
+      "blocked_mutations": 0,
+      "browser": "firefox",
+      "callback_cause": "UNVERIFIED",
+      "callback_measurement_scope": "unsupported_unqualified_raw_observation",
+      "caption_metadata": {
+        "audio_container_delta_seconds": 0.020435920634923832,
+        "cue_count": 3,
+        "default_showing": true,
+        "exact_cue_text": true,
+        "timings": [
+          {
+            "end": 11.633,
+            "start": 0
+          },
+          {
+            "end": 24.474,
+            "start": 11.633
+          },
+          {
+            "end": 38.359,
+            "start": 24.474
+          }
+        ],
+        "video_sha256": "c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e"
+      },
+      "caption_user_resume": {
+        "from_time": 3.814541,
+        "guidance_cleared_on_playing": true,
+        "guidance_visible_before": true,
+        "native_user_play_and_pause": true,
+        "status": "PASS",
+        "to_time": 4.574561
+      },
+      "captions": {
+        "audio_container_delta_seconds": 0.020435920634923832,
+        "cue_count": 3,
+        "default_showing": true,
+        "exact_transcript": true,
+        "frame_time": 3.814541,
+        "limits": "Segment boundaries, not word alignment. Native TextTrack API sync is not a test of every browser CC menu.",
+        "native_off_custom_on_state_sync": true,
+        "paused_render_restore": false,
+        "pixel_buffers_retained": false,
+        "private_debug_frames_retained": false,
+        "rendered_caption_on_off_pixels": true,
+        "timings": [
+          {
+            "end": 11.633,
+            "start": 0
+          },
+          {
+            "end": 24.474,
+            "start": 11.633
+          },
+          {
+            "end": 38.359,
+            "start": 24.474
+          }
+        ],
+        "transcript_keyboard_scroll": {
+          "after": 0,
+          "height": 202,
+          "scroll_height": 202,
+          "top": 0
+        },
+        "transcript_sha256": "a65d6923ce81d762c99a0919bd3a563574ae0637781893c235a425ddb7c813d2"
+      },
+      "checks": [
+        "google_native_attribution_visible_and_operable",
+        "actual_validated_source_id_and_exact_original_excerpt_visible",
+        "native_user_play_advances_actual_h264_aac_artifact",
+        "native_caption_cues_exact_text_measured_timings_and_visible_on_off_pixels",
+        "exact_complete_transcript_keyboard_scroll_and_native_track_state_sync",
+        "native_decoded_frames_and_user_resume_pause",
+        "persistent_earth_no_implicit_jobs_and_mobile_layout"
+      ],
+      "decoded_frames": 0,
+      "engine_limitations": [
+        {
+          "handling": "Exact transcript remains available; explicit guidance and actual user-resume paint recovery passed. No automatic play, seek or synthetic event was used.",
+          "requirement": "Paused caption enable repaints without resuming",
+          "status": "FAIL"
+        }
+      ],
+      "frame_callback": {
+        "samples": [
+          {
+            "callback_time": 5381.08,
+            "height": 720,
+            "media_time": 170.770263,
+            "presented_frames": 2,
+            "width": 1280
+          }
+        ],
+        "status": "No two callbacks within 2 seconds"
+      },
+      "generation_posts": 0,
+      "imagery_requests": {
+        "esri_reference": 26,
+        "google": 62
+      },
+      "native_decoded_pixels": {
+        "actual_rgba_sha256": "eee5a0b5ddcb924653d1c0f7866549b86c89684d72c414e675b0d29c190845ec",
+        "height": 720,
+        "mean_absolute_rgb_error": 0.8232313368055556,
+        "mean_limit": 2,
+        "media_time": 1.512687,
+        "p99_absolute_rgb_error": 8,
+        "p99_limit": 12,
+        "pixel_buffers_retained": false,
+        "reference_rgb_standard_deviation": 30.725953657367853,
+        "reference_rgba_sha256": "1e61c5059780d68a262639e8bc8f58b3a6da542acd7bad9df56360a24fdac8b6",
+        "reference_scale": "none",
+        "unadjusted_status": "PASS",
+        "video_sha256": "c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e",
+        "width": 1280
+      },
+      "native_user_pause_resume": {
+        "after": 5.090977,
+        "before": 4.574561,
+        "passed": true
+      },
+      "page_errors": 0,
+      "paused_caption_restore": {
+        "native_mode": "showing",
+        "same_frame": true,
+        "status": "FAIL"
+      },
+      "status": "qualified_with_limitations",
+      "version": "159.0",
+      "viewport": {
+        "height": 844,
+        "width": 390
+      }
+    },
+    {
+      "blocked_external": 0,
+      "blocked_mutations": 0,
+      "browser": "webkit",
+      "callback_measurement_scope": "unavailable_no_callback_evidence",
+      "caption_metadata": {
+        "audio_container_delta_seconds": 0.020435920634923832,
+        "cue_count": 3,
+        "default_showing": true,
+        "exact_cue_text": true,
+        "timings": [
+          {
+            "end": 11.633,
+            "start": 0
+          },
+          {
+            "end": 24.474,
+            "start": 11.633
+          },
+          {
+            "end": 38.359,
+            "start": 24.474
+          }
+        ],
+        "video_sha256": "c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e"
+      },
+      "captions": {
+        "audio_container_delta_seconds": 0.020435920634923832,
+        "cue_count": 3,
+        "default_showing": true,
+        "exact_transcript": true,
+        "frame_time": 1.5748749,
+        "limits": "Segment boundaries, not word alignment. Native TextTrack API sync is not a test of every browser CC menu.",
+        "native_off_custom_on_state_sync": true,
+        "paused_render_restore": true,
+        "pixel_buffers_retained": false,
+        "private_debug_frames_retained": false,
+        "rendered_caption_on_off_pixels": true,
+        "timings": [
+          {
+            "end": 11.633,
+            "start": 0
+          },
+          {
+            "end": 24.474,
+            "start": 11.633
+          },
+          {
+            "end": 38.359,
+            "start": 24.474
+          }
+        ],
+        "transcript_keyboard_scroll": {
+          "after": 0,
+          "height": 201,
+          "scroll_height": 201,
+          "top": 0
+        },
+        "transcript_sha256": "a65d6923ce81d762c99a0919bd3a563574ae0637781893c235a425ddb7c813d2"
+      },
+      "checks": [
+        "google_native_attribution_visible_and_operable",
+        "actual_validated_source_id_and_exact_original_excerpt_visible",
+        "native_user_play_advances_actual_h264_aac_artifact",
+        "native_caption_cues_exact_text_measured_timings_and_visible_on_off_pixels",
+        "exact_complete_transcript_keyboard_scroll_and_native_track_state_sync",
+        "native_decoded_frames_and_user_resume_pause",
+        "persistent_earth_no_implicit_jobs_and_mobile_layout"
+      ],
+      "decoded_frames": 0,
+      "engine_limitations": [
+        {
+          "handling": "This Windows WebKit build exposes studio-range RGB. Independently encoded tagged known-color control reproduced it. Fixed standard range conversion verifies decoded content within unchanged error limits; raw color mismatch remains unqualified. No product encoding change or Safari/iPhone equivalence is claimed.",
+          "requirement": "Unadjusted video RGB identity with independent reference decoder",
+          "status": "FAIL"
+        }
+      ],
+      "frame_callback": {
+        "samples": [],
+        "status": "API unavailable"
+      },
+      "generation_posts": 0,
+      "imagery_requests": {
+        "esri_reference": 23,
+        "google": 62
+      },
+      "native_decoded_pixels": {
+        "actual_rgba_sha256": "0fe227a2b5cc659bfba883af40785699e64a43a662dc0718ef02930753bff434",
+        "height": 201,
+        "mean_absolute_rgb_error": 13.982758460954075,
+        "mean_limit": 2,
+        "media_time": 1.5301249,
+        "p99_absolute_rgb_error": 18,
+        "p99_limit": 12,
+        "pixel_buffers_retained": true,
+        "range_normalized_content": {
+          "mean_absolute_rgb_error": 1.2375320788978756,
+          "mean_limit": 2,
+          "p99_absolute_rgb_error": 12,
+          "p99_limit": 12,
+          "reference_rgb_standard_deviation": 24.51857485927109,
+          "status": "PASS_CONTENT_WITH_RANGE_LIMITATION",
+          "transform": "Fixed studio RGB (c-16)*255/219, clipped and rounded; independently tested with separate tagged known-color H264 control"
+        },
+        "reference_rgb_standard_deviation": 24.51857485927109,
+        "reference_rgba_sha256": "beb98889ddfbeb832add9ab3cd7077d56a0bb905aac47b319bcf79fa9bb3b59e",
+        "reference_scale": "bilinear to observed native dimensions",
+        "unadjusted_status": "FAIL",
+        "video_sha256": "c39e44477dad85763f0c6d573140f55643e82fc6f72fc8e0b04efa693a7e1e6e",
+        "width": 358
+      },
+      "native_user_pause_resume": {
+        "after": 2.0822915,
+        "before": 1.5748749,
+        "passed": true
+      },
+      "page_errors": 0,
+      "paused_caption_restore": {
+        "native_mode": "showing",
+        "same_frame": true,
+        "status": "PASS"
+      },
+      "status": "qualified_with_limitations",
+      "version": "27.2",
+      "viewport": {
+        "height": 844,
+        "width": 390
+      }
+    }
+  ],
+  "browser_receipt_sha256": "7444c65e1162ecf57d2519e1b7980c72fa7484947b0106a470756273c5196152",
+  "candidate_receipt_sha256": "65b92f66754f0e1c20e5df66082361421074e5d57742ecc2e2d791388aef41cf",
+  "database_connected": false,
+  "ended_at": "2026-11-06T18:25:13.943780+00:00",
+  "execution": "fresh",
+  "gate": "media_replay",
+  "implicit_generation_requests": 0,
+  "independent_color_control": {
+    "binding_checks": {
+      "exit_code": 0,
+      "inputs_unchanged": true,
+      "owned_browser_job_closed": true,
+      "status": "measured"
+    },
+    "binding_sha256": "dea97fcbde1e2fc04931651f07d2398dcda8b632b267f1598624b1c2e40e762d",
+    "cases": [
+      {
+        "actual_sample": {
+          "canvas_height": 720,
+          "canvas_width": 1280,
+          "native_height": 720,
+          "native_width": 1280,
+          "time": 0.5286
+        },
+        "actual_sha256": "376b333aaec857cdb99a545f4d6388cda8b80ae6dd08ec5c88e68bd467c7cac6",
+        "browser": "chromium",
+        "browser_version": "158.0.8127.18",
+        "fixed_studio_to_full_interior": {
+          "mae": 9.3,
+          "p99": 20,
+          "samples": 7200
+        },
+        "raw_interior": {
+          "mae": 0.8333333333333334,
+          "p99": 8,
+          "samples": 7200
+        },
+        "reference_sha256": "563903914a59ee65d4f9bd3df48d4f1a102aa014f54e34a3d70e45a74f0a9f53",
+        "status": "MEASURED"
+      },
+      {
+        "actual_sample": {
+          "canvas_height": 720,
+          "canvas_width": 1280,
+          "native_height": 201,
+          "native_width": 358,
+          "time": 0.5140426
+        },
+        "actual_sha256": "1845df12855f2eea583cac60b4619ed259732c17ebca0a23cf8155622930562e",
+        "browser": "webkit",
+        "browser_version": "27.2",
+        "fixed_studio_to_full_interior": {
+          "mae": 0.4,
+          "p99": 2,
+          "samples": 7200
+        },
+        "raw_interior": {
+          "mae": 12.4,
+          "p99": 20,
+          "samples": 7200
+        },
+        "reference_sha256": "563903914a59ee65d4f9bd3df48d4f1a102aa014f54e34a3d70e45a74f0a9f53",
+        "status": "MEASURED"
+      }
+    ],
+    "decoder_sha256": "d1e2a156261ecc675081943197a85f08f2868784a0af499171ede89353edad31",
+    "execution": "separate prior Playwright1.65 control; all original inputs rehashed for this replay",
+    "limits": [
+      "Windows native engines only; not physical Safari/iPhone.",
+      "Range-normalized error is separate diagnostic evidence, never raw-pixel identity."
+    ],
+    "playwright_version": "1.65.0",
+    "receipt_sha256": "7536bd69d886c8f57feb314045c01a8b392d2034e7888d54e3f796139b36afd4",
+    "scope": "Independent known-color H264 control, explicit BT709 limited-range metadata; no report artifact modification",
+    "video_sha256": "7d5a79afd81c7cfc7a1cc413b8ccc9f2be6e53d9e6d533f9ecf4f7688cb4dd80"
+  },
+  "limitations": [
+    "Retained analysis/video replay, not fresh model success or report truth.",
+    "No physical-device, Safari or listener-audibility qualification.",
+    "Isolated replay costs/WebSocket reads are unavailable404; bounded local route/status audit is distinct from unknown external requests.",
+    "firefox: Paused caption enable repaints without resuming remains FAIL. Exact transcript remains available; explicit guidance and actual user-resume paint recovery passed. No automatic play, seek or synthetic event was used.",
+    "webkit: Unadjusted video RGB identity with independent reference decoder remains FAIL. This Windows WebKit build exposes studio-range RGB. Independently encoded tagged known-color control reproduced it. Fixed standard range conversion verifies decoded content within unchanged error limits; raw color mismatch remains unqualified. No product encoding change or Safari/iPhone equivalence is claimed.",
+    "Native frame counters/callback availability are engine-dependent; decoded canvas/reference content comparison is separately recorded.",
+    "Imagery includes Google and the explicitly allowed Esri reference fallback; this is not a Google-only network claim.",
+    "Only backend/operator images were used by replay; the complete five-image map is candidate identity, not five-role replay coverage.",
+    "Firefox reported one callback media_time outside the retained video duration. Its cause is UNVERIFIED; the unsupported callback does not qualify playback or frame time.",
+    "The exact candidate backend image hosted a Python read-only replay server through an overridden entrypoint, not the production FastAPI application. Actual packaged-backend, production API, database and offline encoding checks are separate evidence."
+  ],
+  "observed_image_roles": [
+    "backend",
+    "operator"
+  ],
+  "owned_cleanup_verified": true,
+  "provider_generation_calls": 0,
+  "qualified_engines": 3,
+  "qualified_images": {
+    "backend": "sha256:677cbf217ff3dde3b2fa547b92217ebe98b8c57f4a1433725d09d7091fa53f82",
+    "database": "sha256:c7e3a0efd486e410871417be965f83f4b320560bd2e4f6b6c87aa7aff3bcb719",
+    "operator": "sha256:a4ed09e7925fd89c66ec9bbff0337c6d7fd92c887e0c1e00655d66b2d9e7dab4",
+    "public": "sha256:e332e72ef6a08351611f2c2ad935a2a250e4493d9da0da01b746d5c0f05b1261",
+    "tunnel": "sha256:113645bf83c26d748ccff3a31a1df178bb65a07f92cd71d2f17a9dd4352db09f"
+  },
+  "raw_engines_passed": 1,
+  "runtime_source_sha256": "0110be4c3585625ce3f05861756060082cd638931898edaa7b06b76421013917",
+  "source_receipt_sha256": "408070937eded6a85984466913b8a5e64b99e7cfec693a345e604a8c74f805b8",
+  "started_at": "2026-11-06T18:24:14.887635+00:00",
+  "status": "QUALIFIED_WITH_LIMITATIONS",
+  "temporary_key_inputs_removed": true,
+  "unobserved_image_roles": [
+    "database",
+    "public",
+    "tunnel"
+  ]
+}

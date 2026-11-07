@@ -1,1 +1,655 @@
-{"binding_review":{"added_files":0,"binding_receipt_sha256":"e20c5b29d145d80f067acc697a0db560835ebbc636621afd46a02f4c06224a75","checks":{"all_cases_passed":true,"current_source_unchanged":true,"five_services_unchanged":true,"generated_output_retained_privately":true,"immutable_files_and_membership_equal":true,"original_frozen_source_unchanged":true,"owned_browser_jobs_closed":true,"private_helpers_unchanged":true},"generated_output":{"after":{"bytes":12292,"sha256":"cac6eb9dadd759752cd1d676c1f95e56cda0583beb76a2ecee0206a61ce601c8","utf8_diagnostic_lines":64},"before":{"bytes":10758,"sha256":"d74fdd915ddfd4e57d3389e816688474b14b4b1ea8b1a880d581149c7d79dd59","utf8_diagnostic_lines":56},"contents_exported":false,"path":"chromium_headless_shell-1254/chrome-headless-shell-win64/debug.log"},"immutable_inventory_after_sha256":"d06a9326cdeb2f8e6b4c3b1ec879467d28430dd8a6a031d9ffbfa2a30352a8d1","immutable_inventory_before_sha256":"d06a9326cdeb2f8e6b4c3b1ec879467d28430dd8a6a031d9ffbfa2a30352a8d1","independent_review_sha256":"d0f1ca39e62b194ff1f9b6dc092f06f946185c6541448d0f87410ce6c5fca816","independent_review_status":"PASS_DIRECT_IMMUTABLE_BROWSER_BINDING","mode":"direct_immutable_browser_binding","removed_files":0,"status":"passed","unchanged_browser_input_files":1030,"unchanged_executed_helpers":4,"unchanged_source_files":545},"browser_manifest_sha256":"8058cd0e5bf0e9e20511a7052de42c1a89a8b9b36fa1b13da6d08b83d0c7f8b9","browser_tool_version":"1.65.0","candidate_receipt_sha256":"9a4e12bb8d52cba94f38174bb8291c51a89a3d7fb5697d519fa5974167883649","cases":[{"browser":"chromium","checks":["actual_nonempty_NASA_and_ADSB_public_capabilities","real_google_ready_native_attribution_visible_clickable","public_panel_actual_thermal_aircraft_counts_citation_exact_NASA_download","visible_ODbL_attribution_exact_aircraft_download_both_enabled_nonempty_Earth_layers","all_tabs_explicit_publication_states_same_earth_canvas_no_operator_controls","public_source_health_scope_and_mobile_dialog","unobscured_composed_earth_pixels_are_nonblank_and_textured","35_second_settle_no_hidden_data_media_operator_polls_or_websockets_no_page_errors"],"composed_earth_raster":{"bright_fraction":0.981675392670157,"color_bins":104,"mean":128.7460732984293,"samples":382,"stddev":63.04500668986537},"exact_downloads":{"aircraft":{"records":141,"status":200},"observations":{"records":647,"status":200}},"network":{"application_nonread_requests":0,"config_requests":1,"forbidden_api_requests":0,"google_roots_ok":1,"google_tiles_ok":36,"media_requests":0,"publication_aircraft_requests":4,"publication_observation_requests":1,"status_requests":2,"websockets":0},"page_errors":0,"screenshot_sha256":"af4ae1c4c8c6f9d48a331968ca7a056f59ed47dcb2c0e14314da8dc89acc8afd","source_counts":{"aircraft":141,"observations":647},"status":"passed","version":"158.0.8127.18","viewport":{"height":740,"width":320}},{"browser":"chromium","checks":["actual_nonempty_NASA_and_ADSB_public_capabilities","real_google_ready_native_attribution_visible_clickable","public_panel_actual_thermal_aircraft_counts_citation_exact_NASA_download","visible_ODbL_attribution_exact_aircraft_download_both_enabled_nonempty_Earth_layers","all_tabs_explicit_publication_states_same_earth_canvas_no_operator_controls","public_source_health_scope_and_mobile_dialog","unobscured_composed_earth_pixels_are_nonblank_and_textured","35_second_settle_no_hidden_data_media_operator_polls_or_websockets_no_page_errors"],"composed_earth_raster":{"bright_fraction":0.992462311557789,"color_bins":98,"mean":147.79396984924622,"samples":398,"stddev":59.10796495757765},"exact_downloads":{"aircraft":{"records":143,"status":200},"observations":{"records":647,"status":200}},"network":{"application_nonread_requests":0,"config_requests":1,"forbidden_api_requests":0,"google_roots_ok":1,"google_tiles_ok":53,"media_requests":0,"publication_aircraft_requests":4,"publication_observation_requests":1,"status_requests":2,"websockets":0},"page_errors":0,"screenshot_sha256":"8f2f8c70fcdfb12e02aeb5dade9c488f5a055f5dc62644da16c70273bd311ddc","source_counts":{"aircraft":142,"observations":647},"status":"passed","version":"158.0.8127.18","viewport":{"height":844,"width":390}},{"browser":"chromium","checks":["actual_nonempty_NASA_and_ADSB_public_capabilities","real_google_ready_native_attribution_visible_clickable","public_panel_actual_thermal_aircraft_counts_citation_exact_NASA_download","visible_ODbL_attribution_exact_aircraft_download_both_enabled_nonempty_Earth_layers","all_tabs_explicit_publication_states_same_earth_canvas_no_operator_controls","public_source_health_scope_and_mobile_dialog","unobscured_composed_earth_pixels_are_nonblank_and_textured","35_second_settle_no_hidden_data_media_operator_polls_or_websockets_no_page_errors"],"composed_earth_raster":{"bright_fraction":1,"color_bins":96,"mean":157.65165728580362,"samples":533,"stddev":49.61721501362898},"exact_downloads":{"aircraft":{"records":144,"status":200},"observations":{"records":647,"status":200}},"network":{"application_nonread_requests":0,"config_requests":1,"forbidden_api_requests":0,"google_roots_ok":1,"google_tiles_ok":96,"media_requests":0,"publication_aircraft_requests":4,"publication_observation_requests":1,"status_requests":2,"websockets":0},"page_errors":0,"screenshot_sha256":"44f8ef09e68531bdf2263874a0de1b37f18d6693010e673c446df10206b94b06","source_counts":{"aircraft":144,"observations":647},"status":"passed","version":"158.0.8127.18","viewport":{"height":900,"width":1440}},{"browser":"firefox","checks":["actual_nonempty_NASA_and_ADSB_public_capabilities","real_google_ready_native_attribution_visible_clickable","public_panel_actual_thermal_aircraft_counts_citation_exact_NASA_download","visible_ODbL_attribution_exact_aircraft_download_both_enabled_nonempty_Earth_layers","all_tabs_explicit_publication_states_same_earth_canvas_no_operator_controls","public_source_health_scope_and_mobile_dialog","unobscured_composed_earth_pixels_are_nonblank_and_textured","35_second_settle_no_hidden_data_media_operator_polls_or_websockets_no_page_errors"],"composed_earth_raster":{"bright_fraction":0.9840848806366048,"color_bins":92,"mean":117.87709991158268,"samples":377,"stddev":64.17627358277016},"exact_downloads":{"aircraft":{"records":147,"status":200},"observations":{"records":647,"status":200}},"network":{"application_nonread_requests":0,"config_requests":1,"forbidden_api_requests":0,"google_roots_ok":1,"google_tiles_ok":36,"media_requests":0,"publication_aircraft_requests":3,"publication_observation_requests":1,"status_requests":2,"websockets":0},"page_errors":0,"screenshot_sha256":"fa3466e9605ffb57d192b8bcef4654d55867bbd2d8b5cdb9407849138a6ef2d0","source_counts":{"aircraft":147,"observations":647},"status":"passed","version":"159.0","viewport":{"height":740,"width":320}},{"browser":"firefox","checks":["actual_nonempty_NASA_and_ADSB_public_capabilities","real_google_ready_native_attribution_visible_clickable","public_panel_actual_thermal_aircraft_counts_citation_exact_NASA_download","visible_ODbL_attribution_exact_aircraft_download_both_enabled_nonempty_Earth_layers","all_tabs_explicit_publication_states_same_earth_canvas_no_operator_controls","public_source_health_scope_and_mobile_dialog","unobscured_composed_earth_pixels_are_nonblank_and_textured","35_second_settle_no_hidden_data_media_operator_polls_or_websockets_no_page_errors"],"composed_earth_raster":{"bright_fraction":0.9949748743718593,"color_bins":95,"mean":147.52596314907873,"samples":398,"stddev":59.202967573137556},"exact_downloads":{"aircraft":{"records":192,"status":200},"observations":{"records":647,"status":200}},"network":{"application_nonread_requests":0,"config_requests":1,"forbidden_api_requests":0,"google_roots_ok":1,"google_tiles_ok":53,"media_requests":0,"publication_aircraft_requests":3,"publication_observation_requests":1,"status_requests":2,"websockets":0},"page_errors":0,"screenshot_sha256":"20ed9d27176d85fcc405fb8c09ef5e4e569af3d60d5fdbe081dfa00e9863f042","source_counts":{"aircraft":190,"observations":647},"status":"passed","version":"159.0","viewport":{"height":844,"width":390}},{"browser":"firefox","checks":["actual_nonempty_NASA_and_ADSB_public_capabilities","real_google_ready_native_attribution_visible_clickable","public_panel_actual_thermal_aircraft_counts_citation_exact_NASA_download","visible_ODbL_attribution_exact_aircraft_download_both_enabled_nonempty_Earth_layers","all_tabs_explicit_publication_states_same_earth_canvas_no_operator_controls","public_source_health_scope_and_mobile_dialog","unobscured_composed_earth_pixels_are_nonblank_and_textured","35_second_settle_no_hidden_data_media_operator_polls_or_websockets_no_page_errors"],"composed_earth_raster":{"bright_fraction":1,"color_bins":94,"mean":158.42980828695116,"samples":539,"stddev":49.41528412378463},"exact_downloads":{"aircraft":{"records":186,"status":200},"observations":{"records":647,"status":200}},"network":{"application_nonread_requests":0,"config_requests":1,"forbidden_api_requests":0,"google_roots_ok":1,"google_tiles_ok":96,"media_requests":0,"publication_aircraft_requests":4,"publication_observation_requests":1,"status_requests":2,"websockets":0},"page_errors":0,"screenshot_sha256":"c6e9410e70a7b772347514233cbdbec2122d123fef09919ae0e0a72061c5ab06","source_counts":{"aircraft":186,"observations":647},"status":"passed","version":"159.0","viewport":{"height":900,"width":1440}},{"browser":"webkit","checks":["actual_nonempty_NASA_and_ADSB_public_capabilities","real_google_ready_native_attribution_visible_clickable","public_panel_actual_thermal_aircraft_counts_citation_exact_NASA_download","visible_ODbL_attribution_exact_aircraft_download_both_enabled_nonempty_Earth_layers","all_tabs_explicit_publication_states_same_earth_canvas_no_operator_controls","public_source_health_scope_and_mobile_dialog","unobscured_composed_earth_pixels_are_nonblank_and_textured","35_second_settle_no_hidden_data_media_operator_polls_or_websockets_no_page_errors"],"composed_earth_raster":{"bright_fraction":0.9895561357702349,"color_bins":102,"mean":125.89208006962576,"samples":383,"stddev":64.47459622063795},"exact_downloads":{"aircraft":{"records":137,"status":200},"observations":{"records":647,"status":200}},"network":{"application_nonread_requests":0,"config_requests":1,"forbidden_api_requests":0,"google_roots_ok":1,"google_tiles_ok":36,"media_requests":0,"publication_aircraft_requests":3,"publication_observation_requests":1,"status_requests":2,"websockets":0},"page_errors":0,"screenshot_sha256":"cd3ae9e0349dd0b9f623c4919414c55c9b6a3783b8f722d1616d742eec7869f3","source_counts":{"aircraft":135,"observations":647},"status":"passed","version":"27.2","viewport":{"height":740,"width":320}},{"browser":"webkit","checks":["actual_nonempty_NASA_and_ADSB_public_capabilities","real_google_ready_native_attribution_visible_clickable","public_panel_actual_thermal_aircraft_counts_citation_exact_NASA_download","visible_ODbL_attribution_exact_aircraft_download_both_enabled_nonempty_Earth_layers","all_tabs_explicit_publication_states_same_earth_canvas_no_operator_controls","public_source_health_scope_and_mobile_dialog","unobscured_composed_earth_pixels_are_nonblank_and_textured","35_second_settle_no_hidden_data_media_operator_polls_or_websockets_no_page_errors"],"composed_earth_raster":{"bright_fraction":0.9949748743718593,"color_bins":96,"mean":147.23283082077052,"samples":398,"stddev":59.84188597836043},"exact_downloads":{"aircraft":{"records":139,"status":200},"observations":{"records":647,"status":200}},"network":{"application_nonread_requests":0,"config_requests":1,"forbidden_api_requests":0,"google_roots_ok":1,"google_tiles_ok":53,"media_requests":0,"publication_aircraft_requests":3,"publication_observation_requests":1,"status_requests":2,"websockets":0},"page_errors":0,"screenshot_sha256":"5b9a826ca12f58d7bd573e520a8cc058acb215de36145a1bc930948fefbe9c6f","source_counts":{"aircraft":138,"observations":647},"status":"passed","version":"27.2","viewport":{"height":844,"width":390}},{"browser":"webkit","checks":["actual_nonempty_NASA_and_ADSB_public_capabilities","real_google_ready_native_attribution_visible_clickable","public_panel_actual_thermal_aircraft_counts_citation_exact_NASA_download","visible_ODbL_attribution_exact_aircraft_download_both_enabled_nonempty_Earth_layers","all_tabs_explicit_publication_states_same_earth_canvas_no_operator_controls","public_source_health_scope_and_mobile_dialog","unobscured_composed_earth_pixels_are_nonblank_and_textured","35_second_settle_no_hidden_data_media_operator_polls_or_websockets_no_page_errors"],"composed_earth_raster":{"bright_fraction":1,"color_bins":94,"mean":157.5691056910569,"samples":533,"stddev":49.55070247948909},"exact_downloads":{"aircraft":{"records":192,"status":200},"observations":{"records":647,"status":200}},"network":{"application_nonread_requests":0,"config_requests":1,"forbidden_api_requests":0,"google_roots_ok":1,"google_tiles_ok":96,"media_requests":0,"publication_aircraft_requests":3,"publication_observation_requests":1,"status_requests":2,"websockets":0},"page_errors":0,"screenshot_sha256":"c94bdfb4e717e3949717597e3f2ffef73581865289eaf56597175389e35afad8","source_counts":{"aircraft":192,"observations":647},"status":"passed","version":"27.2","viewport":{"height":900,"width":1440}}],"cases_failed":0,"cases_passed":9,"ended_at":"2026-11-06T13:01:26.597Z","execution":"fresh","gate":"google_public","limitations":["Desktop Chromium/Firefox/WebKit with viewport and touch emulation are not physical iOS or Android devices.","Imagery connectivity and attribution do not establish capture date, source accuracy or incident confirmation.","NASA thermal pixels and selected adsb.lol aircraft are source observations, not verified incidents or complete conflict coverage.","This finite observation is not a long-session soak or external hosting/capacity qualification.","Browser and viewport emulation, not physical phone/Safari qualification.","Rendered terrain guards do not certify source-location ground truth.","Historical16 interruption receives no four-hour credit.","Fresh finite candidate17 execution; not a long-session soak, physical phone, imagery capture-date or location-ground-truth certification.","Five-image identity names the complete candidate; the tunnel image was not exercised by this browser gate.","Browser/viewport emulation, not a physical phone test.","Raster sampling is a blank/flat-render guard, not source-location ground truth."],"observed_image_roles":["backend","database","operator","public"],"qualified_images":{"backend":"sha256:872cb9a8c9a34ac863d8db9bd4373d51bb8f893369ba5da6dc9c433fccf1cda9","database":"sha256:6ab01325b27ce25b1c7da75c20a12d49bf96dc38c53ad519bab66a735c8475ae","operator":"sha256:129c0ce54b9a74637a0a62ad64c1a57ac9e0b6e5a0f60aedfb3f75cf5cfdaef8","public":"sha256:c3f87024649fb1a13705717026518ee78228b8efecda15e1d25afe925bf5c0f7","tunnel":"sha256:bfb6f3c1f3f5dd930710689f205bf37af8f3d9db32f2e9588f2fae2c9d050670"},"runtime_source_sha256":"933a01925d3843bf2a51e2e32d78d548e92e4e7bb88ad575dfdf38d451daa219","source_receipt_sha256":"ec9f44786bad967adf9ae3d6b1b1ac8e248d55dd0a2d861b8163c3cc162f5516","started_at":"2026-11-06T12:54:11.280Z","status":"PASS","supplemental_raster":{"artifact_profile":"public-context","browser":"chromium","cadence":{"final_gap_seconds":14.848808200000349,"first_seconds":12.419428900000002,"maximum_gap_seconds":30.093846399999165},"candidate_receipt_sha256":"9a4e12bb8d52cba94f38174bb8291c51a89a3d7fb5697d519fa5974167883649","checks":{"all_samples_have_raster":true,"all_tabs_observed":true,"browser_closed":true,"google_provider_and_attribution_retained":true,"identities_stable":true,"no_findings":true,"no_implicit_generation":true,"private_helpers_unchanged":true,"sources_unchanged":true},"elapsed_seconds":14401.0575755,"ended_at":"2026-11-06T17:10:02.547Z","execution":"fresh","findings":0,"gate":"google_public","limitations":["Actual independent Chromium observation at1440x1000; not cross-engine or physical-device long-session qualification.","Composed pixel texture checks reject blank/flat frames; no source truth, capture-date or imagery-quality accuracy certification.","Five service identities jointly bind the two three-service observers and parent/main profile; a single browser does not inspect all five.","No screenshots, source text or provider keys are exported. No elapsed time transferred from another run."],"minima":{"bright_fraction":0.8982758620689655,"color_bins":87,"samples":442,"stddev":46.18969441547903},"observed_services":{"database":{"identity_sha256":"1bc7454c1b90982f404cb8f76a8d6c5a77c60270620f9f4c463c0c15678cd7e0","image":"sha256:6ab01325b27ce25b1c7da75c20a12d49bf96dc38c53ad519bab66a735c8475ae","started_at":"2026-11-06T12:51:16.621023513Z"},"operator":{"identity_sha256":"48c0b61f4f575d076a4bf54126186a2ad9467bd022b685e1ebd2b694e235b2bc","image":"sha256:129c0ce54b9a74637a0a62ad64c1a57ac9e0b6e5a0f60aedfb3f75cf5cfdaef8","started_at":"2026-11-06T12:51:30.573528381Z"},"public":{"identity_sha256":"dff5e63ba7c7ad9f786ea767026abddc05845f6b9f6e90c22cdcf9702a634830","image":"sha256:c3f87024649fb1a13705717026518ee78228b8efecda15e1d25afe925bf5c0f7","started_at":"2026-11-06T12:51:30.551705248Z"},"reader":{"identity_sha256":"a97fc6ea6003d157917656b625a7264b501afeac1e760ebbb8addf89a4f5ea12","image":"sha256:872cb9a8c9a34ac863d8db9bd4373d51bb8f893369ba5da6dc9c433fccf1cda9","started_at":"2026-11-06T12:51:24.8021972Z"},"writer":{"identity_sha256":"37eb24034adc3f7074bf5b4b5e416dd5c26580713e0ddef584a13063868635c0","image":"sha256:872cb9a8c9a34ac863d8db9bd4373d51bb8f893369ba5da6dc9c433fccf1cda9","started_at":"2026-11-06T12:51:24.797501849Z"}},"observer_sha256":"8079a4600dd7406a6c58d95e2562e588157b6daf9098c6bb5e22c9dd5289e9e9","raster_helper_sha256":"61cca6f7814842556066e0c8f9052e46efbad645ecea323975ad3358b71346a6","raster_samples":480,"requested_seconds":14400,"samples":480,"samples_sha256":"c63a39ee4deb9c5238a1b64fac86e00f4500bc042604394bb7d840c97726515f","schema":1,"source_receipt_sha256":"bd372582f63e5c7e7622ab148087803d9c8d4ff993ee64c08ac3a1efbb848a92","started_at":"2026-11-06T13:10:01.489Z","status":"completed_sample","summary_sha256":"bde9a5e2a80cd3045ba8c61d8f0f74b5c579a00aea9a56dc5bb0a684fc0c3a20","thresholds":{"bright_fraction":0.25,"color_bins":16,"samples":16,"stddev":10},"unobserved_image_roles":["tunnel"],"version":"158.0.8127.18"},"unobserved_image_roles":["tunnel"]}
+{
+  "binding_review": {
+    "added_files": 0,
+    "binding_receipt_sha256": "1c0d50af1aa823605ff6ec9643a6a7e0ed07124bbb3d4eea86ad438420e877d5",
+    "checks": {
+      "all_cases_passed": true,
+      "current_source_unchanged": true,
+      "five_services_unchanged": true,
+      "generated_output_retained_privately": true,
+      "immutable_files_and_membership_equal": true,
+      "original_frozen_source_unchanged": true,
+      "owned_browser_jobs_closed": true,
+      "private_helpers_unchanged": true
+    },
+    "generated_output": {
+      "after": {
+        "bytes": 20299,
+        "sha256": "95e446b4bcbd209e8710938f3f32a7abe6a9aefc6f6a82bbf0dfea8ac5070c69",
+        "utf8_diagnostic_lines": 107
+      },
+      "before": {
+        "bytes": 18761,
+        "sha256": "bfff874efb92def15457d50076e3ee761874a36ee522c46affa95163085aac72",
+        "utf8_diagnostic_lines": 99
+      },
+      "contents_exported": false,
+      "path": "chromium_headless_shell-1254/chrome-headless-shell-win64/debug.log"
+    },
+    "immutable_inventory_after_sha256": "d06a9326cdeb2f8e6b4c3b1ec879467d28430dd8a6a031d9ffbfa2a30352a8d1",
+    "immutable_inventory_before_sha256": "d06a9326cdeb2f8e6b4c3b1ec879467d28430dd8a6a031d9ffbfa2a30352a8d1",
+    "independent_review_sha256": "d80c2704a3e87303abbfcbdb81dbd93674951d4b19dbf87d49e7cec87740c011",
+    "independent_review_status": "PASS_DIRECT_IMMUTABLE_BROWSER_BINDING",
+    "mode": "direct_immutable_browser_binding",
+    "removed_files": 0,
+    "status": "passed",
+    "unchanged_browser_input_files": 1030,
+    "unchanged_executed_helpers": 4,
+    "unchanged_source_files": 556
+  },
+  "browser_manifest_sha256": "8058cd0e5bf0e9e20511a7052de42c1a89a8b9b36fa1b13da6d08b83d0c7f8b9",
+  "browser_tool_version": "1.65.0",
+  "candidate_receipt_sha256": "65b92f66754f0e1c20e5df66082361421074e5d57742ecc2e2d791388aef41cf",
+  "cases": [
+    {
+      "browser": "chromium",
+      "checks": [
+        "actual_nonempty_NASA_and_ADSB_public_capabilities",
+        "real_google_ready_native_attribution_visible_clickable",
+        "public_panel_actual_thermal_aircraft_counts_citation_exact_NASA_download",
+        "visible_ODbL_attribution_exact_aircraft_download_both_enabled_nonempty_Earth_layers",
+        "all_tabs_explicit_publication_states_same_earth_canvas_no_operator_controls",
+        "public_source_health_scope_and_mobile_dialog",
+        "unobscured_composed_earth_pixels_are_nonblank_and_textured",
+        "35_second_settle_no_hidden_data_media_operator_polls_or_websockets_no_page_errors"
+      ],
+      "composed_earth_raster": {
+        "bright_fraction": 0.9842931937172775,
+        "color_bins": 105,
+        "mean": 129.217277486911,
+        "samples": 382,
+        "stddev": 62.878028815884214
+      },
+      "exact_downloads": {
+        "aircraft": {
+          "records": 180,
+          "status": 200
+        },
+        "observations": {
+          "records": 1176,
+          "status": 200
+        }
+      },
+      "network": {
+        "application_nonread_requests": 0,
+        "config_requests": 1,
+        "forbidden_api_requests": 0,
+        "google_roots_ok": 1,
+        "google_tiles_ok": 36,
+        "media_requests": 0,
+        "publication_aircraft_requests": 5,
+        "publication_observation_requests": 2,
+        "status_requests": 3,
+        "websockets": 0
+      },
+      "page_errors": 0,
+      "screenshot_sha256": "5a4837e1d2c0a668aa5ef19d940d4741aad2077e30e45e4ab27f2871993aaa64",
+      "source_counts": {
+        "aircraft": 176,
+        "observations": 1176
+      },
+      "status": "passed",
+      "version": "158.0.8127.18",
+      "viewport": {
+        "height": 740,
+        "width": 320
+      }
+    },
+    {
+      "browser": "chromium",
+      "checks": [
+        "actual_nonempty_NASA_and_ADSB_public_capabilities",
+        "real_google_ready_native_attribution_visible_clickable",
+        "public_panel_actual_thermal_aircraft_counts_citation_exact_NASA_download",
+        "visible_ODbL_attribution_exact_aircraft_download_both_enabled_nonempty_Earth_layers",
+        "all_tabs_explicit_publication_states_same_earth_canvas_no_operator_controls",
+        "public_source_health_scope_and_mobile_dialog",
+        "unobscured_composed_earth_pixels_are_nonblank_and_textured",
+        "35_second_settle_no_hidden_data_media_operator_polls_or_websockets_no_page_errors"
+      ],
+      "composed_earth_raster": {
+        "bright_fraction": 0.9905882352941177,
+        "color_bins": 99,
+        "mean": 148.19058823529411,
+        "samples": 425,
+        "stddev": 58.18866331915233
+      },
+      "exact_downloads": {
+        "aircraft": {
+          "records": 119,
+          "status": 200
+        },
+        "observations": {
+          "records": 1176,
+          "status": 200
+        }
+      },
+      "network": {
+        "application_nonread_requests": 0,
+        "config_requests": 1,
+        "forbidden_api_requests": 0,
+        "google_roots_ok": 1,
+        "google_tiles_ok": 53,
+        "media_requests": 0,
+        "publication_aircraft_requests": 5,
+        "publication_observation_requests": 2,
+        "status_requests": 3,
+        "websockets": 0
+      },
+      "page_errors": 0,
+      "screenshot_sha256": "af54ff02258cc3ffba127aabc6ecb4c156a7e6489dc5d7a18031b9aea3419493",
+      "source_counts": {
+        "aircraft": 119,
+        "observations": 1176
+      },
+      "status": "passed",
+      "version": "158.0.8127.18",
+      "viewport": {
+        "height": 844,
+        "width": 390
+      }
+    },
+    {
+      "browser": "chromium",
+      "checks": [
+        "actual_nonempty_NASA_and_ADSB_public_capabilities",
+        "real_google_ready_native_attribution_visible_clickable",
+        "public_panel_actual_thermal_aircraft_counts_citation_exact_NASA_download",
+        "visible_ODbL_attribution_exact_aircraft_download_both_enabled_nonempty_Earth_layers",
+        "all_tabs_explicit_publication_states_same_earth_canvas_no_operator_controls",
+        "public_source_health_scope_and_mobile_dialog",
+        "unobscured_composed_earth_pixels_are_nonblank_and_textured",
+        "35_second_settle_no_hidden_data_media_operator_polls_or_websockets_no_page_errors"
+      ],
+      "composed_earth_raster": {
+        "bright_fraction": 1,
+        "color_bins": 97,
+        "mean": 157.64316635745206,
+        "samples": 539,
+        "stddev": 49.95548486546429
+      },
+      "exact_downloads": {
+        "aircraft": {
+          "records": 111,
+          "status": 200
+        },
+        "observations": {
+          "records": 1176,
+          "status": 200
+        }
+      },
+      "network": {
+        "application_nonread_requests": 0,
+        "config_requests": 1,
+        "forbidden_api_requests": 0,
+        "google_roots_ok": 1,
+        "google_tiles_ok": 96,
+        "media_requests": 0,
+        "publication_aircraft_requests": 5,
+        "publication_observation_requests": 2,
+        "status_requests": 3,
+        "websockets": 0
+      },
+      "page_errors": 0,
+      "screenshot_sha256": "2f391a83f8737096304872c262fc47b8353281d168e9109d4919b7301fe9262b",
+      "source_counts": {
+        "aircraft": 111,
+        "observations": 1176
+      },
+      "status": "passed",
+      "version": "158.0.8127.18",
+      "viewport": {
+        "height": 900,
+        "width": 1440
+      }
+    },
+    {
+      "browser": "firefox",
+      "checks": [
+        "actual_nonempty_NASA_and_ADSB_public_capabilities",
+        "real_google_ready_native_attribution_visible_clickable",
+        "public_panel_actual_thermal_aircraft_counts_citation_exact_NASA_download",
+        "visible_ODbL_attribution_exact_aircraft_download_both_enabled_nonempty_Earth_layers",
+        "all_tabs_explicit_publication_states_same_earth_canvas_no_operator_controls",
+        "public_source_health_scope_and_mobile_dialog",
+        "unobscured_composed_earth_pixels_are_nonblank_and_textured",
+        "35_second_settle_no_hidden_data_media_operator_polls_or_websockets_no_page_errors"
+      ],
+      "composed_earth_raster": {
+        "bright_fraction": 0.9840848806366048,
+        "color_bins": 93,
+        "mean": 117.49955791335101,
+        "samples": 377,
+        "stddev": 64.09819741826912
+      },
+      "exact_downloads": {
+        "aircraft": {
+          "records": 127,
+          "status": 200
+        },
+        "observations": {
+          "records": 1176,
+          "status": 200
+        }
+      },
+      "network": {
+        "application_nonread_requests": 0,
+        "config_requests": 1,
+        "forbidden_api_requests": 0,
+        "google_roots_ok": 1,
+        "google_tiles_ok": 36,
+        "media_requests": 0,
+        "publication_aircraft_requests": 4,
+        "publication_observation_requests": 1,
+        "status_requests": 2,
+        "websockets": 0
+      },
+      "page_errors": 0,
+      "screenshot_sha256": "4eca4ca6986530ed4345d983883c796c794f603a3b192b5d17edd29eefba6414",
+      "source_counts": {
+        "aircraft": 127,
+        "observations": 1176
+      },
+      "status": "passed",
+      "version": "159.0",
+      "viewport": {
+        "height": 740,
+        "width": 320
+      }
+    },
+    {
+      "browser": "firefox",
+      "checks": [
+        "actual_nonempty_NASA_and_ADSB_public_capabilities",
+        "real_google_ready_native_attribution_visible_clickable",
+        "public_panel_actual_thermal_aircraft_counts_citation_exact_NASA_download",
+        "visible_ODbL_attribution_exact_aircraft_download_both_enabled_nonempty_Earth_layers",
+        "all_tabs_explicit_publication_states_same_earth_canvas_no_operator_controls",
+        "public_source_health_scope_and_mobile_dialog",
+        "unobscured_composed_earth_pixels_are_nonblank_and_textured",
+        "35_second_settle_no_hidden_data_media_operator_polls_or_websockets_no_page_errors"
+      ],
+      "composed_earth_raster": {
+        "bright_fraction": 0.9974874371859297,
+        "color_bins": 96,
+        "mean": 145.6289782244556,
+        "samples": 398,
+        "stddev": 57.806677158279946
+      },
+      "exact_downloads": {
+        "aircraft": {
+          "records": 179,
+          "status": 200
+        },
+        "observations": {
+          "records": 1176,
+          "status": 200
+        }
+      },
+      "network": {
+        "application_nonread_requests": 0,
+        "config_requests": 1,
+        "forbidden_api_requests": 0,
+        "google_roots_ok": 1,
+        "google_tiles_ok": 53,
+        "media_requests": 0,
+        "publication_aircraft_requests": 4,
+        "publication_observation_requests": 1,
+        "status_requests": 2,
+        "websockets": 0
+      },
+      "page_errors": 0,
+      "screenshot_sha256": "5f91630db8da1c994f12d3f0926fed692f764d30610f9ed85244eba2e8bb79c0",
+      "source_counts": {
+        "aircraft": 178,
+        "observations": 1176
+      },
+      "status": "passed",
+      "version": "159.0",
+      "viewport": {
+        "height": 844,
+        "width": 390
+      }
+    },
+    {
+      "browser": "firefox",
+      "checks": [
+        "actual_nonempty_NASA_and_ADSB_public_capabilities",
+        "real_google_ready_native_attribution_visible_clickable",
+        "public_panel_actual_thermal_aircraft_counts_citation_exact_NASA_download",
+        "visible_ODbL_attribution_exact_aircraft_download_both_enabled_nonempty_Earth_layers",
+        "all_tabs_explicit_publication_states_same_earth_canvas_no_operator_controls",
+        "public_source_health_scope_and_mobile_dialog",
+        "unobscured_composed_earth_pixels_are_nonblank_and_textured",
+        "35_second_settle_no_hidden_data_media_operator_polls_or_websockets_no_page_errors"
+      ],
+      "composed_earth_raster": {
+        "bright_fraction": 1,
+        "color_bins": 95,
+        "mean": 157.05194805194805,
+        "samples": 539,
+        "stddev": 49.87468300823895
+      },
+      "exact_downloads": {
+        "aircraft": {
+          "records": 184,
+          "status": 200
+        },
+        "observations": {
+          "records": 1176,
+          "status": 200
+        }
+      },
+      "network": {
+        "application_nonread_requests": 0,
+        "config_requests": 1,
+        "forbidden_api_requests": 0,
+        "google_roots_ok": 1,
+        "google_tiles_ok": 96,
+        "media_requests": 0,
+        "publication_aircraft_requests": 4,
+        "publication_observation_requests": 1,
+        "status_requests": 2,
+        "websockets": 0
+      },
+      "page_errors": 0,
+      "screenshot_sha256": "214d6306050a3a85cf4a2b21e5428b3bd0db8a8eed156d7bfe707e952e2e6722",
+      "source_counts": {
+        "aircraft": 184,
+        "observations": 1176
+      },
+      "status": "passed",
+      "version": "159.0",
+      "viewport": {
+        "height": 900,
+        "width": 1440
+      }
+    },
+    {
+      "browser": "webkit",
+      "checks": [
+        "actual_nonempty_NASA_and_ADSB_public_capabilities",
+        "real_google_ready_native_attribution_visible_clickable",
+        "public_panel_actual_thermal_aircraft_counts_citation_exact_NASA_download",
+        "visible_ODbL_attribution_exact_aircraft_download_both_enabled_nonempty_Earth_layers",
+        "all_tabs_explicit_publication_states_same_earth_canvas_no_operator_controls",
+        "public_source_health_scope_and_mobile_dialog",
+        "unobscured_composed_earth_pixels_are_nonblank_and_textured",
+        "35_second_settle_no_hidden_data_media_operator_polls_or_websockets_no_page_errors"
+      ],
+      "composed_earth_raster": {
+        "bright_fraction": 0.9869451697127938,
+        "color_bins": 101,
+        "mean": 125.49869451697128,
+        "samples": 383,
+        "stddev": 64.6131505477725
+      },
+      "exact_downloads": {
+        "aircraft": {
+          "records": 174,
+          "status": 200
+        },
+        "observations": {
+          "records": 1176,
+          "status": 200
+        }
+      },
+      "network": {
+        "application_nonread_requests": 0,
+        "config_requests": 1,
+        "forbidden_api_requests": 0,
+        "google_roots_ok": 1,
+        "google_tiles_ok": 36,
+        "media_requests": 0,
+        "publication_aircraft_requests": 3,
+        "publication_observation_requests": 1,
+        "status_requests": 2,
+        "websockets": 0
+      },
+      "page_errors": 0,
+      "screenshot_sha256": "1e051ce976883fa807e632967dadf91c94abcc720becac4669a4d5b23361c3ed",
+      "source_counts": {
+        "aircraft": 174,
+        "observations": 1176
+      },
+      "status": "passed",
+      "version": "27.2",
+      "viewport": {
+        "height": 740,
+        "width": 320
+      }
+    },
+    {
+      "browser": "webkit",
+      "checks": [
+        "actual_nonempty_NASA_and_ADSB_public_capabilities",
+        "real_google_ready_native_attribution_visible_clickable",
+        "public_panel_actual_thermal_aircraft_counts_citation_exact_NASA_download",
+        "visible_ODbL_attribution_exact_aircraft_download_both_enabled_nonempty_Earth_layers",
+        "all_tabs_explicit_publication_states_same_earth_canvas_no_operator_controls",
+        "public_source_health_scope_and_mobile_dialog",
+        "unobscured_composed_earth_pixels_are_nonblank_and_textured",
+        "35_second_settle_no_hidden_data_media_operator_polls_or_websockets_no_page_errors"
+      ],
+      "composed_earth_raster": {
+        "bright_fraction": 0.9974874371859297,
+        "color_bins": 97,
+        "mean": 145.30820770519264,
+        "samples": 398,
+        "stddev": 58.43710257840646
+      },
+      "exact_downloads": {
+        "aircraft": {
+          "records": 144,
+          "status": 200
+        },
+        "observations": {
+          "records": 1176,
+          "status": 200
+        }
+      },
+      "network": {
+        "application_nonread_requests": 0,
+        "config_requests": 1,
+        "forbidden_api_requests": 0,
+        "google_roots_ok": 1,
+        "google_tiles_ok": 53,
+        "media_requests": 0,
+        "publication_aircraft_requests": 3,
+        "publication_observation_requests": 1,
+        "status_requests": 2,
+        "websockets": 0
+      },
+      "page_errors": 0,
+      "screenshot_sha256": "c13870ce4f800c2f3b22e51dc2a66d3ab0c37cdf5747e0bc0a99d364cd916323",
+      "source_counts": {
+        "aircraft": 141,
+        "observations": 1176
+      },
+      "status": "passed",
+      "version": "27.2",
+      "viewport": {
+        "height": 844,
+        "width": 390
+      }
+    },
+    {
+      "browser": "webkit",
+      "checks": [
+        "actual_nonempty_NASA_and_ADSB_public_capabilities",
+        "real_google_ready_native_attribution_visible_clickable",
+        "public_panel_actual_thermal_aircraft_counts_citation_exact_NASA_download",
+        "visible_ODbL_attribution_exact_aircraft_download_both_enabled_nonempty_Earth_layers",
+        "all_tabs_explicit_publication_states_same_earth_canvas_no_operator_controls",
+        "public_source_health_scope_and_mobile_dialog",
+        "unobscured_composed_earth_pixels_are_nonblank_and_textured",
+        "35_second_settle_no_hidden_data_media_operator_polls_or_websockets_no_page_errors"
+      ],
+      "composed_earth_raster": {
+        "bright_fraction": 1,
+        "color_bins": 97,
+        "mean": 157.01298701298703,
+        "samples": 539,
+        "stddev": 49.849363235762176
+      },
+      "exact_downloads": {
+        "aircraft": {
+          "records": 142,
+          "status": 200
+        },
+        "observations": {
+          "records": 1176,
+          "status": 200
+        }
+      },
+      "network": {
+        "application_nonread_requests": 0,
+        "config_requests": 1,
+        "forbidden_api_requests": 0,
+        "google_roots_ok": 1,
+        "google_tiles_ok": 96,
+        "media_requests": 0,
+        "publication_aircraft_requests": 3,
+        "publication_observation_requests": 1,
+        "status_requests": 2,
+        "websockets": 0
+      },
+      "page_errors": 0,
+      "screenshot_sha256": "80e30738e63192a16d166079a0adce7f2b6ce60def2e21182ded5a76498f2739",
+      "source_counts": {
+        "aircraft": 142,
+        "observations": 1176
+      },
+      "status": "passed",
+      "version": "27.2",
+      "viewport": {
+        "height": 900,
+        "width": 1440
+      }
+    }
+  ],
+  "cases_failed": 0,
+  "cases_passed": 9,
+  "ended_at": "2026-11-06T18:23:07.935Z",
+  "execution": "fresh",
+  "gate": "google_public",
+  "limitations": [
+    "Desktop Chromium/Firefox/WebKit with viewport and touch emulation are not physical iOS or Android devices.",
+    "Imagery connectivity and attribution do not establish capture date, source accuracy or incident confirmation.",
+    "NASA thermal pixels and selected adsb.lol aircraft are source observations, not verified incidents or complete conflict coverage.",
+    "This finite observation is not a long-session soak or external hosting/capacity qualification.",
+    "Fresh finite18 execution evidence; this root review rechecks saved immutable inventories and source bytes, not a new browser run.",
+    "Viewport/browser emulation does not qualify a physical iPhone, mobileOS/GPU memory or source-location ground truth.",
+    "Private generated diagnostics are retained separately and excluded from public proof.",
+    "Fresh finite candidate18 execution; not a long-session soak, physical phone, imagery capture-date or location-ground-truth certification.",
+    "Five-image identity names the complete candidate; the tunnel image was not exercised by this browser gate.",
+    "Browser/viewport emulation, not a physical phone test.",
+    "Raster sampling is a blank/flat-render guard, not source-location ground truth."
+  ],
+  "observed_image_roles": [
+    "backend",
+    "database",
+    "operator",
+    "public"
+  ],
+  "qualified_images": {
+    "backend": "sha256:677cbf217ff3dde3b2fa547b92217ebe98b8c57f4a1433725d09d7091fa53f82",
+    "database": "sha256:c7e3a0efd486e410871417be965f83f4b320560bd2e4f6b6c87aa7aff3bcb719",
+    "operator": "sha256:a4ed09e7925fd89c66ec9bbff0337c6d7fd92c887e0c1e00655d66b2d9e7dab4",
+    "public": "sha256:e332e72ef6a08351611f2c2ad935a2a250e4493d9da0da01b746d5c0f05b1261",
+    "tunnel": "sha256:113645bf83c26d748ccff3a31a1df178bb65a07f92cd71d2f17a9dd4352db09f"
+  },
+  "runtime_source_sha256": "0110be4c3585625ce3f05861756060082cd638931898edaa7b06b76421013917",
+  "source_receipt_sha256": "1ba639a8fed04d37e361f67c095d819b0a74dd12dbc859a9f83116bb85ffeb61",
+  "started_at": "2026-11-06T18:15:14.201Z",
+  "status": "PASS",
+  "supplemental_raster": {
+    "artifact_profile": "public-context",
+    "browser": "chromium",
+    "cadence": {
+      "final_gap_seconds": 11.12027869999838,
+      "first_seconds": 15.3344976,
+      "maximum_gap_seconds": 30.069429000001037
+    },
+    "candidate_receipt_sha256": "65b92f66754f0e1c20e5df66082361421074e5d57742ecc2e2d791388aef41cf",
+    "checks": {
+      "all_samples_have_raster": true,
+      "all_tabs_observed": true,
+      "browser_closed": true,
+      "google_provider_and_attribution_retained": true,
+      "identities_stable": true,
+      "no_findings": true,
+      "no_implicit_generation": true,
+      "private_helpers_unchanged": true,
+      "sources_unchanged": true
+    },
+    "elapsed_seconds": 14400.539944299999,
+    "ended_at": "2026-11-06T22:34:14.855Z",
+    "execution": "fresh",
+    "findings": 0,
+    "gate": "google_public",
+    "limitations": [
+      "Actual independent Chromium observation at1440x1000; not cross-engine or physical-device long-session qualification.",
+      "Composed pixel texture checks reject blank/flat frames; no source truth, capture-date or imagery-quality accuracy certification.",
+      "Five service identities jointly bind the two three-service observers and parent/main profile; a single browser does not inspect all five.",
+      "No screenshots, source text or provider keys are exported. No elapsed time transferred from another run."
+    ],
+    "minima": {
+      "bright_fraction": 0.8982758620689655,
+      "color_bins": 87,
+      "samples": 442,
+      "stddev": 46.271579524704904
+    },
+    "observed_services": {
+      "database": {
+        "identity_sha256": "3ef6af1f00ed0961d84e6e74c5a4367758f7bba8902bcceb1946e04d795a939c",
+        "image": "sha256:c7e3a0efd486e410871417be965f83f4b320560bd2e4f6b6c87aa7aff3bcb719",
+        "started_at": "2026-11-06T18:11:37.483169313Z"
+      },
+      "operator": {
+        "identity_sha256": "220e51024f603eacd4fb5b72e07491fed13bcf445b747057e57cc63ce07f2be7",
+        "image": "sha256:a4ed09e7925fd89c66ec9bbff0337c6d7fd92c887e0c1e00655d66b2d9e7dab4",
+        "started_at": "2026-11-06T18:11:51.883206154Z"
+      },
+      "public": {
+        "identity_sha256": "db9c87874d4be76fab21aa2f8013cfb0d2fdc64b55da4a4e599c3dc361af56d9",
+        "image": "sha256:e332e72ef6a08351611f2c2ad935a2a250e4493d9da0da01b746d5c0f05b1261",
+        "started_at": "2026-11-06T18:11:51.862798526Z"
+      },
+      "reader": {
+        "identity_sha256": "f3d6bd809477a9eb7d64f9e238b4d10f24aa327549dbe642d26117aee2470371",
+        "image": "sha256:677cbf217ff3dde3b2fa547b92217ebe98b8c57f4a1433725d09d7091fa53f82",
+        "started_at": "2026-11-06T18:11:46.074433864Z"
+      },
+      "writer": {
+        "identity_sha256": "5649df71eea19bebfbdcb8bb433a84e3c21c7e94da4e8dbe19ceae5c352cabe6",
+        "image": "sha256:677cbf217ff3dde3b2fa547b92217ebe98b8c57f4a1433725d09d7091fa53f82",
+        "started_at": "2026-11-06T18:11:46.079245475Z"
+      }
+    },
+    "observer_sha256": "8079a4600dd7406a6c58d95e2562e588157b6daf9098c6bb5e22c9dd5289e9e9",
+    "raster_helper_sha256": "61cca6f7814842556066e0c8f9052e46efbad645ecea323975ad3358b71346a6",
+    "raster_samples": 480,
+    "requested_seconds": 14400,
+    "samples": 480,
+    "samples_sha256": "4c79c9189ab2d316bb71eabf5e450b1e183a4183867fc841fd86efd72d8e2db2",
+    "schema": 1,
+    "source_receipt_sha256": "ecbc2e0312274837ebf71207d4c2e6d79a3f791f30d3f66976e1b5e1e1cf7763",
+    "started_at": "2026-11-06T18:34:12.798Z",
+    "status": "completed_sample",
+    "summary_sha256": "2b806669dad2f70734466d2c4b291d27810259a68ebb442e65dc068cc6b2c680",
+    "thresholds": {
+      "bright_fraction": 0.25,
+      "color_bins": 16,
+      "samples": 16,
+      "stddev": 10
+    },
+    "unobserved_image_roles": [
+      "tunnel"
+    ],
+    "version": "158.0.8127.18"
+  },
+  "unobserved_image_roles": [
+    "tunnel"
+  ]
+}
