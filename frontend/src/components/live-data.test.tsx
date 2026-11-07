@@ -71,6 +71,17 @@ describe("free report integrity",()=>{
 });
 
 describe("Telegram coverage receipts",()=>{
+ it("shows authorized bot retention and reconnect without an account history limit",async()=>{
+  fetchMock.mockResolvedValue(Response.json({mode:"live",telegram:{enabled:true,status:"reconnecting",transport:"bot",retention_hours:24,retry_delay_seconds:10,channels:{publisher:{status:"waiting",processed:0,history_complete:false}}}}));
+  await act(async()=>root.render(<SourceStatus fallback="Connecting"/>));
+  await act(async()=>host.querySelector<HTMLButtonElement>("button")!.click());
+  expect(host.textContent).toContain("Publisher-authorized bot");
+  expect(host.textContent).toContain("Provider update retentionUp to 24 hours");
+  expect(host.textContent).toContain("Reconnect delay10 seconds");
+  expect(host.textContent).toContain("Incomplete / bounded");
+  expect(host.textContent).not.toContain("Startup limit per channel");
+ });
+
  it("preserves separate clocks and bounded history rather than implying a complete archive",async()=>{
   fetchMock.mockResolvedValue(Response.json({mode:"live",telegram:{enabled:true,status:"ok",mode:"reports",cache_age_seconds:30,publication_age_seconds:7200,startup_limit_per_channel:3,channels:{public_fixture:{status:"ok",processed:3,history_complete:false,startup_or_cycle_limit:3}}}}));
   await act(async()=>root.render(<SourceStatus fallback="Connecting"/>));await act(async()=>host.querySelector<HTMLButtonElement>("button")!.click());

@@ -1,0 +1,519 @@
+{
+  "binding_review": {
+    "added_files": 0,
+    "binding_receipt_sha256": "1c0d50af1aa823605ff6ec9643a6a7e0ed07124bbb3d4eea86ad438420e877d5",
+    "checks": {
+      "all_cases_passed": true,
+      "current_source_unchanged": true,
+      "five_services_unchanged": true,
+      "generated_output_retained_privately": true,
+      "immutable_files_and_membership_equal": true,
+      "original_frozen_source_unchanged": true,
+      "owned_browser_jobs_closed": true,
+      "private_helpers_unchanged": true
+    },
+    "generated_output": {
+      "after": {
+        "bytes": 20299,
+        "sha256": "95e446b4bcbd209e8710938f3f32a7abe6a9aefc6f6a82bbf0dfea8ac5070c69",
+        "utf8_diagnostic_lines": 107
+      },
+      "before": {
+        "bytes": 18761,
+        "sha256": "bfff874efb92def15457d50076e3ee761874a36ee522c46affa95163085aac72",
+        "utf8_diagnostic_lines": 99
+      },
+      "contents_exported": false,
+      "path": "chromium_headless_shell-1254/chrome-headless-shell-win64/debug.log"
+    },
+    "immutable_inventory_after_sha256": "d06a9326cdeb2f8e6b4c3b1ec879467d28430dd8a6a031d9ffbfa2a30352a8d1",
+    "immutable_inventory_before_sha256": "d06a9326cdeb2f8e6b4c3b1ec879467d28430dd8a6a031d9ffbfa2a30352a8d1",
+    "independent_review_sha256": "d80c2704a3e87303abbfcbdb81dbd93674951d4b19dbf87d49e7cec87740c011",
+    "independent_review_status": "PASS_DIRECT_IMMUTABLE_BROWSER_BINDING",
+    "mode": "direct_immutable_browser_binding",
+    "removed_files": 0,
+    "status": "passed",
+    "unchanged_browser_input_files": 1030,
+    "unchanged_executed_helpers": 4,
+    "unchanged_source_files": 556
+  },
+  "browser_manifest_sha256": "8058cd0e5bf0e9e20511a7052de42c1a89a8b9b36fa1b13da6d08b83d0c7f8b9",
+  "browser_tool_version": "1.65.0",
+  "candidate_receipt_sha256": "65b92f66754f0e1c20e5df66082361421074e5d57742ecc2e2d791388aef41cf",
+  "cases": [
+    {
+      "browser": "chromium",
+      "checks": [
+        "actual_google_tiles_connected_with_attribution",
+        "native_attribution_text_pointer_access_and_popup_open_close",
+        "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+        "coordinate_bounds_and_zero_position",
+        "last_known_position_count_and_optional_aging_visibility_control",
+        "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+        "unobscured_composed_earth_pixels_are_nonblank_and_textured",
+        "all_four_configured_regions_have_successful_bounded_collection_receipts"
+      ],
+      "composed_earth_raster": {
+        "bright_fraction": 1,
+        "color_bins": 75,
+        "mean": 131.31400966183574,
+        "samples": 345,
+        "stddev": 66.81069186657723
+      },
+      "google_provider_end_state": "ready",
+      "page_errors": 0,
+      "screenshot_sha256": "45d644dc0e12ce13fc89eb94bd223e5bd4eb4a6e27456d19ba2994eede82c3fb",
+      "status": "passed",
+      "version": "158.0.8127.18",
+      "viewport": {
+        "height": 740,
+        "width": 320
+      }
+    },
+    {
+      "browser": "chromium",
+      "checks": [
+        "actual_google_tiles_connected_with_attribution",
+        "native_attribution_text_pointer_access_and_popup_open_close",
+        "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+        "coordinate_bounds_and_zero_position",
+        "actual_farside_positions_hidden_and_region_restores_visible_hemisphere",
+        "last_known_position_count_and_optional_aging_visibility_control",
+        "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+        "unobscured_composed_earth_pixels_are_nonblank_and_textured",
+        "all_four_configured_regions_have_successful_bounded_collection_receipts"
+      ],
+      "composed_earth_raster": {
+        "bright_fraction": 0.9938144329896907,
+        "color_bins": 87,
+        "mean": 151.81786941580756,
+        "samples": 485,
+        "stddev": 58.67252432133154
+      },
+      "google_provider_end_state": "ready",
+      "page_errors": 0,
+      "screenshot_sha256": "39ce379adba34100a0345071e02d68be85bcf90a70f01e0be641d91bf20c2099",
+      "status": "passed",
+      "version": "158.0.8127.18",
+      "viewport": {
+        "height": 844,
+        "width": 390
+      }
+    },
+    {
+      "browser": "chromium",
+      "checks": [
+        "actual_google_tiles_connected_with_attribution",
+        "native_attribution_text_pointer_access_and_popup_open_close",
+        "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+        "coordinate_bounds_and_zero_position",
+        "last_known_position_count_and_optional_aging_visibility_control",
+        "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+        "unobscured_composed_earth_pixels_are_nonblank_and_textured",
+        "all_four_configured_regions_have_successful_bounded_collection_receipts"
+      ],
+      "composed_earth_raster": {
+        "bright_fraction": 1,
+        "color_bins": 86,
+        "mean": 149.25345911949685,
+        "samples": 530,
+        "stddev": 54.860410947169875
+      },
+      "google_provider_end_state": "ready",
+      "page_errors": 0,
+      "screenshot_sha256": "98d3017299ef44fe98448dc9f5c2921cd9765ea75f3e3e21592bf09a6ecc8eea",
+      "status": "passed",
+      "version": "158.0.8127.18",
+      "viewport": {
+        "height": 1024,
+        "width": 768
+      }
+    },
+    {
+      "browser": "chromium",
+      "checks": [
+        "actual_google_tiles_connected_with_attribution",
+        "native_attribution_text_pointer_access_and_popup_open_close",
+        "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+        "coordinate_bounds_and_zero_position",
+        "last_known_position_count_and_optional_aging_visibility_control",
+        "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+        "unobscured_composed_earth_pixels_are_nonblank_and_textured",
+        "all_four_configured_regions_have_successful_bounded_collection_receipts"
+      ],
+      "composed_earth_raster": {
+        "bright_fraction": 0.9971751412429378,
+        "color_bins": 74,
+        "mean": 118.42937853107344,
+        "samples": 354,
+        "stddev": 65.34532493568975
+      },
+      "google_provider_end_state": "ready",
+      "page_errors": 0,
+      "screenshot_sha256": "32d9688633370fa3921a983a2101684ffe72d0aeed4ca84e70dd20629533787a",
+      "status": "passed",
+      "version": "158.0.8127.18",
+      "viewport": {
+        "height": 390,
+        "width": 844
+      }
+    },
+    {
+      "browser": "firefox",
+      "checks": [
+        "actual_google_tiles_connected_with_attribution",
+        "native_attribution_text_pointer_access_and_popup_open_close",
+        "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+        "coordinate_bounds_and_zero_position",
+        "last_known_position_count_and_optional_aging_visibility_control",
+        "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+        "unobscured_composed_earth_pixels_are_nonblank_and_textured",
+        "all_four_configured_regions_have_successful_bounded_collection_receipts"
+      ],
+      "composed_earth_raster": {
+        "bright_fraction": 1,
+        "color_bins": 84,
+        "mean": 145.88184438040346,
+        "samples": 347,
+        "stddev": 62.29657358600063
+      },
+      "google_provider_end_state": "ready",
+      "page_errors": 0,
+      "screenshot_sha256": "dc4f1aabdca2a59bc51643dbdac0a614f7f3176b56f064a347bcf8a10fc54c78",
+      "status": "passed",
+      "version": "159.0",
+      "viewport": {
+        "height": 740,
+        "width": 320
+      }
+    },
+    {
+      "browser": "firefox",
+      "checks": [
+        "actual_google_tiles_connected_with_attribution",
+        "native_attribution_text_pointer_access_and_popup_open_close",
+        "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+        "coordinate_bounds_and_zero_position",
+        "actual_farside_positions_hidden_and_region_restores_visible_hemisphere",
+        "last_known_position_count_and_optional_aging_visibility_control",
+        "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+        "unobscured_composed_earth_pixels_are_nonblank_and_textured",
+        "all_four_configured_regions_have_successful_bounded_collection_receipts"
+      ],
+      "composed_earth_raster": {
+        "bright_fraction": 0.9933184855233853,
+        "color_bins": 81,
+        "mean": 150.57089829250185,
+        "samples": 449,
+        "stddev": 59.49029965416334
+      },
+      "google_provider_end_state": "ready",
+      "page_errors": 0,
+      "screenshot_sha256": "5f93071e3a5494927df4afb53be92fd21027635c9fa305d9c35e565d99c6e709",
+      "status": "passed",
+      "version": "159.0",
+      "viewport": {
+        "height": 844,
+        "width": 390
+      }
+    },
+    {
+      "browser": "firefox",
+      "checks": [
+        "actual_google_tiles_connected_with_attribution",
+        "native_attribution_text_pointer_access_and_popup_open_close",
+        "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+        "coordinate_bounds_and_zero_position",
+        "last_known_position_count_and_optional_aging_visibility_control",
+        "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+        "unobscured_composed_earth_pixels_are_nonblank_and_textured",
+        "all_four_configured_regions_have_successful_bounded_collection_receipts"
+      ],
+      "composed_earth_raster": {
+        "bright_fraction": 1,
+        "color_bins": 85,
+        "mean": 148.77227722772278,
+        "samples": 505,
+        "stddev": 55.18737620302281
+      },
+      "google_provider_end_state": "ready",
+      "page_errors": 0,
+      "screenshot_sha256": "e42766b105037bc4d4843afff84cf02020b9e5c4440241e24261748a85702268",
+      "status": "passed",
+      "version": "159.0",
+      "viewport": {
+        "height": 1024,
+        "width": 768
+      }
+    },
+    {
+      "browser": "firefox",
+      "checks": [
+        "actual_google_tiles_connected_with_attribution",
+        "native_attribution_text_pointer_access_and_popup_open_close",
+        "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+        "coordinate_bounds_and_zero_position",
+        "last_known_position_count_and_optional_aging_visibility_control",
+        "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+        "unobscured_composed_earth_pixels_are_nonblank_and_textured",
+        "all_four_configured_regions_have_successful_bounded_collection_receipts"
+      ],
+      "composed_earth_raster": {
+        "bright_fraction": 0.9971751412429378,
+        "color_bins": 74,
+        "mean": 117.89453860640302,
+        "samples": 354,
+        "stddev": 66.03500318964208
+      },
+      "google_provider_end_state": "ready",
+      "page_errors": 0,
+      "screenshot_sha256": "ee11a56371e5f83c93bd81d9299af17f8c8ec722e994fb18e74822758ee941f9",
+      "status": "passed",
+      "version": "159.0",
+      "viewport": {
+        "height": 390,
+        "width": 844
+      }
+    },
+    {
+      "browser": "webkit",
+      "checks": [
+        "actual_google_tiles_connected_with_attribution",
+        "native_attribution_text_pointer_access_and_popup_open_close",
+        "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+        "coordinate_bounds_and_zero_position",
+        "last_known_position_count_and_optional_aging_visibility_control",
+        "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+        "unobscured_composed_earth_pixels_are_nonblank_and_textured",
+        "all_four_configured_regions_have_successful_bounded_collection_receipts"
+      ],
+      "composed_earth_raster": {
+        "bright_fraction": 1,
+        "color_bins": 67,
+        "mean": 127.58547008547009,
+        "samples": 312,
+        "stddev": 68.41156530524691
+      },
+      "google_provider_end_state": "ready",
+      "page_errors": 0,
+      "screenshot_sha256": "1f289530848903b897d3d4c12b82ad015a518fcccd4e762ebc91402b2671e7f9",
+      "status": "passed",
+      "version": "27.2",
+      "viewport": {
+        "height": 740,
+        "width": 320
+      }
+    },
+    {
+      "browser": "webkit",
+      "checks": [
+        "actual_google_tiles_connected_with_attribution",
+        "native_attribution_text_pointer_access_and_popup_open_close",
+        "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+        "coordinate_bounds_and_zero_position",
+        "actual_farside_positions_hidden_and_region_restores_visible_hemisphere",
+        "last_known_position_count_and_optional_aging_visibility_control",
+        "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+        "unobscured_composed_earth_pixels_are_nonblank_and_textured",
+        "all_four_configured_regions_have_successful_bounded_collection_receipts"
+      ],
+      "composed_earth_raster": {
+        "bright_fraction": 0.9933184855233853,
+        "color_bins": 82,
+        "mean": 150.5441722345954,
+        "samples": 449,
+        "stddev": 59.441836604700335
+      },
+      "google_provider_end_state": "ready",
+      "page_errors": 0,
+      "screenshot_sha256": "e83ac3d36d66b731015a0cbda458f6fac56208434d1645ec0d6400b9867ea2ab",
+      "status": "passed",
+      "version": "27.2",
+      "viewport": {
+        "height": 844,
+        "width": 390
+      }
+    },
+    {
+      "browser": "webkit",
+      "checks": [
+        "actual_google_tiles_connected_with_attribution",
+        "native_attribution_text_pointer_access_and_popup_open_close",
+        "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+        "coordinate_bounds_and_zero_position",
+        "last_known_position_count_and_optional_aging_visibility_control",
+        "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+        "unobscured_composed_earth_pixels_are_nonblank_and_textured",
+        "all_four_configured_regions_have_successful_bounded_collection_receipts"
+      ],
+      "composed_earth_raster": {
+        "bright_fraction": 1,
+        "color_bins": 86,
+        "mean": 149.51692708333334,
+        "samples": 512,
+        "stddev": 55.16447684099354
+      },
+      "google_provider_end_state": "ready",
+      "page_errors": 0,
+      "screenshot_sha256": "ad1233711909a62543cbb3334e6422322b83ae52d9f0bee5288dfcc3cdd9eb8d",
+      "status": "passed",
+      "version": "27.2",
+      "viewport": {
+        "height": 1024,
+        "width": 768
+      }
+    },
+    {
+      "browser": "webkit",
+      "checks": [
+        "actual_google_tiles_connected_with_attribution",
+        "native_attribution_text_pointer_access_and_popup_open_close",
+        "all_three_workspaces_fit_and_preserve_same_earth_canvas",
+        "coordinate_bounds_and_zero_position",
+        "last_known_position_count_and_optional_aging_visibility_control",
+        "layer_and_settings_dialog_layout_and_keyboard_dismissal",
+        "unobscured_composed_earth_pixels_are_nonblank_and_textured",
+        "all_four_configured_regions_have_successful_bounded_collection_receipts"
+      ],
+      "composed_earth_raster": {
+        "bright_fraction": 0.9971751412429378,
+        "color_bins": 75,
+        "mean": 116.9331450094162,
+        "samples": 354,
+        "stddev": 66.35201347637314
+      },
+      "google_provider_end_state": "ready",
+      "page_errors": 0,
+      "screenshot_sha256": "df84d76cc5901789789e824ed05bb6c848525e3a6e107b4963c943436d615b0c",
+      "status": "passed",
+      "version": "27.2",
+      "viewport": {
+        "height": 390,
+        "width": 844
+      }
+    }
+  ],
+  "cases_failed": 0,
+  "cases_passed": 12,
+  "ended_at": "2026-11-06T18:15:13.718Z",
+  "execution": "fresh",
+  "gate": "google_operator",
+  "limitations": [
+    "Desktop browser engines with emulated viewport/touch are not physical iOS or Android devices.",
+    "Tiles, imagery dates and source reports are not ground truth or incident confirmation.",
+    "No arbitrary external media playback or long-term GPU reliability is certified.",
+    "Fresh finite18 execution evidence; this root review rechecks saved immutable inventories and source bytes, not a new browser run.",
+    "Viewport/browser emulation does not qualify a physical iPhone, mobileOS/GPU memory or source-location ground truth.",
+    "Private generated diagnostics are retained separately and excluded from public proof.",
+    "Fresh finite candidate18 execution; not a long-session soak, physical phone, imagery capture-date or location-ground-truth certification.",
+    "Five-image identity names the complete candidate; the tunnel image was not exercised by this browser gate.",
+    "Browser/viewport emulation, not a physical phone test.",
+    "Raster sampling is a blank/flat-render guard, not source-location ground truth."
+  ],
+  "observed_image_roles": [
+    "backend",
+    "database",
+    "operator",
+    "public"
+  ],
+  "qualified_images": {
+    "backend": "sha256:677cbf217ff3dde3b2fa547b92217ebe98b8c57f4a1433725d09d7091fa53f82",
+    "database": "sha256:c7e3a0efd486e410871417be965f83f4b320560bd2e4f6b6c87aa7aff3bcb719",
+    "operator": "sha256:a4ed09e7925fd89c66ec9bbff0337c6d7fd92c887e0c1e00655d66b2d9e7dab4",
+    "public": "sha256:e332e72ef6a08351611f2c2ad935a2a250e4493d9da0da01b746d5c0f05b1261",
+    "tunnel": "sha256:113645bf83c26d748ccff3a31a1df178bb65a07f92cd71d2f17a9dd4352db09f"
+  },
+  "runtime_source_sha256": "0110be4c3585625ce3f05861756060082cd638931898edaa7b06b76421013917",
+  "source_receipt_sha256": "77c445695dce2ebb3a51659fde4b8af03b150191cfb044acb2ead195bcc1b8ce",
+  "started_at": "2026-11-06T18:13:49.209Z",
+  "status": "PASS",
+  "supplemental_raster": {
+    "artifact_profile": "operator-free",
+    "browser": "chromium",
+    "cadence": {
+      "final_gap_seconds": 19.983004800000344,
+      "first_seconds": 6.7430460000000005,
+      "maximum_gap_seconds": 30.05099519999976
+    },
+    "candidate_receipt_sha256": "65b92f66754f0e1c20e5df66082361421074e5d57742ecc2e2d791388aef41cf",
+    "checks": {
+      "all_samples_have_raster": true,
+      "all_tabs_observed": true,
+      "browser_closed": true,
+      "google_provider_and_attribution_retained": true,
+      "identities_stable": true,
+      "no_findings": true,
+      "no_implicit_generation": true,
+      "private_helpers_unchanged": true,
+      "sources_unchanged": true
+    },
+    "elapsed_seconds": 14400.4734566,
+    "ended_at": "2026-11-06T22:34:14.784Z",
+    "execution": "fresh",
+    "findings": 0,
+    "gate": "google_operator",
+    "limitations": [
+      "Actual independent Chromium observation at1440x1000; not cross-engine or physical-device long-session qualification.",
+      "Composed pixel texture checks reject blank/flat frames; no source truth, capture-date or imagery-quality accuracy certification.",
+      "Five service identities jointly bind the two three-service observers and parent/main profile; a single browser does not inspect all five.",
+      "No screenshots, source text or provider keys are exported. No elapsed time transferred from another run."
+    ],
+    "minima": {
+      "bright_fraction": 0.8877005347593583,
+      "color_bins": 89,
+      "samples": 408,
+      "stddev": 46.173029779792714
+    },
+    "observed_services": {
+      "database": {
+        "identity_sha256": "3ef6af1f00ed0961d84e6e74c5a4367758f7bba8902bcceb1946e04d795a939c",
+        "image": "sha256:c7e3a0efd486e410871417be965f83f4b320560bd2e4f6b6c87aa7aff3bcb719",
+        "started_at": "2026-11-06T18:11:37.483169313Z"
+      },
+      "operator": {
+        "identity_sha256": "220e51024f603eacd4fb5b72e07491fed13bcf445b747057e57cc63ce07f2be7",
+        "image": "sha256:a4ed09e7925fd89c66ec9bbff0337c6d7fd92c887e0c1e00655d66b2d9e7dab4",
+        "started_at": "2026-11-06T18:11:51.883206154Z"
+      },
+      "public": {
+        "identity_sha256": "db9c87874d4be76fab21aa2f8013cfb0d2fdc64b55da4a4e599c3dc361af56d9",
+        "image": "sha256:e332e72ef6a08351611f2c2ad935a2a250e4493d9da0da01b746d5c0f05b1261",
+        "started_at": "2026-11-06T18:11:51.862798526Z"
+      },
+      "reader": {
+        "identity_sha256": "f3d6bd809477a9eb7d64f9e238b4d10f24aa327549dbe642d26117aee2470371",
+        "image": "sha256:677cbf217ff3dde3b2fa547b92217ebe98b8c57f4a1433725d09d7091fa53f82",
+        "started_at": "2026-11-06T18:11:46.074433864Z"
+      },
+      "writer": {
+        "identity_sha256": "5649df71eea19bebfbdcb8bb433a84e3c21c7e94da4e8dbe19ceae5c352cabe6",
+        "image": "sha256:677cbf217ff3dde3b2fa547b92217ebe98b8c57f4a1433725d09d7091fa53f82",
+        "started_at": "2026-11-06T18:11:46.079245475Z"
+      }
+    },
+    "observer_sha256": "8079a4600dd7406a6c58d95e2562e588157b6daf9098c6bb5e22c9dd5289e9e9",
+    "raster_helper_sha256": "61cca6f7814842556066e0c8f9052e46efbad645ecea323975ad3358b71346a6",
+    "raster_samples": 480,
+    "requested_seconds": 14400,
+    "samples": 480,
+    "samples_sha256": "cc6bb5407e903d2c821b389dd2b66bff9587a327025f0a012d195b1a82a80263",
+    "schema": 1,
+    "source_receipt_sha256": "ecbc2e0312274837ebf71207d4c2e6d79a3f791f30d3f66976e1b5e1e1cf7763",
+    "started_at": "2026-11-06T18:34:12.794Z",
+    "status": "completed_sample",
+    "summary_sha256": "72a4752442aab266139956d781335f371d4041fe3606a8076cd542d1e76f6206",
+    "thresholds": {
+      "bright_fraction": 0.25,
+      "color_bins": 16,
+      "samples": 16,
+      "stddev": 10
+    },
+    "unobserved_image_roles": [
+      "tunnel"
+    ],
+    "version": "158.0.8127.18"
+  },
+  "unobserved_image_roles": [
+    "tunnel"
+  ]
+}

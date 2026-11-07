@@ -6,8 +6,8 @@ import {hasUsableReportCoordinates} from "./reportPosition";
 
 export type EarthKind="report"|"aircraft"|"vessel"|"thermal"|"reference"|"navigation";
 export type PositionState="fresh"|"last_known"|"recorded"|"synthetic";
-export type EarthMarker={id:string;kind:EarthKind;name:string;lat:number;lon:number;height:number;color:string;details:Array<[string,string]>;url?:string;report?:ConflictEvent;radius?:number;heading?:number|null;positionState?:PositionState};
-export type ThermalObservation={lat:number;lon:number;frp:number;ts:string;conf:number|null;confidence_label?:string;google_maps_url?:string;eo_browser_url?:string;probable_flare?:boolean;flare_zone?:string;stale?:boolean};
+export type EarthMarker={id:string;kind:EarthKind;name:string;identifier?:string;searchTerms?:string[];emitterCategory?:string;lat:number;lon:number;height:number;color:string;details:Array<[string,string]>;url?:string;report?:ConflictEvent;radius?:number;heading?:number|null;positionState?:PositionState};
+export type ThermalObservation={lat:number;lon:number;frp:number;ts:string;conf?:number|null;confidence_label?:string;google_maps_url?:string;eo_browser_url?:string;probable_flare?:boolean;flare_zone?:string;stale?:boolean;source_row_sha256?:string;scan_km?:number;track_km?:number};
 export type EarthLayers=Record<EarthKind,boolean> & {routes:boolean;lastKnown:boolean};
 export const DEFAULT_EARTH_LAYERS:EarthLayers={report:true,aircraft:true,vessel:true,thermal:false,reference:false,navigation:false,routes:false,lastKnown:true};
 export function enabledEarthMarkers(markers:EarthMarker[],layers:EarthLayers){return markers.filter(marker=>layers[marker.kind]&&(layers.lastKnown||marker.positionState!=="last_known"));}
@@ -44,7 +44,13 @@ function positionState(row:{observed_at?:string|null;snapshot_at?:string|null;st
   const observed=typeof row.observed_at==="string"?Date.parse(row.observed_at):NaN,age=clock-observed;
   return row.stale===true||!Number.isFinite(age)||age<0||age>freshMs?"last_known":"fresh";
 }
+const qualityCode=(value:unknown)=>typeof value==="number"&&Number.isInteger(value)&&value>=0&&value<=11?String(value):"Unknown";
 const positionStateLabel=(state:PositionState)=>state==="fresh"?"Fresh source observation; no motion extrapolation":state==="last_known"?"Last-known observation · not a current position":state==="recorded"?"Recorded snapshot · not a live position":"Synthetic exercise position";
+// Reported emitter category, separate from heuristic ownership/type classification.
+// Primary decoder UI reference: wiedehopf/tar1090 html/formatter.js aircraftCategories.
+// Category zero means no category information, including set C. A source layer is not an object-type assertion.
+// https://mode-s.org/1090mhz/content/ads-b/2-identification.html
+const EMITTER_CATEGORY_LABELS:Record<string,string>={A0:"No emitter category information",B0:"No emitter category information",B2:"Lighter-than-air",B6:"Unmanned aerial vehicle",C0:"No emitter category information",C1:"Surface emergency vehicle; not an active emergency assessment",C2:"Surface service vehicle",C3:"Fixed ground or tethered obstruction"};
 
 export function reportCameraRange(event:ConflictEvent):number{
   return {site:10000,sensor_pixel:30000,city:90000,region:650000,country:2200000,unknown:1000000}[event.geolocation_precision||"unknown"];
@@ -54,15 +60,20 @@ export function earthMarkers(options:{events:ConflictEvent[];aircraft:Aircraft[]
   const result:EarthMarker[]=[];
   for(const event of options.events){
     if(!hasUsableReportCoordinates(event))continue;
-    result.push({id:`report-${event.id}`,kind:"report",name:event.summary,lat:event.lat!,lon:event.lon!,height:0,color:COLORS[event.event_type]||COLORS.unclassified,report:event,url:event.source_url,
-      details:[["Source",event.channel_name||event.source],["Source time",`${utc(event.timestamp)} · publication, update or acquisition; incident time unverified`],["Location precision",event.geolocation_precision||"Unknown"],["Coordinates",coordinateLabel(event.lat!,event.lon!)],["Severity",severityLabel(event)],["Position display","Surface marker; no measured event altitude"]]});
+    result.push({id:`report-${event.id}`,kind:"report",name:event.summary,identifier:`Report #${event.id}`,lat:event.lat!,lon:event.lon!,height:0,color:COLORS[event.event_type]||COLORS.unclassified,report:event,url:event.source_url,
+      details:[["Source",event.channel_name||event.source],["Source time",`${utc(event.timestamp)} · publication, update or acquisition; incident time unverified`],["Location precision",!event.geolocation_precision||event.geolocation_precision==="unknown"?"Unknown · precision not assessed":event.geolocation_precision],["Location use",event.geolocation_precision==="site"?"Supplied site coordinate; not independently geolocated":event.geolocation_precision==="sensor_pixel"?"Sensor pixel center; not an exact impact location":"Area/reference anchor; no exact impact location established"],["Coordinates",coordinateLabel(event.lat!,event.lon!)],["Severity",severityLabel(event)],["Position display","Surface marker; no measured event altitude"]]});
   }
   for(const ac of options.aircraft){
     const clock=trackClock(ac,options.clock,120000,options.synthetic);
     if(!validCoordinates(ac.lat,ac.lon)||!clock)continue;
     const state=positionState(ac,options.clock,45000,options.synthetic,options.replaying);
-    result.push({id:`aircraft-${ac.icao24}`,kind:"aircraft",name:ac.callsign?.trim()||ac.icao24,lat:ac.lat,lon:ac.lon,height:0,color:ac.is_emergency?"#f69d84":"#8fd3f5",heading:ac.heading,positionState:state,
-      details:[["ICAO",ac.icao24],["Source",ac.source||"Tracking provider"],["Position state",positionStateLabel(state)],clock,["Coordinates",coordinateLabel(ac.lat,ac.lon)],["Reported altitude",finite(ac.altitude,"m")],["Vertical reference",ac.altitude_reference||"Mixed provider reference; not established as ellipsoid height"],["Speed",finite(ac.velocity,"m/s")],["Reported direction",finite(ac.heading,"degrees")],["Direction basis","Track or heading basis not retained"],["Position display","Surface projection; aircraft height is not inferred"],["Coverage","Partial receiver coverage; absence is not evidence of no aircraft"]]});
+    // readsb's hex convention: '~' explicitly marks a non-ICAO address.
+    // https://github.com/wiedehopf/readsb/blob/dev/README-json.md
+    // Preserve the provider string and entity key; only classify its display label.
+    const addressLabel=/^[0-9a-f]{6}$/i.test(ac.icao24)?"ICAO":/^~[0-9a-f]{6}$/i.test(ac.icao24)?"Non-ICAO address":"Source ID";
+    const emitterLabel=ac.category&&Object.prototype.hasOwnProperty.call(EMITTER_CATEGORY_LABELS,ac.category)?EMITTER_CATEGORY_LABELS[ac.category]:undefined;
+    result.push({id:`aircraft-${ac.icao24}`,kind:"aircraft",name:ac.callsign?.trim()||ac.registration?.trim()||ac.icao24,identifier:`${addressLabel} ${ac.icao24}`,searchTerms:[ac.icao24,ac.callsign,ac.registration||"",ac.type||""],emitterCategory:ac.category,lat:ac.lat,lon:ac.lon,height:0,color:ac.is_emergency?"#f69d84":"#8fd3f5",heading:ac.heading,positionState:state,
+      details:[[addressLabel,ac.icao24],["Callsign",ac.callsign?.trim()||"Unknown"],["Registration",ac.registration||"Unknown"],["Provider type code",ac.type||"Unknown"],["Reported emitter category",ac.category?`${ac.category}${emitterLabel?` · ${emitterLabel}`:""}`:"Unknown"],["Source",ac.source||"Tracking provider"],["Position state",positionStateLabel(state)],clock,["Coordinates",coordinateLabel(ac.lat,ac.lon)],["Reported altitude",finite(ac.altitude,"m")],["Vertical reference",ac.altitude_reference||"Mixed provider reference; not established as ellipsoid height"],["Speed",finite(ac.velocity,"m/s")],["Reported direction",finite(ac.heading,"degrees")],["Direction basis",ac.heading_basis==="course_over_ground"?"Course over ground reported by provider":ac.heading_basis==="true_heading"?"True heading reported by provider":"Basis not recorded"],["Reported position quality",`NIC ${qualityCode(ac.nic)} / NACp ${qualityCode(ac.nac_p)} · provider categories, not a validated error radius`],["Position display","Surface projection; height is not inferred"],["Coverage","Partial receiver coverage; absence is not evidence of no aircraft"]]});
   }
   for(const vessel of options.vessels){
     const clock=trackClock(vessel,options.clock,600000,options.synthetic);
@@ -70,8 +81,9 @@ export function earthMarkers(options:{events:ConflictEvent[];aircraft:Aircraft[]
     const state=positionState(vessel,options.clock,120000,options.synthetic,options.replaying);
     const directionLabel=vessel.heading_basis==="true_heading"?"True heading":vessel.heading_basis==="course_over_ground"?"Direction (course over ground)":"Reported direction";
     const directionBasis=vessel.heading_basis==="true_heading"?"True heading reported by provider":vessel.heading_basis==="course_over_ground"?"Course over ground reported by provider":"Basis not recorded";
-    result.push({id:`vessel-${vessel.mmsi}`,kind:"vessel",name:vessel.name||vessel.mmsi,lat:vessel.lat,lon:vessel.lon,height:0,color:"#79d6c5",heading:vessel.heading,positionState:state,
-      details:[["MMSI",vessel.mmsi],["Source","AISStream · identity and flag are reported"],["Position state",positionStateLabel(state)],clock,["Coordinates",coordinateLabel(vessel.lat,vessel.lon)],["Speed",finite(vessel.speed,"knots")],[directionLabel,finite(vessel.heading,"degrees")],["Direction basis",directionBasis],["Course over ground",finite(vessel.course,"degrees")],["Destination",vessel.destination||"Unknown"],["Position display","Surface projection; not a surveyed sea-level height"]]});
+    const imo=typeof vessel.imo==="number"&&Number.isInteger(vessel.imo)&&vessel.imo>0?String(vessel.imo):"Unknown";
+    result.push({id:`vessel-${vessel.mmsi}`,kind:"vessel",name:vessel.name?.trim()||vessel.mmsi,identifier:`MMSI ${vessel.mmsi}`,searchTerms:[vessel.mmsi,vessel.callsign||"",imo==="Unknown"?"":imo],lat:vessel.lat,lon:vessel.lon,height:0,color:"#79d6c5",heading:vessel.heading,positionState:state,
+      details:[["MMSI",vessel.mmsi],["IMO",imo],["Callsign",vessel.callsign||"Unknown"],["Reported vessel type",vessel.ship_type_name||"Unknown"],["Reported flag",vessel.flag_name||vessel.flag_code||"Unknown"],["Source","AISStream · identity and flag are reported"],["Position state",positionStateLabel(state)],clock,["Coordinates",coordinateLabel(vessel.lat,vessel.lon)],["Speed",finite(vessel.speed,"knots")],[directionLabel,finite(vessel.heading,"degrees")],["Direction basis",directionBasis],["Course over ground",finite(vessel.course,"degrees")],["Destination",vessel.destination||"Unknown"],["Position display","Surface projection; not a surveyed sea-level height"]]});
   }
   for(const hot of options.hotspots){
     const time=Date.parse(hot.ts),age=options.clock-time;

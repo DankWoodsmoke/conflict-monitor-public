@@ -13,6 +13,10 @@ from urllib.parse import urlsplit
 import asyncpg
 
 PROHIBITED = {
+    'rewrite_public_observation': 'UPDATE public.public_observation_batches SET status=status WHERE FALSE',
+    'rewrite_public_aircraft': 'UPDATE public.public_aircraft_batches SET status=status WHERE FALSE',
+    'truncate_public_observation': 'TRUNCATE public.public_observation_batches',
+    'truncate_public_aircraft': 'TRUNCATE public.public_aircraft_batches',
     'create_public_table': 'CREATE TABLE public.runtime_must_not_create(id integer)',
     'create_schema': 'CREATE SCHEMA runtime_must_not_create',
     'create_temporary_table': 'CREATE TEMP TABLE runtime_must_not_create(id integer)',
@@ -26,6 +30,10 @@ PROHIBITED = {
     'grant_administrator': 'GRANT monitor_admin TO monitor',
     'elevate_role': 'ALTER ROLE monitor SUPERUSER',
     'read_authentication_catalog': 'SELECT rolpassword FROM pg_authid',
+    'rewrite_delivery_watermark': 'UPDATE public.event_delivery_state SET last_offset = last_offset',
+    'forge_delivery_row': "INSERT INTO public.event_deliveries(event_id,stream,action) VALUES(1,'live','upsert')",
+    'rewrite_delivery_offset': 'UPDATE public.event_deliveries SET publication_offset = publication_offset WHERE FALSE',
+    'remove_delivery_rows': 'DELETE FROM public.event_deliveries WHERE FALSE',
 }
 
 
@@ -65,6 +73,10 @@ async def verify():
             checks['ordinary_advisory_lock_available'] = await connection.fetchval('SELECT pg_try_advisory_xact_lock($1)', 56182843097261030)
         # nextval is non-transactional: inspect its privilege instead of consuming a source ID.
         checks['sequence_usage_and_select_only'] = await connection.fetchval("SELECT has_sequence_privilege(current_user,'public.events_id_seq','USAGE') AND has_sequence_privilege(current_user,'public.events_id_seq','SELECT') AND NOT has_sequence_privilege(current_user,'public.events_id_seq','UPDATE')")
+        checks['delivery_publication_is_only_executable_delivery_function'] = await connection.fetchval("""
+            SELECT has_function_privilege(current_user,'public.publish_event_deliveries()','EXECUTE')
+            AND NOT has_function_privilege(current_user,'public.enqueue_event_delivery()','EXECUTE')
+        """)
         report = {'scope':'actual_postgresql_runtime_permissions_isolated_database',
             'status':'PASS' if all(checks.values()) else 'FAIL/INCOMPLETE','checks':checks,
             'limitations':['DML persistence/read API/WebSocket behavior is qualified by the separate real PostGIS and pipeline gates.',

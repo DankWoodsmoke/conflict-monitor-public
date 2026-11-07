@@ -11,6 +11,15 @@ vi.mock("../lib/runtime",()=>({SHOWCASE:false,API_BASE:"/api",websocketUrl:()=>"
 const fetchMock=vi.mocked(apiFetch);
 const fixture=buildShowcase(Date.parse("2026-10-29T03:00:00Z")).events[0];
 const report=(id:number,timestamp="2026-10-29T02:00:00Z"):ConflictEvent=>({...fixture,id,timestamp,summary:`Report ${id}`});
+const endpoint=(input:RequestInfo|URL)=>new URL(String(input),"http://localhost");
+const baseline=(events=[report(10)],epoch="fixture-live",after="100")=>Response.json({epoch,after,events});
+const upsert=(offset:string,event:ConflictEvent)=>({offset,event_id:event.id,action:"upsert",event});
+const tombstone=(offset:string,event_id:number)=>({offset,event_id,action:"delete",event:null});
+const changes=(after:string,rows:ReturnType<typeof upsert | typeof tombstone>[]=[],hasMore=false,epoch="fixture-live")=>
+  Response.json({epoch,changes:rows,next_after:rows.at(-1)?.offset??after,has_more:hasMore});
+const isChanges=(url:RequestInfo|URL)=>endpoint(url).pathname.endsWith("/delivery/changes");
+const seenCursors=()=>fetchMock.mock.calls.filter(([input])=>isChanges(input)).map(([input])=>endpoint(input).searchParams.get("after"));
+
 class Socket {
   static instances:Socket[]=[];
   onopen:((event:Event)=>void)|null=null;
@@ -22,77 +31,177 @@ class Socket {
   message(event:ConflictEvent){this.onmessage?.(new MessageEvent("message",{data:JSON.stringify({type:"new_event",event})}));}
   close(){this.onclose?.(new Event("close"));}
 }
+
 let host:HTMLDivElement,root:Root,latest:ReturnType<typeof useEventStream>,mounted:boolean;
-function Harness(){const value=useEventStream();useEffect(()=>{latest=value;},[value]);return <output>{value.events.map(e=>e.id).join(",")}</output>;}
-const query=(input:RequestInfo|URL)=>new URL(String(input),"http://localhost").searchParams;
+function Harness(){
+  const value=useEventStream();
+  useEffect(()=>{latest=value;},[value]);
+  return <output>{value.events.map(e=>e.id).join(",")}</output>;
+}
 function defaultResponse(input:RequestInfo|URL):Promise<Response>{
-  return Promise.resolve(Response.json(String(input).endsWith("/config")?{}:query(input).get("limit")==="50"?[report(10)]:[]));
+  const url=endpoint(input);
+  if(url.pathname.endsWith("/delivery/baseline"))return Promise.resolve(baseline());
+  if(isChanges(input))return Promise.resolve(changes(url.searchParams.get("after")!));
+  return Promise.resolve(Response.json(url.pathname.endsWith("/config")?{}:[]));
 }
 const last=<T,>(items:T[]):T=>items[items.length-1];
+const wait=async(ms:number)=>act(async()=>vi.advanceTimersByTimeAsync(ms));
 async function mount(){await act(async()=>root.render(<Harness/>));expect(Socket.instances).toHaveLength(1);}
-async function open(socket=last(Socket.instances)){await act(async()=>socket.open());}
-async function reconnect(){await act(async()=>last(Socket.instances).close());await act(async()=>vi.advanceTimersByTimeAsync(3000));return last(Socket.instances);}
+async function open(socket=last(Socket.instances)){await act(async()=>socket.open());await wait(0);}
+async function close(){await act(async()=>last(Socket.instances).close());}
+async function hint(id:number){await act(async()=>last(Socket.instances).message(report(id)));await wait(750);}
+const ids=()=>latest.events.map(event=>event.id);
+
 beforeEach(()=>{
-  (globalThis as any).IS_REACT_ACT_ENVIRONMENT=true;vi.useFakeTimers();vi.setSystemTime(new Date("2026-10-29T03:00:00Z"));
-  vi.stubGlobal("WebSocket",Socket);Socket.instances=[];fetchMock.mockReset().mockImplementation(defaultResponse);
+  (globalThis as any).IS_REACT_ACT_ENVIRONMENT=true;
+  vi.useFakeTimers();vi.setSystemTime(new Date("2026-10-29T03:00:00Z"));
+  vi.stubGlobal("WebSocket",Socket);Socket.instances=[];
+  fetchMock.mockReset().mockImplementation(defaultResponse);
   host=document.createElement("div");document.body.append(host);root=createRoot(host);mounted=true;
 });
 afterEach(async()=>{if(mounted)await act(async()=>root.unmount());host.remove();vi.unstubAllGlobals();vi.useRealTimers();});
 
-describe("WebSocket report recovery",()=>{
- it("recovers a newly created ID with older publication time once despite concurrent WS messages",async()=>{
-  await mount();await open();const socket=await reconnect();let release!:(response:Response)=>void;
-  fetchMock.mockImplementation((input)=>query(input).has("after_id")?new Promise(resolve=>{release=resolve;}):defaultResponse(input));
-  await open(socket);const recoveryCalls=()=>fetchMock.mock.calls.filter(([input])=>query(input).has("after_id"));
-  expect(query(last(recoveryCalls())[0]).get("after_id")).toBe("10");
-  await act(async()=>{socket.message(report(13));socket.message(report(11,"2026-10-01T00:00:00Z"));socket.open();});
-  expect(recoveryCalls()).toHaveLength(2);
-  await act(async()=>release(Response.json([report(11,"2026-10-01T00:00:00Z"),report(12,"2026-10-02T00:00:00Z")])));
-  expect(latest.events.map(e=>e.id)).toEqual([13,10,12,11]);expect(latest.recoveryStatus).toBe("loaded");
-  expect(latest.events.filter(e=>e.id===11)).toHaveLength(1);expect(host.textContent).toContain("12");
- });
- it("paginates by REST page cursor instead of a higher concurrent WS ID",async()=>{
-  await mount();await open();const socket=await reconnect();let release!:(response:Response)=>void;
-  const input=Array.from({length:1101},(_,i)=>report(i+11,"2026-10-01T00:00:00Z"));const cursors:number[]=[];
-  fetchMock.mockImplementation((url)=>{
-    const q=query(url);if(!q.has("after_id"))return defaultResponse(url);
-    const cursor=Number(q.get("after_id"));cursors.push(cursor);
-    if(cursors.length===1)return new Promise(resolve=>{release=resolve;});
-    return Promise.resolve(Response.json(input.filter(e=>e.id>cursor).slice(0,Number(q.get("limit")))));
+describe("committed report recovery",()=>{
+  it("recovers a late lower Event ID after a higher ID committed, with WS and history unable to advance acknowledgement",async()=>{
+    await mount();
+    let stage=0;
+    fetchMock.mockImplementation(async(input)=>{
+      const url=endpoint(input);
+      if(isChanges(input)){
+        if(stage++===0)return changes("100",[upsert("101",report(12))]);
+        return changes("101",[upsert("102",report(11,"2026-10-01T00:00:00Z"))]);
+      }
+      if(url.pathname.endsWith("/events"))return Response.json([report(9000,"2026-10-28T00:00:00Z")]);
+      return defaultResponse(input);
+    });
+    await act(async()=>latest.loadFullHistory());
+    await hint(9999);
+    expect(ids()).toEqual([12,10,9000]);
+    await close();await wait(3000);await open();
+    expect(seenCursors()).toEqual(["100","100","101"]);
+    expect(ids()).toEqual([12,10,9000,11]);
+    expect(latest.recoveryStatus).toBe("loaded");
   });
-  await open(socket);await act(async()=>socket.message(report(9000)));await act(async()=>release(Response.json(input.slice(0,500))));
-  expect(cursors).toEqual([10,510,1010]);expect(latest.events).toHaveLength(1103);expect(latest.recoveryStatus).toBe("loaded");
- });
- it("limits each connection to 5000 fetched reports and retains unfinished cursor across reconnect",async()=>{
-  await mount();await open();let socket=await reconnect();const cursors:number[]=[];
-  fetchMock.mockImplementation((url)=>{
-    const q=query(url);if(!q.has("after_id"))return defaultResponse(url);
-    const cursor=Number(q.get("after_id"));cursors.push(cursor);
-    return Promise.resolve(Response.json(Array.from({length:Math.min(5210-cursor,Number(q.get("limit")))},(_,i)=>report(cursor+i+1,"2026-10-01T00:00:00Z"))));
+
+  it("preserves an in-flight REST page across socket loss and serializes a second hint",async()=>{
+    await mount();
+    let release!:(response:Response)=>void;
+    let signal:AbortSignal|null|undefined;
+    fetchMock.mockImplementation((input,init)=>{
+      if(!isChanges(input))return defaultResponse(input);
+      if(endpoint(input).searchParams.get("after")==="101")return Promise.resolve(changes("101",[upsert("103",report(13))]));
+      return new Promise(resolve=>{release=resolve;signal=init?.signal;});
+    });
+    await open();await close();await wait(3000);await open();
+    await hint(500);
+    expect(signal?.aborted).toBe(false);
+    expect(seenCursors()).toEqual(["100","100"]);
+    await act(async()=>release(changes("100",[upsert("101",report(11))])));
+    await wait(750);
+    expect(seenCursors()).toEqual(["100","100","101"]);
+    expect(ids()).toEqual([13,11,10]);
   });
-  await open(socket);expect(cursors).toHaveLength(10);expect(last(cursors)).toBe(4510);
-  expect(latest.recoveryStatus).toBe("limited");expect(latest.events).toHaveLength(5000);
-  await act(async()=>socket.message(report(9999)));socket=await reconnect();await open(socket);
-  expect(cursors[10]).toBe(5010);expect(cursors).toHaveLength(11);expect(latest.recoveryStatus).toBe("loaded");
- });
- it("aborts interrupted request and ignores late response while next connection resumes the gap",async()=>{
-  await mount();await open();const oldSocket=await reconnect();let release!:(response:Response)=>void;let signal:AbortSignal|null|undefined;
-  fetchMock.mockImplementation((url,init)=>query(url).has("after_id")?new Promise(resolve=>{release=resolve;signal=init?.signal;}):defaultResponse(url));
-  await open(oldSocket);await act(async()=>oldSocket.message(report(99)));const socket=await reconnect();expect(signal?.aborted).toBe(true);
-  fetchMock.mockImplementation((url)=>Promise.resolve(Response.json(query(url).has("after_id")?[report(11,"2026-10-01T00:00:00Z")]:[])));await open(socket);
-  const requests=fetchMock.mock.calls.filter(([url])=>query(url).has("after_id"));expect(query(last(requests)[0]).get("after_id")).toBe("10");
-  await act(async()=>release(Response.json([report(12)])));
-  expect(latest.events.map(e=>e.id)).toEqual([99,10,11]);expect(latest.recoveryStatus).toBe("loaded");
- });
- it.each([[report(12),report(11)],[report(11),report(11)],[report(10)],[report(11,"invalid")]])("rejects malformed or nonadvancing pages without publishing them",async(...page)=>{
-  await mount();await open();const socket=await reconnect();fetchMock.mockResolvedValue(Response.json(page));await open(socket);
-  expect(latest.events.map(e=>e.id)).toEqual([10]);expect(latest.recoveryStatus).toBe("error");
- });
- it("aborts recovery and reconnect timers on unmount without publishing a late result",async()=>{
-  await mount();await open();const socket=await reconnect();let release!:(response:Response)=>void;let signal:AbortSignal|null|undefined;
-  fetchMock.mockImplementation((_url,init)=>new Promise(resolve=>{release=resolve;signal=init?.signal;}));await open(socket);
-  await act(async()=>root.unmount());mounted=false;expect(signal?.aborted).toBe(true);
-  await act(async()=>{release(Response.json([report(11)]));await vi.advanceTimersByTimeAsync(9000);});
-  expect(Socket.instances).toHaveLength(2);expect(host.textContent).toBe("");
- });
+
+  it("polls after missing WS hints and preserves canonical bigint cursors with mode gaps",async()=>{
+    fetchMock.mockImplementation(async(input)=>{
+      if(endpoint(input).pathname.endsWith("/delivery/baseline"))return baseline([report(10)],"fixture-live","9223372036854775801");
+      if(isChanges(input))return changes("9223372036854775801");
+      return defaultResponse(input);
+    });
+    await mount();
+    fetchMock.mockImplementation((input)=>isChanges(input)?Promise.resolve(changes("9223372036854775801",[
+      upsert("9223372036854775805",report(12)),upsert("9223372036854775807",report(11))
+    ])):defaultResponse(input));
+    await wait(15000);
+    expect(seenCursors()).toEqual(["9223372036854775801","9223372036854775801"]);
+    expect(ids()).toEqual([12,11,10]);
+  });
+
+  it("bounds pages and resumes from the last accepted offset without waiting for a reconnect",async()=>{
+    let total=0;
+    fetchMock.mockImplementation((input)=>{
+      if(!isChanges(input))return defaultResponse(input);
+      const query=endpoint(input).searchParams,after=Number(query.get("after")),limit=Number(query.get("limit"));
+      expect(limit).toBe(100);
+      const count=Math.min(1001-total,limit);
+      total+=count;
+      return Promise.resolve(changes(String(after),Array.from({length:count},(_,index)=>upsert(String(after+index+1),report(after+index+1))),total<1001));
+    });
+    await mount();
+    expect(seenCursors()).toHaveLength(10);
+    expect(last(seenCursors())).toBe("1000");
+    expect(latest.recoveryStatus).toBe("limited");
+    await wait(750);
+    expect(seenCursors()[10]).toBe("1100");
+    expect(latest.recoveryStatus).toBe("loaded");
+    expect(ids()).toHaveLength(1002);
+  });
+
+  it.each([
+    ["unordered",[upsert("102",report(12)),upsert("101",report(11))],"101","fixture-live",false],
+    ["repeated offset",[upsert("101",report(11)),upsert("101",report(12))],"101","fixture-live",false],
+    ["mismatched ID",[{...upsert("101",report(11)),event_id:12}],"101","fixture-live",false],
+    ["leading zero",[upsert("0101",report(11))],"0101","fixture-live",false],
+    ["overflow",[upsert("9223372036854775808",report(11))],"9223372036854775808","fixture-live",false],
+    ["ahead ack",[upsert("101",report(11))],"102","fixture-live",false],
+    ["wrong epoch",[upsert("101",report(11))],"101","other-live",false],
+    ["empty with more",[],"100","fixture-live",true],
+  ])("rejects a %s page atomically and retries from the prior offset",async(_name,rows,next_after,epoch,has_more)=>{
+    await mount();
+    fetchMock.mockImplementation((input)=>isChanges(input)?Promise.resolve(Response.json({epoch,changes:rows,next_after,has_more})):defaultResponse(input));
+    await hint(99);
+    expect(ids()).toEqual([10]);
+    expect(latest.recoveryStatus).toBe("error");
+    fetchMock.mockImplementation((input)=>isChanges(input)?Promise.resolve(changes("100",[upsert("101",report(11))])):defaultResponse(input));
+    await wait(5000);
+    expect(seenCursors()).toEqual(["100","100","100"]);
+    expect(ids()).toEqual([11,10]);
+  });
+
+  it("reseeds only for an explicit expired cursor and replaces stale reports",async()=>{
+    await mount();
+    fetchMock.mockImplementation(async(input)=>{
+      const url=endpoint(input);
+      if(url.pathname.endsWith("/delivery/baseline"))return baseline([report(13)],"new-live","500");
+      if(isChanges(input)){
+        if(url.searchParams.get("epoch")==="new-live")return changes("500",[],false,"new-live");
+        return Response.json({detail:{code:"delivery_baseline_required",reason:"cursor_expired"}},{status:409});
+      }
+      return defaultResponse(input);
+    });
+    await hint(99);await wait(750);
+    expect(seenCursors()).toEqual(["100","100","500"]);
+    expect(ids()).toEqual([13]);
+  });
+
+  it("invalidates a pre-delete history page and ignores an older WS payload",async()=>{
+    await mount();
+    let release!:(response:Response)=>void;
+    let historySignal:AbortSignal|null|undefined;
+    fetchMock.mockImplementation((input,init)=>{
+      const url=endpoint(input);
+      if(isChanges(input))return Promise.resolve(changes("100",[tombstone("101",10)]));
+      if(url.pathname.endsWith("/events")&&!release)return new Promise(resolve=>{release=resolve;historySignal=init?.signal;});
+      return defaultResponse(input);
+    });
+    await act(async()=>{void latest.loadFullHistory();});
+    await hint(10);
+    expect(historySignal?.aborted).toBe(true);
+    await act(async()=>release(Response.json([report(10)])));
+    expect(ids()).toEqual([]);
+  });
+
+  it("cancels fetch and scheduled work when unmounted",async()=>{
+    await mount();
+    let release!:(response:Response)=>void;
+    let signal:AbortSignal|null|undefined;
+    fetchMock.mockImplementation((input,init)=>isChanges(input)?new Promise(resolve=>{release=resolve;signal=init?.signal;}):defaultResponse(input));
+    await open();await close();
+    await act(async()=>root.unmount());mounted=false;
+    expect(signal?.aborted).toBe(true);
+    await act(async()=>release(changes("100",[upsert("101",report(11))])));
+    await wait(18000);
+    expect(Socket.instances).toHaveLength(1);
+    expect(host.textContent).toBe("");
+  });
 });

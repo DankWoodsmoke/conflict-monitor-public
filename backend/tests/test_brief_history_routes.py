@@ -7,6 +7,7 @@ import pytest
 from fastapi import FastAPI
 
 from app.routes import sitreps as subject
+from app.services.source_digest import DIGEST_CONTRACT, DIGEST_METHOD
 
 
 def brief(**changes):
@@ -14,12 +15,13 @@ def brief(**changes):
         "events_analyzed": 3, "key_questions": "[]", "key_event_ids": "5,2,7", "headline": "Attributed brief",
         "situation": "PRIVATE FULL SOURCE SNAPSHOT TEXT", "escalation_level": "UNASSESSED", "escalation_score": 0,
         "escalation_text": "No assessment", "economic_exposure": "", "game_theory": "", "humanitarian_ground": "",
-        "historical_analogue": "", "raw_response": json.dumps({"_provenance": {"method": "attributed_report_compilation",
+        "historical_analogue": "", "raw_response": json.dumps({"_provenance": {"method": DIGEST_METHOD, "contract_version": DIGEST_CONTRACT,
             "model": None, "source_snapshot": ["PRIVATE SOURCE TEXT"], "private_key": "DO NOT EXPOSE"}}), **changes})
 
 
 def event(identity, source="rss_fixture"):
-    return SimpleNamespace(id=identity, source=source, channel_name="Publisher", summary="source statement",
+    return SimpleNamespace(id=identity, source=source, channel_name="Publisher", summary="untrusted generated summary",
+        raw_text="source statement",
         source_url="https://example.invalid/", severity=0, event_type="unclassified", location_name="",
         timestamp=datetime.now(timezone.utc), reporting_channels="", confirmed_networks="", source_reliability=None)
 
@@ -59,14 +61,14 @@ async def test_history_index_exposes_unknown_score_and_public_provenance_but_not
     assert response.status_code == 200
     row, = response.json()
     assert row["escalation_score"] is None and row["analysis_status"] == "attributed_source_digest"
-    assert row["provenance"] == {"method": "attributed_report_compilation", "model": None}
+    assert row["provenance"] == {"method": DIGEST_METHOD, "contract_version": DIGEST_CONTRACT, "model": None}
     assert "PRIVATE" not in response.text and "DO NOT EXPOSE" not in response.text
     assert "situation" not in row
 
 
 @pytest.mark.asyncio
 async def test_citation_cards_restore_frozen_reference_order_and_preserve_unscored_source_metadata(app, monkeypatch):
-    session = Session([scalar(brief()), many([event(7, "telegram"), event(5), event(2)])])
+    session = Session([scalar(brief()), many([event(7, "telegram"), event(5), event(2, "satellite_firms")])])
     monkeypatch.setattr(subject, "async_session", lambda: session)
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://fixture") as client:
         response = await client.get("/sitreps/12/events")
@@ -74,6 +76,9 @@ async def test_citation_cards_restore_frozen_reference_order_and_preserve_unscor
     assert [row["id"] for row in rows] == [5, 2, 7]
     assert rows[0]["severity"] == 0 and rows[0]["location_name"] == ""
     assert rows[0]["network"] == "RSS" and rows[-1]["network"] == "TG"
+    assert rows[1]["network"] == "FIRMS" and rows[1]["source_time_basis"] == "sensor_acquisition_time"
+    assert rows[1]["citation_kind"] == "reference_imagery"
+    assert all(row["summary"] == "source statement" for row in rows)
     assert response.json()["source_reference_status"] == "available"
 
 
@@ -86,3 +91,22 @@ async def test_deleted_source_events_are_explicit_instead_of_qualified_as_availa
     body = response.json()
     assert body["total"] == 2 and body["missing_source_ids"] == [7]
     assert body["source_reference_status"] == "missing_source_events"
+
+
+@pytest.mark.asyncio
+async def test_legacy_digest_keeps_frozen_id_and_citations_but_withholds_unqualified_text(app, monkeypatch):
+    row = brief(headline="WRONG legacy claim", situation="WRONG generated statement", raw_response=json.dumps(
+        {"_provenance": {"contract_version": "source-digest-v1", "model": None, "method": DIGEST_METHOD}}))
+    session = Session([scalar(row), many([row])])
+    monkeypatch.setattr(subject, "async_session", lambda: session)
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://fixture") as client:
+        detail = await client.get("/sitreps/12")
+        history = await client.get("/sitreps/")
+    assert detail.status_code == history.status_code == 200
+    for result in (detail.json()["sitrep"], history.json()[0]):
+        assert result["analysis_status"] == "legacy_source_digest_unqualified"
+        assert result["id"] == 12 and result["trigger"] == "source_digest"
+        assert result["key_event_ids"] == [5, 2, 7]
+        assert "attribution unqualified" in result["headline"]
+    assert "WRONG" not in detail.text and "WRONG" not in history.text
+    assert row.situation == "WRONG generated statement"

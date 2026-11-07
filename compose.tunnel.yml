@@ -1,0 +1,60 @@
+# Apply AFTER docker-compose.yml and compose.publisher.yml on a qualified host.
+# This file does not create a Cloudflare tunnel, DNS, token, or paid service.
+# The connector is opt-in: omit --profile public-edge during all local reviews.
+services:
+  publicfrontend:
+    ports: !reset []
+    # Replace the local ingress bridge, not merge another network into it.
+    networks: !override
+      public_reader: {}
+      public_edge:
+        ipv4_address: 172.31.250.3
+    volumes:
+      - ./tools/hosting/edge-http.conf:/etc/nginx/public-edge-http/trusted.conf:ro
+      - ./tools/hosting/edge-server.conf:/etc/nginx/public-edge-server/restrict.conf:ro
+  cloudflared:
+    profiles: [public-edge]
+    # The recipe copies the exact pinned official static executable and CA
+    # bundle into scratch, preserving licenses/provenance without unused libc.
+    # Deployment must override this tag with the qualified local image ID/digest.
+    build: ./tools/hosting
+    image: conflict-monitor-cloudflared:2026.10.7-static.1
+    pull_policy: never
+    restart: unless-stopped
+    user: "65532:65532"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 64
+    mem_limit: 192m
+    cpus: "1.0"
+    command: [tunnel, --config, /etc/cloudflared/config.yml, --no-autoupdate, run]
+    networks:
+      public_edge:
+        ipv4_address: 172.31.250.2
+      tunnel_egress: {}
+    volumes:
+      - type: bind
+        source: ${CONFLICT_TUNNEL_CONFIG:?Provide a reviewed private local tunnel config path}
+        target: /etc/cloudflared/config.yml
+        read_only: true
+    secrets:
+      - tunnel_credentials
+    depends_on:
+      publicfrontend:
+        condition: service_healthy
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+networks:
+  public_edge:
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.31.250.0/29
+  tunnel_egress: {}
+secrets:
+  tunnel_credentials:
+    file: ${CONFLICT_TUNNEL_CREDENTIALS:?Provide existing tunnel-scoped credentials file outside this source tree}

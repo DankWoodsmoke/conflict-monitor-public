@@ -1,9 +1,11 @@
-import { severityLabel,reportSourceKind } from "../lib/events";
+import { severityLabel,reportSourceKind,assessedSeverity,hasCriticalAlertStyle } from "../lib/events";
 import { safeUrl } from "../lib/runtime";
 import { EvidenceDetails } from "./EvidenceDetails";
+import { ReportAnalysis } from "./ReportAnalysis";
 import { nowMs } from "../lib/clock";
 import {hasUsableReportCoordinates} from "../lib/reportPosition";
 import {recentReports} from "../lib/reportPresentation";
+import { useReportFilters } from "../hooks/useReportFilters";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ConflictEvent } from "../types/event";
 import { hasMultipleReports, isViralAmplification, getNetworks, NETWORK_META } from "../utils/verification";
@@ -83,7 +85,8 @@ const TYPE_COLORS: Record<string, string> = {
 
 const TYPE_ICONS: Record<string, string> = {
   unclassified:    "▤",
-  military:        "💥",
+  // A category badge cannot assert a strike, including when source text denies one.
+  military:        "🛡",
   diplomatic:      "🤝",
   economic:        "📊",
   cyber:           "💻",
@@ -129,10 +132,14 @@ function playBlip() {
 
 // ── Props ────────────────────────────────────────────────────────────────────
 interface LiveFeedProps {
+  readOnly?: boolean;
   events:        ConflictEvent[];
   allEvents?:    ConflictEvent[];
   onEventClick?: (evt: ConflictEvent) => void;
   selectedEventId?: number | null;
+  operatorKey?: string;
+  onConfigureOperator?: ()=>void;
+  filters?: ReturnType<typeof useReportFilters>;
 }
 
 // ── Source quality dots ───────────────────────────────────────────────────────
@@ -190,21 +197,22 @@ function AgeChip({ timestamp }: { timestamp: string }) {
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
-export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: LiveFeedProps) {
+export function LiveFeed({ events, allEvents, onEventClick, selectedEventId,operatorKey="",onConfigureOperator,filters,readOnly=false }: LiveFeedProps) {
   const containerRef  = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const assessmentRef = useRef<HTMLDetailsElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
   const [newIds, setNewIds]         = useState<Set<number>>(new Set());
   const prevCountRef  = useRef(0);
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [filtersOpen, setFiltersOpen]   = useState(false);
 
-  // Filter state
-  const [search,       setSearch]       = useState("");
-  const [minSev,       setMinSev]       = useState(1);
-  const [typeFilter,   setTypeFilter]   = useState<string | null>(null);
-  const [sourceFilter, setSourceFilter] = useState<string | null>(null);
-  const [confirmedOnly, setConfirmedOnly] = useState(false);
-  const [sortMode,     setSortMode]     = useState<"new" | "sev" | "conf">("new");
+  const localFilters = useReportFilters();
+  const {
+    search, setSearch, minSev, setMinSev, typeFilter, setTypeFilter,
+    sourceFilter, setSourceFilter, confirmedOnly, setConfirmedOnly, sortMode, setSortMode,
+  } = filters ?? localFilters;
+  const searchQuery = search.trim().normalize("NFC").toLowerCase();
 
   // ── New event detection ───────────────────────────────────────────────────
   useEffect(() => {
@@ -256,26 +264,34 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
   // ── Filtered + sorted event list ──────────────────────────────────────────
   const filteredEvents = useMemo(() => {
     const filtered = events.filter((e) => {
-      if (minSev > 1 && (e.severity ?? 0) < minSev) return false;
+      if (minSev > 1 && (assessedSeverity(e) ?? 0) < minSev) return false;
       if (typeFilter && e.event_type !== typeFilter) return false;
       if (confirmedOnly && !hasMultipleReports(e)) return false;
       if(sourceFilter && reportSourceKind(e)!==sourceFilter)return false;
-      if (search.trim()) {
-        const q = search.toLowerCase();
-        return (e.summary?.toLowerCase().includes(q) || e.location_name?.toLowerCase().includes(q) || e.channel_name?.toLowerCase().includes(q));
+      if (searchQuery) {
+        return [e.summary, e.raw_text, e.location_name, e.channel_name].some(
+          text => text?.normalize("NFC").toLowerCase().includes(searchQuery),
+        );
       }
       return true;
     });
-    if (sortMode === "sev")  return [...filtered].sort((a, b) => (b.severity ?? 0) - (a.severity ?? 0));
+    if (sortMode === "sev")  return [...filtered].sort((a, b) => (assessedSeverity(b) ?? 0) - (assessedSeverity(a) ?? 0));
     if (sortMode === "conf") return [...filtered].sort((a, b) => {
       const ac = hasMultipleReports(a) ? 2 : (a.report_count ?? 1);
       const bc = hasMultipleReports(b) ? 2 : (b.report_count ?? 1);
       return bc - ac;
     });
     return filtered;
-  }, [events, search, minSev, typeFilter, sourceFilter, confirmedOnly, sortMode]);
+  }, [events, searchQuery, minSev, typeFilter, sourceFilter, confirmedOnly, sortMode]);
 
-  const activeFilterCount = (minSev > 1 ? 1 : 0) + (typeFilter ? 1 : 0) + (sourceFilter ? 1 : 0) + (confirmedOnly ? 1 : 0) + (search ? 1 : 0);
+  const activeFilterCount = (minSev > 1 ? 1 : 0) + (typeFilter ? 1 : 0) + (sourceFilter ? 1 : 0) + (confirmedOnly ? 1 : 0) + (searchQuery ? 1 : 0);
+  const assessmentCoverage=useMemo(()=>({
+    total:events.length,
+    model:events.filter(e=>e.synthetic!==true&&assessedSeverity(e)!==null).length,
+    legacy:events.filter(e=>e.synthetic!==true&&Number.isInteger(e.severity)&&e.severity>0&&assessedSeverity(e)===null).length,
+    notRequested:events.filter(e=>e.classification_status==="not_requested").length,
+    synthetic:events.filter(e=>e.synthetic===true).length,
+  }),[events]);
 
   // ── CSS injection ─────────────────────────────────────────────────────────
   useEffect(() => {
@@ -290,9 +306,6 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
       .intel-card:hover { background: rgba(88,166,255,0.05) !important; }
       .intel-card-new  { animation: intelSlideIn 0.3s cubic-bezier(0.2,0,0,1) backwards; }
       .intel-card-crit { animation: intelGlow 2s ease-in-out 3; }
-      ::-webkit-scrollbar { width: 3px; } 
-      ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background: #1e3a5a; border-radius: 2px; }
     `;
     document.head.appendChild(style);
   }, []);
@@ -321,7 +334,7 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
         <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
           <button
             aria-expanded={filtersOpen}
-            onClick={() => setFiltersOpen(v => !v)}
+            onClick={() => {if(!filtersOpen&&assessmentRef.current)assessmentRef.current.open=false;setFiltersOpen(v => !v);}}
             style={{
               background: filtersOpen ? "rgba(88,166,255,0.12)" : "none",
               border: `1px solid ${filtersOpen || activeFilterCount > 0 ? "rgba(88,166,255,0.5)" : "#0d2035"}`,
@@ -347,8 +360,28 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
         </div>
       </div>
 
+      <div className="report-search">
+        <div className="report-search-controls">
+          <input
+            className="report-search-input"
+            ref={searchInputRef}
+            type="search"
+            aria-label="Search loaded reports"
+            placeholder="Search reports, places, sources…"
+            maxLength={256}
+            value={search}
+            onChange={event => setSearch(event.target.value)}
+          />
+          {search && <button className="report-search-clear" aria-label="Clear report search" onClick={() => {setSearch("");searchInputRef.current?.focus();}}>Clear</button>}
+        </div>
+        <div className="report-search-coverage">
+          {filteredEvents.length} of {events.length} loaded reports in this window
+          {filteredEvents.length > 600 && <> · first 600 displayed</>}
+        </div>
+      </div>
+
       {/* ── LIVE STATS BAR ───────────────────────────────────────────────── */}
-      <div style={{
+      <div className="report-statistics" style={{
         padding: "5px 12px",
         borderBottom: "1px solid #0a1a2a",
         background: "#030c18",
@@ -375,7 +408,7 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
         </div>
         <div style={{ flex: 1 }} />
         {/* Network breakdown pills */}
-        <div title="Up to three largest source categories across all loaded reports, before time-window and feed filters" style={{ display: "flex", flexDirection:"column", alignItems:"flex-end", gap: 3 }}>
+        <div className="report-source-counts" title="Up to three largest source categories across all loaded reports, before time-window and feed filters" style={{ display: "flex", flexDirection:"column", alignItems:"flex-end", gap: 3 }}>
           <span style={{fontSize:9,color:"#829aae",letterSpacing:0.5}}>ALL LOADED</span>
           <div style={{display:"flex",gap:4}}>
           {Object.entries(burstStats.nets).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([net, count]) => (
@@ -392,6 +425,12 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
         </div>
       </div>
 
+      <details ref={assessmentRef} onToggle={e=>{if(e.currentTarget.open)setFiltersOpen(false);}} className="assessment-coverage" style={{flexShrink:0,padding:"0 12px",borderBottom:"1px solid #203141",color:"#b8cbd8",fontSize:11}}>
+        <summary style={{minHeight:44,padding:"12px 0",cursor:"pointer"}}>Assessment coverage · {assessmentCoverage.model}/{assessmentCoverage.total} model-rated</summary>
+        <p>Current report window before feed filters: {assessmentCoverage.notRequested} not requested, {assessmentCoverage.legacy} legacy/unqualified scores, {assessmentCoverage.synthetic} exercise records.</p>
+        <p>Unscored means impact has not been assessed. Model estimates remain unreviewed; report volume and publisher ratings do not establish severity, certainty or urgency.</p>
+      </details>
+
       {/* ── FILTER PANEL (collapsible) ────────────────────────────────────── */}
       {filtersOpen && (
         <div className="report-filter-panel" role="region" aria-label="Report filters" tabIndex={0} style={{
@@ -401,18 +440,6 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
           display: "flex", flexDirection: "column", gap: 6,
           flexShrink: 0,
         }}>
-          {/* Search */}
-          <input
-            type="text"
-            placeholder="Search events, locations, sources…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{
-              background: "#060e1a", border: "1px solid #0d2035", borderRadius: 4,
-              color: "#c0d8f0", fontSize: 11, padding: "5px 9px",
-              fontFamily: "var(--font-mono)", outline: "none", width: "100%", boxSizing: "border-box",
-            }}
-          />
           {/* Type filter chips */}
           <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
             {Object.entries(TYPE_COLORS).map(([type, color]) => (
@@ -437,7 +464,7 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
           <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
             {/* Min severity */}
             <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-              <span style={{ fontSize: 11, color: "#8da3b7", fontFamily: "var(--font-mono)", whiteSpace: "nowrap" }}>SEV≥</span>
+              <span title="Source-bound model estimates or synthetic exercise ratings only; legacy and unscored values are excluded by a threshold" style={{ fontSize: 11, color: "#8da3b7", fontFamily: "var(--font-mono)", whiteSpace: "nowrap" }}>ESTIMATE≥</span>
               {[1, 3, 5, 7, 9].map((v) => (
                 <button
                   key={v}
@@ -525,7 +552,7 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
         style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}
       >
         {filteredEvents.length === 0 && (
-          <div style={{ padding: 32, textAlign: "center", color: "#1e3a5a", fontSize: 12, fontFamily: "var(--font-mono)", letterSpacing: 1 }}>
+          <div className="report-empty" style={{ padding: 32, textAlign: "center", color: "var(--text-secondary)", fontSize: 12, fontFamily: "var(--font-mono)", letterSpacing: 1 }}>
             <div style={{ fontSize: 28, marginBottom: 10, opacity: 0.3 }}>◎</div>
             {activeFilterCount>0 ? "No reports match active filters" : "No reports in this window"}
           </div>
@@ -533,14 +560,15 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
 
         {filteredEvents.slice(0, 600).map((evt, idx) => {
           const isNew      = newIds.has(evt.id);
-          const isCrit     = (evt.severity ?? 0) >= 9;
+          const isCrit     = hasCriticalAlertStyle(evt);
+          const score      = assessedSeverity(evt) ?? 0;
           const ageMs      = nowMs() - new Date(evt.timestamp).getTime();
           const isRecent   = Number.isFinite(ageMs)&&ageMs>=0&&ageMs < 5 * 60000;
           const hasPin     = hasUsableReportCoordinates(evt);
           const hasSrcUrl  = !!safeUrl(evt.source_url);
           const cm         = chanMeta(evt.channel_name || evt.source || "");
           const typeColor  = TYPE_COLORS[evt.event_type] ?? "#a3b9ca";
-          const sColor     = sevColor(evt.severity ?? 1);
+          const sColor     = score ? sevColor(score) : "#a3b9ca";
 
           return (
             <div
@@ -581,9 +609,9 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
                 {/* Severity pill */}
                 <span style={{
                   fontSize: 11, fontWeight: 800, padding: "1px 6px", borderRadius: 3,
-                  background: (evt.severity ?? 0) >= 8 ? sColor : "transparent",
-                  color: (evt.severity ?? 0) >= 8 ? "#06101a" : sColor,
-                  border: (evt.severity ?? 0) >= 8 ? "none" : `1px solid ${sColor}55`,
+                  background: isCrit ? sColor : "transparent",
+                  color: isCrit ? "#06101a" : sColor,
+                  border: isCrit ? "none" : `1px solid ${sColor}55`,
                   fontFamily: "var(--font-mono)", lineHeight: 1.4,
                 }}>
                   {severityLabel(evt)}
@@ -591,7 +619,7 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
               </div>
 
               {/* ── Row 2: Summary ──────────────────────────────────────── */}
-              <div style={{
+              <div className="report-summary" style={{
                 fontSize: 12, lineHeight: 1.5, color: isRecent ? "#dce8f5" : "#a8bdd0",
                 fontWeight: isRecent ? 500 : 400,
                 marginBottom: 6,
@@ -608,7 +636,7 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
                 {/* Source */}
                 <span title={cm.tip} style={{ display: "flex", alignItems: "center", gap: 4, cursor: "help", color: "#8ea8be" }}>
                   <span>{cm.flag}</span>
-                  <span style={{ color: relColor(evt.source_reliability) }}>{cm.label}</span>
+                  <span className="report-source-name" style={{ color: relColor(evt.source_reliability) }}>{cm.label}</span>
                   <QualityDots score={evt.source_reliability} />
                 </span>
 
@@ -655,12 +683,13 @@ export function LiveFeed({ events, allEvents, onEventClick, selectedEventId }: L
               </div>
 
               <EvidenceDetails event={evt} />
+              {!readOnly&&<ReportAnalysis event={evt} operatorKey={operatorKey} onConfigureOperator={onConfigureOperator}/>}
 
               {/* ── Severity bar at bottom ─────────────────────────────── */}
               <div style={{ height: 2, background: "#050e1a", borderRadius: 1, marginTop: 7 }}>
                 <div style={{
                   height: "100%", borderRadius: 1,
-                  width: `${((evt.severity ?? 1) / 10) * 100}%`,
+                  width: `${(score / 10) * 100}%`,
                   background: `linear-gradient(to right, #1a3a6a, ${typeColor})`,
                   transition: "width 0.4s ease",
                 }} />

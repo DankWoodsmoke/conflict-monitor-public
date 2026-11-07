@@ -5,6 +5,8 @@ from app.config import settings
 
 
 async def require_admin_key(x_admin_key: str | None = Header(default=None)) -> None:
+    if settings.public_read_only:
+        raise HTTPException(status_code=403, detail="Operator operations are unavailable in public read-only mode")
     expected = settings.admin_api_key
     if not expected:
         raise HTTPException(status_code=503, detail="Administrative operations are disabled")

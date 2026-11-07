@@ -36,3 +36,11 @@ async def test_missing_source_or_coordinates_never_create_a_default_reference_lo
     with pytest.raises(HTTPException) as failure:
         await subject.get_event_imagery(1, session(event))
     assert failure.value.status_code == 404
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("lat,lon", [(-25, 80), (float("nan"), 34), (31, float("inf")), (91, 34), (31, -181), (True, 34), (31, False)])
+async def test_invalid_or_legacy_sentinel_position_never_creates_imagery_links(lat, lon):
+    with pytest.raises(HTTPException) as failure:
+        await subject.get_event_imagery(1, session(SimpleNamespace(lat=lat, lon=lon)))
+    assert failure.value.status_code == 404

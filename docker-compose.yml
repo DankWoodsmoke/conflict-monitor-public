@@ -2,16 +2,16 @@
 services:
   db:
     build: ./tools/postgis
-    image: conflict-monitor-postgis:0.2.0-rc.2
+    image: conflict-monitor-postgis:0.2.0-rc.5
     pull_policy: build
     read_only: true
     cap_drop: [ALL]
-    # Only initialization needs these; the PostgreSQL server drops to UID 999.
+    # Only initialization needs these. The PostgreSQL server drops to UID 70.
     cap_add: [CHOWN, DAC_OVERRIDE, FOWNER, SETGID, SETUID]
     security_opt: [no-new-privileges:true]
     tmpfs:
       - /tmp:mode=1777
-      - /var/run/postgresql:uid=999,gid=999,mode=3775
+      - /var/run/postgresql:uid=70,gid=70,mode=3775
     environment:
       POSTGRES_USER: monitor_admin
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set a new POSTGRES_PASSWORD in .env}
@@ -20,7 +20,7 @@ services:
     volumes:
       # A new volume prevents silently mounting an earlier profile's data directory.
       # Existing installations must follow docs/DB_UPGRADE.md before starting this profile.
-      - pgdata17_36_secure:/var/lib/postgresql/data
+      - pgdata17_36_alpine:/var/lib/postgresql/data
     healthcheck:
       test: [CMD-SHELL, "pg_isready -h 127.0.0.1 -U monitor_admin -d conflict_monitor"]
       interval: 5s
@@ -51,6 +51,7 @@ services:
       POSTGRES_PASSWORD: ""
       POSTGRES_ADMIN_PASSWORD: ""
       POSTGRES_APP_PASSWORD: ""
+      POSTGRES_PUBLIC_PASSWORD: ""
       PGPASSWORD: ""
       MIGRATION_DATABASE_URL: ""
       BOOTSTRAP_DATABASE_URL: ""
@@ -88,5 +89,5 @@ services:
       backend:
         condition: service_healthy
 volumes:
-  pgdata17_36_secure:
+  pgdata17_36_alpine:
   briefing_data:

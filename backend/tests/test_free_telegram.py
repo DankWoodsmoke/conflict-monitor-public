@@ -1,3 +1,4 @@
+import asyncio
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock
@@ -15,6 +16,7 @@ def free(monkeypatch):
     order=[]
     store=EventStore()
     ledger=Ledger(order)
+    store.ledger=ledger
     async def get(model, identity):
         assert model is SourceReport
         row=ledger.records.get(identity)
@@ -29,6 +31,8 @@ def free(monkeypatch):
     monkeypatch.setattr(tg,"_stamp",lambda:STAMP+timedelta(hours=1))
     monkeypatch.setattr(tg,"_get_conflict_cutoff",lambda:STAMP-timedelta(days=1))
     monkeypatch.setattr(tg,"_state",{"status":"disabled","channels":{},"last_success_at":None,"last_published_at":None})
+    monkeypatch.setattr(tg,"_report_locks",{})
+    monkeypatch.setattr(tg,"_catchup_locks",{})
     forbidden=AsyncMock(side_effect=AssertionError("Free Telegram must not call a model/geocoder/anomaly"))
     monkeypatch.setattr(tg,"classify_message",forbidden)
     monkeypatch.setattr(tg,"geocode",forbidden)
@@ -55,7 +59,7 @@ async def test_free_telegram_preserves_unicode_unscored_and_null_location(free):
     assert event.lat is event.lon is event.geometry is None
     assert event.source_url=="https://t.me/fixture_public/42"
     free.forbidden.assert_not_awaited()
-    free.checkpoint.assert_awaited_once_with("fixture_public",42)
+    free.checkpoint.assert_not_awaited()
     assert free.broadcast.await_count==1
 
 
@@ -77,13 +81,14 @@ async def test_same_message_id_across_public_channels_is_distinct(free):
 
 
 @pytest.mark.asyncio
-async def test_incomplete_receipt_cannot_advance_checkpoint(free):
+async def test_incomplete_receipt_resumes_without_replacing_stored_clock_or_advancing_checkpoint(free):
     report={"source":"telegram","channel_name":"fixture_public","telegram_message_id":42,
         "source_url":"https://t.me/fixture_public/42","raw_text":RAW,"timestamp":STAMP.isoformat()}
     await free.ledger.capture(report)
-    assert await ingest()=="pending_receipt"
+    assert await ingest(stamp=STAMP+timedelta(minutes=5))=="reported"
     free.checkpoint.assert_not_awaited()
-    assert not free.store.events
+    assert free.store.events[0].timestamp==STAMP
+    assert next(iter(free.ledger.records.values()))["report"] == report
 
 
 @pytest.mark.asyncio
@@ -139,3 +144,116 @@ async def test_incremental_backfill_uses_cursor_and_hard_budget(free,monkeypatch
     assert await tg._backfill_reports(client,SimpleNamespace(username="fixture_public"),STAMP)==3
     assert requested==[{"limit":3,"min_id":50,"reverse":True}]
     assert [row.telegram_message_id for row in free.store.events]==[51,52,53]
+    state = tg._state["channels"]["fixture_public"]
+    assert (state["status"], state["checkpoint_message_id"], state["provider_page_last_message_id"],
+            state["blocked_message_id"]) == ("ok", 53, 53, None)
+
+
+@pytest.mark.asyncio
+async def test_newer_push_cannot_skip_older_failed_ordered_work(free, monkeypatch):
+    checkpoint = 100
+
+    async def read(_):
+        return checkpoint
+
+    async def advance(_, message_id):
+        nonlocal checkpoint
+        checkpoint = max(checkpoint, message_id)
+
+    async def page(entity, **options):
+        for message_id in (101, 102):
+            if message_id > options["min_id"]:
+                yield SimpleNamespace(id=message_id, date=STAMP, text=f"{RAW} {message_id}")
+
+    fail = True
+
+    async def finish(receipt, status, event_id=None):
+        if fail and free.ledger.records[receipt]["report"]["telegram_message_id"] == 101:
+            raise RuntimeError("interrupted after Event commit")
+        await free.ledger.finish(receipt, status, event_id)
+
+    monkeypatch.setattr(tg, "_get_checkpoint", read)
+    monkeypatch.setattr(tg, "_save_checkpoint", advance)
+    monkeypatch.setattr(tg, "finish_report", finish)
+    client = SimpleNamespace(iter_messages=page)
+    entity = SimpleNamespace(username="fixture_public")
+    with pytest.raises(RuntimeError, match="interrupted"):
+        await tg._backfill_reports(client, entity, STAMP)
+    assert checkpoint == 100
+    assert await ingest(f"{RAW} 102", message_id=102) == "reported"
+    assert checkpoint == 100
+    fail = False
+    assert await tg._backfill_reports(client, entity, STAMP) == 2
+    assert checkpoint == 102
+    assert [event.telegram_message_id for event in free.store.events] == [101, 102]
+    assert {row["status"] for row in free.ledger.records.values()} == {"reported"}
+    assert free.broadcast.await_count == 2
+    free.forbidden.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("current", [RAW + " Publisher correction.", ""])
+async def test_current_upstream_edit_cannot_strand_or_replace_unfinished_source(free, current):
+    original = tg._report_payload(RAW, "fixture_public", STAMP, 42)
+    identity = await free.ledger.capture(original)
+    outcome = await ingest(current, stamp=STAMP + timedelta(minutes=7))
+    assert outcome == ("source_revision_needs_review" if current else "no_text_or_caption")
+    assert len(free.store.events) == 1
+    assert free.store.events[0].raw_text == RAW and free.store.events[0].timestamp == STAMP
+    assert free.ledger.records[identity]["report"] == original
+    assert free.ledger.records[identity]["status"] == "reported"
+    assert len(free.ledger.records) == 1 + bool(current)
+    free.checkpoint.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_duplicate_processing_waits_per_channel_and_other_channels_continue(free, monkeypatch):
+    entered, release = asyncio.Event(), asyncio.Event()
+
+    async def finish(receipt, status, event_id=None):
+        if free.ledger.records[receipt]["report"]["channel_name"] == "fixture_public" and not entered.is_set():
+            entered.set()
+            await release.wait()
+        await free.ledger.finish(receipt, status, event_id)
+
+    monkeypatch.setattr(tg, "finish_report", finish)
+    original = asyncio.create_task(ingest())
+    await asyncio.wait_for(entered.wait(), 1)
+    revision = asyncio.create_task(ingest(RAW + " Publisher correction."))
+    try:
+        assert await asyncio.wait_for(ingest(channel="other_public"), 1) == "reported"
+        assert not revision.done()
+    finally:
+        release.set()
+        outcomes = await asyncio.gather(original, revision)
+    assert outcomes == ["reported", "source_revision_needs_review"]
+    assert len(free.store.events) == 2 and free.broadcast.await_count == 2
+
+
+@pytest.mark.asyncio
+async def test_out_of_order_provider_page_cannot_advance_even_its_first_id(free, monkeypatch):
+    monkeypatch.setattr(tg, "_get_checkpoint", AsyncMock(return_value=100))
+
+    async def page(entity, **options):
+        for message_id in (102, 101):
+            yield SimpleNamespace(id=message_id, date=STAMP, text=RAW)
+
+    with pytest.raises(ValueError, match="forward ID order"):
+        await tg._backfill_reports(SimpleNamespace(iter_messages=page), SimpleNamespace(username="fixture_public"), STAMP)
+    free.checkpoint.assert_not_awaited()
+    assert not free.store.events and not free.ledger.records
+
+
+@pytest.mark.asyncio
+async def test_empty_ordered_page_distinguishes_no_visible_work_from_missing_checkpoint(free, monkeypatch):
+    monkeypatch.setattr(tg, "_get_checkpoint", AsyncMock(return_value=100))
+
+    async def page(entity, **options):
+        for message in ():
+            yield message
+
+    assert await tg._backfill_reports(SimpleNamespace(iter_messages=page), SimpleNamespace(username="fixture_public"), STAMP) == 0
+    state = tg._state["channels"]["fixture_public"]
+    assert (state["status"], state["checkpoint_message_id"], state["provider_page_last_message_id"],
+            state["blocked_message_id"]) == ("ok", 100, None, None)
+    free.checkpoint.assert_not_awaited()

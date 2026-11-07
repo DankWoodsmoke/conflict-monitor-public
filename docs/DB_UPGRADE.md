@@ -1,8 +1,8 @@
 # PostgreSQL 17 / reduced PostGIS 3.6 profile upgrade
 
-The RC.2 Compose profile builds `conflict-monitor-postgis:0.2.0-rc.2` from the public source recipe in `tools/postgis`. It uses the pinned official PostgreSQL 17/Trixie base, SHA-256-verified PostGIS **3.6.4** source and a pinned upstream FlatGeobuf validation backport, plus signature-verified gosu **1.20**. The qualified image is `sha256:fc61b5645ca9a0115ef9a4fab2f0a3b35006c90a05d5511c5c010786da75ba65`; actual SQL reports PostgreSQL **17.11** and PostGIS **3.6.4**. This replaces the earlier full `postgis/postgis` image. It retains core PostGIS, topology, fuzzystrmatch and Tiger support, while excluding raster, address standardizer and SFCGAL. Inspect existing extension/function dependencies before adopting this reduced profile; unsupported dependencies block admission rather than being silently removed.
+The RC.3 candidate builds `conflict-monitor-postgis:0.2.0-rc.3` from `tools/postgis`. The official PostgreSQL **17.11** Alpine **3.24** base and PostGIS **3.6.4** source are pinned. The recipe retains the reviewed upstream FlatGeobuf backport and uses Alpine's signed su-exec for the entrypoint handoff. It retains core PostGIS, topology, fuzzystrmatch and Tiger support and excludes raster, address standardizer and SFCGAL. Check extension and function dependencies before adopting the reduced profile. Unsupported dependencies block restore.
 
-Existing installations must restore into a **new volume** before using this profile. Compose now names its default database volume `pgdata17_36_secure`; it deliberately reuses neither `pgdata` nor `pgdata17_36`. Starting an empty profile is not an upgrade of existing data. Rebuilding from the pinned recipe can yield a different image identity or newer distributor packages; independently qualify the actual built bytes rather than assuming the measured image identity carries forward.
+Existing installations must restore into a **new volume** before using this profile. Compose defaults to `pgdata17_36_alpine`. Rebuilding can produce a different image identity or distributor package inventory. Qualify the actual built image.
 
 The database initializer is `monitor_admin`; a one-shot `migrate` service runs `python -m app.bootstrap` with that administrator, applies Alembic, and grants a separate runtime login `monitor`. The HTTP service starts only after successful initialization and runs uvicorn without migrations. Set `POSTGRES_PASSWORD` for the administrator and a **different** `POSTGRES_APP_PASSWORD` containing 64 random hex characters for runtime access. Known database administrator/password/DSN variables are explicitly blanked in the HTTP container even when present in its `env_file`.
 
@@ -14,7 +14,7 @@ Runtime `monitor` has no superuser, role/database creation, replication, RLS byp
 
 ## Why logical restore
 
-PostgreSQL's [17.11 notes](https://www.postgresql.org/docs/17/release-17-11.html) describe a same-major minor upgrade. The earlier full-image migration also crossed Bullseye/Trixie glibc collation implementations, for which the [official image instructions](https://github.com/postgis/docker-postgis#readme) recommend dump/restore. The RC.2 change additionally reduces installed spatial components and introduces an explicitly reviewed source backport. A logical restore into a new database rechecks dependency availability and rebuilds indexes while preserving a rollback volume; attaching the new image to older data files bypasses that procedure even when the PostgreSQL major/version is unchanged.
+The RC.3 profile crosses Trixie glibc to Alpine musl while retaining PostgreSQL 17.11. The archived-data rehearsal measured different ordering in five default-collation table comparisons even though both database locale labels were `en_US.utf8`. It preserved 15,516 rows across 12 tables and five sequences using binary C-collated comparisons. Test any application query or extension that depends on locale ordering. A logical restore into a fresh database rechecks dependencies and rebuilds indexes while preserving the rollback volume. See the [official PostgreSQL 17.11 notes](https://www.postgresql.org/docs/17/release-17-11.html) and [PostGIS image upgrade guidance](https://github.com/postgis/docker-postgis#readme).
 
 ## Required sequence
 
@@ -22,7 +22,7 @@ PostgreSQL's [17.11 notes](https://www.postgresql.org/docs/17/release-17-11.html
 2. Rehearse the complete restore into an isolated new volume. Use the target PostgreSQL 17 client to create a custom-format dump (`pg_dump -Fc --no-owner --no-acl`). For an exact comparison while a source remains active, hold a read-only repeatable-read transaction, export its snapshot and pass that snapshot to `pg_dump --snapshot`. Never close that transaction before the dump finishes.
 3. For the final cutover, stop application collectors/writers and confirm generation jobs are idle. Take a **new** consistent private dump and checksum it. The rehearsal dump is not the final backup. Preserve the source volume and both dumps.
 4. Build and qualify the target source recipe, then initialize a new PostgreSQL 17 volume with `monitor_admin`. Create the application database from `template0`, retaining the source's UTF-8 encoding and locale names. Restore as `monitor_admin` with `pg_restore --no-owner --no-acl --exit-on-error`, then execute `SELECT postgis_extensions_upgrade();` as described in the [PostGIS upgrade instructions](https://postgis.net/docs/postgis_administration.html#upgrading). Any missing extension/function or restore error blocks admission. Run the one-shot initializer to create/grant the restricted runtime role. Excluding ownership/ACLs makes restored application objects administrator-owned instead of carrying forward the old privileged runtime identity.
-5. Require equality of every application table's count and canonical full-row hash, event raw-text hashes, receipt content hashes, checkpoints and sequence state. Check all required index definitions and `pg_index.indisvalid`, geography values/SRID/column agreement, actual locale version, extension versions, replay sampling and stored source-digest citation/hash reconstruction. Run the runtime-permission, PostGIS and real pipeline gates against a **separate qualification database**, using `monitor`, and verify administrator credentials are absent from the actual HTTP container. Never inject test rows into the live restored database.
+5. Compare every preserved table's count and canonical full-row hash under explicit binary C collation, event raw-text hashes, receipt content hashes, checkpoints and sequence state. Check required index definitions and validity, geography values, SRID and coordinate agreement, collation metadata for the target provider, extension versions, replay samples and stored digest citations. Compare newly migrated tables across staging and the final volume mount. Run runtime-permission, PostGIS and TCP delivery gates against a **separate qualification database** using `monitor`. Verify that the HTTP container cannot access administrator credentials.
 6. Stop the staging database process before Compose mounts its new volume. Two PostgreSQL processes must never mount the same data directory concurrently. Point Compose at the verified new volume using an explicit persistent override, start the database, confirm its actual SQL versions and only then start the backend. Keep the local briefing volume and voice mount unchanged.
 7. Verify REST/WebSocket readiness, preserved source/receipt/checkpoint data and unchanged local analysis/video artifacts. Record the observed service transition, including any expected startup failures. Begin a fresh observation period bound to the new database and application image identities; earlier observations remain evidence for their original profiles.
 
@@ -30,9 +30,9 @@ For a restored external volume, the persistent override has this shape (replace 
 
 ```yaml
 volumes:
-  pgdata17_36_secure:
+  pgdata17_36_alpine:
     external: true
-    name: conflict_monitor_restored_pg17_36_secure
+    name: conflict_monitor_restored_pg17_36_alpine
 ```
 
 Use that override for **every** subsequent Compose invocation. For example, a local operator with a private `compose-restored-db.yml` uses:
@@ -55,7 +55,11 @@ docker compose --project-name conflict-monitor -f compose-rollback.yml up -d --n
 
 Returning to the old volume serves its earlier snapshot. It does not merge post-cutover writes. Reconciliation or another logical restore is required before discarding either history. The qualified procedure retains both volumes and all comparison receipts.
 
-## Security scope
+## RC.3 security scope
+
+PostgreSQL runs as UID 70 with zero effective capabilities, a read-only root and no published database port. PROJ network access is disabled. The candidate uses an Alpine-native locally built and signed SQLite library package with its upstream version and package origin retained. The SQLite shell is absent. The independent raw scanner still reports one High against the linked library and three Medium records. Publication remains gated on the raw security result. See [the security review](OS_SECURITY_REVIEW.md).
+
+## RC.2 security history
 
 Updated PostgreSQL/PostGIS versions do not imply a vulnerability-free image. The refreshed exact-image scan retains **412 records, including 10 Critical and 117 High**, and the raw High gate still fails. The [complete database security review](qualification/2026-10-30-database-security-review.json) distinguishes 29 distributor fixed-boundary matches, 382 vendor-open records and one absent-component mismatch, retaining aliases rather than suppressing them. The nominal PostGIS 3.6.4 match for CVE-2026-73515 remains visible alongside the reviewed, pinned upstream backport and independent native/SQL tests. Input constraints are not package patches.
 

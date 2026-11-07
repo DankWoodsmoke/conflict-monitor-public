@@ -19,6 +19,7 @@ BOOTSTRAP_FIELDS = (
     "POSTGRES_PASSWORD",
     "POSTGRES_ADMIN_PASSWORD",
     "POSTGRES_APP_PASSWORD",
+    "POSTGRES_PUBLIC_PASSWORD",
     "PGPASSWORD",
     "MIGRATION_DATABASE_URL",
     "BOOTSTRAP_DATABASE_URL",
@@ -43,7 +44,7 @@ def process_fields(raw):
     return dict(line.split(":", 1) for line in raw.splitlines() if ":" in line)
 
 
-def service_checks(service, inspection, process, project):
+def service_checks(service, inspection, process, project, database_uid=999):
     config = inspection.get("Config", {})
     host = inspection.get("HostConfig", {})
     state = inspection.get("State", {})
@@ -63,7 +64,7 @@ def service_checks(service, inspection, process, project):
         == "0000000000000000",
         "pid1_no_new_privileges": process.get("NoNewPrivs", "").strip() == "1",
         "pid1_expected_uid": process.get("Uid", "").split()
-        == [str({"frontend": 101, "backend": 10001, "db": 999}[service])] * 4,
+        == [str({"frontend": 101, "backend": 10001, "db": database_uid}[service])] * 4,
         "not_privileged": host.get("Privileged") is False,
         "no_publish_all_ports": host.get("PublishAllPorts") is False,
     }
@@ -141,7 +142,7 @@ def command(args):
         process.stderr.close()
 
 
-def qualify(project, compose_file, override, environment_file):
+def qualify(project, compose_file, override, environment_file, database_uid=999):
     project = qualification_project(project)
     base = [
         "docker",
@@ -168,7 +169,7 @@ def qualify(project, compose_file, override, environment_file):
         process = process_fields(
             command(["docker", "exec", identifier, "cat", "/proc/1/status"])
         )
-        checks = service_checks(service, inspection, process, project)
+        checks = service_checks(service, inspection, process, project, database_uid)
         rows.append(
             {"service": service, "image_id": inspection.get("Image"), "checks": checks}
         )
@@ -226,11 +227,12 @@ if __name__ == "__main__":
     parser.add_argument("--compose-file", type=Path, required=True)
     parser.add_argument("--override-file", type=Path, required=True)
     parser.add_argument("--env-file", type=Path, required=True)
+    parser.add_argument("--database-uid", type=int, choices=(70, 999), default=999)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     try:
         result = qualify(
-            args.project, args.compose_file, args.override_file, args.env_file
+            args.project, args.compose_file, args.override_file, args.env_file, args.database_uid
         )
     except (
         OSError,

@@ -1,0 +1,53 @@
+From 943b64cfc57f6c66f26f8d6db6538e06a474a8c2 Mon Sep 17 00:00:00 2001
+From: Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+Date: Wed, 18 Feb 2026 22:40:57 +0900
+Subject: [PATCH] Check nghttp2_is_fatal first
+
+---
+ lib/nghttp2_session.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/lib/nghttp2_session.c b/lib/nghttp2_session.c
+index 1f4ea54c62..bcea547343 100644
+--- a/lib/nghttp2_session.c
++++ b/lib/nghttp2_session.c
+@@ -5466,6 +5466,10 @@ nghttp2_ssize nghttp2_session_mem_recv2(nghttp2_session *session,
+         busy = 1;
+ 
+         rv = session_on_data_received_fail_fast(session);
++        if (nghttp2_is_fatal(rv)) {
++          return rv;
++        }
++
+         if (iframe->state == NGHTTP2_IB_IGN_ALL) {
+           return (nghttp2_ssize)inlen;
+         }
+@@ -5486,10 +5490,6 @@ nghttp2_ssize nghttp2_session_mem_recv2(nghttp2_session *session,
+           break;
+         }
+ 
+-        if (nghttp2_is_fatal(rv)) {
+-          return rv;
+-        }
+-
+         rv = inbound_frame_handle_pad(iframe, &iframe->frame.hd);
+         if (rv < 0) {
+           rv = nghttp2_session_terminate_session_with_reason(
+@@ -6771,13 +6771,13 @@ nghttp2_ssize nghttp2_session_mem_recv2(nghttp2_session *session,
+             rv = session->callbacks.on_data_chunk_recv_callback(
+                 session, iframe->frame.hd.flags, iframe->frame.hd.stream_id,
+                 in - readlen, (size_t)data_readlen, session->user_data);
+-            if (rv == NGHTTP2_ERR_PAUSE) {
+-              return (nghttp2_ssize)(in - first);
+-            }
+-
+             if (nghttp2_is_fatal(rv)) {
+               return NGHTTP2_ERR_CALLBACK_FAILURE;
+             }
++
++            if (rv == NGHTTP2_ERR_PAUSE) {
++              return (nghttp2_ssize)(in - first);
++            }
+           }
+         }
+       }

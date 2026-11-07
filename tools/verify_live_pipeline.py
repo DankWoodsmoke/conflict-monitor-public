@@ -12,6 +12,7 @@ import socket
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from types import SimpleNamespace
 from urllib.parse import urlsplit
 from uuid import uuid4
 
@@ -21,6 +22,71 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend"))
 def require_test_database(url):
     if urlsplit(url).path != "/conflict_monitor_test":
         raise RuntimeError("INCOMPLETE: DATABASE_URL must name isolated conflict_monitor_test")
+
+
+async def verify_bot_delivery(ws, api, run_id, title, published):
+    """Inject only the Bot API response and inspect the real persisted prefix before each ack."""
+    import httpx
+    from pydantic import SecretStr
+    from sqlalchemy import select
+    from unittest.mock import patch
+    from app.db import async_session
+    from app.models import Event, SourceReport
+    from app.services import telegram, telegram_bot
+
+    channel = f"qual_{run_id}_bot"
+    chat_id = -1001234567890
+    token = f"{42}:{'fixture' * 5}"
+    source_url = f"https://t.me/{channel}/99"
+    original = {"message_id": 99, "date": int(published.timestamp()), "text": title,
+                "chat": {"type": "channel", "username": channel, "id": chat_id}}
+    revised = {**original, "text": title + " Synthetic revision.", "edit_date": original["date"] + 60}
+    denied = {**original, "message_id": 100, "chat": {**original["chat"], "id": chat_id - 1}}
+    offsets = []
+
+    async def provider(request):
+        assert request.method == "POST" and request.url == f"https://api.telegram.org/bot{token}/getUpdates"
+        options = json.loads(request.content)
+        assert options["allowed_updates"] == ["channel_post", "edited_channel_post"]
+        offsets.append(options.get("offset"))
+        if offsets == [None]:
+            result = [{"update_id": 31, "channel_post": original}, {"update_id": 32, "channel_post": denied}]
+        elif offsets in ([None, 33], [None, 33, 34]):
+            async with async_session() as session:
+                rows = (await session.execute(select(SourceReport).where(
+                    SourceReport.report["source_url"].astext == source_url))).scalars().all()
+                statuses = {row.status for row in rows}
+                assert statuses == ({"reported"} if offsets[-1] == 33 else {"reported", "source_revision_needs_review"})
+                assert len(rows) == len(statuses) and all(row.event_id for row in rows)
+                assert all(row.report["collection_method"] == "telegram_bot_api" for row in rows)
+            if offsets[-1] == 34:
+                return httpx.Response(409, json={"ok": False})
+            result = [{"update_id": 33, "edited_channel_post": revised}]
+        else:
+            raise AssertionError("Unexpected bot offset")
+        return httpx.Response(200, json={"ok": True, "result": result})
+
+    config = SimpleNamespace(telegram_transport="bot", telegram_processing_mode="reports",
+        telegram_bot_token=SecretStr(token), telegram_bot_channels=f"{channel}:{chat_id}",
+        live_ingestion_enabled=True, demo_mode=False)
+    mock_http = SimpleNamespace(AsyncClient=lambda **kwargs: httpx.AsyncClient(
+        transport=httpx.MockTransport(provider), **kwargs), Timeout=httpx.Timeout, TransportError=httpx.TransportError)
+    with (patch.object(telegram_bot, "settings", config), patch.object(telegram_bot, "httpx", mock_http),
+          patch.object(telegram_bot, "_STATE", {})):
+        assert await telegram._get_checkpoint(channel) == 0
+        await telegram_bot.start_bot_listener()
+        assert telegram_bot.get_bot_status()["error_type"] == "BotHTTP409"
+        assert offsets == [None, 33, 34] and telegram_bot._OWNER is None
+    payload = json.loads(await asyncio.wait_for(ws.recv(), timeout=5))["event"]
+    assert payload["source"] == "telegram" and payload["telegram_message_id"] == 99
+    event = (await api.get(f"/events/{payload['id']}")).raise_for_status().json()
+    assert event["source_url"] == source_url and event["raw_text"] == title
+    assert event["classification_status"] == "not_requested" and event["severity"] == 0
+    assert datetime.fromisoformat(event["timestamp"]) == datetime.fromtimestamp(original["date"], timezone.utc)
+    async with async_session() as session:
+        retained = (await session.execute(select(Event).where(Event.channel_name == channel))).scalars().all()
+        assert len(retained) == 1 and retained[0].reports[0]["collection_method"] == "telegram_bot_api"
+    assert await telegram._get_checkpoint(channel) == 0
 
 
 async def verify(*, public_feed=False):
@@ -75,6 +141,7 @@ async def verify(*, public_feed=False):
             raise RuntimeError("Server readiness deadline exceeded")
         async with httpx.AsyncClient(base_url=base_url, timeout=10) as client:
             assert (await client.get("/health")).status_code == 200
+            live_cursor = (await client.get("/events/delivery/baseline?limit=1")).raise_for_status().json()
             async with websockets.connect(f"ws://127.0.0.1:{port}/ws/events", origin=base_url) as ws:
                 result = await news_feeds._process_article(title, body, report_url, published, source_name, None)
                 assert result == "reported", result
@@ -88,6 +155,25 @@ async def verify(*, public_feed=False):
                 assert "وصول المساعدات" in event["raw_text"]
                 assert event["evidence"]["independent_origin_count"] is None
                 receipt["checks"]["free_rss_to_postgis_tcp_api_and_websocket"] = "PASS"
+
+                # The API lifespan owns the actual publisher even while all
+                # collectors are disabled. No manual publication in this gate.
+                async with asyncio.timeout(5):
+                    after = live_cursor["after"]
+                    while True:
+                        page = (await client.get("/events/delivery/changes", params={
+                            "epoch": live_cursor["epoch"], "after": after, "limit": 100,
+                        })).raise_for_status().json()
+                        assert page["epoch"] == live_cursor["epoch"] and int(page["next_after"]) >= int(after)
+                        target = next((row for row in page["changes"] if row["event_id"] == event_id), None)
+                        if target:
+                            assert target["action"] == "upsert" and target["event"]["raw_text"] == event["raw_text"]
+                            break
+                        after = page["next_after"]
+                        await asyncio.sleep(.1)
+                status = (await client.get("/status")).raise_for_status().json()
+                assert status["workers"]["event_delivery"]["state"] == "running"
+                receipt["checks"]["lifespan_publisher_delivers_without_collectors"] = "PASS"
 
                 duplicate = await news_feeds._process_article(title, body, report_url, published, source_name, None)
                 assert duplicate == "duplicate", duplicate
@@ -120,6 +206,7 @@ async def verify(*, public_feed=False):
                 assert tg_payload["event"]["source"] == "telegram"
                 assert tg_payload["event"]["classification_status"] == "not_requested"
                 assert tg_payload["event"]["severity"] == 0 and tg_payload["event"]["lat"] is None
+                assert await telegram._get_checkpoint(telegram_channel) == 0
                 await asyncio.gather(*(telegram._save_checkpoint(telegram_channel,n) for n in (73,71,72)))
                 async with async_session() as session:
                     cursor = await session.get(ChannelCheckpoint,telegram_channel)
@@ -145,6 +232,51 @@ async def verify(*, public_feed=False):
                     assert len({row.report["stored_raw_sha256"] for row in failed}) == 1
                     assert all(row.content_hash == row.report["original_text_sha256"] for row in failed)
                 receipt["checks"]["distinct_oversized_source_failure_identities_and_prefix_hashes"] = "PASS"
+
+                # Hold real transaction ownership on the older work while a
+                # higher-ID notification lands. The ordered page must retry the
+                # original receipt even though the provider now exposes an edit.
+                original = telegram._report_payload(title, telegram_channel, published, 74)
+                pending = await telegram.capture_report(original)
+                assert pending is not None
+                corrected = f"{title} Correction retained."
+
+                async def telegram_page(entity, *, limit, min_id, reverse):
+                    assert reverse and limit >= 1
+                    rows = [(74, corrected), (75, body)]
+                    for message_id, raw in [(i, raw) for i, raw in rows if i > min_id][:limit]:
+                        yield SimpleNamespace(id=message_id, date=published, text=raw)
+
+                provider = SimpleNamespace(iter_messages=telegram_page)
+                entity = SimpleNamespace(username=telegram_channel)
+                async with async_session() as session, session.begin():
+                    await session.execute(text("SELECT pg_advisory_xact_lock(:key)"),
+                        {"key": telegram._report_lock_key(telegram_channel, 74)})
+                    assert await telegram._backfill_reports(provider, entity, published) == 0
+                    channel = telegram._state["channels"][telegram_channel]
+                    assert (channel["status"], channel["checkpoint_message_id"], channel["provider_page_last_message_id"],
+                        channel["blocked_message_id"]) == ("pending_receipt", 73, 75, 74)
+                    assert await telegram._process_message(body, telegram_channel, published, 75) == "reported"
+                    assert await telegram._get_checkpoint(telegram_channel) == 73
+                newer = json.loads(await asyncio.wait_for(ws.recv(), timeout=5))["event"]
+                assert newer["telegram_message_id"] == 75
+                assert await telegram._backfill_reports(provider, entity, published) == 2
+                recovered_report = json.loads(await asyncio.wait_for(ws.recv(), timeout=5))["event"]
+                assert recovered_report["telegram_message_id"] == 74 and recovered_report["raw_text"] == title
+                assert await telegram._get_checkpoint(telegram_channel) == 75
+                assert await telegram._backfill_reports(provider, entity, published) == 0
+                detail = await client.get(f"/events/{recovered_report['id']}")
+                assert detail.status_code == 200 and detail.json()["raw_text"] == title
+                async with async_session() as session:
+                    versions = (await session.execute(select(SourceReport).where(
+                        SourceReport.report["source_url"].astext == original["source_url"]))).scalars().all()
+                    assert len(versions) == 2 and {row.event_id for row in versions} == {recovered_report["id"]}
+                    by_status = {row.status: row for row in versions}
+                    assert by_status["reported"].identity == pending and by_status["reported"].report == original
+                    assert by_status["source_revision_needs_review"].report["raw_text"] == corrected
+                receipt["checks"]["telegram_ordered_cursor_and_interrupted_revision_recovery"] = "PASS"
+                await verify_bot_delivery(ws, client, run_id, title, published)
+                receipt["checks"]["bot_ack_after_durable_report_and_immutable_revision"] = "PASS"
 
             # Same timestamp must be fully pageable without losing boundary rows.
             async with async_session() as session:

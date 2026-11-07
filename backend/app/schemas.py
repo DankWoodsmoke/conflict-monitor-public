@@ -8,8 +8,8 @@ class EventCreate(BaseModel):
     channel_name: str = ""
     raw_text: str = ""
     summary: str = ""
-    event_type: str = "military"
-    severity: int = 5
+    event_type: str = "unclassified"
+    severity: int = Field(default=0, ge=0, le=10, strict=True)
     lat: float | None = None
     lon: float | None = None
     timestamp: datetime | None = None

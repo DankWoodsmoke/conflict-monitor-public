@@ -45,7 +45,8 @@ async def test_health_checks_every_required_table_and_does_not_reflect_provider_
     if not missing:
         assert {query.split()[3] for query in session.statements} == {
             "events", "source_reports", "sitreps", "intel_media", "usage_log", "cost_config",
-            "tracking_snapshots", "channel_checkpoints"}
+            "tracking_snapshots", "channel_checkpoints", "telegram_backfill_jobs", "telegram_backfill_items",
+            "event_delivery_state", "event_deliveries", "source_report_retries"}
     assert response.headers["x-content-type-options"] == "nosniff"
     assert response.headers["referrer-policy"] == "strict-origin-when-cross-origin"
     assert response.headers["cache-control"] == "no-store"
@@ -75,7 +76,7 @@ def owned_lifecycle(monkeypatch):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("body_fails", [False, True])
-async def test_collection_disabled_lifespan_starts_no_collectors_and_always_closes_resources(
+async def test_collection_disabled_lifespan_resumes_delivery_without_starting_collectors(
     owned_lifecycle, body_fails
 ):
     resources = owned_lifecycle
@@ -86,7 +87,7 @@ async def test_collection_disabled_lifespan_starts_no_collectors_and_always_clos
     else:
         async with main.lifespan(main.app):
             pass
-    assert resources.started == []
+    assert resources.started == ["event_delivery"]
     resources.market_start.assert_called_once()
     resources.broker_start.assert_called_once()
     for cleanup in (resources.runtime.stop, resources.market_stop, resources.classifier_stop,
@@ -136,7 +137,7 @@ async def test_live_free_worker_selection_never_spends_merely_because_an_old_key
         monkeypatch.setattr(main.settings, name, value)
     async with main.lifespan(main.app):
         pass
-    expected = {"aircraft", "satellites", "rss", "source_digest", "snapshots", "match_review"}
+    expected = {"aircraft", "satellites", "rss", "source_digest", "snapshots", "match_review", "event_delivery"}
     if expect_x:
         expected.add("x")
     assert set(resources.started) == expected
@@ -144,7 +145,7 @@ async def test_live_free_worker_selection_never_spends_merely_because_an_old_key
 
 @pytest.mark.asyncio
 async def test_configured_optional_collectors_and_model_generation_have_separate_gates(owned_lifecycle, monkeypatch):
-    for name, value in {"live_ingestion_enabled": True, "telegram_api_id": 1, "telegram_api_hash": "fixture",
+    for name, value in {"live_ingestion_enabled": True, "telegram_transport": "session", "telegram_api_id": 1, "telegram_api_hash": "fixture",
         "telegram_session": "fixture", "telegram_channels": "publicfixture", "aisstream_api_key": "fixture",
         "firms_map_key": "fixture", "enable_sitrep_generation": True, "anthropic_api_key": "fixture-provider",
         "x_ingestion_enabled": False}.items():
@@ -152,7 +153,18 @@ async def test_configured_optional_collectors_and_model_generation_have_separate
     async with main.lifespan(main.app):
         pass
     assert set(owned_lifecycle.started) == {"telegram", "aircraft", "satellites", "maritime", "rss", "source_digest",
-        "snapshots", "match_review", "thermal_observations", "sitreps"}
+        "snapshots", "match_review", "thermal_observations", "sitreps", "event_delivery"}
+
+
+@pytest.mark.asyncio
+async def test_delivery_retry_is_visible_and_readiness_reports_degraded(monkeypatch):
+    monkeypatch.setattr(main, "async_session", SchemaSession)
+    monkeypatch.setattr(main, "delivery_status", lambda: {"status": "retrying", "error_type": "TimeoutError"})
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=main.app), base_url="http://fixture") as client:
+        health = await client.get("/health")
+        status = await client.get("/status")
+    assert health.status_code == 503 and health.json()["database"] == "connected"
+    assert status.json()["event_delivery"] == {"status": "retrying", "error_type": "TimeoutError"}
 
 
 @pytest.mark.asyncio

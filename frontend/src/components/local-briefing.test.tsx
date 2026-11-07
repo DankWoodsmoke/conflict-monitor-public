@@ -21,6 +21,10 @@ function button(text:string){return [...host.querySelectorAll<HTMLButtonElement>
 beforeEach(()=>{
  (globalThis as any).IS_REACT_ACT_ENVIRONMENT=true;vi.useFakeTimers();vi.setSystemTime(new Date("2026-10-29T03:10:00Z"));
  fetchMock.mockReset().mockImplementation(response);localStorage.clear();sessionStorage.clear();
+ // JSDOM does not implement native media teardown; real-browser qualification
+ // covers decoder/caption behavior, while these tests cover the workflow.
+ vi.spyOn(HTMLMediaElement.prototype,"pause").mockImplementation(()=>{});
+ vi.spyOn(HTMLMediaElement.prototype,"load").mockImplementation(()=>{});
  host=document.createElement("div");document.body.append(host);root=createRoot(host);mounted=true;
 });
 afterEach(async()=>{if(mounted)await act(async()=>root.unmount());host.remove();vi.useRealTimers();});

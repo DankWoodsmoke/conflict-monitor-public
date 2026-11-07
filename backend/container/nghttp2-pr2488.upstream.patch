@@ -1,0 +1,149 @@
+From dfab53ef659340afb2735fb12e23f3d83a4c399c Mon Sep 17 00:00:00 2001
+From: Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+Date: Sat, 23 Aug 2025 19:23:55 +0900
+Subject: [PATCH] Make glitch counter configurable
+
+---
+ doc/Makefile.am                |  1 +
+ lib/includes/nghttp2/nghttp2.h | 17 +++++++++++++++++
+ lib/nghttp2_option.c           |  7 +++++++
+ lib/nghttp2_option.h           |  6 ++++++
+ lib/nghttp2_session.c          |  5 +++++
+ tests/nghttp2_session_test.c   | 22 ++++++++++++++++++++++
+ 6 files changed, 58 insertions(+)
+
+diff --git a/doc/Makefile.am b/doc/Makefile.am
+index c48554689d..3260c30343 100644
+--- a/doc/Makefile.am
++++ b/doc/Makefile.am
+@@ -81,6 +81,7 @@ APIDOCS= \
+ 	nghttp2_option_set_max_outbound_ack.rst \
+ 	nghttp2_option_set_max_settings.rst \
+ 	nghttp2_option_set_stream_reset_rate_limit.rst \
++	nghttp2_option_set_glitch_rate_limit.rst \
+ 	nghttp2_pack_settings_payload.rst \
+ 	nghttp2_pack_settings_payload2.rst \
+ 	nghttp2_priority_spec_check_default.rst \
+diff --git a/lib/includes/nghttp2/nghttp2.h b/lib/includes/nghttp2/nghttp2.h
+index 06698e9930..19c1874f23 100644
+--- a/lib/includes/nghttp2/nghttp2.h
++++ b/lib/includes/nghttp2/nghttp2.h
+@@ -3241,6 +3241,23 @@ nghttp2_option_set_stream_reset_rate_limit(nghttp2_option *option,
+ NGHTTP2_EXTERN void nghttp2_option_set_max_continuations(nghttp2_option *option,
+                                                          size_t val);
+ 
++/**
++ * @function
++ *
++ * This function sets the rate limit for the "glitches", the
++ * suspicious activities from a remote endpoint.  It is a token-bucket
++ * based rate limiter.  |burst| specifies the number of tokens that is
++ * initially available.  The maximum number of tokens is capped to
++ * this value.  |rate| specifies the number of tokens that are
++ * regenerated per second.  When a suspicious activity is detected,
++ * some amount of tokens are consumed.  If there is no token
++ * available, GOAWAY is sent to tear down the connection.  |burst| and
++ * |rate| default to 1000 and 33 respectively.
++ */
++NGHTTP2_EXTERN void nghttp2_option_set_glitch_rate_limit(nghttp2_option *option,
++                                                         uint64_t burst,
++                                                         uint64_t rate);
++
+ /**
+  * @function
+  *
+diff --git a/lib/nghttp2_option.c b/lib/nghttp2_option.c
+index 02a24eee6b..7e44a241ba 100644
+--- a/lib/nghttp2_option.c
++++ b/lib/nghttp2_option.c
+@@ -155,3 +155,10 @@ void nghttp2_option_set_max_continuations(nghttp2_option *option, size_t val) {
+   option->opt_set_mask |= NGHTTP2_OPT_MAX_CONTINUATIONS;
+   option->max_continuations = val;
+ }
++
++void nghttp2_option_set_glitch_rate_limit(nghttp2_option *option,
++                                          uint64_t burst, uint64_t rate) {
++  option->opt_set_mask |= NGHTTP2_OPT_GLITCH_RATE_LIMIT;
++  option->glitch_burst = burst;
++  option->glitch_rate = rate;
++}
+diff --git a/lib/nghttp2_option.h b/lib/nghttp2_option.h
+index c89cb97f8b..78fa21e4a7 100644
+--- a/lib/nghttp2_option.h
++++ b/lib/nghttp2_option.h
+@@ -72,6 +72,7 @@ typedef enum {
+   NGHTTP2_OPT_NO_RFC9113_LEADING_AND_TRAILING_WS_VALIDATION = 1 << 14,
+   NGHTTP2_OPT_STREAM_RESET_RATE_LIMIT = 1 << 15,
+   NGHTTP2_OPT_MAX_CONTINUATIONS = 1 << 16,
++  NGHTTP2_OPT_GLITCH_RATE_LIMIT = 1 << 17,
+ } nghttp2_option_flag;
+ 
+ /**
+@@ -83,6 +84,11 @@ struct nghttp2_option {
+    */
+   uint64_t stream_reset_burst;
+   uint64_t stream_reset_rate;
++  /**
++   * NGHTTP2_OPT_GLITCH_RATE_LIMIT
++   */
++  uint64_t glitch_burst;
++  uint64_t glitch_rate;
+   /**
+    * NGHTTP2_OPT_MAX_SEND_HEADER_BLOCK_LENGTH
+    */
+diff --git a/lib/nghttp2_session.c b/lib/nghttp2_session.c
+index 50aef427f5..a10c4e1de3 100644
+--- a/lib/nghttp2_session.c
++++ b/lib/nghttp2_session.c
+@@ -571,6 +571,11 @@ static int session_new(nghttp2_session **session_ptr,
+     if (option->opt_set_mask & NGHTTP2_OPT_MAX_CONTINUATIONS) {
+       (*session_ptr)->max_continuations = option->max_continuations;
+     }
++
++    if (option->opt_set_mask & NGHTTP2_OPT_GLITCH_RATE_LIMIT) {
++      nghttp2_ratelim_init(&(*session_ptr)->glitch_ratelim,
++                           option->glitch_burst, option->glitch_rate);
++    }
+   }
+ 
+   rv = nghttp2_hd_deflate_init2(&(*session_ptr)->hd_deflater,
+diff --git a/tests/nghttp2_session_test.c b/tests/nghttp2_session_test.c
+index 951fb4fbc1..20344848ab 100644
+--- a/tests/nghttp2_session_test.c
++++ b/tests/nghttp2_session_test.c
+@@ -2238,6 +2238,7 @@ void test_nghttp2_session_recv_unknown_frame(void) {
+   nghttp2_frame_hd hd;
+   nghttp2_ssize rv;
+   nghttp2_outbound_item *item;
++  nghttp2_option *option;
+ 
+   nghttp2_frame_hd_init(&hd, 16000, 99, NGHTTP2_FLAG_NONE, 0);
+ 
+@@ -2280,6 +2281,27 @@ void test_nghttp2_session_recv_unknown_frame(void) {
+   assert_uint32(NGHTTP2_ENHANCE_YOUR_CALM, ==, item->frame.goaway.error_code);
+ 
+   nghttp2_session_del(session);
++
++  /* With glitch rate limit option */
++  nghttp2_option_new(&option);
++  nghttp2_option_set_glitch_rate_limit(option, 0, 0);
++
++  nghttp2_session_server_new2(&session, &callbacks, NULL, option);
++
++  rv = nghttp2_session_mem_recv2(session, data, datalen);
++
++  assert_ptrdiff((nghttp2_ssize)datalen, ==, rv);
++  assert_enum(nghttp2_inbound_state, NGHTTP2_IB_IGN_ALL, ==,
++              session->iframe.state);
++
++  item = nghttp2_session_get_next_ob_item(session);
++
++  assert_not_null(item);
++  assert_uint8(NGHTTP2_GOAWAY, ==, item->frame.hd.type);
++  assert_uint32(NGHTTP2_ENHANCE_YOUR_CALM, ==, item->frame.goaway.error_code);
++
++  nghttp2_session_del(session);
++  nghttp2_option_del(option);
+ }
+ 
+ void test_nghttp2_session_recv_unexpected_continuation(void) {

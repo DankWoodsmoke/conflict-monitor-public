@@ -64,6 +64,7 @@ def test_reclassification_requires_provider_configuration(client, monkeypatch):
 
 def test_backfill_requires_live_listener(client, monkeypatch):
     monkeypatch.setattr(settings, "live_ingestion_enabled", True)
+    monkeypatch.setattr(settings, "telegram_transport", "session")
     monkeypatch.setattr(settings, "anthropic_api_key", "fixture-only")
     monkeypatch.setattr(telegram, "_shared_client", None)
     response = client.post("/events/admin/backfill", headers=HEADERS)

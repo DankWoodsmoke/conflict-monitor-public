@@ -8,6 +8,7 @@ import pytest
 from app.config import settings
 from app.services import maritime as sea, opensky as air
 from app.services.tracking_contract import bounded_json, iso
+from app.services.snapshots import _compact_aircraft
 
 NOW = 1793232000.0
 
@@ -52,6 +53,31 @@ def test_aircraft_preserves_zeroes_and_normalizes_units():
     assert row["observed_at"] == iso(NOW - 5)
     assert row["received_at"] == iso(NOW)
     assert row["units"]["altitude"] == "m"
+
+
+@pytest.mark.parametrize("emitter,expected", [("B2", "civilian"), ("B6", "uav")])
+def test_reported_emitter_category_does_not_turn_lighter_than_air_into_uav(emitter, expected):
+    row = air.normalize_adsb(adsb(aircraft(category=emitter)), received=NOW)["states"][0]
+    assert row["category"] == emitter
+    assert row["aircraft_category"] == expected
+    assert row["classification_status"] == "heuristic_unverified"
+    assert row["icao24"] == "abc123" and row["callsign"] == "SYNTH"
+    assert row["type"] == "" and row["registration"] == ""
+    assert row["observed_at"] == iso(NOW - 5) and row["received_at"] == iso(NOW)
+    assert row["source"] == "adsb.lol"
+
+
+def test_future_snapshot_keeps_optional_raw_emitter_category_separate_from_heuristic():
+    current = {"icao24": "~894f5d", "callsign": "SYNTH", "lat": 30, "lon": 45,
+               "on_ground": False, "category": "C2", "aircraft_category": "civilian"}
+    legacy = {key: value for key, value in current.items() if key != "category"}
+    rows = _compact_aircraft([current, {**legacy, "icao24": "abc123", "aircraft_category": "C3"}])
+    assert rows[0]["ec"] == "C2" and rows[0]["k"] == "civilian"
+    assert rows[0]["i"] == "~894f5d" and (rows[0]["la"], rows[0]["lo"]) == (30, 45)
+    assert "ec" not in rows[1] and rows[1]["k"] == "C3"
+    assert _compact_aircraft([{**current, "on_ground": True}]) == []
+    assert _compact_aircraft([{**current, "lat": -30}]) == []
+    assert _compact_aircraft([{**current, "callsign": "BAW123"}]) == []
 
 
 @pytest.mark.parametrize("changes", [{"lat":float("nan")}, {"lon":181}, {"lat":True},
@@ -125,6 +151,7 @@ async def test_aircraft_failure_keeps_success_clock_and_obeys_backoff(monkeypatc
 
 @pytest.mark.asyncio
 async def test_anonymous_fallback_budget_does_not_use_obsolete_basic_auth(monkeypatch):
+    monkeypatch.setattr(settings, "opensky_fallback_enabled", True)
     monkeypatch.setattr(air.time, "time", lambda: NOW)
     calls = []
     def responder(request):

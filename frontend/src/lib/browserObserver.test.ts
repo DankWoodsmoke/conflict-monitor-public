@@ -27,8 +27,8 @@ async function sample(code:string){
  const scenes:any[]=[{provider:'ready',canvas_count:1},{phase:'current',generation:2,attempt:2,root_at:Date.now(),retries:0,visibility:'visible',attribution_visible:true}];
  const page={getByRole:()=>({getByRole:()=>({click:async()=>{}})}),evaluate:async()=>true,waitForFunction:async()=>{},locator:()=>({evaluate:async()=>scenes.shift()})};
  const cdp={send:async(name:string)=>name==='Performance.getMetrics'?{metrics:[{name:'JSHeapUsedSize',value:123},{name:'JSHeapTotalSize',value:456}]}:{documents:1,nodes:10,jsEventListeners:2}};
- const run=new AsyncFunction('page','summary','row','handle','assert','cdp','longSession','firstRootMono','elapsed','baselineGeneration',code+'\nreturn {summary,row,baselineGeneration};');
- return run(page,summary,row,{},assert,cdp,true,performance.now()-9_001_000,()=>9002,1);
+ const run=new AsyncFunction('page','summary','row','handle','assert','cdp','longSession','firstRootMono','elapsed','baselineGeneration','artifactProfile',code+'\nreturn {summary,row,baselineGeneration};');
+ return run(page,summary,row,{},assert,cdp,true,performance.now()-9_001_000,()=>9002,1,'operator-artifacts');
 }
 describe('actual long-session observer natural-rotation branch',()=>{
  it('reproduces the previous TDZ failure only reached when generation increases',async()=>{

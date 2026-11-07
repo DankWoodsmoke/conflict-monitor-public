@@ -271,3 +271,228 @@ archive afterward. Publication requires the completed gates; the unauthenticated
 consumer then checks all three assets, exact local attestation bytes, tag target,
 archive CRC and every manifest/Git blob and mode. Source-only documentation does
 not assert that post-freeze observations have passed.
+
+## 2026-10-30 — unreleased Earth, location review and historical collection
+
+The owner requested continued local verification, a review of GOOL's usefulness,
+more meaningful spatial identifiers and historical coverage before deciding
+whether to host the monitor as a tab on Ianmalcolm84.com. Website deployment is
+undecided. The published RC.2 tag and archive are preserved; this work is a local
+candidate, not a replacement release or a claim that all missing history is filled.
+
+Aircraft/boat/category symbols preserve source observation clocks and uncertainty.
+Military reports do not imply explosions; an explicit burst requires reviewed
+asserted stance, which the current live ingestion schema does not supply. Bare
+actor aliases and ambiguous/relative geocoding are rejected. The on-demand place
+review binds literal prose spans to source hashes and excludes RSS markup/URLs;
+it does not establish or write incident locations. See [location review](LOCATION_REVIEW.md).
+
+Historical Telegram jobs have independent durable cursors, frozen source-ID
+fences, explicit windows/budgets and operator authorization. Review found and
+repaired cancellation-after-commit cursor regression and advisory-lock cleanup
+lifetime defects. A real bounded public-channel page added 44 reports and found
+five duplicates with unchanged live checkpoint and zero paid usage. That window
+is provider-visible coverage only. See [history operation](HISTORICAL_BACKFILL.md).
+
+GOOL is still unconnected. Its proposed private evidence-review role now has an
+offline source/citation/permission contract, but no semantic usefulness result or
+isolated full-GOOL adapter. Ordinary shared dispatcher side effects must not be
+mistaken for isolated analysis. Website integration should follow a public data
+projection and permissions review, with private collector/admin/AI controls.
+
+The local update retained an exact logical backup and existing-row/index/cursor
+preservation evidence. A fresh backend build failed on bounded FFmpeg upstream
+transport attempts; the local application image reuses the immutable qualified
+runtime, preserving this fresh-build gap. Exact current results and remaining
+work are described in [the local review](LOCAL_REVIEW_2026-10-30.md). Neither
+earlier long-session evidence nor OS vulnerability findings are relabelled as
+new-image clearance.
+
+## 2026-10-30 — symbol readability and assessment integrity
+
+The aircraft/boat mapping was correct but the old unknown-direction aircraft
+silhouette was ambiguous at its 16-pixel regional minimum. Distinct wing/tail
+and bow/hull geometry, explicit category labels and a 24-pixel track minimum
+replace that presentation. Unknown direction stays non-directional. Future
+replay snapshots preserve original coordinate precision, clocks and available
+source/quality/direction metadata; old rows remain untouched.
+
+Default medium severity and model-location geocoding are removed. Source-bound
+extraction preserves literal text, stance, model/prompt/rubric and source hashes.
+These checks constrain output; they do not prove semantic accuracy. Scores are
+unreviewed estimates, legacy metadata, unscored or sensor-not-applicable. Raw
+numbers cannot produce verified critical alerts or escalation indices. Timed
+synthesis applies permission checks to every selected child report as well as
+the parent event, before any model payload is built.
+
+Mobile assessment/filter disclosures are mutually exclusive and scroll bounded
+so they cannot consume the entire report list. The original failing browser
+attempt is preserved alongside the corrected-run evidence.
+
+The [GOOL handoff](GOOL_INTEGRATION_HANDOFF.md) asks the GOOL chat to implement an
+isolated analyst adapter and measure its added value against local extraction
+and the same bare hosted model. Shared dispatch, private corpus export and
+automatic event mutation are outside that boundary. The current monitor has
+no GOOL semantic-utility result. Exact local execution and remaining public
+readiness gaps are in [this review](ASSESSMENT_AND_TRACKING_REVIEW_2026-10-30.md).
+
+## 2026-10-30 — crowded regional views and source-specific review
+
+The rejected regional screenshot overrides the earlier isolated-symbol usability
+assumption. Spatial grouping is a display operation only: keep individual source
+coordinates and clocks, show explicit domain counts, and expose every member in
+a searchable index. Use native buttons for screen-area labels to support keyboard
+selection and avoid accumulating count-specific GPU textures. Keep the physical
+source markers in Cesium and retain independent horizon checks.
+
+Local AI proposals belong to an explicit selected source, not an unrelated latest
+batch artifact. Bound requests and results to raw text, provenance, permissions,
+model identity and expiry; never mutate event coordinates or severity from these
+proposals. Quote retrieval and observation clocks also remain separate in the
+market strip. See [regional review](REGIONAL_USABILITY_REVIEW_2026-10-30.md) and
+[selected-report analysis](REPORT_ANALYSIS.md) for scope and qualifications.
+
+## 2026-11-04 — ordered intake, source-bound Brief and local qualification
+
+Only ordered provider pages advance the Telegram forward cursor. Incoming
+updates and historical jobs can preserve evidence independently. A pending
+immutable revision is retried before a newer copy is processed. This repairs a
+cursor race demonstrated against PostgreSQL and the actual HTTP pipeline.
+Previously skipped history still needs a bounded recovery job.
+
+The default Brief compiles excerpts from stored source text and distinguishes
+thermal acquisition time from source publication time. Older unqualified Brief
+rows remain stored and retain their source references in the archived view.
+
+The locally admitted candidate uses a fresh canonical backend image and the
+existing PostgreSQL/PostGIS volume. A logical restore rehearsal preserved all
+12 tables, five sequence positions, indexes and spatial metadata. The frontend
+fixed four Expat High findings. The backend and database still fail the raw High
+scan gate. A two-transaction probe also proved that report IDs can commit out
+of order, leaving an older ID behind the browser's recovery cursor. An isolated
+transactional outbox experiment recovered that row. API, browser, retention and
+database-role qualification remain prerequisites for deploying the repair.
+
+Mobile emulation, provider observations and screenshot review bind the running
+local profile. These checks cover specific workflows and clocks. They leave
+physical-device performance, provider-coordinate accuracy and complete source
+history open. The public release remains held.
+
+## 2026-11-04 — RC.3 committed delivery and local database cutover
+
+Assign delivery offsets only after event transactions commit. The browser
+acknowledges complete REST pages and uses WebSocket hints to fetch sooner.
+Deletion uses explicit tombstones. Event ID remains the record identifier
+and no longer controls browser reconnect recovery. See [committed delivery](EVENT_DELIVERY.md).
+
+Schedule retries for RSS receipts with valid, explicit publisher clocks.
+Preserve original report bytes and times across feed removal and failure.
+Keep bounded per-source work and use expiring lease tokens to protect
+concurrent recovery. See [RSS due retries](RSS_DUE_RETRIES.md).
+
+Release video and caption resources during workspace changes and restore the
+selected briefing on return. The mobile Earth panel reserves room for
+primary map actions and visible contacts at 320 px. Confirm real Google
+imagery, source selection and retained playback on the exact local images.
+
+Use an independently rehearsed logical restore into a fresh Alpine volume.
+Record both data histories and verify the new delivery state and retry
+queue before starting collectors. The distribution change reduces raw
+container findings substantially. Remaining High records keep the public
+gate open. See [database upgrade](DB_UPGRADE.md) and [security review](OS_SECURITY_REVIEW.md).
+
+## 2026-11-04 — RC.4 Telegram ownership and private review
+
+Default to disabled Telegram collection. The Bot API path needs a deployment
+bot and explicit publisher admission. It confirms updates only after their
+durable outcomes and keeps the bot queue separate from account history
+checkpoints. The legacy account connector is separately selected and uses
+one owned session across reconnect attempts. The local profile retired its
+prior personal session while keeping stored reports and the original private
+environment.
+
+Run GOOL evidence review as a private operator action on an explicitly
+approved packet. Preserve the requested provider route, exact citation
+spans, and private review output. Keep Telegram content outside this path.
+The authored fixture validates one isolated review path. Shared GOOL
+transports and broad analyst utility have separate qualification.
+
+
+## 2026-11-05 — comparative product and visual review
+
+Current primary documentation for Palantir, WorldMonitor, Ushahidi, Atlos,
+Bellingcat and conflict datasets was compared with the actual source. The
+small immediate improvement reuses existing feed search and keeps its criteria
+at App scope. It trims and canonically normalizes queries, includes original
+source text, exposes loaded-window coverage and retains filter state across
+workspace and mobile-feed remounts. Reload persistence and named shared views
+remain separate work. The inherited source text and evidence remain intact.
+
+The visual pass consolidates slate surfaces and cyan selection, improves
+narrative type and scrollbars, and removes a mount-dependent global scrollbar
+override. Visible source names use neutral text. Existing assessment badges
+retain their explicit meaning. Mobile statistics wrap at narrow widths.
+
+The automatic anonymous OpenSky fallback was discovered during current source
+terms review. Operational use requires prior written permission, so a new
+OPENSKY_FALLBACK_ENABLED setting defaults to false and gates the actual network
+entry point. This source change needs its own deployment admission.
+
+The preferred website arrangement is a Monitor navigation item leading to a
+full-page application on monitor.ianmalcolm84.com. The public-serving review
+records source redistribution, market-data terms, ingress, Google quota,
+concurrent-reader and collector-ownership gaps. No website or DNS deployment
+was part of this review. See PRODUCT_GAP_REVIEW.md and WEBSITE_INTEGRATION.md.
+
+Development source and preview evidence are separate from the sealed RC.4
+archive and admitted live containers. Existing raw security findings remain
+open. No third-party product source was copied into this implementation.
+
+## 2026-11-05 evening — separate public reader and exact-image qualification
+
+Keep the existing private operator deployment separate from the visitor
+profile. Public nginx admits only explicit read paths and rejects mutations,
+raw-path bypasses and forwarded credentials. The API independently applies its
+public policy. Compose removes inherited private environment files and
+volumes, fixes collection/generation off and supplies a separate database
+reader credential. Do not expose the private writer behind a read-only UI.
+
+The non-owning monitor_public role receives SELECT only on three report and
+delivery tables in the application database. Audit effective privileges,
+including PUBLIC ACLs and inherited memberships, before adopting an existing
+role. Known PostGIS compatibility grants are relocated to the private writer;
+unexpected table/function/default grants fail closed. Guard privilege helper
+calls with CASE by relation kind: SQL planner evaluation order is not a safe
+substitute. Do not call a nonexistent has_largeobject_privilege function;
+inspect effective ownership and ACLs instead. Other database CONNECT/TEMP
+defaults and ordinary system functions prevent a universal SQL-sandbox claim.
+
+Reports remain withheld until the whole publication dataset is admitted.
+Process-local tracking caches cannot serve a separate reader: keep tracking
+explicitly unavailable until a qualified shared publication path exists.
+Allowing a report flag is not evidence of source redistribution rights.
+
+Preserve the incoming Host including its port when proxying the private
+WebSocket endpoint. An exact nginx/router negative control reproduced the
+old custom-port403; the fixed actual stack accepted same-origin connections
+with empty CORS configuration and rejected unrelated origins.
+
+Backport the exact upstream CPython socket input-validation repair without
+changing the nominal package version or suppressing the scanner. Preserve
+the original negative control, hashes and skipped upstream test reasons.
+Raw High SQLite/glibc findings remain release blockers; locale prerequisites
+and absence of the SQLite shell are scoped applicability evidence, not a
+whole-image clearance. Hash video in bounded chunks on a worker thread so
+range requests retain integrity checks without blocking the async event loop.
+
+Candidate3 exact images passed application, PostGIS/pipeline and Google
+browser qualifications. These checks do not reuse the RC.4 four-hour soak as
+new evidence. Preserve the admitted local instance, original archives and
+all failed intermediate receipts. Corrections to documentation after the
+source freeze are recorded separately from unchanged executable inputs.
+
+The verified other-PC handoff is a static Astro archive with an automatic
+publisher that may deploy dirty working files. Prepare the one-line Monitor
+navigation patch outside that repository, and coordinate both publishing
+jobs before any future application. Use a separately qualified monitor host
+and HTTPS origin; no archive, Cloudflare or DNS mutation is part of this work.

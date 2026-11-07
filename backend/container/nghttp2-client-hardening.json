@@ -1,0 +1,396 @@
+{
+  "nghttp2_version": "1.63.0",
+  "patch": "nghttp2-client-hardening.patch",
+  "patch_sha256": "e4d45333186e4652392445a0cf92d626fe869d8337d33d4f4f98cf77ac793121",
+  "upstream_changes": [
+    {
+      "pull_request": 2826,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2826",
+      "patch_url": "https://github.com/nghttp2/nghttp2/pull/2826.patch",
+      "input": "nghttp2-pr2826.upstream.patch",
+      "sha256": "e5c3b3b4fec4567025a536099de6df7a995c435906145661f75aa03a22d26ae4",
+      "commits": [
+        "5694e39141468c0a9265737deb6e945d455b4da9"
+      ],
+      "merged": true,
+      "merged_at": "2026-08-05T15:21:39Z",
+      "merge_commit_sha": "378dbe539faf31d2c6e53cfdad3b3b22223ad208",
+      "patch_head_sha": "5694e39141468c0a9265737deb6e945d455b4da9",
+      "release_comparison": "v1.71.0",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_is_ancestor_of_release": true,
+      "merge_patch_url": "https://github.com/nghttp2/nghttp2/commit/378dbe539faf31d2c6e53cfdad3b3b22223ad208.patch",
+      "merge_patch_sha256": "e5c3b3b4fec4567025a536099de6df7a995c435906145661f75aa03a22d26ae4",
+      "merge_patch_executable_delta_matches_PR": true
+    },
+    {
+      "pull_request": 2829,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2829",
+      "patch_url": "https://github.com/nghttp2/nghttp2/pull/2829.patch",
+      "input": "nghttp2-pr2829.upstream.patch",
+      "sha256": "fd9aa7d84449ddafa257925c095c80065f3b3bb617d7a3429941ba84beb2a3b3",
+      "commits": [
+        "bb37182517c32886502d84d0a6c0d00ee04d1bdb"
+      ],
+      "merged": true,
+      "merged_at": "2026-08-15T05:23:40Z",
+      "merge_commit_sha": "9711d0b7b0619e06b00b0ca934e11c268ade4c5d",
+      "patch_head_sha": "bb37182517c32886502d84d0a6c0d00ee04d1bdb",
+      "release_comparison": "v1.71.0",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_is_ancestor_of_release": true,
+      "merge_patch_url": "https://github.com/nghttp2/nghttp2/commit/9711d0b7b0619e06b00b0ca934e11c268ade4c5d.patch",
+      "merge_patch_sha256": "fd9aa7d84449ddafa257925c095c80065f3b3bb617d7a3429941ba84beb2a3b3",
+      "merge_patch_executable_delta_matches_PR": true
+    },
+    {
+      "pull_request": 2926,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2926",
+      "patch_url": "https://github.com/nghttp2/nghttp2/pull/2926.patch",
+      "input": "nghttp2-pr2926.upstream.patch",
+      "sha256": "5ab9cd9ac981e8128d7d6064cacd0a41026e39c5ec491df80d38857693a5bd1e",
+      "commits": [
+        "f790273f9bb64f0c497c4ffe3a97a857b3875208"
+      ],
+      "merged": true,
+      "merged_at": "2026-10-20T13:03:49Z",
+      "merge_commit_sha": "9c6a1c85cb71d6ebfda826f7208d0ae436fc208b",
+      "patch_head_sha": "f790273f9bb64f0c497c4ffe3a97a857b3875208",
+      "release_comparison": "v1.71.0",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_is_ancestor_of_release": true,
+      "merge_patch_url": "https://github.com/nghttp2/nghttp2/commit/9c6a1c85cb71d6ebfda826f7208d0ae436fc208b.patch",
+      "merge_patch_sha256": "5ab9cd9ac981e8128d7d6064cacd0a41026e39c5ec491df80d38857693a5bd1e",
+      "merge_patch_executable_delta_matches_PR": true
+    },
+    {
+      "pull_request": 2931,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2931",
+      "patch_url": "https://github.com/nghttp2/nghttp2/pull/2931.patch",
+      "input": "nghttp2-pr2931.upstream.patch",
+      "sha256": "be6f90047d3ef0375253047330a323e53659348f0ff0b497baaf5990d63902ff",
+      "commits": [
+        "f05a55ec47b7eb3f2428603a94475673e6413508"
+      ],
+      "merged": true,
+      "merged_at": "2026-10-23T10:11:54Z",
+      "merge_commit_sha": "ccfc7bcfcd6df0879496b30e02e75de238f6496d",
+      "patch_head_sha": "f05a55ec47b7eb3f2428603a94475673e6413508",
+      "release_comparison": "v1.71.0",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_is_ancestor_of_release": true,
+      "merge_patch_url": "https://github.com/nghttp2/nghttp2/commit/ccfc7bcfcd6df0879496b30e02e75de238f6496d.patch",
+      "merge_patch_sha256": "be6f90047d3ef0375253047330a323e53659348f0ff0b497baaf5990d63902ff",
+      "merge_patch_executable_delta_matches_PR": true
+    },
+    {
+      "pull_request": 2934,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2934",
+      "patch_url": "https://github.com/nghttp2/nghttp2/pull/2934.patch",
+      "input": "nghttp2-pr2934.upstream.patch",
+      "sha256": "f2eae3c306995d272cae9b2856386998dece854a34663d2fcd95e1398cbc23bf",
+      "commits": [
+        "fe2a1df34b3ef1312a07778d3237e5d1abdae18e"
+      ],
+      "merged": true,
+      "merged_at": "2026-10-23T12:38:04Z",
+      "merge_commit_sha": "3baf9561e09f7ac8b0dce6e84132ce3909309ef0",
+      "patch_head_sha": "fe2a1df34b3ef1312a07778d3237e5d1abdae18e",
+      "release_comparison": "v1.71.0",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_is_ancestor_of_release": true,
+      "merge_patch_url": "https://github.com/nghttp2/nghttp2/commit/3baf9561e09f7ac8b0dce6e84132ce3909309ef0.patch",
+      "merge_patch_sha256": "f2eae3c306995d272cae9b2856386998dece854a34663d2fcd95e1398cbc23bf",
+      "merge_patch_executable_delta_matches_PR": true
+    },
+    {
+      "pull_request": 2945,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2945",
+      "patch_url": "https://github.com/nghttp2/nghttp2/pull/2945.patch",
+      "input": "nghttp2-pr2945.upstream.patch",
+      "sha256": "b72a20a647e299cb5d48f53f686382b705279915c5de0525eecb54b2974bf64c",
+      "commits": [
+        "59d60407508ecfe6774f77640e400a7c272d610f",
+        "d8114a32dfc1e9269e26c4b6bf33b939b3ed923f"
+      ],
+      "merged": true,
+      "merged_at": "2026-11-01T13:10:21Z",
+      "merge_commit_sha": "240ace7d936785825626c1dbf697bccfce58cb97",
+      "patch_head_sha": "d8114a32dfc1e9269e26c4b6bf33b939b3ed923f",
+      "release_comparison": "v1.71.0",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_is_ancestor_of_release": true,
+      "merge_patch_url": "https://github.com/nghttp2/nghttp2/commit/240ace7d936785825626c1dbf697bccfce58cb97.patch",
+      "merge_patch_sha256": "b72a20a647e299cb5d48f53f686382b705279915c5de0525eecb54b2974bf64c",
+      "merge_patch_executable_delta_matches_PR": true
+    },
+    {
+      "pull_request": 2485,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2485",
+      "patch_url": "https://github.com/nghttp2/nghttp2/pull/2485.patch",
+      "input": "nghttp2-pr2485.upstream.patch",
+      "sha256": "c9c361ca9868fca56ae1bd5b3faa78361c1473bff6e396b8ce4b043abebbb562",
+      "commits": [
+        "06fb688be2c41206f8012f1d3149ba862d21a631"
+      ],
+      "merged": true,
+      "merged_at": "2025-08-23T08:38:37Z",
+      "merge_commit_sha": "4890cb0fb876548c44413ba13158f474f6a071dc",
+      "patch_head_sha": "06fb688be2c41206f8012f1d3149ba862d21a631",
+      "release_comparison": "v1.71.0",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_is_ancestor_of_release": true,
+      "merge_patch_sha256": "c9c361ca9868fca56ae1bd5b3faa78361c1473bff6e396b8ce4b043abebbb562",
+      "merge_patch_executable_delta_matches_PR": true
+    },
+    {
+      "pull_request": 2488,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2488",
+      "patch_url": "https://github.com/nghttp2/nghttp2/pull/2488.patch",
+      "input": "nghttp2-pr2488.upstream.patch",
+      "sha256": "814defea5f59dca8845020383bb86e4979fe10e36f9f926ee06092da5c1636a2",
+      "commits": [
+        "dfab53ef659340afb2735fb12e23f3d83a4c399c"
+      ],
+      "merged": true,
+      "merged_at": "2025-08-24T01:43:54Z",
+      "merge_commit_sha": "451853f39b1cf78e5b6e5aafdba89774c7a2614f",
+      "patch_head_sha": "dfab53ef659340afb2735fb12e23f3d83a4c399c",
+      "release_comparison": "v1.71.0",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_is_ancestor_of_release": true,
+      "merge_patch_sha256": "814defea5f59dca8845020383bb86e4979fe10e36f9f926ee06092da5c1636a2",
+      "merge_patch_executable_delta_matches_PR": true
+    },
+    {
+      "pull_request": 2508,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2508",
+      "patch_url": "https://github.com/nghttp2/nghttp2/pull/2508.patch",
+      "input": "nghttp2-pr2508.upstream.patch",
+      "sha256": "be6c62f5ca3c132faed6024fcdc681a7da6d251b6a50c7adf5b835fa6241a49d",
+      "commits": [
+        "4904c736e1e6b71d8f1dd9c9948b4a68431883c1"
+      ],
+      "merged": true,
+      "merged_at": "2025-09-13T02:44:03Z",
+      "merge_commit_sha": "89b30903cc4d6db77f3e4a8faa4a02e20b4190e7",
+      "patch_head_sha": "4904c736e1e6b71d8f1dd9c9948b4a68431883c1",
+      "release_comparison": "v1.71.0",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_is_ancestor_of_release": true,
+      "merge_patch_sha256": "be6c62f5ca3c132faed6024fcdc681a7da6d251b6a50c7adf5b835fa6241a49d",
+      "merge_patch_executable_delta_matches_PR": true
+    },
+    {
+      "pull_request": 2509,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2509",
+      "patch_url": "https://github.com/nghttp2/nghttp2/pull/2509.patch",
+      "input": "nghttp2-pr2509.upstream.patch",
+      "sha256": "79b083f49c3c837806a3fdd921ef2fdf807c8eb59dd049bf89698a231ba4a486",
+      "commits": [
+        "43b4369fba1039b0e13176c8f089c6c9b9f8497a"
+      ],
+      "merged": true,
+      "merged_at": "2025-09-15T09:24:32Z",
+      "merge_commit_sha": "80ecefebb54c4d5ad173304e0e78fee1b4b0decf",
+      "patch_head_sha": "43b4369fba1039b0e13176c8f089c6c9b9f8497a",
+      "release_comparison": "v1.71.0",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_is_ancestor_of_release": true,
+      "merge_patch_sha256": "79b083f49c3c837806a3fdd921ef2fdf807c8eb59dd049bf89698a231ba4a486",
+      "merge_patch_executable_delta_matches_PR": true
+    },
+    {
+      "pull_request": 2510,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2510",
+      "patch_url": "https://github.com/nghttp2/nghttp2/pull/2510.patch",
+      "input": "nghttp2-pr2510.upstream.patch",
+      "sha256": "976a86258e9306406042b0cc321f6998ead7d881afb443c11a84108d869631e1",
+      "commits": [
+        "9e65104b000cc7b7494ce0aa0424393acb5855d3"
+      ],
+      "merged": true,
+      "merged_at": "2025-09-15T11:26:00Z",
+      "merge_commit_sha": "15912bf810ef64e17e2177ce5ee2187dd8107c30",
+      "patch_head_sha": "9e65104b000cc7b7494ce0aa0424393acb5855d3",
+      "release_comparison": "v1.71.0",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_is_ancestor_of_release": true,
+      "merge_patch_sha256": "976a86258e9306406042b0cc321f6998ead7d881afb443c11a84108d869631e1",
+      "merge_patch_executable_delta_matches_PR": true
+    },
+    {
+      "pull_request": 2598,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2598",
+      "patch_url": "https://github.com/nghttp2/nghttp2/pull/2598.patch",
+      "input": "nghttp2-pr2598.upstream.patch",
+      "sha256": "e9c78d756f9756b942236c17d8c208035c753c88410da69074df909e3c382281",
+      "commits": [
+        "c4e990bc32896ed4c3959d9d0e67ac05f9304175"
+      ],
+      "merged": true,
+      "merged_at": "2026-01-14T09:02:42Z",
+      "merge_commit_sha": "a0b9f89677c1f661065c681c7ff80428b6210ac7",
+      "patch_head_sha": "c4e990bc32896ed4c3959d9d0e67ac05f9304175",
+      "release_comparison": "v1.71.0",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_is_ancestor_of_release": true,
+      "merge_patch_sha256": "e9c78d756f9756b942236c17d8c208035c753c88410da69074df909e3c382281",
+      "merge_patch_executable_delta_matches_PR": true
+    },
+    {
+      "pull_request": 2599,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2599",
+      "patch_url": "https://github.com/nghttp2/nghttp2/pull/2599.patch",
+      "input": "nghttp2-pr2599.upstream.patch",
+      "sha256": "7a6e631f495034fe795e67ad1753d5b91fb53af6d3f2ed8b3ea158ec854bd7ce",
+      "commits": [
+        "13b25a40acc5afe4b1c9a3b36c9a5b9e8dd53305"
+      ],
+      "merged": true,
+      "merged_at": "2026-01-13T10:07:31Z",
+      "merge_commit_sha": "b320a57c789bc406cc4de4d8feb2455f43290101",
+      "patch_head_sha": "13b25a40acc5afe4b1c9a3b36c9a5b9e8dd53305",
+      "release_comparison": "v1.71.0",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_is_ancestor_of_release": true,
+      "merge_patch_sha256": "7a6e631f495034fe795e67ad1753d5b91fb53af6d3f2ed8b3ea158ec854bd7ce",
+      "merge_patch_executable_delta_matches_PR": true
+    },
+    {
+      "pull_request": 2607,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2607",
+      "patch_url": "https://github.com/nghttp2/nghttp2/pull/2607.patch",
+      "input": "nghttp2-pr2607.upstream.patch",
+      "sha256": "4425e3e264c14888eec4fca0feeb92ec47415a3382d970e7fb7a0e15ee9256fe",
+      "commits": [
+        "68f77a347544c207eeff7ff7457284697ccf7f7d"
+      ],
+      "merged": true,
+      "merged_at": "2026-02-19T09:55:56Z",
+      "merge_commit_sha": "619e861ddfbb5b13dc0b0d2a5673dbdf7ab57f71",
+      "patch_head_sha": "68f77a347544c207eeff7ff7457284697ccf7f7d",
+      "release_comparison": "v1.71.0",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_is_ancestor_of_release": true,
+      "merge_patch_sha256": "4425e3e264c14888eec4fca0feeb92ec47415a3382d970e7fb7a0e15ee9256fe",
+      "merge_patch_executable_delta_matches_PR": true
+    },
+    {
+      "pull_request": 2856,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2856",
+      "patch_url": "https://github.com/nghttp2/nghttp2/pull/2856.patch",
+      "input": "nghttp2-pr2856.upstream.patch",
+      "sha256": "386f36233f0504d81e26b497ad9151b3b31ab2293d9acdf67478e5b34aa30149",
+      "commits": [
+        "135c73c4780d1d5a6f2abf1489ff1dc7118a1a8b"
+      ],
+      "merged": true,
+      "merged_at": "2026-09-10T12:15:28Z",
+      "merge_commit_sha": "d9bd0eb624d28a57d3020f66d6b3adc31def3ae4",
+      "patch_head_sha": "135c73c4780d1d5a6f2abf1489ff1dc7118a1a8b",
+      "release_comparison": "v1.71.0",
+      "comparison_status": "ahead",
+      "behind_by": 0,
+      "merge_is_ancestor_of_release": true,
+      "merge_patch_sha256": "386f36233f0504d81e26b497ad9151b3b31ab2293d9acdf67478e5b34aa30149",
+      "merge_patch_executable_delta_matches_PR": true
+    }
+  ],
+  "source_files": {
+    "doc/Makefile.am": {
+      "before": "e4b161d39511226f02358c7bc172b7d66cb982a198d71240d3949f353b4ddad9",
+      "after": "1e82468274af38e4c2e417fc361b10154f8775a18f423e28188dd086ec177e2e"
+    },
+    "lib/includes/nghttp2/nghttp2.h": {
+      "before": "174f10925337dcfb18d0ecba735e483870777af75f1ca015360ffbe98d0617c0",
+      "after": "2742b7df1e2dfb61e2979897021f2a1e732ec5273047e3857fe517e464cce544"
+    },
+    "lib/nghttp2_frame.c": {
+      "before": "f332f8f7aada08c58e67b8fddb191523f218de568b0ecc2fc2063c1cce180992",
+      "after": "eae5f6d228ef35f35467b03f5b12fd54d7212acb0e1b096bc17c16066cbbf3cc"
+    },
+    "lib/nghttp2_frame.h": {
+      "before": "08d559b7809d9dbd9c70b8dd0d7374a60bac853bf256fb8d2f7b38ba4852ee52",
+      "after": "fa9927fa919bf0ebed0aa28456417ead2bf54640686623b79d4a3fceaac80cb2"
+    },
+    "lib/nghttp2_helper.c": {
+      "before": "d8fac032a7f7967160342aac760a09321cc21fb179fee0e30a7ec940ba0564ca",
+      "after": "8ffd0386af1201f21df9060236e1973d7e223efb6d31e7e87c8ab99491b325f2"
+    },
+    "lib/nghttp2_option.c": {
+      "before": "4283ae107b108d2a132ae4c6d1200719c8615d584d8c4dba47e2813ee048735d",
+      "after": "bf76ba76d899f927995eb00d3be08a8471dfad175c0145ddfa0bda5768a7bbe7"
+    },
+    "lib/nghttp2_option.h": {
+      "before": "bbfa7459d7647dd948a57e9f2af41856d890720de2d369e1dfcba5d769534c88",
+      "after": "78c04026301e3041bb80b94472863d29367dc94e4acd4d6738c70be22b7213c4"
+    },
+    "lib/nghttp2_session.c": {
+      "before": "78969d777e6f221bcbaf06e1827a3afd71b68dc545d08443b6082162957c5b52",
+      "after": "18b33e19ce473182c19ec7afa53c14b945b6ce65bf0d04da20430c46b6ec1bd5"
+    },
+    "lib/nghttp2_session.h": {
+      "before": "7a47a6d75491d4a12e518ae09d44961f28a48e11684f91c6e70c83917a6d17e1",
+      "after": "8b9db93cafa86f0e5988ab573e40ce127936836aa1974eb6f03ec671ee88f200"
+    },
+    "tests/nghttp2_session_test.c": {
+      "before": "3ab925d63298b03bdfbcd9c0bfc4f090d4c71bb66122547e0ce65a80455c424a",
+      "after": "2cd65de21ef2ecec75af49a4055f3f1dad08056b6eacf2c6764a83f16a600e3f"
+    },
+    "tests/nghttp2_session_test.h": {
+      "before": "62e56e317713765e7bafeeddec90cf4cb4633536707c1214baddc0e3f9bc05b6",
+      "after": "34b55c2e531872cee624318c20828c628d208863f40145c475249cc833046e0e"
+    }
+  },
+  "adaptations": [
+    "1.63 declaration/registration and whitespace context; production additions retained.",
+    "CONTINUATION guard remains after header unpack/type validation, before payload handling; 1.63 continuation counter increments earlier.",
+    "Maximum outbound queue option uses original upstream bit 0x040000, distinct from all 1.63 options.",
+    "2934 obsolete public-header documentation context excluded; executable changes retained.",
+    "2945 removes payload accounting from older 1.63 handlers; two upstream-deleted IGN_ALL guard blocks were already absent in those original handlers. Both complete new receive/send window helper functions and calls retained.",
+    "Ordinary upstream tests retain assertions; variable declarations and callback initializer placement adapted to 1.63.",
+    "Full glitch-counter production series 2485/2488/2508/2509/2510/2598/2599 plus CONNECT validation 2856 retained; existing rate-limit/time primitives reused unchanged.",
+    "2485 HEADERS counter sites bound to initial/padded HEADERS, not the similar PUSH_PROMISE ignore branch; PRIORITY_UPDATE counter placed before the retained 1.63 priority-policy and size guard. DATA counter added by 2485 then removed by 2598, preserving independent 2945 window accounting.",
+    "2488 declaration/option/doc insertion context adapted around already-added outbound queue option. Option bit 17 remains distinct from outbound queue bit 18; default glitch burst/rate are upstream 10000/330.",
+    "2509 all five identical IGN_ALL checks retained immediately after the corresponding 2508 calls. 2510 removes deep nested invalid-stream counting exactly.",
+    "2607 is already covered by the earlier CVE-2026-27135/state prerequisite: both DATA fail-fast and data callback check fatal results first; existing additional IGN_ALL guards retained. No production hunk omitted as inapplicable.",
+    "2856 complete HEADERS and PUSH_PROMISE conditions retained. PUSH_PROMISE guard is inserted before the older priority-spec initialization/open-stream call; these existing priority semantics remain.",
+    "2856 trailer unit function is copied exactly from upstream commit 135c73c4780d1d5a6f2abf1489ff1dc7118a1a8b, including independent session setup for prior cases and all CONNECT client/server cases. Existing registered test names remain. Other original upstream assertions are retained with whitespace/context adaptation."
+  ],
+  "not_applied": [
+    {
+      "pull_request": 2943,
+      "url": "https://github.com/nghttp2/nghttp2/pull/2943",
+      "sha256": "26545a09212437e421c20705c78daeb4e6d7a9d346ee919d6b41beb6b15998d3",
+      "disposition": "Outside selected curl client path: nghttp2_session_on_priority_update_received asserts session->server. Server API code remains in the static library; no code-absence claim."
+    }
+  ],
+  "qualification_scope": "Ordinary upstream main suite only. No patch reversal, failmalloc or attack reproduction in this build. Prior execution evidence remains historical. These reviewed backports are not a claim of full 1.71 equivalence.",
+  "test_context_source": {
+    "url": "https://raw.githubusercontent.com/nghttp2/nghttp2/135c73c4780d1d5a6f2abf1489ff1dc7118a1a8b/tests/nghttp2_session_test.c",
+    "sha256": "630752cd8088bfa554aad6c48818f46f593ec257a47c8470fc5fdc956ec62daf",
+    "function": "test_nghttp2_http_trailer_headers",
+    "function_sha256": "f2c05f95aaf3b6466486cff1a0723da378ecea98dcabcc62e9418d8b634f8244"
+  },
+  "glitch_behavior": {
+    "burst": 10000,
+    "rate_per_second": 330,
+    "scope": "Complete upstream generic glitch-counter series including frequent received PRIORITY frames; existing RFC7540 priority processing and browser headers preserved.",
+    "options_api": "nghttp2_option_set_glitch_rate_limit"
+  }
+}

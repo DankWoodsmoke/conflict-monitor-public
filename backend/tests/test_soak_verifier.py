@@ -36,6 +36,62 @@ def test_quiet_socket_does_not_claim_message_delivery_even_when_soak_checks_qual
     assert result["websocket"]["delivery_observed"] is False
 
 
+def telegram_page(at, cursor, fence=None, blocked=None, status="ok"):
+    return {"elapsed_seconds": at, "providers": {"telegram": {
+        "checkpoint_policy": "ordered_provider_page", "selected_channels": ["fixture"],
+        "checkpoint_pages": {"fixture": {"status": status, "checkpoint_message_id": cursor,
+            "provider_page_last_message_id": fence, "blocked_message_id": blocked}},
+    }}}
+
+
+@pytest.mark.parametrize("seconds,qualified", [(30, True), (600, False)])
+def test_ordered_page_wait_is_distinguished_from_a_stalled_cursor(seconds, qualified):
+    samples = [telegram_page(0, 73), telegram_page(1, 73, 75, 74, "pending_receipt"),
+               telegram_page(10, None, status="failed"), telegram_page(seconds + 1, 75, 75)]
+    requirements, details = subject.ordered_telegram_requirements(samples)
+    assert requirements["telegram_ordered_pages_observed"] is True
+    assert requirements["telegram_no_sustained_checkpoint_stall"] is qualified
+    assert details["channels"]["fixture"]["longest_stall"] == seconds
+
+
+def test_ordered_profile_requires_telemetry_and_keeps_pending_receipt_gate(tmp_path):
+    progress, samples, save = fixture_run(tmp_path)
+    progress["observer_version"] = 4
+    for sample in samples:
+        sample["providers"] = telegram_page(sample["elapsed_seconds"], 73)["providers"]
+        sample["sql_integrity"]["checkpoint_behind_stored_message"] = 1
+    save()
+    assert subject.summarize(tmp_path)["status"] == "qualified_sample"
+    samples[0]["sql_integrity"]["pending_receipts_over_5m"] = 1
+    save()
+    assert subject.summarize(tmp_path)["status"] == "incomplete_or_findings"
+    samples[0]["sql_integrity"]["pending_receipts_over_5m"] = 0
+    samples[1]["providers"] = {}
+    save()
+    assert subject.summarize(tmp_path)["requirements"]["telegram_ordered_pages_observed"] is False
+
+
+def test_disabled_telegram_is_explicit_and_checks_for_unexpected_live_events(tmp_path):
+    progress, samples, save = fixture_run(tmp_path)
+    progress["expect_telegram_disabled"] = True
+    for sample in samples:
+        sample["providers"] = observer.provider_summary({"telegram": {
+            "transport": "disabled", "enabled": False, "status": "disabled", "checkpoint_policy": "none"
+        }})
+        sample["sql_integrity"].update(latest_telegram_event_id=100, checkpoint_behind_stored_message=1)
+    save()
+    result = subject.summarize(tmp_path)
+    assert result["status"] == "qualified_sample"
+    assert result["telegram_live_coverage"] == "disabled"
+    samples[1]["providers"]["workers"]["telegram_bot"] = "running"
+    samples[1]["sql_integrity"]["latest_telegram_event_id"] = 101
+    save()
+    result = subject.summarize(tmp_path)
+    assert result["status"] == "incomplete_or_findings"
+    assert result["requirements"]["explicitly_disabled_telegram_transport"] is False
+    assert result["requirements"]["no_new_telegram_event_ids"] is False
+
+
 @pytest.mark.parametrize("gap", ["short_duration", "still_running", "no_sql", "missing_endpoint", "bad_sql", "late_sample"])
 def test_missing_or_failed_qualification_never_succeeds(tmp_path, gap):
     progress, samples, save = fixture_run(tmp_path)
@@ -98,6 +154,16 @@ def test_nullable_position_report_is_valid_delivery():
     assert observer.valid_event_payload({"type": "new_event", "event": {"id": 1, "raw_text": "Original"}})
 
 
+def test_isolated_observer_never_silently_queries_live_database():
+    command = observer.database_command("owned-fixture-db-1", "conflict_monitor_test")
+    assert command[2] == "owned-fixture-db-1"
+    assert command[command.index("-d") + 1] == "conflict_monitor_test"
+    assert "conflict_monitor" not in command
+    assert "ON_ERROR_STOP=1" in command
+    with pytest.raises(ValueError, match="Unknown observation database"):
+        observer.database_command("owned-fixture-db-1", "other_database")
+
+
 @pytest.mark.parametrize("second_image,qualified", [("backendA", True), ("backendB", False)])
 def test_final_image_profile_does_not_count_mixed_image_time_as_one_image_soak(tmp_path, second_image, qualified):
     fixture_run(tmp_path)
@@ -126,6 +192,32 @@ def test_database_image_volume_and_start_identity_are_required_for_new_profile()
     requirements,profile=subject.database_identity_requirements(progress,samples,segments,sql,120)
     assert all(requirements.values())
     assert profile['database_identities']==[{'image':'databaseImage','volume':'restored_volume'}]
+
+
+@pytest.mark.parametrize('defect', ['wrong_database', 'wrong_role', 'missing_scheduled_sql', 'missing_container_memory'])
+def test_isolated_full_soak_requires_actual_database_and_complete_scheduled_observations(defect):
+    progress, samples, segments, sql = database_fixture()
+    progress['observer_version'] = 6
+    progress['expected_database']['name'] = 'conflict_monitor_test'
+    for row in sql:
+        row.update(database_name='conflict_monitor_test', database_role='monitor')
+    for index, row in enumerate(samples):
+        if index % 10 == 0:
+            row['sql_integrity'] = {**sql[0], **dict.fromkeys(subject.SQL_INTEGRITY_FIELDS, 0)}
+        if index % 2 == 0:
+            row['container_resources'] = [{'Name': name, 'MemUsage': '128MiB / 2GiB'} for name in progress['expected_containers'].values()]
+    good, _ = subject.database_identity_requirements(progress, samples, segments, sql, 120)
+    assert all(good.values())
+    if defect == 'wrong_database':
+        sql[0]['database_name'] = 'conflict_monitor'
+    elif defect == 'wrong_role':
+        sql[0]['database_role'] = 'monitor_admin'
+    elif defect == 'missing_scheduled_sql':
+        samples[0].pop('sql_integrity')
+    else:
+        samples[2]['container_resources'][0]['MemUsage'] = 'unavailable'
+    requirements, _ = subject.database_identity_requirements(progress, samples, segments, sql, 120)
+    assert not all(requirements.values())
 
 
 @pytest.mark.parametrize('defect',['different_volume','different_database_image','database_restart','missing_mount',

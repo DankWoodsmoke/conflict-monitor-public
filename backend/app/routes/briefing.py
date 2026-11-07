@@ -7,6 +7,7 @@ from datetime import UTC, datetime
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, ConfigDict, Field, StrictInt
+from starlette.concurrency import run_in_threadpool
 
 from app.config import settings
 from app.security import require_admin_key
@@ -67,6 +68,20 @@ async def video_manifest():
     return artifact("video.json") or {"status": "unavailable", "url": None}
 
 
+def video_checksum(path, expected_bytes):
+    """Hash bounded chunks, including one extra byte to detect file growth."""
+    remaining = expected_bytes + 1
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        while remaining:
+            chunk = stream.read(min(65536, remaining))
+            if not chunk:
+                break
+            digest.update(chunk)
+            remaining -= len(chunk)
+    return digest.hexdigest()
+
+
 @router.get("/video/{filename}")
 async def video_file(filename: str):
     if not re.fullmatch(r"[a-f0-9]{32}\.mp4", filename):
@@ -78,15 +93,23 @@ async def video_file(filename: str):
     if not path.is_file():
         raise HTTPException(404, "Video not found")
     digest = manifest.get("sha256", "")
+    expected_bytes = manifest.get("bytes")
     if (
         not isinstance(digest, str)
         or not re.fullmatch(r"[0-9a-f]{64}", digest)
         or filename != digest[:32] + ".mp4"
         or manifest.get("url") != f"/api/briefing/video/{filename}"
-        or path.stat().st_size != manifest.get("bytes")
-        or path.stat().st_size > 40_000_000
-        or hashlib.sha256(path.read_bytes()).hexdigest() != digest
+        or type(expected_bytes) is not int
+        or not 0 < expected_bytes <= 40_000_000
     ):
+        raise HTTPException(503, "Video integrity check failed")
+    try:
+        valid = path.stat().st_size == expected_bytes and await run_in_threadpool(
+            video_checksum, path, expected_bytes
+        ) == digest
+    except OSError:
+        valid = False
+    if not valid:
         raise HTTPException(503, "Video integrity check failed")
     return FileResponse(
         path, media_type="video/mp4", headers={"Cache-Control": "no-store"}

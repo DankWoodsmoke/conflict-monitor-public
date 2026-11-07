@@ -3,24 +3,38 @@ import * as Cesium from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import {SHOWCASE,safeUrl} from "../lib/runtime";
 import {nowMs} from "../lib/clock";
+import {assessedSeverity} from "../lib/events";
+import {BUILD_ID} from "../lib/build";
 import {EvidenceDetails} from "./EvidenceDetails";
+import {EarthSymbolLegend} from "./EarthSymbolLegend";
+import {EarthContactsPanel} from "./EarthContactsPanel";
+import {ReportAnalysis} from "./ReportAnalysis";
+import {createEarthDeclutter,type EarthDeclutterResult,type EarthScreenRect} from "../lib/earthDeclutter";
+import type {PollState} from "../hooks/useArrayPoll";
+import {EARTH_SYMBOLS,earthSymbol,earthSymbolImage,earthMarkerSearchText,isAreaReference} from "../lib/earthSymbols";
 import {useModalFocus} from "../hooks/useModalFocus";
 import {useGoogleEarthSession} from "../hooks/useGoogleEarthSession";
 import {CAMERA_PLACES,DEFAULT_EARTH_LAYERS,earthResolutionScale,coordinateLabel,earthMarkers,enabledEarthMarkers,parseCoordinates,reportCameraRange,utc,type EarthDetail,type EarthKind,type EarthLayers,type EarthMarker,type ThermalObservation} from "../lib/earth";
 import {applyEarthHorizon,earthPointVisible,syncEarthEntities} from "../lib/earthScene";
+import {publicSceneDiagnostic,type PublicSceneReceipts} from "../lib/publicSceneDiagnostics";
 import {OIL_PIPELINES,GAS_PIPELINES} from "../lib/earthReference";
 import type {ConflictEvent} from "../types/event";
 import type {Aircraft,Vessel,JammingZone} from "../hooks/useTracking";
 
 interface CesiumViewProps {
+  readOnly?:boolean;
+  publicObservations?:boolean;
+  publicAircraft?:boolean;
+  publicSceneReceipts?:PublicSceneReceipts;
   focusEventId:number|null;googleKey:string;googleEnabled:boolean;onConfigure:()=>void;
   events:ConflictEvent[];aircraft:Aircraft[];vessels:Vessel[];jammingZones:JammingZone[];
   firmsHotspots?:ThermalObservation[];replayCursor?:number|null;windowStart?:number;
   loadingSnapshots?:boolean;snapshotAt?:string|null;
+  trackingStatus?:{aircraft:PollState;vessels:PollState};operatorKey?:string;
 }
 const LAYERS:Array<[EarthKind,string,string]>=[
   ["report","Reports","Only valid reported coordinates. Unresolved locations stay in the feed."],
-  ["aircraft","Aircraft projections","Surface position only. Mixed provider altitude references are shown in details."],
+  ["aircraft","ADS-B positions","Aircraft, surface vehicles, obstructions or unspecified emitters. Surface projections; source category and altitude references are shown in details."],
   ["vessel","Vessel positions","AIS source positions; incomplete receiver coverage."],
   ["thermal","Thermal observations","VIIRS detections; not a cause, strike or actor assessment."],
   ["navigation","Navigation-quality candidates","Heuristic position-quality clusters; not evidence of intentional interference."],
@@ -38,23 +52,33 @@ function foregroundModalOpen(){
   });
 }
 
-export function CesiumView({focusEventId,googleKey,googleEnabled,onConfigure,events,aircraft,vessels,jammingZones,firmsHotspots=[],replayCursor=null,windowStart,loadingSnapshots=false,snapshotAt=null}:CesiumViewProps){
+export function CesiumView({focusEventId,googleKey,googleEnabled,onConfigure,events,aircraft,vessels,jammingZones,firmsHotspots=[],replayCursor=null,windowStart,loadingSnapshots=false,snapshotAt=null,trackingStatus,operatorKey="",readOnly=false,publicObservations=false,publicAircraft=false,publicSceneReceipts}:CesiumViewProps){
   const container=useRef<HTMLDivElement>(null),credits=useRef<HTMLDivElement>(null),viewerRef=useRef<Cesium.Viewer|null>(null),sourceRef=useRef<Cesium.CustomDataSource|null>(null),routesRef=useRef<Cesium.CustomDataSource|null>(null);
   const workspace=useRef<HTMLDivElement>(null),searchInput=useRef<HTMLInputElement>(null),layersButton=useRef<HTMLButtonElement>(null),layersPanel=useRef<HTMLElement>(null),selectionPanel=useRef<HTMLElement>(null),navigationToggle=useRef<HTMLButtonElement>(null),imageryButton=useRef<HTMLButtonElement>(null);
   const layerOpener=useRef<HTMLElement|null>(null),selectionOpener=useRef<HTMLElement|null>(null),selectionFocusPending=useRef(false),selectionHadFocus=useRef(false);
+  const contactsPanel=useRef<HTMLElement|null>(null),contactsButton=useRef<HTMLButtonElement|null>(null);
+  const declutterRef=useRef<ReturnType<typeof createEarthDeclutter>|null>(null);
+  const [grouping,setGrouping]=useState(true),[contacts,setContacts]=useState<string[]|"visible"|null>(null);
+  const [declutter,setDeclutter]=useState<EarthDeclutterResult>({groups:[],visibleIds:[],individualIds:[],signature:""});
+  const groupingRef=useRef(grouping);groupingRef.current=grouping;
   const [detail,setDetail]=useState<EarthDetail>("balanced"),[pose,setPose]=useState<"overhead"|"oblique">("overhead");
   const [navigationOpen,setNavigationOpen]=useState(()=>window.innerWidth>768&&window.innerHeight>500);
   const [creditOpen,setCreditOpen]=useState(false),creditCloseRef=useRef<HTMLElement|null>(null);
   const creditDialogRef=useModalFocus(creditOpen,()=>{if(creditCloseRef.current)creditCloseRef.current.click();else setCreditOpen(false);});
   const [sceneError,setSceneError]=useState(false),[referenceState,setReferenceState]=useState<"loading"|"available"|"error">("loading"),[referenceAttempt,setReferenceAttempt]=useState(0),[layersOpen,setLayersOpen]=useState(false),[layers,setLayers]=useState<EarthLayers>({...DEFAULT_EARTH_LAYERS});
+  useEffect(()=>{if(publicObservations)setLayers(value=>({...value,thermal:true}));},[publicObservations]);
   const [types,setTypes]=useState(new Set(TYPES)),[minimum,setMinimum]=useState(0),[query,setQuery]=useState(""),[selectedId,setSelectedId]=useState<string|null>(null);
   const [wallClock,setWallClock]=useState(nowMs),[visibleCount,setVisibleCount]=useState(0),[cameraHeight,setCameraHeight]=useState(0),[cameraPitch,setCameraPitch]=useState(-90);
   const lastFocused=useRef<number|null>(null);
-  useEffect(()=>{if(SHOWCASE)return;const timer=setInterval(()=>setWallClock(nowMs()),10000);return()=>clearInterval(timer);},[]);
+  useEffect(()=>{if(SHOWCASE)return;setWallClock(nowMs());const timer=setInterval(()=>setWallClock(nowMs()),10000);return()=>clearInterval(timer);},[aircraft,vessels]);
   const clock=replayCursor??wallClock;
   const models=useMemo(()=>earthMarkers({events,aircraft,vessels,navigation:jammingZones,hotspots:firmsHotspots,clock,windowStart,replaying:replayCursor!=null,synthetic:SHOWCASE}),[events,aircraft,vessels,jammingZones,firmsHotspots,clock,windowStart,replayCursor]);
-  const shown=useMemo(()=>enabledEarthMarkers(models,layers).filter(marker=>marker.kind!=="report"||(types.has(marker.report!.event_type)&&(minimum===0||marker.report!.severity>=minimum))),[models,layers,types,minimum]);
+  const shown=useMemo(()=>enabledEarthMarkers(models,layers).filter(marker=>marker.kind!=="report"||(types.has(marker.report!.event_type)&&(minimum===0||(assessedSeverity(marker.report!)??0)>=minimum))),[models,layers,types,minimum]);
   const selected=shown.find(marker=>marker.id===selectedId);
+  const selectedRef=useRef(selectedId);selectedRef.current=selectedId;
+  const contactMarkers=useMemo(()=>{const ids=new Set(contacts==="visible"?declutter.visibleIds:contacts||[]);return shown.filter(marker=>ids.has(marker.id));},[contacts,declutter.visibleIds,shown]);
+  const closeContacts=useCallback(()=>{setContacts(null);if(!foregroundModalOpen())focusVisible(contactsButton.current)||focusVisible(container.current);},[]);
+  useLayoutEffect(()=>{if(contacts&&!foregroundModalOpen())focusVisible(contactsPanel.current);},[contacts]);
   const restoreSearch=useCallback(()=>{if(!foregroundModalOpen())focusVisible(searchInput.current)||focusVisible(navigationToggle.current)||focusVisible(container.current);},[]);
   const closeLayers=useCallback(()=>{setLayersOpen(false);if(!foregroundModalOpen())focusVisible(layerOpener.current)||focusVisible(layersButton.current)||focusVisible(navigationToggle.current)||focusVisible(container.current);},[]);
   const closeSelection=useCallback(()=>{selectionFocusPending.current=false;selectionHadFocus.current=false;setSelectedId(null);if(!foregroundModalOpen()&&!focusVisible(selectionOpener.current))restoreSearch();},[restoreSearch]);
@@ -64,6 +88,10 @@ export function CesiumView({focusEventId,googleKey,googleEnabled,onConfigure,eve
     else if(!selected&&selectionHadFocus.current){selectionHadFocus.current=false;if(document.activeElement===document.body&&!foregroundModalOpen()&&!focusVisible(selectionOpener.current))restoreSearch();}
   });
   const shownRef=useRef(shown);shownRef.current=shown;
+  const reservedAreas=useCallback(():EarthScreenRect[]=>{
+    const canvas=container.current?.getBoundingClientRect();if(!canvas||!workspace.current)return [];
+    return [...workspace.current.querySelectorAll<HTMLElement>('.earth-controls,.earth-contact-bar,.earth-navigation,.earth-layer-panel,.earth-selection,.earth-contacts-panel,.earth-freshness[open]>div,.earth-bottom-stack')].filter(node=>node.getClientRects().length>0).map(node=>{const rect=node.getBoundingClientRect();return{x:rect.left-canvas.left,y:rect.top-canvas.top,width:rect.width,height:rect.height};});
+  },[]);
   const fly=useCallback((lat:number,lon:number,range=120000,view:typeof pose=pose)=>{
     const viewer=viewerRef.current;if(!viewer||viewer.isDestroyed())return;
     viewer.camera.flyToBoundingSphere(new Cesium.BoundingSphere(Cesium.Cartesian3.fromDegrees(lon,lat,0),0),{duration:1.1,offset:new Cesium.HeadingPitchRange(0,Cesium.Math.toRadians(view==="overhead"?-90:-45),range)});
@@ -80,7 +108,8 @@ export function CesiumView({focusEventId,googleKey,googleEnabled,onConfigure,eve
     else viewer.camera.setView({orientation:{heading:viewer.camera.heading,pitch,roll:0}});
     viewer.scene.requestRender();
   },[]);
-  const choose=useCallback((marker:EarthMarker,fromSearch=false,handoff=fromSearch)=>{const active=document.activeElement as HTMLElement|null;selectionOpener.current=fromSearch?searchInput.current:active&&active!==document.body&&!selectionPanel.current?.contains(active)?active:container.current;selectionFocusPending.current=handoff;setSelectedId(marker.id);setQuery("");fly(marker.lat,marker.lon,marker.report?reportCameraRange(marker.report):marker.kind==="reference"?90000:60000);},[fly]);
+  const choose=useCallback((marker:EarthMarker,fromSearch=false,handoff=fromSearch)=>{const active=document.activeElement as HTMLElement|null;selectionOpener.current=fromSearch?searchInput.current:contactsPanel.current?.contains(active)?contactsButton.current:active&&active!==document.body&&!selectionPanel.current?.contains(active)?active:container.current;selectionFocusPending.current=handoff;setContacts(null);setSelectedId(marker.id);setQuery("");fly(marker.lat,marker.lon,marker.report?reportCameraRange(marker.report):marker.kind==="reference"?90000:60000);},[fly]);
+  const zoomContacts=useCallback(()=>{const viewer=viewerRef.current;if(!viewer||!contactMarkers.length)return;const sphere=Cesium.BoundingSphere.fromPoints(contactMarkers.map(marker=>Cesium.Cartesian3.fromDegrees(marker.lon,marker.lat)));viewer.camera.flyToBoundingSphere(sphere,{duration:1.1,offset:new Cesium.HeadingPitchRange(0,-Math.PI/2,Math.max(30000,sphere.radius*3))});},[contactMarkers]);
   const coordinateView=useCallback((position:{lat:number;lon:number})=>{fly(position.lat,position.lon);setQuery("");restoreSearch();},[fly,restoreSearch]);
 
   useEffect(()=>{
@@ -115,17 +144,24 @@ export function CesiumView({focusEventId,googleKey,googleEnabled,onConfigure,eve
     if(viewer.scene.sun)viewer.scene.sun.show=false;if(viewer.scene.moon)viewer.scene.moon.show=false;
     const source=new Cesium.CustomDataSource("earth-observations"),routes=new Cesium.CustomDataSource("inherited-reference-routes");
     sourceRef.current=source;routesRef.current=routes;void viewer.dataSources.add(source);void viewer.dataSources.add(routes);
+    declutterRef.current=createEarthDeclutter(viewer);
     viewer.camera.setView({destination:Cesium.Cartesian3.fromDegrees(44,29,2000000),orientation:{heading:0,pitch:-Math.PI/2,roll:0}});
     const resize=()=>{if(viewer.isDestroyed())return;viewer.resolutionScale=earthResolutionScale(viewer.canvas.clientWidth||1,viewer.canvas.clientHeight||1,window.devicePixelRatio);viewer.resize();viewer.scene.requestRender();};
     const observer=typeof ResizeObserver!=="undefined"?new ResizeObserver(resize):null;observer?.observe(container.current);window.addEventListener("resize",resize);resize();
     const removeRender=viewer.scene.preRender.addEventListener(()=>{
       const visible=applyEarthHorizon(source,viewer.camera.positionWC);setVisibleCount(prior=>prior===visible?prior:visible);
+      const result=declutterRef.current?.sync(source,shownRef.current,selectedRef.current,groupingRef.current,reservedAreas());
+      if(result){setDeclutter(prior=>prior.signature===result.signature?prior:result);}
       const height=Math.round(viewer.camera.positionCartographic.height/100)*100;setCameraHeight(prior=>prior===height?prior:height);
       const pitch=Math.round(Cesium.Math.toDegrees(viewer.camera.pitch));setCameraPitch(prior=>prior===pitch?prior:pitch);
       for(const route of routes.entities.values){const points=route.polyline?.positions?.getValue(viewer.clock.currentTime)||[];route.show=points.every((point:Cesium.Cartesian3)=>earthPointVisible(viewer.camera.positionWC,point));}
+      // The widget's clock tick updated visualizers before camera input was applied.
+      // Consume current horizon/group visibility before this frame builds GPU commands.
+      // Otherwise surface overlays can flash through Earth on the first camera frame.
+      viewer.dataSourceDisplay.update(viewer.clock.currentTime);
     });
-    viewer.screenSpaceEventHandler.setInputAction((click:{position:Cesium.Cartesian2})=>{const picked=viewer.scene.pick(click.position);const entity=picked?.id,valid=entity instanceof Cesium.Entity&&source.entities.contains(entity);selectionOpener.current=container.current;selectionFocusPending.current=valid;setSelectedId(valid?entity.id:null);if(valid&&selectionPanel.current&&!foregroundModalOpen())focusVisible(selectionPanel.current);},Cesium.ScreenSpaceEventType.LEFT_CLICK);
-    return()=>{removeCreditBindings();observer?.disconnect();window.removeEventListener("resize",resize);removeError();removeRender();sourceRef.current=null;routesRef.current=null;viewerRef.current=null;viewer.destroy();};
+    viewer.screenSpaceEventHandler.setInputAction((click:{position:Cesium.Cartesian2})=>{const picked=viewer.scene.pick(click.position);const entity=picked?.id,valid=entity instanceof Cesium.Entity&&source.entities.contains(entity);selectionOpener.current=container.current;selectionFocusPending.current=valid;setContacts(null);setSelectedId(valid?entity.id:null);if(valid&&selectionPanel.current&&!foregroundModalOpen())focusVisible(selectionPanel.current);},Cesium.ScreenSpaceEventType.LEFT_CLICK);
+    return()=>{removeCreditBindings();observer?.disconnect();window.removeEventListener("resize",resize);removeError();removeRender();declutterRef.current?.destroy();declutterRef.current=null;sourceRef.current=null;routesRef.current=null;viewerRef.current=null;viewer.destroy();};
   },[]);
 
   useEffect(()=>{
@@ -144,8 +180,49 @@ export function CesiumView({focusEventId,googleKey,googleEnabled,onConfigure,eve
 
   useEffect(()=>{
     const source=sourceRef.current,viewer=viewerRef.current;if(!source||!viewer)return;
-    syncEarthEntities(source,shown);applyEarthHorizon(source,viewer.camera.positionWC);viewer.scene.requestRender();
-  },[shown]);
+    syncEarthEntities(source,shown);applyEarthHorizon(source,viewer.camera.positionWC);
+    // Refresh visibility before Cesium's data-source visualizers build the next frame.
+    // Waiting until preRender leaves newly replaced graphics visible for a stale frame.
+    const result=declutterRef.current?.sync(source,shown,selectedRef.current,groupingRef.current,reservedAreas());
+    if(result){setDeclutter(prior=>prior.signature===result.signature?prior:result);}
+    viewer.scene.requestRender();
+    // One bounded read/hash per synchronized dataset; publish only after a frame.
+    const node=workspace.current;let cancelled=false,removeFrame:(()=>void)|undefined;
+    if(publicSceneReceipts&&node){
+      node.dataset.publicScene=JSON.stringify({version:1,state:"synchronizing"});
+      void publicSceneDiagnostic(source,viewer.clock.currentTime,clock,publicSceneReceipts).then(diagnostic=>{
+        if(cancelled||viewer.isDestroyed())return;
+        removeFrame=viewer.scene.postRender.addEventListener(()=>{
+          removeFrame?.();removeFrame=undefined;
+          if(!cancelled&&!viewer.isDestroyed())node.dataset.publicScene=JSON.stringify({...diagnostic,rendered_at:Date.now()});
+        });
+        viewer.scene.requestRender();
+      }).catch(()=>{if(!cancelled)node.dataset.publicScene=JSON.stringify({version:1,state:"invalid"});});
+    }else if(node)delete node.dataset.publicScene;
+    return()=>{cancelled=true;removeFrame?.();};
+  },[shown,publicSceneReceipts,clock]);
+  useEffect(()=>{viewerRef.current?.scene.requestRender();},[selectedId,grouping]);
+  useEffect(()=>{
+    const viewer=viewerRef.current;if(!viewer||!workspace.current)return;
+    const node=workspace.current;let previous="",pendingFrame:number|null=null;
+    const measure=()=>{
+      pendingFrame=null;
+      if(viewer.isDestroyed())return;
+      const rect=node.getBoundingClientRect(),stack=node.querySelector('.earth-bottom-stack')?.getBoundingClientRect(),bar=node.querySelector('.earth-contact-bar')?.getBoundingClientRect();
+      const stackHeight=Math.ceil(stack?.height??0),barHeight=Math.ceil(bar?.height??0);
+      const values:Record<string,number>={"--earth-bottom-stack-height":stackHeight,"--earth-contact-bar-height":barHeight,"--earth-freshness-max-height":Math.max(0,rect.height-stackHeight-barHeight-24),"--earth-workspace-top":rect.top,"--earth-workspace-left":rect.left,"--earth-workspace-height":rect.height,"--earth-workspace-width":rect.width};
+      const signature=JSON.stringify([values,reservedAreas()]);if(signature===previous)return;previous=signature;
+      for(const [name,value] of Object.entries(values)){const pixels=`${value}px`;if(node.style.getPropertyValue(name)!==pixels)node.style.setProperty(name,pixels);}
+      viewer.scene.requestRender();
+    };
+    // A credit wrap changes the controls' height. Apply those style writes outside
+    // ResizeObserver delivery so WebKit does not report an undelivered resize loop.
+    const request=()=>{if(!viewer.isDestroyed()&&pendingFrame===null)pendingFrame=requestAnimationFrame(measure);};
+    const observer=typeof ResizeObserver!=="undefined"?new ResizeObserver(request):null;
+    observer?.observe(node);node.querySelectorAll('.earth-controls,.earth-contact-bar,.earth-navigation,.earth-layer-panel,.earth-selection,.earth-contacts-panel,.earth-bottom-stack').forEach(element=>observer?.observe(element));
+    node.addEventListener("toggle",request,true);window.addEventListener("resize",request);request();
+    return()=>{observer?.disconnect();if(pendingFrame!==null)cancelAnimationFrame(pendingFrame);node.removeEventListener("toggle",request,true);window.removeEventListener("resize",request);};
+  },[contacts,layersOpen,selectedId]);
   useEffect(()=>{
     const source=routesRef.current,viewer=viewerRef.current;if(!source||!viewer)return;
     source.entities.removeAll();
@@ -161,9 +238,11 @@ export function CesiumView({focusEventId,googleKey,googleEnabled,onConfigure,eve
     const key=(event:KeyboardEvent)=>{
       if(event.key!=="Escape"||event.defaultPrevented||foregroundModalOpen())return;
       const active=document.activeElement;if(active&&active!==document.body&&!workspace.current?.contains(active))return;
-      if(layersOpen&&layersPanel.current?.contains(active)){closeLayers();}
+      if(contacts&&contactsPanel.current?.contains(active)){closeContacts();}
+      else if(layersOpen&&layersPanel.current?.contains(active)){closeLayers();}
       else if(selected&&selectionPanel.current?.contains(active)){closeSelection();}
       else if(query&&searchInput.current===active){setQuery("");restoreSearch();}
+      else if(contacts){closeContacts();}
       else if(selected){closeSelection();}
       else if(layersOpen){closeLayers();}
       else if(query){setQuery("");restoreSearch();}
@@ -171,10 +250,10 @@ export function CesiumView({focusEventId,googleKey,googleEnabled,onConfigure,eve
       event.preventDefault();event.stopImmediatePropagation();
     };
     window.addEventListener("keydown",key);return()=>window.removeEventListener("keydown",key);
-  },[layersOpen,selected,query,closeLayers,closeSelection,restoreSearch]);
+  },[layersOpen,selected,query,contacts,closeContacts,closeLayers,closeSelection,restoreSearch]);
 
   const coordinates=parseCoordinates(query);
-  const matches=query.trim()?shown.filter(marker=>`${marker.name} ${marker.report?.location_name||""}`.toLowerCase().includes(query.trim().toLowerCase())).slice(0,6):[];
+  const matches=query.trim()?shown.filter(marker=>earthMarkerSearchText(marker).includes(query.trim().toLowerCase())).slice(0,6):[];
   const places=query.trim()?CAMERA_PLACES.filter(place=>place.name.toLowerCase().includes(query.trim().toLowerCase())).slice(0,4):[];
   const counts=(kind:EarthKind)=>models.filter(model=>model.kind===kind).length;
   const reportCount=counts("report"),unlocated=events.length-reportCount;
@@ -182,10 +261,13 @@ export function CesiumView({focusEventId,googleKey,googleEnabled,onConfigure,eve
   const providerSummary=sceneError?"Earth renderer unavailable":referenceState==="error"&&providerState!=="ready"?`${providerState==="error"?"Google unavailable · ":""}Reference imagery incomplete · reports remain accessible`:providerState==="ready"?"Photographic imagery · capture dates vary":providerState==="error"?`Google unavailable · ${referenceName}`:providerState==="reference"?`No visible Google 3D tiles · ${referenceName}`:providerState==="loading"?`Refining Google imagery · ${referenceName} underneath`:referenceState==="loading"?`Loading ${referenceName}`:`${referenceName} · Google not enabled`;
   const sessionText=session.phase==="refreshing"?(providerState==="ready"?"Refreshing Google access · existing imagery retained until replacement is usable":"Requesting Google imagery access · reference layer selected"):session.phase==="retry_wait"?"Google access refresh failed · retry scheduled":session.phase==="waiting"?"Google access request timed out · waiting for that request to settle before retrying":session.phase==="paused"?"Google access refresh paused while this tab is hidden or offline":session.phase==="error"?"Automatic Google access retries exhausted · retry manually":"";
   const sessionBusy=session.phase==="refreshing"||session.phase==="waiting";
-  return <div ref={workspace} className="earth-workspace" data-earth-provider={providerState} data-earth-reference={referenceState} data-earth-detail={detail} data-earth-camera-pitch={cameraPitch} data-earth-session={session.phase} data-earth-session-generation={session.generation} data-earth-session-attempt={session.attempt} data-earth-session-root-at={session.rootAt??undefined} data-earth-session-retries={session.retries}>
+  const trackSummary=(kind:"aircraft"|"vessel")=>{const rows=shown.filter(m=>m.kind===kind);return `${rows.filter(m=>m.positionState==="fresh").length} fresh / ${rows.filter(m=>m.positionState==="last_known").length} last known${replayCursor!=null?` / ${rows.filter(m=>m.positionState==="recorded").length} recorded`:""}${SHOWCASE?` / ${rows.filter(m=>m.positionState==="synthetic").length} synthetic`:""}`;};
+  const transportSummary=(status:PollState|undefined,kind="vessel")=>replayCursor!=null?"Recorded snapshots":SHOWCASE?"Synthetic exercise":readOnly&&!status?(kind==="aircraft"&&publicAircraft?"Independent adsb.lol publication · inspect dataset status":"Tracking not published"):!status?"Transport not checked":status.state==="received"?`API received ${status.lastSuccessAt==null?"":`${Math.max(0,Math.floor((wallClock-status.lastSuccessAt)/1000))}s ago`}`:status.state==="stale"?"Refresh failed · retained data":status.state==="unavailable"?"API unavailable":"Requesting data";
+  return <div ref={workspace} className="earth-workspace" data-ui-build={BUILD_ID} data-earth-provider={providerState} data-earth-reference={referenceState} data-earth-detail={detail} data-earth-camera-pitch={cameraPitch} data-earth-session={session.phase} data-earth-session-generation={session.generation} data-earth-session-attempt={session.attempt} data-earth-session-root-at={session.rootAt??undefined} data-earth-session-retries={session.retries} data-earth-group-count={declutter.groups.length} data-earth-individual-count={declutter.individualIds.length} data-earth-view-count={declutter.visibleIds.length}>
     <div ref={container} className="earth-canvas" role="region" aria-label="Interactive Earth with reported positions" tabIndex={-1}/>
+    <div className="earth-group-badges" role="group" aria-label="Grouped tracking positions">{declutter.groups.map(group=><button key={`${group.screen.x}:${group.screen.y}`} className="earth-group-badge" data-earth-group-id={group.id} style={{left:group.screen.x,top:group.screen.y}} aria-label={`Area group: ${group.memberIds.length} contacts; ${group.counts.aircraft} aircraft; ${group.counts.vessel} vessels; ${group.counts.ground} ground emitters; ${group.counts.obstacle} obstructions; ${group.counts.unknown} unspecified emitters; ${group.states.last_known} last known; ${group.states.recorded} recorded; ${SHOWCASE?"synthetic exercise":`${group.states.fresh} fresh; ${group.states.unknown} time unknown`}`} onClick={()=>{setSelectedId(null);setLayersOpen(false);setContacts(group.memberIds);}}><span className="earth-group-total"><small>AREA</small><b>{group.memberIds.length}</b></span><span className="earth-group-kinds">{group.counts.unknown>0?<span>{group.memberIds.length-group.counts.unknown} typed · {group.counts.unknown} unspecified</span>:<>{group.counts.aircraft>0&&<span className="air">AIR {group.counts.aircraft}</span>}{group.counts.vessel>0&&<span className="sea">SEA {group.counts.vessel}</span>}{group.counts.ground>0&&<span>GROUND {group.counts.ground}</span>}{group.counts.obstacle>0&&<span>OBST {group.counts.obstacle}</span>}</>}</span><small className="earth-group-age">{SHOWCASE?"Synthetic exercise":group.states.recorded?`${group.states.recorded} recorded`:group.states.last_known?`${group.states.last_known} last known`:group.states.unknown?`${group.states.unknown} time unknown`:`${group.states.fresh} fresh`}</small></button>)}</div>
     <section className="earth-controls" aria-label="Earth controls">
-      <div className="earth-provider-row"><div><span className="earth-eyebrow">ONE EARTH / {SHOWCASE?"EXERCISE":"SOURCE CONTEXT"}</span><h2>{providerState==="ready"?"Google 3D imagery":providerState==="loading"?"Loading Google 3D":"Earth workspace"}</h2></div><div className="earth-provider-actions"><button ref={imageryButton} onClick={onConfigure} aria-label="Configure Earth imagery">Imagery</button><button ref={navigationToggle} className="earth-navigation-toggle" onClick={()=>setNavigationOpen(value=>!value)} aria-label={navigationOpen?"Hide controls — Earth navigation":"Controls — show Earth navigation"} aria-expanded={navigationOpen} aria-controls="earth-navigation-body">{navigationOpen?"Hide controls":"Controls"}</button></div></div>
+      <div className="earth-provider-row"><div><span className="earth-eyebrow">ONE EARTH / {SHOWCASE?"EXERCISE":"SOURCE CONTEXT"}</span><h2>{providerState==="ready"?"Google 3D imagery":providerState==="loading"?"Loading Google 3D":"Earth workspace"}</h2></div><div className="earth-provider-actions">{!readOnly&&<button ref={imageryButton} onClick={onConfigure} aria-label="Configure Earth imagery">Imagery</button>}<button ref={navigationToggle} className="earth-navigation-toggle" onClick={()=>setNavigationOpen(value=>!value)} aria-label={navigationOpen?"Hide controls — Earth navigation":"Controls — show Earth navigation"} aria-expanded={navigationOpen} aria-controls="earth-navigation-body">{navigationOpen?"Hide controls":"Controls"}</button></div></div>
       <p className="earth-provider-status" role="status">{providerSummary}</p>
       {googleEnabled&&googleKey&&sessionText&&<p className="earth-session-status" role="status">{sessionText}</p>}
       {googleEnabled&&googleKey&&(providerState==="error"||session.phase==="error"||session.phase==="retry_wait")&&<button className="earth-retry-imagery" onClick={event=>{const owned=document.activeElement===event.currentTarget;refreshGoogle();if(owned)focusVisible(imageryButton.current);}} disabled={sessionBusy}>Retry Google imagery</button>}
@@ -195,16 +277,20 @@ export function CesiumView({focusEventId,googleKey,googleEnabled,onConfigure,eve
       <form className="earth-search" role="search" onSubmit={event=>{event.preventDefault();if(coordinates)coordinateView(coordinates);else if(matches[0])choose(matches[0],true);else if(places[0])referenceView(places[0],true);}}>
         <label htmlFor="earth-search">Find a position</label><div><input ref={searchInput} id="earth-search" value={query} onChange={event=>setQuery(event.target.value)} placeholder="Place, report, track or latitude, longitude" autoComplete="off"/><button type="submit">Go</button></div>
       </form>
-      {query.trim()&&<div className="earth-search-results" role="group" aria-label="Position search results">{coordinates&&<button onClick={()=>coordinateView(coordinates)}>Coordinates · {coordinateLabel(coordinates.lat,coordinates.lon)}</button>}{matches.map(marker=><button key={marker.id} onClick={()=>choose(marker,true)}><small>{marker.kind}</small>{marker.name}</button>)}{places.map(place=><button key={place.name} onClick={()=>referenceView(place,true)}><small>Reference camera location</small>{place.name}</button>)}{!coordinates&&!matches.length&&!places.length&&<p>No known position matches. Search the report feed for unresolved reports; coordinates are not inferred.</p>}</div>}
-      <div className="earth-toolbar earth-toolbar-primary"><button onClick={()=>referenceView(CAMERA_PLACES[0])}>Region</button><button onClick={()=>{setPose("overhead");fly(0,0,18000000,"overhead");}}>Globe</button><button ref={layersButton} onClick={event=>{if(layersOpen)closeLayers();else{layerOpener.current=event.currentTarget;setLayersOpen(true);}}} aria-expanded={layersOpen} aria-controls="earth-layers">Layers {layersOpen?"−":"+"}</button><button onClick={()=>{const source=sourceRef.current;if(source&&source.entities.values.length)void viewerRef.current?.flyTo(source,{duration:1.1,offset:new Cesium.HeadingPitchRange(0,-Math.PI/3,0)});}} disabled={!shown.length}>Fit positions</button></div>
+      {query.trim()&&<div className="earth-search-results" role="group" aria-label="Position search results">{coordinates&&<button onClick={()=>coordinateView(coordinates)}>Coordinates · {coordinateLabel(coordinates.lat,coordinates.lon)}</button>}{matches.map(marker=><button key={marker.id} onClick={()=>choose(marker,true)}><small>{EARTH_SYMBOLS[earthSymbol(marker)].label}{marker.identifier?` · ${marker.identifier}`:""}</small>{marker.name}</button>)}{places.map(place=><button key={place.name} onClick={()=>referenceView(place,true)}><small>Reference camera location</small>{place.name}</button>)}{!coordinates&&!matches.length&&!places.length&&<p>No known position matches. Search the report feed for unresolved reports; coordinates are not inferred.</p>}</div>}
+      <div className="earth-toolbar earth-toolbar-primary"><button onClick={()=>referenceView(CAMERA_PLACES[0])}>Region</button><button onClick={()=>{setPose("overhead");fly(0,0,18000000,"overhead");}}>Globe</button><button ref={layersButton} onClick={event=>{if(layersOpen)closeLayers();else{setContacts(null);layerOpener.current=event.currentTarget;setLayersOpen(true);}}} aria-expanded={layersOpen} aria-controls="earth-layers">Layers {layersOpen?"−":"+"}</button><button onClick={()=>{const source=sourceRef.current;if(source&&source.entities.values.length)void viewerRef.current?.flyTo(source,{duration:1.1,offset:new Cesium.HeadingPitchRange(0,-Math.PI/3,0)});}} disabled={!shown.length}>Fit positions</button></div>
+      <details className="earth-explore-details"><summary>City views, symbols & imagery</summary>
       <div className="earth-location-presets" role="group" aria-label="Reference city views"><span>Inspect city</span>{["Dubai","Tel Aviv","Tehran","Gaza"].map(name=><button key={name} onClick={()=>referenceView(CAMERA_PLACES.find(place=>place.name===name)!)} title="Reference camera view; not a report location">{name}</button>)}</div>
       <div className="earth-view-controls" role="group" aria-label="Earth view angle"><button aria-pressed={cameraPitch<=-80} onClick={()=>orient("overhead")}>Top down</button><button aria-pressed={cameraPitch>-80} onClick={()=>orient("oblique")}>Oblique 3D</button></div>
+      <EarthSymbolLegend/>
       <details className="earth-imagery-details"><summary className="earth-imagery-summary">Imagery and detail</summary><p>Google photographic imagery is geographic context, not current event footage. Resolution, coverage and capture dates vary; 3D buildings are available only where the provider supplies them. {SHOWCASE?"The keyless reference is NASA Blue Marble May 2004 composite, approximately 20 km/pixel; other exercise sources remain synthetic.":"The fallback is Esri reference satellite/aerial imagery over an ellipsoid."}</p><div className="earth-quality-controls"><label>Render detail<select aria-label="Imagery render detail" value={detail} onChange={event=>setDetail(event.target.value as EarthDetail)}><option value="balanced">Balanced</option><option value="detail">Detailed inspection</option></select></label></div><p>Native display pixels are capped at 2× and 8 million pixels. Detail refines the rendered mesh; it cannot increase the source image resolution or update its capture date.</p>{googleEnabled&&<><p>{tileStatus.pending} tile requests · {tileStatus.processing} processing · {tileStatus.visible} visible tiles</p><p>Google access refreshes proactively 2h 30m after each root request while this tab is visible and online, or when an overdue tab resumes. This is application policy, not a claimed provider expiry.</p><button className="earth-retry-imagery" onClick={event=>{const owned=document.activeElement===event.currentTarget;refreshGoogle();if(owned)focusVisible(imageryButton.current);}} disabled={!googleKey||sessionBusy}>Refresh Google imagery access</button></>}<p className="earth-coverage" data-visible-count={visibleCount} data-position-count={shown.length} data-last-known-count={shown.filter(marker=>marker.positionState==="last_known").length}>{visibleCount} on visible hemisphere · {shown.length} positions enabled · {shown.filter(marker=>marker.positionState==="last_known").length} last known · {unlocated} reports without usable coordinates</p></details>
-      </div>
+      </details></div>
     </section>
+    <div className="earth-contact-bar"><button ref={contactsButton} aria-label={`Contacts ${declutter.visibleIds.length} ${declutter.groups.length} groups · ${declutter.individualIds.length} individual — browse visible contacts`} aria-expanded={contacts!==null} onClick={()=>{setSelectedId(null);setLayersOpen(false);setContacts("visible");}}>Contacts <b>{declutter.visibleIds.length}</b>{" "}<small>{declutter.groups.length} groups · {declutter.individualIds.length} individual</small></button><details className="earth-freshness"><summary>Tracking freshness</summary><div><button className="earth-freshness-close" onClick={event=>{const details=event.currentTarget.closest("details");details?.removeAttribute("open");details?.querySelector<HTMLElement>("summary")?.focus();}}>Close freshness</button><p><b>ADS-B emitters</b> · {trackSummary("aircraft")}<small>{transportSummary(trackingStatus?.aircraft,"aircraft")}</small></p><p><b>Vessels</b> · {trackSummary("vessel")}<small>{transportSummary(trackingStatus?.vessels)}</small></p><p>Counts cover enabled tracks, including positions outside the camera view. HTTP receipt is not a new observation. Aircraft expire after 120s; vessels after 600s. Normal source rotation can produce last-known observations.</p><label><input type="checkbox" checked={layers.lastKnown} onChange={()=>setLayers(prior=>({...prior,lastKnown:!prior.lastKnown}))}/> Include last-known positions</label><label><input type="checkbox" checked={grouping} onChange={()=>setGrouping(value=>!value)}/> Group overlapping tracks</label></div></details></div>
+    {contacts!==null&&<aside ref={contactsPanel} className="earth-contacts-panel" aria-label="Track contacts" tabIndex={-1}><EarthContactsPanel key={contacts==="visible"?"visible":contacts.join("|")} markers={contactMarkers} areaGroup={contacts!=="visible"} onChoose={marker=>choose(marker,false,true)} onZoom={zoomContacts} onClose={closeContacts}/></aside>}
     {layersOpen&&<section ref={layersPanel} id="earth-layers" className="earth-layer-panel" aria-label="Spatial layers"><div className="earth-panel-heading"><h2>Spatial layers</h2><button data-earth-layers-close onClick={closeLayers} aria-label="Close spatial layers">×</button></div><p>Source and time filters apply to reports. Track positions use their own observation clocks.</p>{LAYERS.map(([kind,label,help])=><label key={kind}><input type="checkbox" checked={layers[kind]} onChange={()=>setLayers(prior=>({...prior,[kind]:!prior[kind]}))}/><span>{label} <b>{counts(kind)}</b><small>{help}</small></span></label>)}<label><input type="checkbox" aria-label="Show last-known positions" checked={layers.lastKnown} onChange={()=>setLayers(prior=>({...prior,lastKnown:!prior.lastKnown}))}/><span>Last-known positions<small>Muted, hollow symbols retain aging observations within 120s for aircraft and 600s for vessels. They are not current or extrapolated positions; source clocks remain visible in details. Recorded replay positions also use hollow symbols.</small></span></label><label><input type="checkbox" checked={layers.routes} onChange={()=>setLayers(prior=>({...prior,routes:!prior.routes}))}/><span>Schematic reference routes<small>Inherited approximate waypoints. Source, survey date and current operating status unverified.</small></span></label><fieldset><legend>Spatial report types</legend>{TYPES.map(type=><label key={type}><input type="checkbox" checked={types.has(type)} onChange={()=>setTypes(prior=>{const next=new Set(prior);next.has(type)?next.delete(type):next.add(type);return next;})}/>{type.replace(/_/g," ")}</label>)}</fieldset><label>Scored report minimum<select value={minimum} onChange={event=>setMinimum(Number(event.target.value))}><option value={0}>All · includes unscored</option>{[3,5,7,9].map(value=><option key={value} value={value}>{value}/10 and above</option>)}</select></label><p>These layer controls change spatial symbols; the report feed remains searchable independently. Orbit markers have been removed: orbital models do not provide current observation coverage.</p></section>}
     <div className="earth-navigation" role="group" aria-label="Camera controls"><button aria-label="Zoom in" onClick={()=>{const camera=viewerRef.current?.camera;if(camera)camera.zoomIn(Math.max(100,camera.positionCartographic.height*.35));}}>+</button><button aria-label="Zoom out" onClick={()=>{const camera=viewerRef.current?.camera;if(camera)camera.zoomOut(Math.max(100,camera.positionCartographic.height*.5));}}>−</button><button onClick={()=>{const camera=viewerRef.current?.camera;if(camera)camera.setView({orientation:{heading:0,pitch:camera.pitch,roll:0}});}} aria-label="Orient north up">N</button><small>{cameraHeight>=1000000?`${(cameraHeight/1000000).toFixed(1)} Mm`:`${Math.round(cameraHeight/1000)} km`}<span>camera height</span></small></div>
-    <div className="earth-bottom-stack"><div className="earth-clock" role="status"><span className="earth-position-legend">Tracks: solid = fresh observation · hollow = last known / recorded</span> {replayCursor!=null?`REPLAY · ${utc(new Date(replayCursor).toISOString())} · ${loadingSnapshots?"loading snapshots":snapshotAt?`snapshot ${utc(snapshotAt)}`:"no track snapshot"}`:SHOWCASE?"SYNTHETIC EXERCISE · fixed reference clock":"Source positions · no motion extrapolation · aircraft shown as surface projections"}</div><div ref={credits} className="earth-attribution" role="region" aria-label="Imagery and renderer attribution"/></div>
-    {selected&&<aside ref={selectionPanel} className="earth-selection" aria-label="Selected position" tabIndex={-1} onFocusCapture={()=>{selectionHadFocus.current=true;}} onBlurCapture={event=>{if(!(event.relatedTarget instanceof Node)||!event.currentTarget.contains(event.relatedTarget))selectionHadFocus.current=false;}}><div className="earth-panel-heading"><span>{selected.kind.toUpperCase()} / SOURCE POSITION</span><button onClick={closeSelection} aria-label="Close selected position">×</button></div><h2>{selected.name}</h2><dl>{selected.details.map(([name,value],i)=><div key={`${name}-${i}`}><dt>{name}</dt><dd>{value}</dd></div>)}</dl>{safeUrl(selected.url)&&<a href={safeUrl(selected.url)} target="_blank" rel="noopener noreferrer">Open original source ↗</a>}{selected.report&&<EvidenceDetails event={selected.report}/>}</aside>}
+    <div className="earth-bottom-stack"><div className="earth-clock" role="status"><span className="earth-position-legend">Tracks: dashed border = last known / recorded · inspect source clocks for freshness</span> {replayCursor!=null?`REPLAY · ${utc(new Date(replayCursor).toISOString())} · ${loadingSnapshots?"loading snapshots":snapshotAt?`snapshot ${utc(snapshotAt)}`:"no track snapshot"}`:SHOWCASE?"SYNTHETIC EXERCISE · fixed reference clock":"Source positions · no motion extrapolation · aircraft shown as surface projections"}</div><div ref={credits} className="earth-attribution" role="region" aria-label="Imagery and renderer attribution"/></div>
+    {selected&&<aside ref={selectionPanel} className="earth-selection" aria-label="Selected position" tabIndex={-1} onFocusCapture={()=>{selectionHadFocus.current=true;}} onBlurCapture={event=>{if(!(event.relatedTarget instanceof Node)||!event.currentTarget.contains(event.relatedTarget))selectionHadFocus.current=false;}}><div className="earth-panel-heading"><span>{selected.identifier||selected.kind.toUpperCase()} / SOURCE POSITION</span><button onClick={closeSelection} aria-label="Close selected position">×</button></div><h2>{selected.name}</h2><div className="earth-symbol-summary"><img src={earthSymbolImage(earthSymbol(selected),selected.color,selected.positionState==="last_known"||selected.positionState==="recorded",isAreaReference(selected))} width={36} height={36} alt=""/><span><strong>{EARTH_SYMBOLS[earthSymbol(selected)].label}</strong><small>{EARTH_SYMBOLS[earthSymbol(selected)].description}</small></span></div><p className="earth-selected-coordinate">{coordinateLabel(selected.lat,selected.lon)}</p><details key={selected.id} className="earth-selected-details"><summary>Source details, clocks &amp; evidence</summary><dl>{selected.details.map(([name,value],i)=><div key={`${name}-${i}`}><dt>{name}</dt><dd>{value}</dd></div>)}</dl>{safeUrl(selected.url)&&<a href={safeUrl(selected.url)} target="_blank" rel="noopener noreferrer">Open original source ↗</a>}{selected.report&&<><EvidenceDetails event={selected.report}/>{!readOnly&&<ReportAnalysis event={selected.report} operatorKey={operatorKey} onConfigureOperator={onConfigure}/>}</>}</details></aside>}
   </div>;
 }

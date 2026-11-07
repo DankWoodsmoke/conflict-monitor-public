@@ -20,6 +20,9 @@ def schedule(monkeypatch):
     monkeypatch.setattr(rss, "_feed_health", {})
     monkeypatch.setattr(rss, "_cycle_status", {})
     monkeypatch.setattr(rss, "_poll_cursor", 0)
+    monkeypatch.setattr(rss, "_retry_one_item_turn", {})
+    monkeypatch.setattr(rss.rss_retries, "claim_due", AsyncMock(return_value=[]))
+    monkeypatch.setattr(rss.rss_retries, "refresh_status", AsyncMock())
 
 
 def test_catalog_defaults_and_candidate_admission_are_explicit(monkeypatch):
@@ -108,6 +111,43 @@ async def test_small_global_budget_is_reserved_fairly_independent_of_fetch_speed
         observed.append({call.args[4] for call in process.await_args_list[start:]})
         assert rss._cycle_status["attempted_items"] == 2
     assert observed == [{"0","1"},{"1","2"},{"0","2"}]
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("source_count", [2, 4])
+async def test_one_global_slot_alternates_each_source_despite_even_rotation(schedule, monkeypatch, source_count):
+    """Global parity aliases with an even rotation; each source owns its turn."""
+    from types import SimpleNamespace
+    monkeypatch.setattr(rss.settings, "rss_max_ingest_per_cycle", 1)
+    feeds = [{**FEED, "source": f"source-{index}"} for index in range(source_count)]
+    observed, claims = [], []
+    async def read(*args):
+        return xml().encode(), {"http_status": 200}
+    async def claim(source, limit, now):
+        claims.append((source, limit))
+        return [SimpleNamespace(source_name=source)] if limit else []
+    async def replay(item, feed):
+        observed.append((feed["source"], "retry"))
+        return "reported"
+    async def new(*args, **kwargs):
+        observed.append((args[4], "new"))
+        return "reported"
+    monkeypatch.setattr(rss, "configured_feeds", lambda: feeds)
+    monkeypatch.setattr(rss, "_read_feed_response", read)
+    monkeypatch.setattr(rss, "_terminal_identities", AsyncMock(return_value=set()))
+    monkeypatch.setattr(rss, "_process_article", new)
+    monkeypatch.setattr(rss, "_process_retained_future", replay)
+    monkeypatch.setattr(rss.rss_retries, "claim_due", claim)
+    monkeypatch.setattr(rss.rss_retries, "finish_attempt", AsyncMock(return_value=True))
+    for cycle in range(source_count * 4):
+        before, claims_before = len(observed), len(claims)
+        await rss.poll_news_once()
+        expected_source = f"source-{cycle % source_count}"
+        assert observed[before:] == [(expected_source, "retry" if cycle // source_count % 2 == 0 else "new")]
+        assert claims[claims_before:] == [(expected_source, 1 if cycle // source_count % 2 == 0 else 0)]
+        assert rss._cycle_status["attempted_items"] == 1
+    for feed in feeds:
+        assert [kind for source, kind in observed if source == feed["source"]] == ["retry", "new", "retry", "new"]
 
 
 @pytest.mark.asyncio

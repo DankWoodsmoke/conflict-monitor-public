@@ -15,11 +15,13 @@ def state(monkeypatch):
     monkeypatch.setattr(telegram, "settings", SimpleNamespace(
         telegram_session="fixture-session", telegram_api_id=1, telegram_api_hash="fixture-hash",
         telegram_processing_mode="reports", telegram_startup_max_messages=3,
-        live_ingestion_enabled=True, telegram_channels="publicone,publictwo"))
+        telegram_transport="session", live_ingestion_enabled=True, demo_mode=False,
+        telegram_channels="publicone,publictwo"))
     monkeypatch.setattr(telegram, "_shared_client", None)
     monkeypatch.setattr(telegram, "_get_channels", lambda: ["publicone", "publictwo"])
     monkeypatch.setattr(telegram, "StringSession", lambda value: value)
-    monkeypatch.setattr(telegram, "_state", {})
+    monkeypatch.setattr(telegram, "_state", {"channels": {}})
+    monkeypatch.setattr(telegram, "_listener_cleanup_unconfirmed", False)
     return Runtime()
 
 
@@ -27,6 +29,7 @@ class PublicClient:
     def __init__(self, *, fail_one=False, broadcast=True):
         self.connect = AsyncMock()
         self.disconnect = AsyncMock()
+        self.is_connected = Mock(return_value=False)
         self.is_user_authorized = AsyncMock(return_value=True)
         self.handlers = []
         self.broadcast = broadcast
@@ -52,15 +55,17 @@ async def test_partial_resolution_failure_stays_visible_and_both_live_edit_handl
     process = AsyncMock(return_value="reported")
     monkeypatch.setattr(telegram, "_backfill_entity", backfill)
     monkeypatch.setattr(telegram, "_process_message", process)
-    await telegram.start_telegram_listener()
+    message = SimpleNamespace(text="Original publisher text", date=telegram._stamp(), id=123)
+    event = SimpleNamespace(chat=SimpleNamespace(username="PublicTwo"), message=message)
+    async def dispatch_while_owned():
+        for _, handler in client.handlers:
+            await handler(event)
+    client.run_until_disconnected = dispatch_while_owned
+    assert await telegram._listen_once(["publicone", "publictwo"]) is True
     assert telegram._state["channels"]["publicone"] == {"status": "failed", "error_type": "RuntimeError"}
     assert "private token" not in str(telegram._state)
     assert len(client.handlers) == 2
     assert {type(subscription).__name__ for subscription, _ in client.handlers} == {"NewMessage", "MessageEdited"}
-    message = SimpleNamespace(text="Original publisher text", date=telegram._stamp(), id=123)
-    event = SimpleNamespace(chat=SimpleNamespace(username="PublicTwo"), message=message)
-    for _, handler in client.handlers:
-        await handler(event)
     assert process.await_count == 2
     process.assert_awaited_with(message.text, "publictwo", message.date, 123)
     backfill.assert_awaited_once()

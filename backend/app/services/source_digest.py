@@ -12,45 +12,77 @@ from app.models import Event, Sitrep
 
 logger = logging.getLogger(__name__)
 _lock = asyncio.Lock()
+DIGEST_CONTRACT = "source-digest-v2"
+DIGEST_METHOD = "attributed_report_compilation"
+
+
+def digest_source_excerpt(event):
+    """Project stored source text and its clock, never an analysis summary."""
+    raw = event.raw_text or ""
+    text = re.sub(r"\s+", " ", raw).strip()
+    # Citation-looking tokens in source-controlled text cannot create our links.
+    text = re.sub(r"\[src:[^\]]*\]", "[source citation text]", text, flags=re.I)
+    stamp = event.timestamp.isoformat() if event.timestamp else None
+    raw_hash = hashlib.sha256(raw.encode("utf-8")).hexdigest()
+    source_kind = "source_report"
+    time_basis = "source_time_unknown_basis"
+    if event.source == "satellite_firms":
+        source_kind = "thermal_observation"
+        time_basis = "sensor_acquisition_time"
+    elif event.source == "telegram":
+        time_basis = "source_publication_time"
+    elif str(event.source or "").startswith("rss_"):
+        for report in getattr(event, "reports", None) or []:
+            if not isinstance(report, dict) or report.get("content_sha256") != raw_hash or report.get("published_at") != stamp:
+                continue
+            context = report.get("feed_context")
+            basis = context.get("source_time_basis") if isinstance(context, dict) else None
+            if basis in {"source_publication_time", "source_updated_time"}:
+                time_basis = basis
+                break
+    return {"summary": text[:499] + "…" if len(text) > 500 else text,
+            "source_kind": source_kind, "source_time": stamp,
+            "source_time_basis": time_basis if stamp else "unknown", "raw_sha256": raw_hash}
 
 
 def build_source_digest(events, *, generated_at=None):
-    """Keep publisher text inside an explicitly attributed report list."""
+    """Compile bounded source excerpts and distinguish sensor observations."""
     stamp = generated_at or datetime.now(timezone.utc)
     snapshot = []
     for event in events:
         if event.source in {"demo", "synthetic", "simulation", "situational"}:
             continue
-        summary = re.sub(r"\s+", " ", str(event.summary or event.raw_text or "")).strip()
-        # A publisher's citation-looking token is source text, never our link.
-        summary = re.sub(r"\[src:[^\]]*\]", "[source citation text]", summary, flags=re.I)[:500]
-        if not summary:
+        source = digest_source_excerpt(event)
+        if not source["summary"]:
             continue
-        snapshot.append({"id": event.id, "source": str(event.channel_name or event.source),
-            "summary": summary, "source_url": str(event.source_url or ""),
-            "published_at": event.timestamp.isoformat(),
-            "raw_sha256": hashlib.sha256(str(event.raw_text or "").encode("utf-8")).hexdigest()})
+        snapshot.append({"id": event.id, "source": str(event.channel_name or event.source), **source,
+            "source_url": str(event.source_url or "")})
     if not snapshot:
         return None
     canonical = json.dumps(snapshot, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     digest = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
     source_count = len({row["source"] for row in snapshot})
     return {
-        "headline": f"Source digest · {len(snapshot)} reports from {source_count} publisher labels",
-        "situation": "\n".join(f"• {row['source']} reports: {row['summary']} [src:{row['id']}]" for row in snapshot),
+        "headline": f"Source digest · {len(snapshot)} records from {source_count} source labels",
+        "situation": "\n".join(
+            f"• {row['source']} · "
+            f"{'thermal observation (cause unassessed)' if row['source_kind'] == 'thermal_observation' else 'source excerpt'}: "
+            f"{row['summary']} [src:{row['id']}]" for row in snapshot),
         "escalation_text": "No automated risk assessment has been made. Reporting volume does not establish conflict intensity.",
         "economic_exposure": "", "humanitarian_ground": "", "game_theory": "", "historical_analogue": "",
         "key_questions": json.dumps([
             {"q": "Which claims have independent corroboration?", "a": "Not assessed by this compilation.", "watch": "Inspect the original source and its underlying evidence."},
-            {"q": "When did the described events occur?", "a": "The listed times are publisher timestamps; event time may differ.", "watch": "Look for dated primary evidence or a source correction."},
+            {"q": "When did the described events occur?",
+             "a": "Source publication, update and sensor acquisition clocks do not establish incident time. Some source clocks have unknown basis.",
+             "watch": "Look for dated primary evidence or a source correction."},
         ]),
         "key_event_ids": ",".join(str(row["id"]) for row in snapshot),
         "events_analyzed": len(snapshot),
         "raw_response": json.dumps({"_provenance": {
-            "contract_version": "source-digest-v1", "model": None,
-            "method": "attributed_report_compilation", "generated_at": stamp.isoformat(),
-            "validation_scope": "source_id_membership_and_exact_compilation",
-            "semantic_entailment": "not_claimed; source statements are attributed",
+            "contract_version": DIGEST_CONTRACT, "model": None,
+            "method": DIGEST_METHOD, "generated_at": stamp.isoformat(),
+            "validation_scope": "source_id_membership_and_bounded_raw_excerpts",
+            "semantic_entailment": "not_claimed; source text and thermal observations have separate labels",
             "source_snapshot_sha256": digest, "source_snapshot": snapshot}}, ensure_ascii=False),
     }
 
@@ -75,9 +107,10 @@ async def generate_source_digest(max_reports=12):
                     previous_raw = previous.raw_response or "{}"
                     if not isinstance(previous_raw, str) or len(previous_raw) > 2_000_000:
                         raise ValueError("Legacy digest exceeds parse budget")
-                    old = json.loads(previous_raw)["_provenance"]["source_snapshot_sha256"]
+                    prior_provenance = json.loads(previous_raw)["_provenance"]
+                    old = prior_provenance["source_snapshot_sha256"]
                     new = json.loads(data["raw_response"])["_provenance"]["source_snapshot_sha256"]
-                    if old == new:
+                    if prior_provenance.get("contract_version") == DIGEST_CONTRACT and old == new:
                         return {"status": "unchanged", "sitrep_id": previous.id}
                 except (ValueError, KeyError, TypeError, RecursionError):
                     pass

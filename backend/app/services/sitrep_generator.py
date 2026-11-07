@@ -1,12 +1,8 @@
 """
 sitrep_generator.py — Strategic Situation Report generator
 
-Trigger hierarchy (checked every 60 seconds):
-  1. BREAKING   — severity≥9 reporting triggers a 3-minute accumulation buffer
-  2. CONVERGENCE — 4+ distinct sources all reporting the same location/cluster
-                   within 60 min at avg severity≥7 → reporting-volume trigger
-  3. SURGE      — 20+ new sev≥6 events since last SITREP → volume spike trigger
-  4. INTERVAL   — 4-hour cadence when sufficient recent observations are available
+Timed synthesis remains opt-in. Legacy raw-score breaking, surge, convergence
+and escalation-index verdicts are unavailable until separately qualified.
 
 Hard constraints:
   - Minimum 90 minutes between any two SITREPs (prevents spam during SURGE+CONVERGENCE overlap)
@@ -17,14 +13,16 @@ import asyncio
 import json
 import logging
 import hashlib
-from collections import defaultdict
 from datetime import datetime, timezone, timedelta
 
 import anthropic
-from sqlalchemy import select, func
+from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
 
 from app.services.predictive_history import get_game_theory_context
 from app.services.evidence import assess_evidence, make_report
+from app.services.assessment import event_assessment
+from app.services.local_briefing import restricted_source, ensure_artifact_source_permission, SourcePermissionRequired
 from app.services.sitrep_contract import CONTRACT_VERSION, SitrepOutput, render_sitrep, validate_sitrep
 
 from app.config import settings
@@ -37,6 +35,7 @@ logger = logging.getLogger("app.services.sitrep")
 INTERVAL_HOURS          = 4      # normal cadence fallback
 MIN_SITREP_SPACING_MINS = 90     # hard floor between SITREPs
 BREAKING_DELAY_SECS     = 180    # buffer before BREAKING fires (let events accumulate)
+_STARTUP_DB_TIMEOUT_SECONDS = 10
 
 # ── Event thresholds ─────────────────────────────────────────────────────────
 EVENTS_TO_ANALYZE       = 80     # top N events sent to Claude
@@ -71,9 +70,8 @@ Evidence discipline:
   must support the precise claim; it cannot certify the publisher's allegation.
   If evidence is absent use exactly: Insufficient evidence in the supplied reports.
 - The headline is a cautious summary of the cited situation, with no new claims.
-  The escalation index is an uncalibrated reporting-activity heuristic with a
-  sampling and coverage bias, not probability or verified conflict/war status.
-  Do not output or override its score/level.
+  No qualified escalation/urgency index is available. Do not invent or output
+  a score, critical level, conflict/war status or a replacement for that unknown.
 
 Analytical depth:
 - Distinguish observation, interpretation, hypothesis and prospective watch point.
@@ -100,7 +98,7 @@ repetition. Citation grammar is [src:1,2] with no spaces inside the brackets.
 """
 
 
-def build_sitrep_request(payload: list[dict], framework_context: str, score: int) -> dict:
+def build_sitrep_request(payload: list[dict], framework_context: str, score: int | None) -> dict:
     """Keep all retrieved content inside a JSON user message, below system policy."""
     return {
         "system": SITREP_SYSTEM,
@@ -108,9 +106,9 @@ def build_sitrep_request(payload: list[dict], framework_context: str, score: int
             "input_status": "untrusted_source_snapshot",
             "events": payload,
             "editorial_hypotheses": json.loads(framework_context),
-            "report_activity_index": {"version": "report-activity-v2", "score": score,
-                "display_band": score_to_level(score),
-                "interpretation": "Uncalibrated heuristic, not factual verification or probability"},
+            "report_activity_index": {"version": None, "score": None,
+                "display_band": "UNASSESSED", "status":"unassessed",
+                "interpretation": "No qualified impact, urgency or conflict-status index is available"},
             "output_schema": SitrepOutput.model_json_schema(),
         }, ensure_ascii=False, allow_nan=False)}],
     }
@@ -118,111 +116,62 @@ def build_sitrep_request(payload: list[dict], framework_context: str, score: int
 
 # ── Escalation score computation ──────────────────────────────────────────────
 
-THEATERS = {
-    "Persian Gulf": lambda lat, lon: 22 < lat < 30 and 48 < lon < 60,
-    "Red Sea":      lambda lat, lon: 10 < lat < 30 and 32 < lon < 44,
-    "Eastern Med":  lambda lat, lon: 29 < lat < 37 and 28 < lon < 40,
-    "Lebanon":      lambda lat, lon: 33 < lat < 35 and 35 < lon < 37,
-    "Iraq":         lambda lat, lon: 29 < lat < 38 and 38 < lon < 49,
-    "Yemen/Aden":   lambda lat, lon: 10 < lat < 20 and 42 < lon < 52,
-    "Iran mainland": lambda lat, lon: 25 < lat < 40 and 44 < lon < 62,
-    "Gulf of Oman": lambda lat, lon: 20 < lat < 27 and 56 < lon < 65,
-}
-
 async def _compute_escalation_score(session, window_hours: int = 6) -> int | None:
-    """Uncalibrated report-activity v2, never a factual/war-probability score.
-
-    Components: severity 0-50, event velocity 0-35, regional breadth 0-15.
-    A missing current window is unknown, not stable. Historical coverage and
-    extraction quality are unmeasured; this index cannot compare deployments.
-    v2 deliberately removes the legacy source-network 'confirmation' boost;
-    its values are not calibrated against historical v1 values.
-    """
+    """No qualified comparable impact/urgency index currently exists."""
     if not 0 < window_hours < 168:
         raise ValueError("Score window must be between zero and 168 hours")
-    now = datetime.now(timezone.utc)
-    window_cutoff = now - timedelta(hours=window_hours)
-    result = await session.execute(
-        select(Event.severity, Event.lat, Event.lon)
-        .where(Event.severity >= MIN_SEVERITY)
-        .where(Event.timestamp >= window_cutoff)
-        .where(Event.timestamp <= now)
-        .where(~Event.summary.startswith("[MERGED"))
-    )
-    events = result.all()
-    if not events:
-        return None
-    total_weight = weighted_severity = 0.0
-    for severity, _, _ in events:
-        weight = 1.0 + max(0, (severity - 6) * 0.5)
-        total_weight += weight
-        weighted_severity += severity * weight
-    severity_score = min(50, max(0, ((weighted_severity / total_weight - 1) / 9) * 50))
-
-    historical = await session.execute(
-        select(func.count(Event.id))
-        .where(Event.severity >= MIN_SEVERITY)
-        .where(Event.timestamp >= now - timedelta(hours=168))
-        .where(Event.timestamp < window_cutoff)
-        .where(~Event.summary.startswith("[MERGED"))
-    )
-    prior_count = historical.scalar_one() or 0
-    # No observed baseline cannot establish a surge; do not fabricate one.
-    velocity_score = 0.0
-    if prior_count:
-        baseline = prior_count / (168 - window_hours)
-        ratio = (len(events) / window_hours) / baseline
-        velocity_score = min(35, (ratio / 4.0) * 35)
-
-    theaters: set[str] = set()
-    for _, lat, lon in events:
-        if lat is None or lon is None:
-            continue
-        for theater, check in THEATERS.items():
-            if check(float(lat), float(lon)):
-                theaters.add(theater)
-                break  # overlapping boxes must not multiply one report's breadth
-    breadth_score = min(15, len(theaters) * 3)
-    return min(100, max(0, round(severity_score + velocity_score + breadth_score)))
+    return None
 
 
-def score_to_level(score: int) -> str:
-    """Legacy display bands for the uncalibrated report-activity index."""
-    if score >= 88: return "WARTIME"
-    if score >= 70: return "CRITICAL"
-    if score >= 52: return "ESCALATING"
-    if score >= 34: return "ELEVATED"
-    return "STABLE"
+def score_to_level(score: int | None) -> str:
+    """Historical numeric bands do not qualify current conflict/war status."""
+    return "UNASSESSED"
 
 
 # ── DB helpers ────────────────────────────────────────────────────────────────
 
+def _source_permission(event):
+    """A permitted parent cannot launder a restricted merged source report."""
+    if restricted_source(event):
+        return False
+    try:
+        for report in event.reports or []:
+            if not isinstance(report,dict):
+                return False
+            # make_report.source is the collector platform, not its display name.
+            ensure_artifact_source_permission({**report,
+                "collector_source":report.get("source", "")})
+    except SourcePermissionRequired:
+        return False
+    return True
+
+
 async def _build_event_payload(session) -> list[dict]:
-    """Fetch the most significant recent events for SITREP analysis.
+    """Fetch bounded recent source reports for opt-in SITREP synthesis.
 
     Strategy: temporally-stratified sampling within a bounded candidate set.
 
-    1. Pull up to 2000 qualifying events from the last 24 hours.
+    1. Pull up to2000 recent records, then exclude restricted/synthetic sources.
     2. Split the window into 6 × 4-hour buckets.
-    3. From each bucket take up to 13 events (highest severity, then newest) → 78 events max.
+    3. From each bucket take up to13 newest reports →78 reports maximum.
     4. Deduplicate by id, sort newest-first, cap at EVENTS_TO_ANALYZE.
 
     This improves time coverage but cannot guarantee whole-day representation
-    when the candidate cap excludes lower-severity reports. This is a sample,
+    when the candidate cap excludes older/eligible reports. This is a sample,
     not a complete event census or a random statistical sample.
     """
     now = datetime.now(timezone.utc)
     cutoff = now - timedelta(hours=24)
     result = await session.execute(
         select(Event)
-        .where(Event.severity >= MIN_SEVERITY)
         .where(Event.timestamp >= cutoff)
         .where(Event.timestamp <= now)
         .where(~Event.summary.startswith("[MERGED"))
-        .order_by(Event.severity.desc(), Event.timestamp.desc())
+        .order_by(Event.timestamp.desc(), Event.id.desc())
         .limit(2000)                         # wide net — we'll down-sample below
     )
-    all_events = result.scalars().all()
+    all_events = [event for event in result.scalars().all() if _source_permission(event)
+                  and event.source not in {"demo","synthetic","simulation"}]
 
     if not all_events:
         return []
@@ -252,7 +201,7 @@ async def _build_event_payload(session) -> list[dict]:
                 seen_ids.add(e.id)
                 selected.append(e)
 
-    # Fill any remaining slots from the full pool (highest severity, newest)
+    # Fill any remaining slots from the bounded pool, newest first.
     if len(selected) < EVENTS_TO_ANALYZE:
         for e in all_events:
             if len(selected) >= EVENTS_TO_ANALYZE:
@@ -273,24 +222,28 @@ def _utc_timestamp(timestamp: datetime) -> datetime:
 
 def _event_snapshot(event) -> dict:
     """Retain attribution, original excerpts and limits rather than certified claims."""
+    if not _source_permission(event):
+        raise SourcePermissionRequired()
     reports = event.reports or [make_report(event)]
     excerpts = []
     selected_reports = reports if len(reports) <= 3 else [reports[0], *reports[-2:]]
     for report in selected_reports:
         raw = str(report.get("raw_text") or "")
         excerpts.append({
+            "source_platform":report.get("source", ""),
             **{key: report.get(key) for key in (
                 "report_id", "source_identity", "source_url", "published_at", "content_sha256")},
             "raw_excerpt": raw[:1200], "excerpt_truncated": len(raw) > 1200,
         })
     summary = event.summary or ""
+    assessment=event_assessment(event)
     return {
         "id": event.id, "summary": summary[:1600], "summary_truncated": len(summary) > 1600,
-        "summary_status": "derived_unreviewed", "severity": event.severity,
-        "event_type": event.event_type, "location": event.location_name,
+        "summary_status": "derived_unreviewed", "severity": assessment["severity"],
+        "event_type": assessment["event_type"], "location": event.location_name,
         "geolocation_precision": event.geolocation_precision,
         "timestamp": _utc_timestamp(event.timestamp).isoformat(),
-        "source": event.channel_name or event.source, "source_url": event.source_url or "",
+        "source": event.channel_name or event.source, "source_platform":event.source,"source_url": event.source_url or "",
         "evidence": assess_evidence(event), "classification_status": event.classification_status,
         "source_reports": excerpts, "reports_omitted": max(0, len(reports) - len(excerpts)),
         "report_selection": "original_and_latest_two_when_more_than_three",
@@ -305,76 +258,17 @@ async def _get_last_sitrep(session) -> Sitrep | None:
 
 
 async def _count_new_high_sev_events(session, since: datetime) -> int:
-    result = await session.execute(
-        select(func.count(Event.id))
-        .where(Event.severity >= 6)
-        .where(Event.timestamp >= since)
-        .where(Event.timestamp <= datetime.now(timezone.utc))
-        .where(~Event.summary.startswith("[MERGED"))
-    )
-    return result.scalar_one() or 0
+    """Raw or model impact scores do not authorize an automatic surge alert."""
+    return 0
 
 
 async def _check_breaking_event(session, since: datetime) -> bool:
-    """Any single sev≥9 event since last SITREP."""
-    result = await session.execute(
-        select(func.count(Event.id))
-        .where(Event.severity >= BREAKING_SEV)
-        .where(Event.timestamp >= since)
-        .where(Event.timestamp <= datetime.now(timezone.utc))
-        .where(~Event.summary.startswith("[MERGED"))
-    )
-    return (result.scalar_one() or 0) > 0
+    """No accepted impact/urgency review contract currently permits this alert."""
+    return False
 
 
 async def _check_source_convergence(session) -> tuple[bool, str]:
-    """
-    Reporting-volume trigger: distinct channels on a location/cluster.
-    This does not establish independent origins, agreement or verification.
-
-    Algorithm:
-      1. Pull all sev≥6 events from the last CONVERGENCE_WINDOW_MINS minutes
-      2. Group events by location_name (non-null, non-empty)
-      3. For each location cluster, count distinct channel_names reporting it
-      4. If any cluster has ≥ CONVERGENCE_MIN_SOURCES distinct sources
-         AND average severity ≥ CONVERGENCE_MIN_AVG_SEV → trigger
-
-    Returns (triggered: bool, reason_string: str)
-    """
-    cutoff = datetime.now(timezone.utc) - timedelta(minutes=CONVERGENCE_WINDOW_MINS)
-    result = await session.execute(
-        select(Event.location_name, Event.channel_name, Event.severity)
-        .where(Event.severity >= 6)
-        .where(Event.timestamp >= cutoff)
-        .where(Event.timestamp <= datetime.now(timezone.utc))
-        .where(Event.location_name.isnot(None))
-        .where(Event.location_name != "")
-        .where(~Event.summary.startswith("[MERGED"))
-    )
-    rows = result.all()
-
-    if not rows:
-        return False, ""
-
-    # Group by location
-    clusters: dict[str, dict] = defaultdict(lambda: {"sources": set(), "severities": []})
-    for loc, chan, sev in rows:
-        # Normalise location to first word cluster (e.g. "Tehran, Iran" → "Tehran")
-        key = loc.split(",")[0].strip().lower()
-        if chan:
-            clusters[key]["sources"].add(chan.lower())
-        clusters[key]["severities"].append(sev or 0)
-
-    for loc_key, data in clusters.items():
-        n_sources = len(data["sources"])
-        avg_sev = sum(data["severities"]) / len(data["severities"]) if data["severities"] else 0
-        if n_sources >= CONVERGENCE_MIN_SOURCES and avg_sev >= CONVERGENCE_MIN_AVG_SEV:
-            reason = (
-                f"{n_sources} sources on '{loc_key}' "
-                f"(avg_sev={avg_sev:.1f}) in last {CONVERGENCE_WINDOW_MINS}min"
-            )
-            return True, reason
-
+    """Channel/location counts and unreviewed scores cannot authorize escalation."""
     return False, ""
 
 
@@ -409,9 +303,12 @@ async def _generate_sitrep_locked(trigger: str) -> None:
             logger.info("SITREP: insufficient input events (%d)", len(payload))
             return
         score = await _compute_escalation_score(session, window_hours=6)
-    if score is None:
-        logger.info("SITREP: current observation window is unknown; no new report")
-        return
+    # A bounded source synthesis can proceed without inventing a numeric index.
+    # Repeat the gate at the outbound boundary, including nested excerpts.
+    for event in payload:
+        ensure_artifact_source_permission(event)
+        for report in event.get("source_reports",[]):
+            ensure_artifact_source_permission({**report,"collector_source":report.get("source",report.get("collector_source",""))})
 
     context = await get_game_theory_context()  # local editorial hypotheses; never fetches
     request = build_sitrep_request(payload, context, score)
@@ -454,16 +351,17 @@ async def _generate_sitrep_locked(trigger: str) -> None:
         "semantic_entailment": "unverified", "model": settings.sitrep_model,
         "source_snapshot_at": now.isoformat(),
         "source_snapshot_sha256": hashlib.sha256(source_json.encode("utf-8")).hexdigest(),
-        "source_snapshot": payload, "report_activity_index_version": "report-activity-v2",
+        "source_snapshot": payload, "report_activity_index_version": None,
+        "report_activity_index_status":"unassessed",
         "framework_context_sha256": hashlib.sha256(context.encode("utf-8")).hexdigest(),
         "framework_context": json.loads(context),
         "system_instruction_sha256": hashlib.sha256(SITREP_SYSTEM.encode("utf-8")).hexdigest(),
-        "sampling_limitations": "At most 80 of 2000 severity-filtered 24-hour candidates; source excerpts are bounded",
+        "sampling_limitations": "At most 80 of 2000 recent 24-hour candidates, excluding restricted sources; source excerpts are bounded",
     }
     async with async_session() as session:
         sitrep = Sitrep(
             trigger=trigger, events_analyzed=len(payload), **render_sitrep(report),
-            escalation_level=score_to_level(score), escalation_score=score,
+            escalation_level="UNASSESSED", escalation_score=0,
             raw_response=json.dumps({**report.model_dump(), "_provenance": provenance}, ensure_ascii=False),
         )
         session.add(sitrep)
@@ -527,9 +425,16 @@ async def start_sitrep_generator() -> None:
     # Let the system warm up before first check
     await asyncio.sleep(120)
 
-    # Generate one at startup if DB is empty
-    async with async_session() as session:
-        last = await _get_last_sitrep(session)
+    # An unavailable DB is not an empty DB. Retry this read before any generation.
+    while True:
+        try:
+            async with asyncio.timeout(_STARTUP_DB_TIMEOUT_SECONDS):
+                async with async_session() as session:
+                    last = await _get_last_sitrep(session)
+            break
+        except (SQLAlchemyError, TimeoutError, OSError) as exc:
+            logger.warning("SITREP: initial database read unavailable (%s)", type(exc).__name__)
+            await asyncio.sleep(5)
     if last is None:
         try:
             await _generate_sitrep("init")

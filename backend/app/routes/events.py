@@ -47,7 +47,7 @@ async def list_events(
         raise HTTPException(status_code=422, detail="after must not be later than before")
     if before_id is not None and before is None:
         raise HTTPException(status_code=422, detail="before_id requires before timestamp")
-    # Creation-ID reconciliation catches late/old-dated reports after reconnect.
+    # Retain legacy creation-ID lookup. Live reconnect uses committed delivery offsets.
     ordering = (Event.id.asc(),) if after_id is not None else (Event.timestamp.desc(), Event.id.desc())
     stmt = select(Event).order_by(*ordering).limit(limit)
     if after_id is not None:
@@ -146,21 +146,19 @@ async def get_event(event_id: int, session: AsyncSession = Depends(get_session))
 
 @router.get("/{event_id}/imagery")
 async def get_event_imagery(event_id: int, session: AsyncSession = Depends(get_session)):
-    """Return satellite imagery URLs for any event with lat/lon coordinates.
+    """Return dated research links and an undated basemap reference.
 
-    Used by the frontend popup to lazy-load Sentinel-2 thumbnails for
-    high-severity events — the same WMS pipeline as FIRMS hotspots.
-    Returns JSON with pre-signed URLs ready for use in <img> tags.
+    A coordinate permits a lookup; it does not verify the incident or imagery.
     """
     result = await session.execute(select(Event).where(Event.id == event_id))
     event = result.scalar_one_or_none()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
-    if event.lat is None or event.lon is None:
-        raise HTTPException(status_code=404, detail="Event has no coordinates")
+    from app.services.evidence import valid_coordinates
+    if not valid_coordinates(event.lat, event.lon):
+        raise HTTPException(status_code=404, detail="Event has no usable coordinates")
 
-    from app.services.satellite_firms import _sentinel_wms_thumb, _eo_browser_url
-    from app.config import settings as _settings
+    from app.services.satellite_firms import _eo_browser_url
 
     ts = event.timestamp if event.timestamp else datetime.now(timezone.utc)
     if ts.tzinfo is None:
@@ -184,20 +182,15 @@ async def get_event_imagery(event_id: int, session: AsyncSession = Depends(get_s
     # Copernicus Browser — deep link to exact location on exact date
     cop_url = _eo_browser_url(lat, lon, ts)
 
-    # ArcGIS World Imagery — free, no API key, correct location guaranteed by bbox
-    # Uses Maxar/Esri global satellite mosaic (sub-meter resolution in Middle East)
+    # Provider basemap reference; resolution, availability and capture date vary.
     pad = 0.04  # ~4.4km box around event
     arcgis_thumbnail = (
         f"https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export"
         f"?bbox={lon-pad:.4f},{lat-pad:.4f},{lon+pad:.4f},{lat+pad:.4f}"
         f"&bboxSR=4326&size=320,240&imageSR=4326&format=jpg&transparent=false&f=image"
     )
-    # Keep sentinel hub as optional if configured
-    instance_id = _settings.sentinel_hub_instance_id or ""
-    s2_thumbnail = arcgis_thumbnail  # Always use ArcGIS — guaranteed to work, correct coords
-
     return {
-        "s2_thumbnail": arcgis_thumbnail,  # ArcGIS World Imagery — always available
+        "s2_thumbnail": arcgis_thumbnail,  # Legacy response key; not Sentinel-2.
         "arcgis_url": arcgis_thumbnail,
         "copernicus_browser_url": cop_url,
         "worldview_url": worldview_url,
@@ -209,6 +202,17 @@ async def get_event_imagery(event_id: int, session: AsyncSession = Depends(get_s
         "incident_evidence": False,
         "limitations": ["Basemap acquisition date is unknown; this is not imagery of the reported event."],
     }
+
+
+@router.get("/{event_id}/location-candidates")
+async def event_location_candidates(event_id: int, session: AsyncSession = Depends(get_session)):
+    """Read-only local mention review; never start a model, geocoder or write."""
+    from app.services.location_candidates import place_mentions
+    result = await session.execute(select(Event).where(Event.id == event_id))
+    event = result.scalar_one_or_none()
+    if event is None:
+        raise HTTPException(status_code=404, detail="Event not found")
+    return {"event_id": event.id, **place_mentions(event.raw_text or "")}
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -260,12 +264,16 @@ async def _reclassify_vague_locations_task():
 async def trigger_backfill(background_tasks: BackgroundTasks):
     _require_live_collection()
     from app.services import telegram
-    if not settings.anthropic_api_key:
+    if settings.telegram_transport != "session":
+        raise HTTPException(status_code=503, detail="Telegram history requires the explicitly enabled session transport")
+    if settings.telegram_processing_mode == "model" and not settings.anthropic_api_key:
         raise HTTPException(status_code=503, detail="Classification provider is not configured")
     if telegram._shared_client is None or not telegram._shared_client.is_connected():
         raise HTTPException(status_code=503, detail="Telegram listener is not connected")
     _start_admin_review("telegram_backfill", telegram.trigger_backfill)
-    return {"status": "started", "message": "Historical collection uses configured sources and cutoff; inspect ingestion receipts."}
+    return {"status": "started", "scope": "forward_catchup", "history_complete": False,
+            "historical_jobs": "/history/backfill/jobs",
+            "message": "Runs configured forward catch-up only. Use a bounded historical job to recover older gaps."}
 
 
 @router.delete("/admin/purge-old", dependencies=[Depends(require_admin_key)])

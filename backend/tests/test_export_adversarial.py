@@ -51,7 +51,7 @@ def test_database_uri_credentials_are_not_exported_from_documentation(tmp_path, 
     assert password not in capsys.readouterr().out
 
 
-@pytest.mark.parametrize('key', ['POSTGRES_PASSWORD','POSTGRES_APP_PASSWORD','PGPASSWORD'])
+@pytest.mark.parametrize('key', ['POSTGRES_PASSWORD','POSTGRES_APP_PASSWORD','POSTGRES_PUBLIC_PASSWORD','PGPASSWORD'])
 def test_filled_database_password_example_blocks_export_without_echoing_value(tmp_path,monkeypatch,capsys,key):
     monkeypatch.setattr(gate,'ROOT',tmp_path)
     monkeypatch.setattr('sys.argv',['release_gate.py','--scan-only'])
@@ -64,7 +64,7 @@ def test_filled_database_password_example_blocks_export_without_echoing_value(tm
     assert constructed not in output
 
 
-@pytest.mark.parametrize('key', ['POSTGRES_PASSWORD','POSTGRES_APP_PASSWORD','PGPASSWORD'])
+@pytest.mark.parametrize('key', ['POSTGRES_PASSWORD','POSTGRES_APP_PASSWORD','POSTGRES_PUBLIC_PASSWORD','PGPASSWORD'])
 def test_database_password_placeholders_remain_reviewable_without_weakening_detection(key):
     placeholder=b'fixture-only-not-a-live-password'
     assert gate.content_findings(key.encode()+b'='+placeholder,'.env.example')==[]

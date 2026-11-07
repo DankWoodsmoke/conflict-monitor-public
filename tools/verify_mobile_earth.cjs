@@ -4,6 +4,7 @@ const {chromium,firefox,webkit}=require('../frontend/node_modules/playwright');
 const fs=require('node:fs');
 const path=require('node:path');
 const assert=require('node:assert/strict');
+const {measureVisibleEarthRaster}=require('./browser_raster.cjs');
 const base=process.env.CM_BASE_URL||'http://127.0.0.1:5190';
 const output=process.env.CM_MOBILE_OUTPUT||'artifacts/mobile-earth';
 const engines=(process.env.CM_ENGINES||'chromium,firefox,webkit').split(',');
@@ -13,8 +14,25 @@ const receipt={started_at:new Date().toISOString(),base_url:base,scope:'browser_
   'Desktop browser engines with emulated viewport/touch are not physical iOS or Android devices.',
   'Tiles, imagery dates and source reports are not ground truth or incident confirmation.',
   'No arbitrary external media playback or long-term GPU reliability is certified.']};
-fs.mkdirSync(output,{recursive:true});
 function save(){fs.writeFileSync(path.join(output,'receipt.json'),JSON.stringify(receipt,null,2));}
+function inspectAircraftCoverage(provider,now=Date.now()){
+ const expected={levant:[33,35],gulf:[25,54],iran_iraq:[33,48],red_sea:[18,41]};
+ assert(provider?.source==='adsb.lol'&&provider.status==='ok','Actual fresh adsb.lol cache unavailable');
+ assert(Number.isInteger(provider.count)&&provider.count>0,'No actual aircraft observations');
+ assert(typeof provider.cache_age_seconds==='number'&&provider.cache_age_seconds>=0&&provider.cache_age_seconds<=45,'Aircraft cache receipt is not fresh');
+ assert(Array.isArray(provider.regions)&&provider.regions.length===4,'Expected four configured source regions');
+ assert.deepEqual([...new Set(provider.regions.map(region=>region.id))].sort(),Object.keys(expected).sort(),'Source region identities differ');
+ const regions=provider.regions.map(region=>{
+  assert(region.status==='ok'&&!region.error,`Source region ${region.id} has no successful current collection`);
+  const stamp=Date.parse(region.last_success_at);
+  assert(Number.isFinite(stamp)&&stamp<=now+5000&&now-stamp<=185000,`Source region ${region.id} success clock is stale or missing`);
+  assert(typeof region.cache_age_seconds==='number'&&region.cache_age_seconds>=0&&region.cache_age_seconds<=180,'Regional cache age unavailable or expired');
+  assert(region.lat===expected[region.id][0]&&region.lon===expected[region.id][1]&&region.radius_nm===250,'Source receiver circle differs from declared coverage');
+  return {id:region.id,status:region.status,last_success_at:region.last_success_at,cache_age_seconds:region.cache_age_seconds};
+ });
+ return {status:provider.status,source:provider.source,count:provider.count,regions,
+  limitation:'All four configured source queries succeeded within the 180-second cache lifetime; individual positions still expire at 120 seconds and coverage is incomplete.'};
+}
 async function visible(locator){return locator.count()&&await locator.first().isVisible();}
 async function selectTab(page,name){
  const mobile=page.locator('.mobile-bottom-nav');
@@ -55,7 +73,8 @@ async function checkLayout(page,label){
  layout.element_bounds=bounds;
  return layout;
 }
-(async()=>{
+async function run(){
+ fs.mkdirSync(output,{recursive:true});
  for(const name of engines){
   let browser;
   try{browser=await({chromium,firefox,webkit}[name]).launch({headless:true,args:name==='chromium'?['--enable-unsafe-swiftshader']:[]});}
@@ -123,14 +142,18 @@ async function checkLayout(page,label){
     await page.getByRole('dialog').waitFor({state:'visible'});await checkLayout(page,'Settings');
     await page.keyboard.press('Escape');await page.getByRole('dialog').waitFor({state:'hidden'});
     row.checks.push('layer_and_settings_dialog_layout_and_keyboard_dismissal');
+    const hideControls=page.getByRole('button',{name:'Hide controls — Earth navigation',exact:true});
+    if(await visible(hideControls))await hideControls.click();
+    await page.waitForTimeout(500);
+    row.composed_earth_raster=await measureVisibleEarthRaster(page);
+    row.checks.push('unobscured_composed_earth_pixels_are_nonblank_and_textured');
     const response=await context.request.get(base+'/api/status');
     assert(response.ok(),'Production provider status unavailable');
     const provider=(await response.json()).aircraft;
-    row.aircraft_coverage={status:provider.status,source:provider.source,count:provider.count,
-      region_count:Array.isArray(provider.regions)?provider.regions.length:Object.keys(provider.regions||{}).length};
-    assert(row.aircraft_coverage.count>0&&row.aircraft_coverage.region_count===4,'Expected four-region live aircraft coverage unavailable');
-    row.checks.push('actual_four_region_aircraft_cache_available');
+    row.aircraft_coverage=inspectAircraftCoverage(provider);
+    row.checks.push('all_four_configured_regions_have_successful_bounded_collection_receipts');
     row.google_provider_end_state=await workspace.getAttribute('data-earth-provider');
+    assert.equal(row.google_provider_end_state,'ready','Google imagery ceased to be ready during mobile checks');
     assert.equal(row.page_errors.length,0,'Uncaught browser runtime errors');
     row.status='passed';
    }catch(error){row.status='failed';row.error=sanitize(error.message);}
@@ -143,4 +166,6 @@ async function checkLayout(page,label){
  receipt.failed=receipt.cases.filter(row=>row.status!=='passed').length;
  receipt.status=receipt.failed?'findings_or_unavailable':'passed';save();
  process.exitCode=receipt.failed?1:0;
-})().catch(error=>{receipt.status='observer_failed';receipt.error=sanitize(error.message);save();process.exitCode=1;});
+}
+module.exports={inspectAircraftCoverage};
+if(require.main===module)run().catch(error=>{receipt.status='observer_failed';receipt.error=sanitize(error.message);save();process.exitCode=1;});

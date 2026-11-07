@@ -1,13 +1,14 @@
 import { apiFetch } from "../lib/api";
 import { API_BASE } from "../lib/runtime";
 /**
- * MarketStrip — live economic indicators with sparkline history
+ * Provider snapshots with retrieval context; quote clocks may be unavailable.
  * Shows Brent, WTI, Gold, VIX, USD/ILS, S&P 500 with mini SVG sparklines
  */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 
 const POLL_MS  = 5 * 60 * 1000;
+const STARTUP_POLL_MS = [5000,10000,20000,30000];
 const HISTORY_MAX = 20;
 
 interface Ticker {
@@ -19,12 +20,33 @@ interface Ticker {
   change_pct:   number | null;
   change_abs:   number | null;
   market_state: string;
+  source: string;
+  observation_time: string | null;
 }
 interface MarketResponse {
   data: Ticker[];
   stale: boolean;
   cached_ago: number;
   status?:string;
+}
+
+export function validateMarketSnapshot(value:unknown):MarketResponse {
+  if(!value||typeof value!=="object"||Array.isArray(value))throw Error("Invalid market snapshot");
+  const raw=value as MarketResponse;
+  if(!Array.isArray(raw.data)||raw.data.length>30||typeof raw.stale!=="boolean"||raw.status!==undefined&&(typeof raw.status!=="string"||raw.status.length>40))throw Error("Invalid market snapshot");
+  const age=raw.cached_ago===undefined&&!raw.data.length?-1:raw.cached_ago;
+  if(typeof age!=="number"||!Number.isFinite(age)||age < -1)throw Error("Invalid retrieval age");
+  const seen=new Set<string>();
+  const text=(v:unknown,max:number,empty=false)=>typeof v==="string"&&v.length<=max&&(empty||v.length>0);
+  const finite=(v:unknown)=>typeof v==="number"&&Number.isFinite(v);
+  const data=raw.data.map(t=>{
+    if(!t||typeof t!=="object"||!text(t.symbol,24)||seen.has(t.symbol)||!text(t.name,64)||!text(t.unit,20,true)||!text(t.category,40)||!text(t.market_state,40)||!finite(t.price)||
+      t.change_pct!==null&&!finite(t.change_pct)||t.change_abs!==null&&!finite(t.change_abs)||
+      t.source!==undefined&&!text(t.source,200)||t.observation_time!==undefined&&t.observation_time!==null&&(!text(t.observation_time,50)||!/^\d{4}-\d{2}-\d{2}T.+(?:Z|[+-]\d{2}:\d{2})$/.test(t.observation_time)||!Number.isFinite(Date.parse(t.observation_time))||Date.parse(t.observation_time)>Date.now()+60000))throw Error("Invalid market observation");
+    seen.add(t.symbol);
+    return {...t,source:t.source||"Source unreported",observation_time:t.observation_time??null};
+  });
+  return {...raw,data,cached_ago:age};
 }
 
 function fmtPrice(t: Ticker): string {
@@ -103,39 +125,37 @@ export function MarketStrip() {
   const [stale,   setStale]     = useState(false);
   const [status,setStatus]=useState<"loading"|"ready"|"disabled"|"unavailable"|"stale">("loading");
   const [history, setHistory]   = useState<Map<string, number[]>>(new Map());
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  const fetchData = async () => {
-    try {
-      const r = await apiFetch(`${API_BASE}/market`);
-      if (!r.ok) throw new Error("Market snapshot unavailable");
-      const json: MarketResponse = await r.json();
-      if(!Array.isArray(json.data))throw new Error("Invalid market snapshot");
-      json.data=json.data.filter(t=>t&&typeof t.symbol==="string"&&typeof t.price==="number"&&Number.isFinite(t.price));
-      setTickers(json.data);setStale(json.stale || json.data.length===0);
-      setStatus(json.data.length?(json.stale?"stale":"ready"):json.status==="disabled"?"disabled":json.status==="loading"?"loading":"unavailable");
-      if (json.data.length > 0) {
-        setTickers(json.data);
-        setStale(json.stale);
-        // Accumulate price history per symbol
-        setHistory(prev => {
-          const next = new Map(prev);
-          json.data.forEach(t => {
-            const arr = next.get(t.symbol) ?? [];
-            next.set(t.symbol, [...arr.slice(-(HISTORY_MAX - 1)), t.price]);
-          });
-          return next;
-        });
-      }
-    } catch {
-      setStale(true);setStatus("unavailable");
-    }
-  };
+  const [retrieval,setRetrieval]=useState<{at:string;age:number}|null>(null);
 
   useEffect(() => {
-    fetchData();
-    timerRef.current = setInterval(fetchData, POLL_MS);
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+    const controller=new AbortController();let timer:ReturnType<typeof setTimeout>|undefined,expiry:ReturnType<typeof setTimeout>|undefined;
+    let startup=true,startupPolls=0;
+    const fetchData=async()=>{
+      let nextPoll=POLL_MS;
+      try{
+        const response=await apiFetch(`${API_BASE}/market`,{signal:controller.signal});
+        if(!response.ok)throw Error("Market snapshot unavailable");
+        const json=validateMarketSnapshot(await response.json());
+        if(controller.signal.aborted)return;
+        // An empty successful loading response means the shared provider task is
+        // still running. Check its cache briefly, then return to normal cadence.
+        if(startup&&!json.data.length&&json.status==="loading"&&startupPolls<STARTUP_POLL_MS.length)nextPoll=STARTUP_POLL_MS[startupPolls++];
+        else startup=false;
+        const delayed=json.stale||json.cached_ago<0||json.cached_ago>=POLL_MS/1000;
+        setTickers(json.data);setStale(delayed||!json.data.length);setRetrieval({at:new Date().toISOString(),age:json.cached_ago});
+        setStatus(json.data.length?(delayed?"stale":"ready"):json.status==="disabled"?"disabled":json.status==="loading"?"loading":"unavailable");
+        clearTimeout(expiry);
+        if(json.data.length&&!delayed)expiry=setTimeout(()=>{if(!controller.signal.aborted){setStale(true);setStatus("stale");}},Math.max(0,POLL_MS-json.cached_ago*1000));
+        if(json.data.length)setHistory(prev=>{
+          const next=new Map<string,number[]>();
+          for(const ticker of json.data){const values=prev.get(ticker.symbol)??[];next.set(ticker.symbol,[...values.slice(-(HISTORY_MAX-1)),ticker.price]);}
+          return next;
+        });
+      }catch{startup=false;if(!controller.signal.aborted){setStale(true);setStatus("unavailable");}}
+      finally{if(!controller.signal.aborted)timer=setTimeout(()=>void fetchData(),nextPoll);}
+    };
+    void fetchData();
+    return()=>{controller.abort();clearTimeout(timer);clearTimeout(expiry);};
   }, []);
 
   return (
@@ -186,6 +206,9 @@ export function MarketStrip() {
           return (
             <div
               key={t.symbol}
+              tabIndex={0}
+              aria-label={`${t.name} provider snapshot. Source: ${t.source}. Quote observation time: ${t.observation_time||"unknown"}. Market state: ${t.market_state}. ${stale?"Delayed or unavailable refresh. ":""}Retrieved ${retrieval?.at||"unknown"}; provider cache age at retrieval ${retrieval&&retrieval.age>=0?`${retrieval.age} seconds`:"unknown"}. Sparkline shows this session's sampled snapshots, not verified exchange history.`}
+              title={`Source: ${t.source}\nQuote observation time: ${t.observation_time||"unknown; retrieval does not establish quote freshness"}\nMarket state: ${t.market_state}\nRetrieved: ${retrieval?.at||"unknown"}; cache age at retrieval: ${retrieval&&retrieval.age>=0?`${retrieval.age}s`:"unknown"}\n${stale?"Delayed or unavailable refresh. ":""}Sparkline: this session's sampled snapshots.`}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -241,6 +264,8 @@ export function MarketStrip() {
           );
         })}
       </div>
+
+      {tickers.length>0&&<span title="Provider snapshot; retrieval time is separate from quote observation time." style={{fontFamily:"var(--font-mono)",fontSize:10,color:"#9fbdd0",flexShrink:0,marginLeft:8}}>{tickers.some(t=>!t.observation_time)?"SNAPSHOT · QUOTE TIME UNKNOWN":"SNAPSHOT"}</span>}
 
       {stale && tickers.length > 0 && (
         <span style={{

@@ -1,0 +1,598 @@
+{
+  "checked_at": "2026-11-06T03:16:39.645814+00:00",
+  "scope": "Local static connector prototype, not a public tunnel or final release qualification",
+  "official_image": "sha256:4955524aeaa379e154023d5a027c250f7b35041a2e7e950cf13f144bc9b9c5ba",
+  "static_image": "sha256:1af9ef7d88295e06e4ac58d8dfa5fee18bb24b3545a01bf01748c052f760bda3",
+  "raw_scanner_version": "0.121.2",
+  "database_built": "2026-11-05T06:21:06Z",
+  "database_sha256": "1323461284953637f0fbca63d5925db74639472368a1926e68a0344d87bafaeb",
+  "official_raw_exit": 2,
+  "official_raw_severity_counts": {
+    "High": 4,
+    "Negligible": 7,
+    "Medium": 10,
+    "Low": 3
+  },
+  "static_raw_exit": 0,
+  "static_raw_match_count": 0,
+  "official_findings": [
+    {
+      "id": "CVE-2026-85091",
+      "severity": "High",
+      "package": "zlib1g",
+      "version": "1:1.3.dfsg+really1.3.1-1+b1",
+      "fix": {
+        "versions": [],
+        "state": "not-fixed"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2026-85091"
+    },
+    {
+      "id": "CVE-2018-20796",
+      "severity": "Negligible",
+      "package": "libc6",
+      "version": "2.41-12+deb13u4",
+      "fix": {
+        "versions": [],
+        "state": "not-fixed"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2018-20796"
+    },
+    {
+      "id": "CVE-2026-19499",
+      "severity": "High",
+      "package": "libc6",
+      "version": "2.41-12+deb13u4",
+      "fix": {
+        "versions": [],
+        "state": "wont-fix"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2026-19499"
+    },
+    {
+      "id": "CVE-2026-84243",
+      "severity": "High",
+      "package": "libc6",
+      "version": "2.41-12+deb13u4",
+      "fix": {
+        "versions": [],
+        "state": "wont-fix"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2026-84243"
+    },
+    {
+      "id": "CVE-2026-6238",
+      "severity": "Medium",
+      "package": "libc6",
+      "version": "2.41-12+deb13u4",
+      "fix": {
+        "versions": [],
+        "state": "wont-fix"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2026-6238"
+    },
+    {
+      "id": "CVE-2026-77117",
+      "severity": "Medium",
+      "package": "libc6",
+      "version": "2.41-12+deb13u4",
+      "fix": {
+        "versions": [],
+        "state": "wont-fix"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2026-77117"
+    },
+    {
+      "id": "CVE-2026-80489",
+      "severity": "Medium",
+      "package": "libc6",
+      "version": "2.41-12+deb13u4",
+      "fix": {
+        "versions": [],
+        "state": "wont-fix"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2026-80489"
+    },
+    {
+      "id": "CVE-2026-5435",
+      "severity": "High",
+      "package": "libc6",
+      "version": "2.41-12+deb13u4",
+      "fix": {
+        "versions": [],
+        "state": "wont-fix"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2026-5435"
+    },
+    {
+      "id": "CVE-2019-1010022",
+      "severity": "Negligible",
+      "package": "libc6",
+      "version": "2.41-12+deb13u4",
+      "fix": {
+        "versions": [],
+        "state": "not-fixed"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2019-1010022"
+    },
+    {
+      "id": "CVE-2026-8674",
+      "severity": "Medium",
+      "package": "libc6",
+      "version": "2.41-12+deb13u4",
+      "fix": {
+        "versions": [],
+        "state": "wont-fix"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2026-8674"
+    },
+    {
+      "id": "CVE-2019-1010024",
+      "severity": "Negligible",
+      "package": "libc6",
+      "version": "2.41-12+deb13u4",
+      "fix": {
+        "versions": [],
+        "state": "not-fixed"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2019-1010024"
+    },
+    {
+      "id": "CVE-2019-1010023",
+      "severity": "Negligible",
+      "package": "libc6",
+      "version": "2.41-12+deb13u4",
+      "fix": {
+        "versions": [],
+        "state": "not-fixed"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2019-1010023"
+    },
+    {
+      "id": "CVE-2010-4756",
+      "severity": "Negligible",
+      "package": "libc6",
+      "version": "2.41-12+deb13u4",
+      "fix": {
+        "versions": [],
+        "state": "not-fixed"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2010-4756"
+    },
+    {
+      "id": "CVE-2026-27171",
+      "severity": "Medium",
+      "package": "zlib1g",
+      "version": "1:1.3.dfsg+really1.3.1-1+b1",
+      "fix": {
+        "versions": [],
+        "state": "wont-fix"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2026-27171"
+    },
+    {
+      "id": "CVE-2026-6791",
+      "severity": "Medium",
+      "package": "libc6",
+      "version": "2.41-12+deb13u4",
+      "fix": {
+        "versions": [],
+        "state": "wont-fix"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2026-6791"
+    },
+    {
+      "id": "CVE-2019-1010025",
+      "severity": "Negligible",
+      "package": "libc6",
+      "version": "2.41-12+deb13u4",
+      "fix": {
+        "versions": [],
+        "state": "not-fixed"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2019-1010025"
+    },
+    {
+      "id": "CVE-2019-9192",
+      "severity": "Negligible",
+      "package": "libc6",
+      "version": "2.41-12+deb13u4",
+      "fix": {
+        "versions": [],
+        "state": "not-fixed"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2019-9192"
+    },
+    {
+      "id": "CVE-2026-19542",
+      "severity": "Medium",
+      "package": "libc6",
+      "version": "2.41-12+deb13u4",
+      "fix": {
+        "versions": [],
+        "state": "wont-fix"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2026-19542"
+    },
+    {
+      "id": "CVE-2026-89092",
+      "severity": "Medium",
+      "package": "libc6",
+      "version": "2.41-12+deb13u4",
+      "fix": {
+        "versions": [],
+        "state": "wont-fix"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2026-89092"
+    },
+    {
+      "id": "CVE-2026-97399",
+      "severity": "Low",
+      "package": "libc6",
+      "version": "2.41-12+deb13u4",
+      "fix": {
+        "versions": [],
+        "state": "wont-fix"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2026-97399"
+    },
+    {
+      "id": "CVE-2026-18374",
+      "severity": "Medium",
+      "package": "libc6",
+      "version": "2.41-12+deb13u4",
+      "fix": {
+        "versions": [],
+        "state": "wont-fix"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2026-18374"
+    },
+    {
+      "id": "CVE-2026-86805",
+      "severity": "Medium",
+      "package": "libc6",
+      "version": "2.41-12+deb13u4",
+      "fix": {
+        "versions": [],
+        "state": "wont-fix"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2026-86805"
+    },
+    {
+      "id": "CVE-2026-95818",
+      "severity": "Low",
+      "package": "libc6",
+      "version": "2.41-12+deb13u4",
+      "fix": {
+        "versions": [],
+        "state": "wont-fix"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2026-95818"
+    },
+    {
+      "id": "CVE-2026-6368",
+      "severity": "Low",
+      "package": "libc6",
+      "version": "2.41-12+deb13u4",
+      "fix": {
+        "versions": [],
+        "state": "wont-fix"
+      },
+      "primary_source": "https://security-tracker.debian.org/tracker/CVE-2026-6368"
+    }
+  ],
+  "static_go_modules": [
+    {
+      "name": "github.com/BurntSushi/toml",
+      "version": "v1.2.0"
+    },
+    {
+      "name": "github.com/beorn7/perks",
+      "version": "v1.0.1"
+    },
+    {
+      "name": "github.com/cespare/xxhash/v2",
+      "version": "v2.3.0"
+    },
+    {
+      "name": "github.com/chungthuang/quic-go",
+      "version": "v0.45.1-0.20260529212404-a9fddf436fc4"
+    },
+    {
+      "name": "github.com/cloudflare/backoff",
+      "version": "v0.0.0-20240920015135-e46b80a3a7d0"
+    },
+    {
+      "name": "github.com/cloudflare/cloudflared",
+      "version": "v0.0.0-20261030164329-872b241f9487+dirty"
+    },
+    {
+      "name": "github.com/coreos/go-oidc/v3",
+      "version": "v3.17.0"
+    },
+    {
+      "name": "github.com/coreos/go-systemd/v22",
+      "version": "v22.5.0"
+    },
+    {
+      "name": "github.com/cpuguy83/go-md2man/v2",
+      "version": "v2.0.0"
+    },
+    {
+      "name": "github.com/facebookgo/grace",
+      "version": "v0.0.0-20180706040059-75cf19382434"
+    },
+    {
+      "name": "github.com/fsnotify/fsnotify",
+      "version": "v1.4.9"
+    },
+    {
+      "name": "github.com/getsentry/sentry-go",
+      "version": "v0.43.0"
+    },
+    {
+      "name": "github.com/go-chi/chi/v5",
+      "version": "v5.5.0"
+    },
+    {
+      "name": "github.com/go-chi/cors",
+      "version": "v1.2.1"
+    },
+    {
+      "name": "github.com/go-jose/go-jose/v4",
+      "version": "v4.1.6"
+    },
+    {
+      "name": "github.com/go-logr/logr",
+      "version": "v1.4.4"
+    },
+    {
+      "name": "github.com/go-logr/stdr",
+      "version": "v1.2.2"
+    },
+    {
+      "name": "github.com/gobwas/httphead",
+      "version": "v0.1.0"
+    },
+    {
+      "name": "github.com/gobwas/pool",
+      "version": "v0.2.1"
+    },
+    {
+      "name": "github.com/gobwas/ws",
+      "version": "v1.2.1"
+    },
+    {
+      "name": "github.com/google/gopacket",
+      "version": "v1.1.19"
+    },
+    {
+      "name": "github.com/google/uuid",
+      "version": "v1.6.0"
+    },
+    {
+      "name": "github.com/gorilla/websocket",
+      "version": "v1.5.3"
+    },
+    {
+      "name": "github.com/grpc-ecosystem/grpc-gateway/v2",
+      "version": "v2.29.0"
+    },
+    {
+      "name": "github.com/ipostelnik/cli/v2",
+      "version": "v2.3.1-0.20210324024421-b6ea8234fe3d"
+    },
+    {
+      "name": "github.com/json-iterator/go",
+      "version": "v1.1.12"
+    },
+    {
+      "name": "github.com/klauspost/compress",
+      "version": "v1.20.3"
+    },
+    {
+      "name": "github.com/mattn/go-colorable",
+      "version": "v0.1.13"
+    },
+    {
+      "name": "github.com/mattn/go-isatty",
+      "version": "v0.0.20"
+    },
+    {
+      "name": "github.com/mitchellh/go-homedir",
+      "version": "v1.1.0"
+    },
+    {
+      "name": "github.com/modern-go/concurrent",
+      "version": "v0.0.0-20180306012644-bacd9c7ef1dd"
+    },
+    {
+      "name": "github.com/modern-go/reflect2",
+      "version": "v1.0.2"
+    },
+    {
+      "name": "github.com/munnerz/goautoneg",
+      "version": "v0.0.0-20191010083416-a7dc8b61c822"
+    },
+    {
+      "name": "github.com/pkg/errors",
+      "version": "v0.9.1"
+    },
+    {
+      "name": "github.com/prometheus/client_golang",
+      "version": "v1.22.0"
+    },
+    {
+      "name": "github.com/prometheus/client_model",
+      "version": "v0.6.2"
+    },
+    {
+      "name": "github.com/prometheus/common",
+      "version": "v0.64.0"
+    },
+    {
+      "name": "github.com/prometheus/procfs",
+      "version": "v0.15.1"
+    },
+    {
+      "name": "github.com/rs/zerolog",
+      "version": "v1.20.0"
+    },
+    {
+      "name": "github.com/russross/blackfriday/v2",
+      "version": "v2.1.0"
+    },
+    {
+      "name": "github.com/shirou/gopsutil/v4",
+      "version": "v4.26.3"
+    },
+    {
+      "name": "github.com/tklauser/go-sysconf",
+      "version": "v0.3.16"
+    },
+    {
+      "name": "github.com/tklauser/numcpus",
+      "version": "v0.11.0"
+    },
+    {
+      "name": "go.opentelemetry.io/auto/sdk",
+      "version": "v1.2.1"
+    },
+    {
+      "name": "go.opentelemetry.io/contrib/propagators",
+      "version": "v0.22.0"
+    },
+    {
+      "name": "go.opentelemetry.io/otel",
+      "version": "v1.45.0"
+    },
+    {
+      "name": "go.opentelemetry.io/otel/exporters/otlp/otlptrace",
+      "version": "v1.45.0"
+    },
+    {
+      "name": "go.opentelemetry.io/otel/metric",
+      "version": "v1.45.0"
+    },
+    {
+      "name": "go.opentelemetry.io/otel/sdk",
+      "version": "v1.45.0"
+    },
+    {
+      "name": "go.opentelemetry.io/otel/trace",
+      "version": "v1.45.0"
+    },
+    {
+      "name": "go.opentelemetry.io/proto/otlp",
+      "version": "v1.11.0"
+    },
+    {
+      "name": "go.uber.org/automaxprocs",
+      "version": "v1.6.0"
+    },
+    {
+      "name": "golang.org/x/crypto",
+      "version": "v0.58.0"
+    },
+    {
+      "name": "golang.org/x/net",
+      "version": "v0.61.0"
+    },
+    {
+      "name": "golang.org/x/oauth2",
+      "version": "v0.36.0"
+    },
+    {
+      "name": "golang.org/x/sync",
+      "version": "v0.24.0"
+    },
+    {
+      "name": "golang.org/x/sys",
+      "version": "v0.49.0"
+    },
+    {
+      "name": "golang.org/x/term",
+      "version": "v0.47.0"
+    },
+    {
+      "name": "golang.org/x/text",
+      "version": "v0.43.0"
+    },
+    {
+      "name": "google.golang.org/genproto/googleapis/api",
+      "version": "v0.0.0-20260720211330-0afa2a65878a"
+    },
+    {
+      "name": "google.golang.org/genproto/googleapis/rpc",
+      "version": "v0.0.0-20260720211330-0afa2a65878a"
+    },
+    {
+      "name": "google.golang.org/grpc",
+      "version": "v1.83.2"
+    },
+    {
+      "name": "google.golang.org/protobuf",
+      "version": "v1.36.11"
+    },
+    {
+      "name": "gopkg.in/natefinch/lumberjack.v2",
+      "version": "v2.0.0"
+    },
+    {
+      "name": "gopkg.in/yaml.v2",
+      "version": "v2.4.0"
+    },
+    {
+      "name": "gopkg.in/yaml.v3",
+      "version": "v3.0.1"
+    },
+    {
+      "name": "nhooyr.io/websocket",
+      "version": "v1.8.7"
+    },
+    {
+      "name": "stdlib",
+      "version": "go1.27.3"
+    },
+    {
+      "name": "zombiezen.com/go/capnproto2",
+      "version": "v2.18.0+incompatible"
+    }
+  ],
+  "all_go_modules_identical": true,
+  "official_raw_sha256": "58eec4e8f569a2a7bfe31bd6e19052262fe574043fbe91ed30c389051404a471",
+  "static_raw_sha256": "3dddb8ce52d749ed6ff80fefff956fca2d9233b7b28f252356871cf460381342",
+  "official_sbom_sha256": "8ec211da111ac18907ed1266611fe3c46de7fee0358140fe2847953696350942",
+  "static_sbom_sha256": "f6401cccd480322369c26c35eb872a44b1fe9862f3e8003a11ba734bd1793435",
+  "offline_checks": {
+    "local_identity_exact": true,
+    "nonroot_default": true,
+    "autoupdate_disabled": true,
+    "official_binary_byte_identical": true,
+    "official_ca_bundle_byte_identical": true,
+    "official_identity_files_preserved": true,
+    "official_ca_license_and_metadata_preserved": true,
+    "licenses_and_provenance_included": true,
+    "only_eight_intended_regular_files": true,
+    "no_elf_interpreter_or_dynamic_linkage": true,
+    "ca_bundle_parses_and_contains_roots": true,
+    "offline_version": true,
+    "offline_help": true,
+    "offline_config_valid": true,
+    "offline_hostname_route": true,
+    "offline_unmatched_host_404": true,
+    "cleanup_verified": true
+  },
+  "binary_sha256": "c4f903368f20f303507296081cca401e765c37764698747e96988724ab1c16ed",
+  "ca_bundle_sha256": "e9c7b63ee2623386e9b0a3ee32f499d01a8ea23dc83b8383ddff9f8e749543b7",
+  "ca_roots": 148,
+  "ignore_rules": [],
+  "network": "none",
+  "real_tunnel_started": false,
+  "limitations": [
+    "No actual Cloudflare routing, TLS handshake or external traffic tested.",
+    "Original raw findings are retained, not waived; the static runtime does not contain the unused Debian libraries.",
+    "Scanner results are a dated snapshot and do not prove absence of unknown vulnerabilities.",
+    "Official binary VCS modified marker remains; no independent signed attestation or source-to-binary reproducibility claim."
+  ]
+}

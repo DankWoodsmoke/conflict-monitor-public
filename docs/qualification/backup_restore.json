@@ -1,0 +1,82 @@
+{
+  "backup_restore": {
+    "archive": {
+      "bytes": 306077,
+      "format": "postgresql-custom",
+      "ownership_acl_included": false,
+      "rows_bound_to_same_exported_snapshot": true,
+      "sha256": "d35a79921393342b855d403c69aedeaa8a78cc22f4969ff87275ee34ae25c5f3"
+    },
+    "cached_public_packets": {
+      "aircraft": {
+        "batch_id": "bc653a0da19037a865e8d6fb92521ec28ca3c8b5172622203f298a180d70c068",
+        "display_status": "fresh",
+        "displayed_rows": 105,
+        "download_sha256": "021114ac345a8123f25566e4a07aa460e70cc8c86dfe4bf83e8d24a33d8d1563",
+        "sql_download_exact": true,
+        "stored_rows": 116
+      },
+      "observations": {
+        "batch_id": "b4df6627945a360b3809106521d7881fc5799c40c5d6e3ea4565546e79e6f4b9",
+        "display_status": "fresh",
+        "displayed_rows": 1176,
+        "download_sha256": "fe85aad37a4d9fca7f11b128146fe3bdac38e86f6ee839ad7ff3e55f07e1d5b4",
+        "sql_download_exact": true,
+        "stored_rows": 1176
+      }
+    },
+    "candidate_receipt_sha256": "65b92f66754f0e1c20e5df66082361421074e5d57742ecc2e2d791388aef41cf",
+    "checks": {
+      "all_snapshot_tables_rows_indexes_revision_locale_equal": true,
+      "bootstrap_preserves_all_snapshot_data": true,
+      "bound_helpers_unchanged": true,
+      "main_image_start_identity_unchanged": true,
+      "reader_collection_generation_explicitly_disabled": true,
+      "reader_exact_unprivileged_identity": true,
+      "reader_no_dml_creation": true,
+      "reader_two_table_only_and_negative_sql": true,
+      "restore_has_no_host_ports_or_external_networks": true,
+      "restored_sequences_cover_snapshot_keys": true,
+      "reviewed_source_inventory_unchanged": true,
+      "sequence_definitions_and_non_mvcc_bounds": true,
+      "writer_exact_identity_and_publication_grants": true
+    },
+    "cleanup_verified": true,
+    "elapsed_seconds": 63.266246,
+    "executed_restore_image_roles": [
+      "backend",
+      "database"
+    ],
+    "finished_at": "2026-11-06T18:14:40.314603+00:00",
+    "limits": [
+      "Sequence values are non-MVCC; exact snapshot-time equality is not claimed.",
+      "Local isolated restore only; encrypted off-machine backup and host disaster recovery were not tested.",
+      "The dump omits ownership/ACLs; reviewed bootstrap reconstructs roles and privileges, checked separately after restoration.",
+      "Temporary dump, generated secrets and owned restore resources were removed after verification; this is not a retained backup service.",
+      "Five image IDs bind the candidate inventory. Restore execution used backend and database images; no tunnel, public TLS or new browser execution is claimed.",
+      "Real cached observations and aircraft records were restored; display time filtering remains active. This does not establish source ground truth or complete geographic coverage.",
+      "Root review is pending; no ready receipt, full-soak result or release approval is emitted."
+    ],
+    "main_service_mutations": 0,
+    "provider_requests": 0,
+    "schema": 1,
+    "sequence_count": 6,
+    "sequence_evidence_sha256": "f42175a2a7ecf11135e7753ff180eb49c56eecfbd699f68d19a9fad3f946b63e",
+    "snapshot_fingerprints_sha256": "7dc631267a01e6da613ee358bc631f42dbf5021fc6c0056672c8decf42c96bb5",
+    "snapshot_lifetime_cap_seconds": 240,
+    "snapshot_seconds": 10.25,
+    "snapshot_table_count": 17,
+    "started_at": "2026-11-06T18:13:37.048357+00:00"
+  },
+  "execution": "fresh",
+  "qualified_images": {
+    "backend": "sha256:677cbf217ff3dde3b2fa547b92217ebe98b8c57f4a1433725d09d7091fa53f82",
+    "database": "sha256:c7e3a0efd486e410871417be965f83f4b320560bd2e4f6b6c87aa7aff3bcb719",
+    "operator": "sha256:a4ed09e7925fd89c66ec9bbff0337c6d7fd92c887e0c1e00655d66b2d9e7dab4",
+    "public": "sha256:e332e72ef6a08351611f2c2ad935a2a250e4493d9da0da01b746d5c0f05b1261",
+    "tunnel": "sha256:113645bf83c26d748ccff3a31a1df178bb65a07f92cd71d2f17a9dd4352db09f"
+  },
+  "runtime_source_sha256": "0110be4c3585625ce3f05861756060082cd638931898edaa7b06b76421013917",
+  "source_receipt_sha256": "dc94cd6b2583981e6fabfa43efda08a395f53904e3602df41b98dff04adaac7f",
+  "status": "PASS"
+}

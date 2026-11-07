@@ -7,6 +7,7 @@ from sqlalchemy import select, text
 from app.db import async_session
 from app.security import require_admin_key
 from app.models import Sitrep, Event
+from app.services.source_digest import DIGEST_CONTRACT, DIGEST_METHOD, digest_source_excerpt
 
 router = APIRouter(prefix="/sitreps", tags=["sitreps"])
 
@@ -57,23 +58,37 @@ def _sitrep_to_dict(s: Sitrep) -> dict:
             provenance_status = "invalid_legacy_shape"
     except (ValueError, TypeError, AttributeError, RecursionError):
         provenance_status = "invalid_legacy_provenance"
+    attributed = (free and provenance.get("contract_version") == DIGEST_CONTRACT
+                  and provenance.get("method") == DIGEST_METHOD
+                  and "model" in provenance and provenance["model"] is None)
+    legacy_digest = free and not attributed
+    analysis_status = ("attributed_source_digest" if attributed else
+                       "legacy_source_digest_unqualified" if legacy_digest else "model_generated_unreviewed")
     return {
-        "analysis_status": "attributed_source_digest" if free else "model_generated_unreviewed",
+        "analysis_status": analysis_status,
         "provenance": provenance, "provenance_status": provenance_status,
         "question_status": question_status, "source_reference_status": reference_status,
         "source_reference_scope": "stored_identifier_syntax; resolve source cards to check availability",
         "id": s.id, "generated_at": s.generated_at.isoformat() if s.generated_at else None,
         "trigger": s.trigger, "events_analyzed": s.events_analyzed,
-        "headline": s.headline, "situation": s.situation, "escalation_text": s.escalation_text,
-        "escalation_level": "UNASSESSED" if free else s.escalation_level,
-        "escalation_score": None if free else getattr(s, "escalation_score", None),
-        "economic_exposure": s.economic_exposure, "game_theory": s.game_theory,
-        "humanitarian_ground": s.humanitarian_ground, "historical_analogue": s.historical_analogue,
-        "key_questions": questions, "key_event_ids": ids,
+        "headline": "Historical source digest · attribution unqualified" if legacy_digest else s.headline,
+        "situation": ("This archived compilation may include generated summaries. Review the linked source records."
+                      if legacy_digest else s.situation),
+        "escalation_text": "No source attribution or risk assessment is qualified for this archive." if legacy_digest else s.escalation_text,
+        "escalation_level": "UNASSESSED",
+        "escalation_score": None,
+        "activity_index_status":"unassessed",
+        "legacy_escalation":None if free or s.escalation_level=="UNASSESSED" else {
+            "score":getattr(s,"escalation_score",None),"level":s.escalation_level,"status":"legacy_unreviewed"},
+        "economic_exposure": "" if legacy_digest else s.economic_exposure,
+        "game_theory": "" if legacy_digest else s.game_theory,
+        "humanitarian_ground": "" if legacy_digest else s.humanitarian_ground,
+        "historical_analogue": "" if legacy_digest else s.historical_analogue,
+        "key_questions": [] if legacy_digest else questions, "key_event_ids": ids,
     }
 
 
-def _event_to_source(e: Event) -> dict:
+def _event_to_source(e: Event, *, for_digest=False) -> dict:
     """Minimal source card for attribution display."""
     # Derive a display network from source string
     src = e.source or ""
@@ -84,15 +99,18 @@ def _event_to_source(e: Event) -> dict:
         network = "TG"
     elif src.startswith("rss_"):
         network = "RSS"
+    elif src == "satellite_firms":
+        network = "FIRMS"
     else:
         network = src.upper()[:6]
 
+    evidence = digest_source_excerpt(e) if for_digest else None
     return {
         "id":                e.id,
         "source":            src,
         "channel_name":      ch,
         "network":           network,
-        "summary":           (e.summary or "")[:280],
+        "summary":           (evidence["summary"] if evidence else (e.summary or ""))[:280],
         "source_url":        e.source_url or "",
         "severity":          e.severity,
         "event_type":        e.event_type or "",
@@ -101,6 +119,8 @@ def _event_to_source(e: Event) -> dict:
         "reporting_channels": e.reporting_channels or "",
         "confirmed_networks": e.confirmed_networks or "",
         "source_reliability": e.source_reliability,
+        **({"source_time_basis": evidence["source_time_basis"], "source_kind": evidence["source_kind"],
+            "citation_kind": "reference_imagery" if src == "satellite_firms" else "source_link"} if evidence else {}),
     }
 
 
@@ -172,7 +192,7 @@ async def get_sitrep_events(sitrep_id: int):
             reference_status = "missing_source_events"
 
         return {
-            "events":     [_event_to_source(e) for e in events_sorted],
+            "events":     [_event_to_source(e, for_digest=sitrep.trigger == "source_digest") for e in events_sorted],
             "sitrep_id":  sitrep_id,
             "total":      len(events_sorted),
             "source_reference_status": reference_status,

@@ -1,0 +1,30 @@
+From 1ac6cdd31d02523a9aac6fe4ac35b83d7b5da202 Mon Sep 17 00:00:00 2001
+From: Lily Chen <chlily@google.com>
+Date: Mon, 28 Sep 2026 23:07:36 +0000
+Subject: [PATCH] Add some more UniquePtr bridges for public types
+
+Change-Id: I85086946bc163d595366e4ac26f684f66a6a6964
+Reviewed-on: https://boringssl-review.googlesource.com/c/boringssl/+/103307
+Commit-Queue: Xiangfei Ding <xfding@google.com>
+Commit-Queue: Lily Chen <chlily@google.com>
+Auto-Submit: Lily Chen <chlily@google.com>
+Reviewed-by: Xiangfei Ding <xfding@google.com>
+---
+ include/openssl/x509.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/include/openssl/x509.h b/include/openssl/x509.h
+index 0ef08e677a..8a487da965 100644
+--- a/include/openssl/x509.h
++++ b/include/openssl/x509.h
+@@ -5316,8 +5316,10 @@ BORINGSSL_MAKE_DELETER(BASIC_CONSTRAINTS, BASIC_CONSTRAINTS_free)
+ // TODO(davidben): Move this to conf.h and rename to CONF_VALUE_free.
+ BORINGSSL_MAKE_DELETER(CONF_VALUE, X509V3_conf_free)
+ BORINGSSL_MAKE_DELETER(DIST_POINT, DIST_POINT_free)
++BORINGSSL_MAKE_DELETER(DIST_POINT_NAME, DIST_POINT_NAME_free)
+ BORINGSSL_MAKE_DELETER(GENERAL_NAME, GENERAL_NAME_free)
+ BORINGSSL_MAKE_DELETER(GENERAL_SUBTREE, GENERAL_SUBTREE_free)
++BORINGSSL_MAKE_DELETER(ISSUING_DIST_POINT, ISSUING_DIST_POINT_free)
+ BORINGSSL_MAKE_DELETER(NAME_CONSTRAINTS, NAME_CONSTRAINTS_free)
+ BORINGSSL_MAKE_DELETER(NETSCAPE_SPKI, NETSCAPE_SPKI_free)
+ BORINGSSL_MAKE_DELETER(NOTICEREF, NOTICEREF_free)

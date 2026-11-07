@@ -56,12 +56,34 @@ function videoResult(value:unknown):Video {
 }
 
 /** A content-keyed child keeps ordinary polling out of the media lifecycle. */
-function CaptionedVideo({video,src,onError,onLoadedMetadata}:{video:Video;src:string;onError:()=>void;onLoadedMetadata:()=>void}){
+export function CaptionedVideo({video,src,onError,onLoadedMetadata}:{video:Video;src:string;onError:()=>void;onLoadedMetadata:()=>void}){
  const plan=useMemo(()=>parseCaptionPlan(video),[video]);
  const identity=plan?.identity||"";
  const [resource,setResource]=useState<{identity:string;status:"ready"|"unavailable";url?:string;plan?:CaptionPlan;reason?:string}>({identity:"",status:"unavailable"});
  const [showing,setShowing]=useState(true),[trackError,setTrackError]=useState(false),[pausedHint,setPausedHint]=useState(false);
  const media=useRef<HTMLVideoElement|null>(null),track=useRef<HTMLTrackElement|null>(null),wanted=useRef(true),ownedResource=useRef("");
+ const playbackActive=useRef(false);
+ useEffect(()=>{
+  const element=media.current;if(!element)return;
+  playbackActive.current=true;
+  // React StrictMode replays cleanup without recreating this DOM node.
+  // Restore a source cleared by the owned cleanup on that replay.
+  if(element.getAttribute("src")!==src)element.setAttribute("src",src);
+  const caption=track.current;
+  if(caption&&ownedResource.current){
+   if(caption.getAttribute("src")!==ownedResource.current)caption.setAttribute("src",ownedResource.current);
+   caption.track.mode=wanted.current?"showing":"disabled";
+  }
+  return()=>{
+   playbackActive.current=false;
+   // React already assigned a replacement src before passive cleanup.
+   // Preserve that new source and its existing caption track.
+   if(element.getAttribute("src")!==src)return;
+   element.pause();
+   for(const caption of element.querySelectorAll("track")){caption.track.mode="disabled";caption.removeAttribute("src");}
+   element.removeAttribute("src");element.load();
+  };
+ },[src]);
  useEffect(()=>{
   if(!plan)return;
   let cancelled=false,ownedUrl="";
@@ -91,7 +113,7 @@ function CaptionedVideo({video,src,onError,onLoadedMetadata}:{video:Video;src:st
  },[url]);
  const toggle=()=>{const enabled=!showing;wanted.current=enabled;if(track.current?.track)track.current.track.mode=enabled?"showing":"disabled";setShowing(enabled);setPausedHint(enabled&&!!media.current?.paused);};
  return <>
-  <video ref={media} controls playsInline preload="metadata" style={{width:"100%",maxHeight:"55vh",background:"#050c12",borderRadius:5}} src={src} onError={event=>{if(event.target===event.currentTarget)onError();}} onLoadedMetadata={onLoadedMetadata} onPlaying={()=>setPausedHint(false)} aria-label="Narrated attributed source briefing">
+  <video ref={media} controls playsInline preload="metadata" style={{width:"100%",maxHeight:"55vh",background:"#050c12",borderRadius:5}} src={src} onError={event=>{if(playbackActive.current&&event.target===event.currentTarget&&event.currentTarget.getAttribute("src")===src)onError();}} onLoadedMetadata={event=>{if(playbackActive.current&&event.currentTarget.getAttribute("src")===src)onLoadedMetadata();}} onPlaying={()=>setPausedHint(false)} aria-label="Narrated attributed source briefing">
    {url?<track key={identity} ref={track} kind="captions" srcLang="en" label="Source narration (segment timing)" src={url} default/>:null}
   </video>
   {ready?<>

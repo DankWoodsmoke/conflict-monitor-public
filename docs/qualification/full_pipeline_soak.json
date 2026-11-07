@@ -1,0 +1,245 @@
+{
+  "execution": "fresh",
+  "qualified_images": {
+    "backend": "sha256:677cbf217ff3dde3b2fa547b92217ebe98b8c57f4a1433725d09d7091fa53f82",
+    "database": "sha256:c7e3a0efd486e410871417be965f83f4b320560bd2e4f6b6c87aa7aff3bcb719",
+    "operator": "sha256:a4ed09e7925fd89c66ec9bbff0337c6d7fd92c887e0c1e00655d66b2d9e7dab4",
+    "public": "sha256:e332e72ef6a08351611f2c2ad935a2a250e4493d9da0da01b746d5c0f05b1261",
+    "tunnel": "sha256:113645bf83c26d748ccff3a31a1df178bb65a07f92cd71d2f17a9dd4352db09f"
+  },
+  "runtime_source_sha256": "0110be4c3585625ce3f05861756060082cd638931898edaa7b06b76421013917",
+  "soak": {
+    "candidate_receipt_sha256": "65b92f66754f0e1c20e5df66082361421074e5d57742ecc2e2d791388aef41cf",
+    "ended_at": "2026-11-06T22:34:44.805214+00:00",
+    "launch_sha256": "c6dbe11cbba6c72febe45011e3dd435c7d3e1ee55b453a41c573d771463bd966",
+    "observed_services": {
+      "database": {
+        "identity_sha256": "3ef6af1f00ed0961d84e6e74c5a4367758f7bba8902bcceb1946e04d795a939c",
+        "image": "sha256:c7e3a0efd486e410871417be965f83f4b320560bd2e4f6b6c87aa7aff3bcb719",
+        "started_at": "2026-11-06T18:11:37.483169313Z"
+      },
+      "operator": {
+        "identity_sha256": "220e51024f603eacd4fb5b72e07491fed13bcf445b747057e57cc63ce07f2be7",
+        "image": "sha256:a4ed09e7925fd89c66ec9bbff0337c6d7fd92c887e0c1e00655d66b2d9e7dab4",
+        "started_at": "2026-11-06T18:11:51.883206154Z"
+      },
+      "public": {
+        "identity_sha256": "db9c87874d4be76fab21aa2f8013cfb0d2fdc64b55da4a4e599c3dc361af56d9",
+        "image": "sha256:e332e72ef6a08351611f2c2ad935a2a250e4493d9da0da01b746d5c0f05b1261",
+        "started_at": "2026-11-06T18:11:51.862798526Z"
+      },
+      "reader": {
+        "identity_sha256": "f3d6bd809477a9eb7d64f9e238b4d10f24aa327549dbe642d26117aee2470371",
+        "image": "sha256:677cbf217ff3dde3b2fa547b92217ebe98b8c57f4a1433725d09d7091fa53f82",
+        "started_at": "2026-11-06T18:11:46.074433864Z"
+      },
+      "writer": {
+        "identity_sha256": "5649df71eea19bebfbdcb8bb433a84e3c21c7e94da4e8dbe19ceae5c352cabe6",
+        "image": "sha256:677cbf217ff3dde3b2fa547b92217ebe98b8c57f4a1433725d09d7091fa53f82",
+        "started_at": "2026-11-06T18:11:46.079245475Z"
+      }
+    },
+    "observer_source_hashes": [
+      "0bcf517ff1319923c6564d172613cf216b6137190fdcdfa883c320b4ad4c834c",
+      "154883cb55803296413c441465f60f3293e372e995b6f52e20ae02cca414af6f",
+      "258eb0a71a33ea68191787a861de8c2e77400c34bcee7372e4fcb43dd88355be",
+      "29fbc5e7242507bd221cf8e730e277b7b116bd32c5a30cb9a8d9dad99879e65c",
+      "2d8f93cd16a2d4a9827927e4b084cc0638077f363798209bfc6601eaa1f6517d",
+      "3ce5e8436339d6120cc7a6d0ba84991251b8dea23c6a13d3d2ed5a73044ed2c7",
+      "582d18d33a4b1b764434a722f448bf65fb33bb60fe481377f7f7c4b08220b252",
+      "5acbaa62b989a359dc33853d33900ba97282ff341a45d646d02e9161df566e45",
+      "643d755027d32a71af56f3be65ac6e270350345a6db5588bcb645cfb9f25c89f",
+      "d45d61fdf1b65c6a1b4578b8c3ef09f02e1036ba283e32a14b217d9b26d012cf",
+      "ec4d55ce241caf293c3cec16376bab6a053f255b8bb9a404bb6df20a93013219",
+      "ec7a8206ef401e8888840047ef13f7b0b249e730dd3cb1dcc87c618a16b4a944"
+    ],
+    "observer_sources_unchanged": true,
+    "observers": {
+      "delivery": {
+        "cadence": {
+          "final_gap_seconds": 29.0,
+          "first_seconds": 0.859,
+          "maximum_gap_seconds": 30.016000000000076
+        },
+        "checks": {
+          "cadence_sufficient": true,
+          "identities_stable": true,
+          "no_findings": true
+        },
+        "elapsed_seconds": 14400.172,
+        "exit_code": 0,
+        "metrics": {
+          "pages": 480,
+          "upserts": 310,
+          "verified_offsets": 310
+        },
+        "requested_seconds": 14400,
+        "samples": 480,
+        "samples_sha256": "0b80e8b2292f48782667ba92e976b13ac65aa63459276052b8beb17d50a10e90",
+        "status": "qualified_sample",
+        "summary_sha256": "f167b41e38274d096d42a442778c0e12db9ce13064eed298df6e795fc5e187d8"
+      },
+      "operator-google": {
+        "cadence": {
+          "final_gap_seconds": 20.389691699998366,
+          "first_seconds": 6.5652736,
+          "maximum_gap_seconds": 30.060753200000363
+        },
+        "checks": {
+          "all_tabs_seen": true,
+          "google_ready_all_samples": true,
+          "identities_stable": true,
+          "no_generation_requests": true,
+          "no_page_errors": true,
+          "one_persistent_canvas": true,
+          "source_hashes_match": true
+        },
+        "elapsed_seconds": 14400.5249792,
+        "exit_code": 0,
+        "metrics": {
+          "child_requests_after_three_hours": 306,
+          "child_successes_after_three_hours": 300,
+          "natural_rotation_after_first_root_seconds": 9016.3258463,
+          "post_three_hour_camera_action": true,
+          "public_aircraft_max": 0,
+          "public_observations_max": 0,
+          "roots_requested": 2,
+          "roots_succeeded": 2,
+          "scope": "genuine_google_long_session_stable_profile"
+        },
+        "requested_seconds": 14400,
+        "samples": 480,
+        "samples_sha256": "003a65c91a7a529e6d3fccf8548bbd8aa70a0e2a21877a3bc87d5d745ed3b99a",
+        "status": "completed_sample",
+        "summary_sha256": "2e708b64749cefac65592ec938b2c99583fc9011ed4534f0c957a51af328e7b6"
+      },
+      "public-google": {
+        "cadence": {
+          "final_gap_seconds": 12.228020200001993,
+          "first_seconds": 14.559524600000001,
+          "maximum_gap_seconds": 30.06206900000143
+        },
+        "checks": {
+          "all_tabs_seen": true,
+          "google_ready_all_samples": true,
+          "identities_stable": true,
+          "no_generation_requests": true,
+          "no_page_errors": true,
+          "one_persistent_canvas": true,
+          "public_http_scene_agreement": true,
+          "public_response_success": true,
+          "source_hashes_match": true
+        },
+        "elapsed_seconds": 14400.5191732,
+        "exit_code": 0,
+        "metrics": {
+          "child_requests_after_three_hours": 304,
+          "child_successes_after_three_hours": 304,
+          "natural_rotation_after_first_root_seconds": 9048.3207592,
+          "post_three_hour_camera_action": true,
+          "public_aircraft_max": 182,
+          "public_observations_max": 1176,
+          "roots_requested": 2,
+          "roots_succeeded": 2,
+          "scope": "genuine_google_long_session_stable_profile"
+        },
+        "requested_seconds": 14400,
+        "samples": 480,
+        "samples_sha256": "796ce025e5dca6f2e95fe1968932609f478e80ea06cf7d22267fcb9a675b306c",
+        "status": "completed_sample",
+        "summary_sha256": "f8de268fdf0ce536e266c452b89ce59ce115b73391c1b1055a91b0f59ccf815c"
+      },
+      "publication": {
+        "cadence": {
+          "final_gap_seconds": 28.984999999904176,
+          "first_seconds": 0.828,
+          "maximum_gap_seconds": 30.047
+        },
+        "checks": {
+          "exact_download_sql_display_projection": true,
+          "identities_stable": true,
+          "no_findings": true,
+          "resource_sampling_complete": true
+        },
+        "elapsed_seconds": 14400.171999999904,
+        "exit_code": 0,
+        "metrics": {
+          "aircraft": {
+            "distinct_batches": 480,
+            "maximum_rows": 184,
+            "samples": 480
+          },
+          "observations": {
+            "distinct_batches": 2,
+            "maximum_rows": 1176,
+            "samples": 480
+          }
+        },
+        "requested_seconds": 14400,
+        "samples": 480,
+        "samples_sha256": "e8583f5851cd9a92b4df71b67e858b421a90d5c46fb8f503f20cd4e5f3e96d00",
+        "status": "qualified_sample",
+        "summary_sha256": "ca727dae7f34938d6f0f4a38360777ea6e2a9373263319c7dfedf83a2dd9cb6a"
+      },
+      "server": {
+        "cadence": {
+          "final_gap_seconds": 25.44000000000051,
+          "first_seconds": 0.75,
+          "maximum_gap_seconds": 30.099999999998545
+        },
+        "checks": {
+          "database_identity_observed_throughout": true,
+          "database_versions_and_collation_observed": true,
+          "expected_database_name_and_role": true,
+          "expected_database_volume": true,
+          "expected_postgis_version": true,
+          "expected_postgresql_version": true,
+          "explicitly_disabled_telegram_transport": true,
+          "no_new_telegram_event_ids": true,
+          "no_recorded_paid_usage": true,
+          "observer_finished": true,
+          "one_backend_and_frontend_image_pair": true,
+          "one_three_container_start_and_database_volume_identity": true,
+          "requested_duration_observed": true,
+          "resources_observed_for_all_containers_throughout": true,
+          "rest_requests_successful": true,
+          "sample_cadence_bounded": true,
+          "sampled_integrity_preserved": true,
+          "sql_checks_available": true,
+          "sql_integrity_preserved": true,
+          "sql_observed_at_each_scheduled_interval": true,
+          "websocket_available_over_95_percent": true,
+          "websocket_connected": true,
+          "websocket_payloads_valid": true
+        },
+        "elapsed_seconds": 14400.02,
+        "exit_code": 0,
+        "metrics": {
+          "sql_checks": 48,
+          "unavailable_sql_checks": 0,
+          "websocket_connected_fraction": 1.0
+        },
+        "requested_seconds": 14400,
+        "samples": 480,
+        "samples_sha256": "66932f345e6a746909364d41efb5e9071ccd73ee4c68b49f474b98c8d49cb93c",
+        "status": "qualified_sample",
+        "summary_sha256": "9762506f405f54da3556c83ef14b471394c4b7a8cf28fb1b5a942b0c8ba93588"
+      }
+    },
+    "private_runner_hashes": [
+      "0d38f4568dd35bb4eee36599e53b88e165f75dc700da94c6b143c1fd47dba29b",
+      "264c4373ef310eb1aa34468cfd0642952c4f9a05e85229a27c52cc929ef58b99",
+      "83bc13d45974326ecaaaf2a3877ed4e3c63b1826df4718a788161f05075c765b",
+      "cb5c5c44b7253863b2dc98721ea5f6382d2272eb7fea164c3a714c2d4f6a690e"
+    ],
+    "private_runners_unchanged": true,
+    "rehearsal_only": false,
+    "schema": 1,
+    "started_at": "2026-11-06T18:34:12.348108+00:00",
+    "unobserved_image_roles": [
+      "tunnel"
+    ]
+  },
+  "source_receipt_sha256": "c6dbe11cbba6c72febe45011e3dd435c7d3e1ee55b453a41c573d771463bd966",
+  "status": "PASS"
+}

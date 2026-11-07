@@ -1,0 +1,39 @@
+From 13b25a40acc5afe4b1c9a3b36c9a5b9e8dd53305 Mon Sep 17 00:00:00 2001
+From: Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+Date: Tue, 13 Jan 2026 18:34:25 +0900
+Subject: [PATCH] Increase default glitch rate limit to 10x
+
+Increase default glitch rate limit to 10x to make it less susceptible.
+---
+ lib/includes/nghttp2/nghttp2.h | 2 +-
+ lib/nghttp2_session.h          | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/lib/includes/nghttp2/nghttp2.h b/lib/includes/nghttp2/nghttp2.h
+index 19c1874f23..55baba71bd 100644
+--- a/lib/includes/nghttp2/nghttp2.h
++++ b/lib/includes/nghttp2/nghttp2.h
+@@ -3252,7 +3252,7 @@ NGHTTP2_EXTERN void nghttp2_option_set_max_continuations(nghttp2_option *option,
+  * regenerated per second.  When a suspicious activity is detected,
+  * some amount of tokens are consumed.  If there is no token
+  * available, GOAWAY is sent to tear down the connection.  |burst| and
+- * |rate| default to 1000 and 33 respectively.
++ * |rate| default to 10000 and 330 respectively.
+  */
+ NGHTTP2_EXTERN void nghttp2_option_set_glitch_rate_limit(nghttp2_option *option,
+                                                          uint64_t burst,
+diff --git a/lib/nghttp2_session.h b/lib/nghttp2_session.h
+index edbef80d39..cab30687c0 100644
+--- a/lib/nghttp2_session.h
++++ b/lib/nghttp2_session.h
+@@ -107,8 +107,8 @@ typedef struct {
+ #define NGHTTP2_DEFAULT_STREAM_RESET_RATE 33
+ 
+ /* The default values for glitch rate limiter. */
+-#define NGHTTP2_DEFAULT_GLITCH_BURST 1000
+-#define NGHTTP2_DEFAULT_GLITCH_RATE 33
++#define NGHTTP2_DEFAULT_GLITCH_BURST 10000
++#define NGHTTP2_DEFAULT_GLITCH_RATE 330
+ 
+ /* The default max number of CONTINUATION frames following an incoming
+    HEADER frame. */

@@ -2,13 +2,153 @@
 import asyncio
 import copy
 import json
+import socket
 from datetime import datetime, timezone
 from types import SimpleNamespace
 import unittest
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import pytest
+from sqlalchemy.exc import SQLAlchemyError
+
 from app.services import predictive_history, sitrep_generator as generator
 from app.services.sitrep_contract import NO_EVIDENCE, render_sitrep, validate_sitrep
+
+
+@pytest.fixture
+def startup_generator(monkeypatch):
+    monkeypatch.setattr(generator, "settings", SimpleNamespace(
+        demo_mode=False, enable_sitrep_generation=True, anthropic_api_key="offline-test-placeholder"))
+    session = MagicMock()
+    session.__aenter__ = AsyncMock(return_value=session)
+    session.__aexit__ = AsyncMock(return_value=False)
+    database = MagicMock(return_value=session)
+    read = AsyncMock(return_value=SimpleNamespace(id=42))
+    generate = AsyncMock()
+    provider = MagicMock(side_effect=AssertionError("Startup tests must never contact a provider"))
+    delays = []
+
+    async def sleep(delay):
+        delays.append(delay)
+        if delay == 60:
+            raise asyncio.CancelledError  # Stop after startup, before the normal monitor loop.
+
+    monkeypatch.setattr(generator, "async_session", database)
+    monkeypatch.setattr(generator, "_get_last_sitrep", read)
+    monkeypatch.setattr(generator, "_generate_sitrep", generate)
+    monkeypatch.setattr(generator.anthropic, "AsyncAnthropic", provider)
+    monkeypatch.setattr(generator.asyncio, "sleep", sleep)
+    return SimpleNamespace(session=session, database=database, read=read, generate=generate,
+                           provider=provider, delays=delays)
+
+
+@pytest.mark.parametrize("failure", [
+    socket.gaierror("private database hostname"),
+    ConnectionRefusedError("private database address"),
+    ConnectionResetError("private connection details"),
+    SQLAlchemyError("private SQL"),
+    TimeoutError("private timeout details"),
+], ids=["dns", "refused", "reset", "sqlalchemy", "timeout"])
+@pytest.mark.parametrize("boundary", ["session", "query"])
+@pytest.mark.asyncio
+async def test_startup_db_failure_recovers_without_generation(startup_generator, failure, boundary, caplog):
+    state = startup_generator
+    if boundary == "session":
+        state.session.__aenter__.side_effect = [failure, state.session]
+    else:
+        state.read.side_effect = [failure, SimpleNamespace(id=42)]
+    with pytest.raises(asyncio.CancelledError):
+        await generator.start_sitrep_generator()
+    assert state.delays == [120, 5, 60]
+    assert state.database.call_count == 2
+    assert state.read.await_count == (1 if boundary == "session" else 2)
+    state.generate.assert_not_awaited()
+    state.provider.assert_not_called()
+    assert "private" not in caplog.text
+
+
+@pytest.mark.asyncio
+async def test_startup_generation_requires_successful_empty_read_after_outage(startup_generator):
+    state = startup_generator
+    state.read.side_effect = [ConnectionRefusedError(), ConnectionResetError(), None]
+    with pytest.raises(asyncio.CancelledError):
+        await generator.start_sitrep_generator()
+    assert state.delays == [120, 5, 5, 60]
+    assert state.read.await_count == 3
+    state.generate.assert_awaited_once_with("init")
+    state.provider.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_startup_read_has_attempt_deadline_and_recovers(startup_generator, monkeypatch):
+    state = startup_generator
+    monkeypatch.setattr(generator, "_STARTUP_DB_TIMEOUT_SECONDS", 0.01, raising=False)
+    attempts, cancelled = [], []
+
+    async def read(_session):
+        attempts.append(1)
+        if len(attempts) == 1:
+            try:
+                await asyncio.Event().wait()
+            except asyncio.CancelledError:
+                cancelled.append(True)
+                raise
+        return SimpleNamespace(id=42)
+
+    state.read.side_effect = read
+    with pytest.raises(asyncio.CancelledError):
+        await asyncio.wait_for(generator.start_sitrep_generator(), timeout=1)
+    assert cancelled == [True] and len(attempts) == 2
+    assert state.delays == [120, 5, 60]
+    assert state.session.__aexit__.await_count == 2
+    state.generate.assert_not_awaited()
+    state.provider.assert_not_called()
+
+
+@pytest.mark.parametrize("boundary", ["query", "retry_wait"])
+@pytest.mark.asyncio
+async def test_startup_cancellation_propagates_before_generation(startup_generator, monkeypatch, boundary):
+    state = startup_generator
+    reached = asyncio.Event()
+
+    async def blocked():
+        reached.set()
+        await asyncio.Event().wait()
+
+    if boundary == "query":
+        async def read(_session):
+            await blocked()
+        state.read.side_effect = read
+    else:
+        state.read.side_effect = ConnectionResetError()
+
+        async def sleep(delay):
+            state.delays.append(delay)
+            if delay == 5:
+                await blocked()
+        monkeypatch.setattr(generator.asyncio, "sleep", sleep)
+
+    task = asyncio.create_task(generator.start_sitrep_generator())
+    try:
+        await asyncio.wait_for(reached.wait(), timeout=1)
+    finally:
+        task.cancel()
+        with pytest.raises(asyncio.CancelledError):
+            await task
+    assert state.database.call_count == 1
+    state.generate.assert_not_awaited()
+    state.provider.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_startup_invariant_failure_is_not_retried(startup_generator):
+    state = startup_generator
+    state.read.side_effect = ValueError("invalid stored invariant")
+    with pytest.raises(ValueError, match="invalid stored invariant"):
+        await generator.start_sitrep_generator()
+    assert state.delays == [120] and state.database.call_count == 1
+    state.generate.assert_not_awaited()
+    state.provider.assert_not_called()
 
 
 def valid_output():
@@ -101,7 +241,8 @@ class ContractTests(unittest.TestCase):
         self.assertNotIn(injection, request["system"])
         data = json.loads(request["messages"][0]["content"])
         self.assertEqual(data["events"][0]["summary"], injection)
-        self.assertEqual(data["report_activity_index"]["score"], 52)
+        self.assertIsNone(data["report_activity_index"]["score"])
+        self.assertEqual(data["report_activity_index"]["status"],"unassessed")
         self.assertIn("not cause, actor, strike", request["system"])
 
 
@@ -153,8 +294,8 @@ class ServiceTests(unittest.IsolatedAsyncioTestCase):
     async def test_valid_report_retains_frozen_snapshot_and_server_score(self):
         await generator._generate_sitrep("manual")
         row = self.session.add.call_args.args[0]
-        self.assertEqual(row.escalation_score, 55)
-        self.assertEqual(row.escalation_level, "ESCALATING")
+        self.assertEqual(row.escalation_score, 0)  # compatibility storage only
+        self.assertEqual(row.escalation_level, "UNASSESSED")
         stored = json.loads(row.raw_response)
         self.assertEqual(stored["_provenance"]["source_snapshot"], self.payload)
         self.assertEqual(stored["_provenance"]["semantic_entailment"], "unverified")
@@ -186,10 +327,14 @@ class ServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn("private source", " ".join(captured.output))
         self.session.add.assert_not_called()
 
-    async def test_unknown_current_window_and_thin_payload_do_not_call_model(self):
+    async def test_unknown_index_does_not_block_bounded_timed_source_synthesis(self):
         generator._compute_escalation_score.return_value = None
         await generator._generate_sitrep("manual")
-        self.provider.assert_not_called()
+        self.provider.assert_called_once()
+        stored=json.loads(self.session.add.call_args.args[0].raw_response)
+        self.assertEqual(stored["_provenance"]["report_activity_index_status"],"unassessed")
+        self.provider.reset_mock()
+        generator._last_model_attempt_at=None
         generator._build_event_payload.return_value = [{"id": 1}]
         await generator._generate_sitrep("manual")
         self.provider.assert_not_called()
@@ -203,6 +348,14 @@ class ServiceTests(unittest.IsolatedAsyncioTestCase):
         with patch("app.services.runtime.runtime.start") as start:
             generator._schedule_video()
             start.assert_not_called()
+
+    async def test_outbound_boundary_rejects_nested_restricted_excerpt(self):
+        self.payload[0]["source_reports"]=[{"source_platform":"telegram","raw_excerpt":"Synthetic restricted text."}]
+        from app.services.local_briefing import SourcePermissionRequired
+        with self.assertRaises(SourcePermissionRequired):
+            await generator._generate_sitrep("manual")
+        self.provider.assert_not_called()
+        self.session.add.assert_not_called()
 
 
 class LocalContextAndScoreTests(unittest.IsolatedAsyncioTestCase):
@@ -221,17 +374,19 @@ class LocalContextAndScoreTests(unittest.IsolatedAsyncioTestCase):
     async def test_empty_score_window_is_unknown(self):
         session = SimpleNamespace(execute=AsyncMock(return_value=SimpleNamespace(all=lambda: [])))
         self.assertIsNone(await generator._compute_escalation_score(session))
-        self.assertEqual(session.execute.await_count, 1)
+        session.execute.assert_not_awaited()
 
-    async def test_score_uses_matching_baseline_and_no_confirmation_component(self):
+    async def test_raw_severity_cannot_create_escalation_or_critical_verdicts(self):
         session = SimpleNamespace(execute=AsyncMock(side_effect=[
             SimpleNamespace(all=lambda: [(10, None, None)]),
             SimpleNamespace(scalar_one=lambda: 0),
         ]))
-        self.assertEqual(await generator._compute_escalation_score(session), 50)
-        queries = [str(call.args[0]) for call in session.execute.await_args_list]
-        self.assertTrue(all("timestamp" in query and "severity" in query for query in queries))
-        self.assertTrue(all("confirmed_networks" not in query for query in queries))
+        self.assertIsNone(await generator._compute_escalation_score(session))
+        self.assertFalse(await generator._check_breaking_event(session,datetime.now(timezone.utc)))
+        self.assertEqual(await generator._check_source_convergence(session),(False,""))
+        self.assertEqual(await generator._count_new_high_sev_events(session,datetime.now(timezone.utc)),0)
+        self.assertEqual(generator.score_to_level(100),"UNASSESSED")
+        session.execute.assert_not_awaited()
 
     async def test_event_snapshot_exposes_thermal_limits_and_truncation(self):
         event = SimpleNamespace(id=1, source="satellite_firms", channel_name="NASA FIRMS", raw_text="heat",

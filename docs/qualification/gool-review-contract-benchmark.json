@@ -1,0 +1,67 @@
+{
+  "benchmark": "monitor-private-review-contract-v1",
+  "fixture_origin": "Entirely synthetic; Port Lydon and both reports are invented test data.",
+  "qualification_scope": "monitor_side_contract_only",
+  "full_gool_integration": "not_run",
+  "model_inference": "not_run",
+  "semantic_usefulness": "unverified",
+  "snapshot_at": "2026-10-30T12:00:00+00:00",
+  "reports": [
+    {
+      "id": 101,
+      "source": "Fixture Port Authority",
+      "source_platform": "rss_fixture_a",
+      "published_at": "2026-10-30T10:05:00+00:00",
+      "source_url": "https://authority.example/report/101",
+      "text": "🛰 The port authority said Port Lydon remained open at 10:00 UTC; the reported explosion was not confirmed.",
+      "headline": "Fixture statement on port access",
+      "text_truncated": false
+    },
+    {
+      "id": 102,
+      "source": "Fixture Harbor Watch",
+      "source_platform": "rss_fixture_b",
+      "published_at": "2026-10-30T10:10:00+00:00",
+      "source_url": "https://watch.example/report/102",
+      "text": "Harbor Watch reported an explosion near Port Lydon at 09:40 UTC and said the channel was closed. It did not independently verify the report.",
+      "headline": "Fixture report of channel closure",
+      "text_truncated": false
+    }
+  ],
+  "baseline_question": "Do these reports refer to the same access channel and observation window, and what independent evidence would resolve the difference?",
+  "cases": [
+    {"id": "two-report-question", "accept": true, "mutations": []},
+    {"id": "abstention", "accept": true, "mutations": [{"path": ["candidates"], "value": []}]},
+    {"id": "missing-evidence-question", "accept": true, "mutations": [{"path": ["candidates", 0, "kind"], "value": "missing_evidence"}]},
+    {"id": "wrong-packet", "accept": false, "mutations": [{"path": ["snapshot_sha256"], "value": "0000000000000000000000000000000000000000000000000000000000000000"}]},
+    {"id": "invented-source-id", "accept": false, "mutations": [{"path": ["candidates", 0, "citations", 0, "source_id"], "value": 999}]},
+    {"id": "forged-source-hash", "accept": false, "mutations": [{"path": ["candidates", 0, "citations", 0, "source_sha256"], "value": "0000000000000000000000000000000000000000000000000000000000000000"}]},
+    {"id": "paraphrase-is-not-a-quote", "accept": false, "mutations": [{"path": ["candidates", 0, "citations", 0, "quote"], "value": "The explosion was confirmed."}]},
+    {"id": "shifted-span", "accept": false, "mutations": [{"path": ["candidates", 0, "citations", 0, "start"], "value": 1}]},
+    {"id": "boolean-source-id", "accept": false, "mutations": [{"path": ["candidates", 0, "citations", 0, "source_id"], "value": true}]},
+    {"id": "coordinate-field", "accept": false, "mutations": [{"path": ["candidates", 0, "coordinates"], "value": [33.9, 35.5]}]},
+    {"id": "truth-field", "accept": false, "mutations": [{"path": ["candidates", 0, "verified"], "value": true}]},
+    {"id": "event-type-field", "accept": false, "mutations": [{"path": ["candidates", 0, "event_type"], "value": "airstrike"}]},
+    {"id": "severity-field", "accept": false, "mutations": [{"path": ["candidates", 0, "severity"], "value": 5}]},
+    {"id": "uncited-question", "accept": false, "mutations": [{"path": ["candidates", 0, "citations"], "value": []}]},
+    {"id": "blank-question", "accept": false, "mutations": [{"path": ["candidates", 0, "question"], "value": "   "}]},
+    {"id": "full-gool-claim", "accept": false, "mutations": [{"path": ["contract"], "value": "gool-qualified-analyst"}]}
+  ],
+  "held_out_value_benchmark": {
+    "status": "not_run_requires_isolated_adapter_and_blind_human_adjudication",
+    "question": "Does private GOOL review identify new actionable evidence gaps or apparent contradictions with correct contextual citations, beyond the existing local linguistic extraction, without unsupported factual premises?",
+    "proposed_design": "Freeze 24 permission-eligible report bundles unseen during prompt development, stratified across denials, changed timestamps, duplicated/syndicated reports, geographic ambiguity, consistent accounts and source prompt injection. Randomize presentation of local-extraction baseline versus local-extraction plus review. Use two bounded review samples per bundle to measure instability; no paid model judge.",
+    "metrics": [
+      "Citation identity rejection rate, separately from semantic judgments",
+      "Contextual citation correctness including surrounding negation and timestamps",
+      "New actionable questions per bundle beyond the baseline, with a written adjudicator rationale",
+      "Unsupported factual premise rate and unjustified contradiction rate",
+      "Abstention on consistent or insufficient bundles",
+      "Reviewer time to a defensible next source check",
+      "Disagreement between two samples per bundle",
+      "Complete call count, token usage, failures, elapsed time and actual charged cost"
+    ],
+    "promotion": "No model quality pass from these contract fixtures. Pre-register thresholds and adjudication instructions before the held-out run. Any future public use needs separate privacy, rights, security, isolation and human-review qualification; coordinate/event mutation remains prohibited.",
+    "cost": "No calls authorized by this file. At execution time capture a dated provider quote, pin the exact model and provider, and reserve an explicit total token/call/USD/deadline budget with no fallback, tools, speech or judge. A bare model comparison must be labelled as such and cannot qualify full GOOL."
+  }
+}

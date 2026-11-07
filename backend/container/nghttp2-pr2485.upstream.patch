@@ -1,0 +1,289 @@
+From 06fb688be2c41206f8012f1d3149ba862d21a631 Mon Sep 17 00:00:00 2001
+From: Tatsuhiro Tsujikawa <tatsuhiro.t@gmail.com>
+Date: Sat, 28 Jun 2025 16:57:24 +0900
+Subject: [PATCH] Add "glitch" counter
+
+Any suspicious activity such as DATA frames to a stream which does not
+exist are counted to so called "glitch" counter.  If it increases more
+than the configured rate, GOAWAY is sent and the connection is closed.
+---
+ lib/nghttp2_session.c        | 124 ++++++++++++++++++++++++++++++++++-
+ lib/nghttp2_session.h        |   6 ++
+ tests/nghttp2_session_test.c |  22 +++++++
+ 3 files changed, 151 insertions(+), 1 deletion(-)
+
+diff --git a/lib/nghttp2_session.c b/lib/nghttp2_session.c
+index 2b3c5752db..50aef427f5 100644
+--- a/lib/nghttp2_session.c
++++ b/lib/nghttp2_session.c
+@@ -475,6 +475,10 @@ static int session_new(nghttp2_session **session_ptr,
+                        NGHTTP2_DEFAULT_STREAM_RESET_BURST,
+                        NGHTTP2_DEFAULT_STREAM_RESET_RATE);
+ 
++  nghttp2_ratelim_init(&(*session_ptr)->glitch_ratelim,
++                       NGHTTP2_DEFAULT_GLITCH_BURST,
++                       NGHTTP2_DEFAULT_GLITCH_RATE);
++
+   if (server) {
+     (*session_ptr)->server = 1;
+   }
+@@ -3380,11 +3384,31 @@ static int session_call_on_invalid_frame_recv_callback(nghttp2_session *session,
+   return 0;
+ }
+ 
++static int session_update_glitch_ratelim(nghttp2_session *session) {
++  if (session->goaway_flags & NGHTTP2_GOAWAY_TERM_ON_SEND) {
++    return 0;
++  }
++
++  nghttp2_ratelim_update(&session->glitch_ratelim, nghttp2_time_now_sec());
++
++  if (nghttp2_ratelim_drain(&session->glitch_ratelim, 1) == 0) {
++    return 0;
++  }
++
++  return nghttp2_session_terminate_session(session, NGHTTP2_ENHANCE_YOUR_CALM);
++}
++
+ static int session_handle_invalid_stream2(nghttp2_session *session,
+                                           int32_t stream_id,
+                                           nghttp2_frame *frame,
+                                           int lib_error_code) {
+   int rv;
++
++  rv = session_update_glitch_ratelim(session);
++  if (rv != 0) {
++    return rv;
++  }
++
+   rv = nghttp2_session_add_rst_stream(
+     session, stream_id, get_error_code_from_lib_error_code(lib_error_code));
+   if (rv != 0) {
+@@ -5448,6 +5472,16 @@ nghttp2_ssize nghttp2_session_mem_recv2(nghttp2_session *session,
+         if (rv == NGHTTP2_ERR_IGN_PAYLOAD) {
+           DEBUGF("recv: DATA not allowed stream_id=%d\n",
+                  iframe->frame.hd.stream_id);
++
++          rv = session_update_glitch_ratelim(session);
++          if (rv != 0) {
++            return rv;
++          }
++
++          if (iframe->state == NGHTTP2_IB_IGN_ALL) {
++            return (nghttp2_ssize)inlen;
++          }
++
+           iframe->state = NGHTTP2_IB_IGN_DATA;
+           break;
+         }
+@@ -5473,6 +5507,20 @@ nghttp2_ssize nghttp2_session_mem_recv2(nghttp2_session *session,
+           break;
+         }
+ 
++        /* Empty DATA frame without END_STREAM flag set is
++           suspicious. */
++        if (iframe->payloadleft == 0 &&
++            (iframe->frame.hd.flags & NGHTTP2_FLAG_END_STREAM) == 0) {
++          rv = session_update_glitch_ratelim(session);
++          if (rv != 0) {
++            return rv;
++          }
++
++          if (iframe->state == NGHTTP2_IB_IGN_ALL) {
++            return (nghttp2_ssize)inlen;
++          }
++        }
++
+         iframe->state = NGHTTP2_IB_READ_DATA;
+         break;
+       }
+@@ -5549,6 +5597,15 @@ nghttp2_ssize nghttp2_session_mem_recv2(nghttp2_session *session,
+         }
+ 
+         if (rv == NGHTTP2_ERR_IGN_HEADER_BLOCK) {
++          rv = session_update_glitch_ratelim(session);
++          if (rv != 0) {
++            return rv;
++          }
++
++          if (iframe->state == NGHTTP2_IB_IGN_ALL) {
++            return (nghttp2_ssize)inlen;
++          }
++
+           iframe->state = NGHTTP2_IB_IGN_HEADER_BLOCK;
+           break;
+         }
+@@ -5569,6 +5626,18 @@ nghttp2_ssize nghttp2_session_mem_recv2(nghttp2_session *session,
+           break;
+         }
+ 
++        /* This is deprecated RFC 7540 priorities mechanism which is
++           very unpopular.  We do not expect it is received so
++           frequently. */
++        rv = session_update_glitch_ratelim(session);
++        if (rv != 0) {
++          return rv;
++        }
++
++        if (iframe->state == NGHTTP2_IB_IGN_ALL) {
++          return (nghttp2_ssize)inlen;
++        }
++
+         iframe->state = NGHTTP2_IB_READ_NBYTE;
+ 
+         inbound_frame_set_mark(iframe, NGHTTP2_PRIORITY_SPECLEN);
+@@ -5741,8 +5810,17 @@ nghttp2_ssize nghttp2_session_mem_recv2(nghttp2_session *session,
+         if (check_ext_type_set(session->user_recv_ext_types,
+                                iframe->frame.hd.type)) {
+           if (!session->callbacks.unpack_extension_callback) {
+-            /* Silently ignore unknown frame type. */
++            /* Receiving too frequent unknown frames is suspicious. */
++            rv = session_update_glitch_ratelim(session);
++            if (rv != 0) {
++              return rv;
++            }
++
++            if (iframe->state == NGHTTP2_IB_IGN_ALL) {
++              return (nghttp2_ssize)inlen;
++            }
+ 
++            /* Silently ignore unknown frame type. */
+             busy = 1;
+ 
+             iframe->state = NGHTTP2_IB_IGN_PAYLOAD;
+@@ -5854,6 +5932,17 @@ nghttp2_ssize nghttp2_session_mem_recv2(nghttp2_session *session,
+               break;
+             }
+ 
++            /* Receiving too frequent PRIORITY_UPDATE is
++               suspicious. */
++            rv = session_update_glitch_ratelim(session);
++            if (rv != 0) {
++              return rv;
++            }
++
++            if (iframe->state == NGHTTP2_IB_IGN_ALL) {
++              return (nghttp2_ssize)inlen;
++            }
++
+             if (iframe->payloadleft > sizeof(iframe->raw_sbuf)) {
+               busy = 1;
+               iframe->state = NGHTTP2_IB_IGN_PAYLOAD;
+@@ -5867,6 +5956,16 @@ nghttp2_ssize nghttp2_session_mem_recv2(nghttp2_session *session,
+ 
+             break;
+           default:
++            /* Receiving too frequent unknown frames is suspicious. */
++            rv = session_update_glitch_ratelim(session);
++            if (rv != 0) {
++              return rv;
++            }
++
++            if (iframe->state == NGHTTP2_IB_IGN_ALL) {
++              return (nghttp2_ssize)inlen;
++            }
++
+             busy = 1;
+ 
+             iframe->state = NGHTTP2_IB_IGN_PAYLOAD;
+@@ -5963,6 +6062,15 @@ nghttp2_ssize nghttp2_session_mem_recv2(nghttp2_session *session,
+         }
+ 
+         if (rv == NGHTTP2_ERR_IGN_HEADER_BLOCK) {
++          rv = session_update_glitch_ratelim(session);
++          if (rv != 0) {
++            return rv;
++          }
++
++          if (iframe->state == NGHTTP2_IB_IGN_ALL) {
++            return (nghttp2_ssize)inlen;
++          }
++
+           iframe->state = NGHTTP2_IB_IGN_HEADER_BLOCK;
+           break;
+         }
+@@ -6509,6 +6617,20 @@ nghttp2_ssize nghttp2_session_mem_recv2(nghttp2_session *session,
+ 
+       iframe->frame.data.padlen = (size_t)padlen;
+ 
++      /* Empty DATA frame without END_STREAM flag set is
++         suspicious. */
++      if (iframe->payloadleft == 0 &&
++          (iframe->frame.hd.flags & NGHTTP2_FLAG_END_STREAM) == 0) {
++        rv = session_update_glitch_ratelim(session);
++        if (rv != 0) {
++          return rv;
++        }
++
++        if (iframe->state == NGHTTP2_IB_IGN_ALL) {
++          return (nghttp2_ssize)inlen;
++        }
++      }
++
+       iframe->state = NGHTTP2_IB_READ_DATA;
+ 
+       break;
+diff --git a/lib/nghttp2_session.h b/lib/nghttp2_session.h
+index 419d23b5a9..25f300d23f 100644
+--- a/lib/nghttp2_session.h
++++ b/lib/nghttp2_session.h
+@@ -106,6 +106,10 @@ typedef struct {
+ #define NGHTTP2_DEFAULT_STREAM_RESET_BURST 1000
+ #define NGHTTP2_DEFAULT_STREAM_RESET_RATE 33
+ 
++/* The default values for glitch rate limiter. */
++#define NGHTTP2_DEFAULT_GLITCH_BURST 1000
++#define NGHTTP2_DEFAULT_GLITCH_RATE 33
++
+ /* The default max number of CONTINUATION frames following an incoming
+    HEADER frame. */
+ #define NGHTTP2_DEFAULT_MAX_CONTINUATIONS 8
+@@ -229,6 +233,8 @@ struct nghttp2_session {
+   /* Stream reset rate limiter.  If receiving excessive amount of
+      stream resets, GOAWAY will be sent. */
+   nghttp2_ratelim stream_reset_ratelim;
++  /* Rate limiter for all kinds of glitches. */
++  nghttp2_ratelim glitch_ratelim;
+   /* Sequential number across all streams to process streams in
+      FIFO. */
+   uint64_t stream_seq;
+diff --git a/tests/nghttp2_session_test.c b/tests/nghttp2_session_test.c
+index 33ccdaae30..951fb4fbc1 100644
+--- a/tests/nghttp2_session_test.c
++++ b/tests/nghttp2_session_test.c
+@@ -2237,6 +2237,7 @@ void test_nghttp2_session_recv_unknown_frame(void) {
+   size_t datalen;
+   nghttp2_frame_hd hd;
+   nghttp2_ssize rv;
++  nghttp2_outbound_item *item;
+ 
+   nghttp2_frame_hd_init(&hd, 16000, 99, NGHTTP2_FLAG_NONE, 0);
+ 
+@@ -2258,6 +2259,27 @@ void test_nghttp2_session_recv_unknown_frame(void) {
+   assert_null(nghttp2_session_get_next_ob_item(session));
+ 
+   nghttp2_session_del(session);
++
++  /* Receiving too many unknown frames */
++  nghttp2_session_server_new(&session, &callbacks, NULL);
++
++  for (;;) {
++    rv = nghttp2_session_mem_recv2(session, data, datalen);
++
++    assert_ptrdiff(rv, ==, (nghttp2_ssize)datalen);
++
++    if (session->iframe.state == NGHTTP2_IB_IGN_ALL) {
++      break;
++    }
++  }
++
++  item = nghttp2_session_get_next_ob_item(session);
++
++  assert_not_null(item);
++  assert_uint8(NGHTTP2_GOAWAY, ==, item->frame.hd.type);
++  assert_uint32(NGHTTP2_ENHANCE_YOUR_CALM, ==, item->frame.goaway.error_code);
++
++  nghttp2_session_del(session);
+ }
+ 
+ void test_nghttp2_session_recv_unexpected_continuation(void) {

@@ -1,18 +1,14 @@
 # Conflict Monitor
 
-An OSINT workspace centered on one persistent Google Earth canvas, with source reports, regional ADS-B/AIS, thermal observations, replay, Media and Brief panels. It preserves original evidence and makes source age, unresolved locations and coverage limits visible. Optional local Qwen extraction and Piper/FFmpeg narrated source cards use no paid inference or speech API.
+Explore source reports and regional tracking in one persistent Earth workspace. Earth, Media and Brief share the same Cesium canvas, so opening a panel preserves your camera position. Reports retain citations, collection clocks, revisions and unresolved locations.
 
-**0.2.0-rc.2 source candidate.** This immutable snapshot records completed [Earth imagery and usability](docs/EARTH_QUALITY_REVIEW.md), [container security](docs/OS_SECURITY_REVIEW.md) and source-bound checks. Backend testing passed **597 Linux tests plus 29 subtests**; the admitted frontend passed **229 tests**. The database restore and real narrated-video path have separate completed gates.
+**Start with the keyless exercise below, or run a private operator instance with Docker Compose.** Detailed Google photography needs a restricted browser key and Google billing. The public reader is a separate, limited data surface - not permission to expose the operator instance.
 
-Frontend `71dae32e` is [live-admitted](docs/qualification/2026-10-30-rc2-frontend-timeline-admission-229.json): the timeline leaves arrows with native video, controls, focusable content and visible dialogs. [Targeted browser checks](docs/qualification/2026-10-30-rc2-timeline-keyboard-229.json) passed all 33 cases in isolated and live runs after the old image failed 12 of 33. Earlier `b6e6bc17` mobile/accessibility results, its 224-test admission, the 225-test-only split and hosted commit `b15a60eb` remain evidence for their original phases. Interrupted observations do not count toward the replacement profile.
+**Release status: RC.5 source release candidate 18; public hosting is not approved.** Finite checks, seven four-hour core streams and a separate four-hour mobile-emulated public session are complete. The post-observation official security refresh is complete in its stated image/native scope; the release workflow and exact downloaded-asset evidence govern final publication.
 
-Final release admission is recorded in `conflict-monitor-0.2.0-rc.2-verification.json`, attached to the [RC.2 release page](https://github.com/DankWoodsmoke/conflict-monitor-public/releases/tag/v0.2.0-rc.2) when published. It must report PASS for the exact tag, source ZIP and manifest, including the final 183-minute Google and 185-minute server measurements and merge/tag CI. Independent public-download verification checks those bindings after publication. This source snapshot does not assert those post-freeze gates passed. [RC.1](https://github.com/DankWoodsmoke/conflict-monitor-public/releases/tag/v0.2.0-rc.1) retains its original bytes; the former server and original private repository were not changed. See [verification](docs/VERIFICATION.md) for scopes and retained limits.
+## Try it without credentials
 
-[![Verify RC.2 branch](https://github.com/DankWoodsmoke/conflict-monitor-public/actions/workflows/verify.yml/badge.svg?branch=codex%2Frelease-rc2-security-mobile)](https://github.com/DankWoodsmoke/conflict-monitor-public/actions/workflows/verify.yml)
-
-## Explore without credentials
-
-Use Node.js 22.12 or newer:
+From the repository root, use Node.js 22.12 or newer:
 
 ```sh
 cd frontend
@@ -20,68 +16,70 @@ npm ci
 npm run dev
 ```
 
-Open **http://localhost:5173/?showcase=true**. The explicit exercise uses local cartography and synthetic reports, tracks, media panels, markets and analysis. No database or model service is required. The capability tour opens panels within Earth; export saves the exercise data and reference clock. Earlier `view=map` and `view=3d` links resolve to Earth.
+Open **http://localhost:5173/?showcase=true**. This explicitly synthetic exercise needs no database or model service. Its capability tour opens panels within Earth; export saves exercise data and its reference clock. Old `view=map` and `view=3d` links resolve to Earth.
 
-The **Earth** view uses Cesium and Google Photorealistic 3D Tiles. Configure a browser-restricted Google Maps key in Settings to enable detailed photography. A self-hosted deployment can set `GOOGLE_EARTH_ENABLED=true` and `GOOGLE_MAPS_BROWSER_KEY` for automatic Earth configuration without rebuilding the frontend. That explicitly public browser key is delivered by `/config`; backend credentials remain server-only. Google requires its Map Tiles API, billing and visible attribution. Imagery dates and 3D coverage vary; it is not a live satellite feed and does not establish an event's date or location.
+The exercise's globe is a static **NASA Blue Marble May 2004** reference, not detailed or current satellite imagery. [Retained exercise previews](docs/screenshots/may2004-showcase-earth-desktop-20261030T001722Z.png) show that earlier synthetic workspace, not the current Google imagery or live-data qualification.
 
-**To inspect real imagery**, leave the keyless exercise using **Open live Earth**, select a reference city such as Dubai or Tehran, then choose **Top down** or **Oblique 3D**. **Focus Earth** expands the desktop workspace; **Imagery and detail** exposes the provider, loading state and balanced/detail setting. Native-resolution rendering is bounded to 2× device pixel ratio and eight million pixels. Controls collapse on small screens, while Earth, Media and Brief share the same canvas. On imagery failure a named reference layer remains available with an explicit retry. The keyless exercise uses a static NASA May 2004 daytime globe for orientation; it cannot show city detail.
+## Enable real Earth imagery
 
-## Capabilities
+Choose **Open live Earth**, then configure a browser-restricted Google Maps key in **Settings**. Enable the Map Tiles API and restrict the key to the intended HTTP referrers and API. A self-hosted deployment can set `GOOGLE_EARTH_ENABLED=true` and `GOOGLE_MAPS_BROWSER_KEY` to configure Earth without rebuilding the frontend.
 
-| Workspace | Implemented capability | Verification boundary |
+That browser key is intentionally delivered through `/config`; never use a server credential there. Google requires billing and visible attribution. Root sessions can incur charges: free source data does not make Google imagery unlimited or free. Verify actual quotas and pricing before sharing a deployment; budget alerts are not a hard spending cap. See [imagery and hosting controls](docs/PUBLIC_HOSTING.md).
+
+Select a reference city such as Dubai or Tehran, then use **Top down** or **Oblique 3D**. **Focus Earth** expands the desktop workspace; **Imagery and detail** shows provider state and detail controls. Rendering is bounded to 2x device pixel ratio and eight million pixels. Controls collapse on small screens; a labeled reference layer and explicit retry remain available on imagery failure.
+
+Photographic coverage and capture dates vary. This is not a live satellite feed, and imagery alone does not establish an incident's date or location.
+
+## Choose the right workspace
+
+| Surface | What it provides | What its evidence means |
 | --- | --- | --- |
-| Earth | Persistent Cesium/Google imagery, close city views, native-resolution/detail controls, focus mode, report feed and filters, coordinate/place search, source selection, regional aircraft/vessels, thermal observations and replay | Unknown locations stay unplotted. Tracking is explicitly projected onto the surface; no altitude conversion or motion extrapolation is invented. Unknown headings use a neutral marker. |
-| Media panel | External media activation and real locally narrated source-card MP4s, with segment-timed captions and an exact narration transcript, preserving the Earth camera | Video reads attributed reports; it contains no incident footage. Caption timing is per source card, not word aligned. External broadcasters retain their own availability and rights. |
-| Brief panel | Source digest, report references and optional local topic/stance/mention extraction; inherited analysis remains labeled | Model labels and source mentions remain unreviewed. Literal spans and valid JSON do not establish factual truth or an incident location. |
-| Evidence | Preserved original reports, content hashes, source-scoped identities, revisions, explicit extraction failures | Report/network counts never automatically become independent confirmation. |
-| Tracking | Four bounded regional ADS-B circles, AIS, explicit fresh/last-known ages, recorded replay and optional navigation-quality candidates | Partial receiver coverage is explicit. Expired positions disappear. Navigation degradation alone does not establish jamming. Active orbital markers and cosmetic sensor-like shaders have been removed. |
+| Private operator | Source feed, filters, citations, regional ADS-B/AIS, thermal context and recorded replay | Unknown locations stay unplotted. Fresh, last-known and recorded positions remain distinct; surface projections do not invent altitude or motion. |
+| Operator Media | Deliberately activated external media and optional locally narrated source-card MP4s, captions and transcript | Source cards are not incident footage. External availability and rights remain with the publisher; caption timing is per card. |
+| Operator Brief | Attributed source digest and optional local topic, stance and mention extraction | Model labels and mentions remain unreviewed; valid JSON and literal spans are not factual confirmation. |
+| Public reader | Separately published NASA thermal observations and regional adsb.lol snapshots, with clocks, attribution and exact-batch downloads | Thermal pixels do not identify strikes; broadcasts do not establish missions, ownership or complete regional coverage. |
 
-The default free profile preserves publisher text with `UNSCORED` severity and unresolved locations unless a sensor supplies coordinates. It never sends those reports to a paid classifier. Optional model-assisted extraction/synthesis requires deliberate configuration and separate accuracy qualification.
+Public visitors can inspect Earth and dataset provenance; Media and Brief explain their withheld state. Private reports, Telegram, GOOL context, operator controls, model costs and generated artifacts are not published. The public SQL role reads only two dedicated publication tables. See [public data and redistribution terms](docs/PUBLIC_DATA.md).
 
-## Demonstrate the workspace
+The default free operator profile preserves reports with `UNSCORED` severity and unresolved locations unless a sensor supplies coordinates. It does not send those reports to a paid classifier. Source counts do not automatically become independent confirmation, and cached freshness does not establish every upstream region's availability.
 
-1. Open live Earth and enable Google imagery through Settings or your deployment's restricted browser key. Choose a city view, inspect the imagery at street/building scale, then use Focus Earth or Top down/Oblique 3D. Check provider attribution and source health before describing anything as current. The keyless showcase labels its synthetic data and static reference globe explicitly.
-2. Explore reports and source/time filters, open a cited source, then compare its publication clock with collection time. Unlocated reports stay in the feed. Tracking controls distinguish fresh, last-known and recorded positions; the four aircraft regions describe the actual coverage.
-3. Open Media, then return to Earth to show that the camera and canvas persist. External broadcasts need deliberate activation; an embedded page is not proof of live playback. The narrated briefing contains editorial source cards, not incident footage.
-4. Open Brief for the attributed source digest and, when configured, optional local analysis. Inspect original citations and unreviewed labels. Local generation requires the operator key and a deliberate action; opening a panel starts no inference or speech job.
+## Run a private instance with an empty database
 
-The capability tour and export in the keyless showcase can demonstrate these controls without disclosing credentials or redistributing live publisher text. See [verification](docs/VERIFICATION.md) for measured browser, source and media behavior.
-
-## Preview
-
-These previews show the synthetic, keyless exercise with the **NASA Blue Marble May 2004 daytime reference** at globe scale. They do not depict the detailed Google imagery available in a configured deployment. Use **Open live Earth** and an inspection-city control to see that capability.
-
-![Earth workspace with synthetic reports and a dated daytime reference globe](docs/screenshots/may2004-showcase-earth-desktop-20261030T001722Z.png)
-
-Also see [Media](docs/screenshots/may2004-showcase-media-desktop-20261030T001722Z.png), [Brief](docs/screenshots/may2004-showcase-brief-desktop-20261030T001722Z.png) and [390-pixel portrait](docs/screenshots/may2004-showcase-earth-portrait390-20261030T001722Z.png). The [preview receipt](docs/screenshots/may2004-showcase-20261030T001722Z-receipt.json) binds them to the earlier `03b08f` image, with no external imagery, live-data or generation requests. They are retained previews of that phase, not final RC.2 UI qualification or current imagery/source truth. Original RC.1 previews remain preserved. The live workspace uses the operator's configured Google imagery and offers close city inspection; these public screenshots deliberately use the distributable NASA reference.
-
-The optional free tools are configured in [local AI/video](docs/LOCAL_AI_VIDEO.md). The application never pulls a model or voice automatically. Operator-triggered work is authenticated, bounded and published only after its respective validation gates. The measured model comparison includes rejected batches and remaining errors. The inherited paid standalone video script is retained as historical source; automatic paid generation remains disabled by default.
-
-Narrated briefings verify the manifest's exact narration hashes before enabling captions or the transcript. Production Firefox testing retained a paused-frame caption repaint failure: user-triggered playback restored the visible captions, while the transcript remained available. Chromium/WebKit passed strict paused restoration. The page explains the Firefox recovery without forcing playback or seeking; it is not counted as a third paused-repaint pass. No physical iPhone, screen reader or native mobile background/eviction behavior is certified.
-
-## Self-host with an empty database
-
-Copy `.env.example` to `.env`. Set different new `POSTGRES_PASSWORD` and `POSTGRES_APP_PASSWORD` values (32 random bytes, represented as 64 hexadecimal characters each), plus a new `ADMIN_API_KEY`, then:
+Use Docker with Compose. Copy `.env.example` to `.env`; set different new `POSTGRES_PASSWORD` and `POSTGRES_APP_PASSWORD` values, each 32 random bytes represented as 64 hexadecimal characters, plus a new `ADMIN_API_KEY`. Keep `.env` private. From the repository root:
 
 ```sh
 docker compose up --build
 ```
 
-Open **http://localhost:5173/**. Collection defaults to disabled. Configure your own providers before setting `LIVE_INGESTION_ENABLED=true`. Paid situation reports additionally require `ENABLE_SITREP_GENERATION=true` and a configured model key. Administrative writes require `X-Admin-Key`; a missing server key disables them.
+Open **http://localhost:5173/**. Collection defaults to disabled. Configure your providers before setting `LIVE_INGESTION_ENABLED=true`. Paid situation reports additionally require `ENABLE_SITREP_GENERATION=true` and a configured model key. Administrative writes require `X-Admin-Key`; a missing server key disables them. Telegram defaults to disabled; its authorized Bot API path does not require a personal account session.
 
-Compose builds the database from the pinned source recipe in `tools/postgis`: PostgreSQL 17.11/PostGIS 3.6.4, an explicit upstream FlatGeobuf security backport and gosu 1.20. This reduced profile retains core spatial/topology/Tiger support and excludes raster, address standardizer and SFCGAL. A one-shot `migrate` service initializes Alembic and grants the separate `monitor` runtime role; HTTP workers receive no database administrator secret. The new default `pgdata17_36_secure` volume deliberately avoids both older volume names. **Existing data requires a rehearsed logical restore into a new volume**, with the old volume and rollback profile preserved. Follow [database upgrade and permissions](docs/DB_UPGRADE.md); do not attach the new image directly to old database files. The [executed RC.2 restore](docs/qualification/2026-10-30-rc2-database-cutover-and-regressions.json) verifies ten tables and five sequences for this deployment, not compatibility with every excluded extension. The old server's environment, database and sessions are not bundled.
+Compose builds PostgreSQL 17.11/PostGIS 3.6.4 on a pinned Alpine base. A one-shot initializer applies migrations and grants a separate restricted runtime role; HTTP workers receive no database administrator secret. Local ports bind to loopback and the database has no published port. The default `pgdata17_36_alpine` is a fresh volume.
 
-The shipped profile runs backend UID 10001 and frontend UID 101 with all capabilities dropped and no new privileges. Frontend/database root filesystems are read-only; the database entrypoint has narrowly listed initialization capabilities, while its observed server PID1 runs as UID 999 with no effective capabilities. Local ports bind to loopback and the database has no published port. [Actual isolated Compose qualification](docs/qualification/2026-10-30-compose-profile-ci-preflight.json) checked these boundaries and seven HTTP header/cache cases; it does not clear the Docker host or unresolved vendor advisories.
+**Existing data needs a rehearsed logical restore into a new volume.** Preserve the old volume and rollback profile; glibc-to-musl changes can affect Unicode ordering. Read [database upgrade and permissions](docs/DB_UPGRADE.md) before migration. The private April archive was preserved separately, including legacy clock and dummy-coordinate issues; it is not merged into live observations or bundled here. See [historical recovery](docs/HISTORICAL_RECOVERY.md).
 
-The original April production dump was recovered separately into a private, isolated archive: all 53,715 rows round-tripped exactly. It contains legacy schema, source-clock anomalies and 5,991 dummy event coordinates, so it was preserved without merging its claims or locations into live data. See [historical recovery](docs/HISTORICAL_RECOVERY.md). No publisher bodies or private database are part of this source release.
+For a configured development database, the API command is `cd backend && uvicorn app.main:app --host 127.0.0.1 --port 8000`. Vite and production nginx proxy `/api` on the same origin. `/health` checks database/schema availability; `/status` describes process state and provider freshness. A running process is not evidence of fresh upstream data.
 
-Development API: `cd backend && uvicorn app.main:app --host 127.0.0.1 --port 8000`. Vite proxies `/api`; the production frontend uses the same-origin nginx proxy. `/health` checks the database/schema, `/status` reports process state and provider-specific freshness. A running process does not establish fresh upstream observations.
+Public deployment uses different publisher/reader profiles and credentials. Follow [public hosting](docs/PUBLIC_HOSTING.md) and [website integration](docs/WEBSITE_INTEGRATION.md); do not expose the private operator port as a shortcut. The measured Windows host has unresolved Critical/High deployment findings. TLS, trusted-edge identity, key/quota restrictions, encrypted off-machine recovery, startup and capacity qualification remain separate launch gates.
 
-## Verify
+## Optional local AI, video and GOOL
+
+Local Qwen triage and Piper/FFmpeg narrated source cards use local computation without a paid inference or speech API. The application does not download models or voices automatically. Generation requires deliberate operator configuration and an authenticated action; opening a panel starts no inference or speech job. Follow [local AI/video setup](docs/LOCAL_AI_VIDEO.md).
+
+The measured model comparison selected Qwen3.5 4B only for unreviewed source triage on a small frozen sample, not general factual or multilingual accuracy. The inherited paid standalone video script remains historical and automatic paid generation is disabled by default.
+
+The optional [GOOL operator workflow](docs/GOOL_REVIEW.md) reviews an approved frozen packet through an explicitly selected route in an existing GOOL checkout. No private corpus, persona or model cache is bundled, and source collection does not automatically invoke GOOL.
+
+## Verify your checkout
+
+Create a Python environment from the repository root:
 
 ```sh
 python -m venv .venv
-# Windows: .venv/Scripts/python.exe; POSIX: .venv/bin/python
+```
+
+Activate it with `.\.venv\Scripts\Activate.ps1` in Windows PowerShell or `. .venv/bin/activate` on POSIX, then run the commands below. Alternatively, invoke the virtual environment's Python by its absolute path for each Python command; its repository-relative location is `.venv/Scripts/python.exe` on Windows or `.venv/bin/python` on POSIX.
+
+```sh
 python -m pip install -r backend/requirements-dev.txt
 cd backend
 python -m pytest -q
@@ -92,22 +90,24 @@ npm run build
 npm audit
 ```
 
-The fresh-PostGIS gate is `python tools/verify_postgis.py` with `DATABASE_URL` naming a separately initialized `conflict_monitor_test` database. Initialize it through `python -m app.bootstrap` as the administrator, then run the gate as the restricted runtime role. The separate actual HTTP/WebSocket gate can additionally exercise `python tools/verify_live_pipeline.py --public-feed`. Missing infrastructure returns an incomplete/failing exit code. The [final backend-image run](docs/qualification/2026-10-30-rc2-linux-backend-597.json) passed 597 tests plus 29 subtests with no application-source mount. The 45-minute shipped-Compose CI job built all three images and passed actual restricted-role/PostGIS/TCP, container-boundary and seven header/cache cases on [qualified source commit b15a60eb](docs/qualification/2026-10-30-rc2-hosted-qualified-source-ci.json). It used isolated synthetic fixtures; the initial failed network/test runs remain preserved. Final source/tag qualification remains separate from that source-commit pass.
+From the repository root, `python tools/verify_postgis.py` requires `DATABASE_URL` naming a separately initialized `conflict_monitor_test` database. Initialize it from `backend/` with `python -m app.bootstrap` as administrator, then return to the repository root and run the gate as the restricted runtime role. `python tools/verify_live_pipeline.py --public-feed` additionally exercises actual HTTP/WebSocket and public-feed behavior. Missing infrastructure yields an incomplete/failing result.
 
-The [earlier b6e6 production browser receipt](docs/qualification/2026-10-30-rc2-mobile-accessibility.json) records 102 axe states with no reported violations, 71 keyboard samples, 30 reflow states, 12 browser/viewport cases, five E2E workflows and 18 network-recovery checks. It retains 190 incomplete axe rule occurrences and four unavailable popover states. Eight strict touch checks passed; strict pan runs remain incomplete, with separate pixel-correlated camera-motion evidence passing. These are phase-specific desktop-engine emulations, not blanket qualification of replacement bytes, full WCAG or physical devices. Firefox paused-caption repaint still requires the documented native user-resume recovery or transcript alternative.
+`python tools/release_gate.py --scan-only` checks allowlisted public source. `--package-candidate` creates a source ZIP and SHA-256 manifest; it does not certify a stable release. Export excludes secrets, sessions, databases, logs, dependency trees and private Git history.
 
-`python tools/release_gate.py --scan-only` checks the allowlisted public source. `--package-candidate` creates a source ZIP and SHA-256 manifest; it does not certify a stable release. Export excludes secrets, sessions, databases, logs, dependency trees and private Git history.
+## Measured status and remaining limits
 
-## Method and research
+Candidate 18 fixes the PostGIS build race by serializing build/install. Fresh finite checks cover 21 Google browser/viewport cases, three retained-video replay engines with limits, public reader SQL and database recovery, local load, isolation and snapshot/restore. The rebuilt database has fresh scoped checks; unchanged image contents carry explicitly historical native/backend tests. Detailed counts, raw failures, image identities and earlier candidate history belong in [verification](docs/VERIFICATION.md) and [container security review](docs/OS_SECURITY_REVIEW.md).
 
-Read [methodology](docs/METHODOLOGY.md), [current research](docs/CURRENT_RESEARCH.md), [decisions](docs/DECISIONS.md), and [security](SECURITY.md). The structural analytical lens remains visible as testable interpretation; evidence and unknowns remain inspectable.
+The candidate 18 main/raster observations each completed four real hours with 480 samples, two NASA packets, 480 ADS-B packets and natural Google renewal. Public JavaScript heap peaked at 986.233 MiB in the main observer and 1,011.279 MiB in the raster observer; lower-memory mobile usability remains a material limit. Cached freshness is not complete upstream coverage.
 
-See [source review](docs/SOURCE_REVIEW.md), [bounded source collection](docs/SOURCE_COLLECTION.md), [free data](docs/FREE_DATA_PIPELINE.md), [container security review](docs/OS_SECURITY_REVIEW.md) and [asset provenance](docs/ASSET_PROVENANCE.md) for source choices, operational bounds and execution receipts. The measured catalog has 34 native feeds; the selected free profile admits 31, with explicit stale/future-clock candidates kept separate. Publisher selection is an editorial lens, not a calibrated truth or first-reporting score.
+The separate public mobile emulation completed 14,400.530 seconds and 480 samples at 390 x 844 with touch and DPR 3. All three tabs retained Earth; natural Google renewal and 144 successful tile requests begun after three hours were observed, with zero recorded findings or generation calls. Page JavaScript peaked at 732.500 MiB and the contained Windows browser job at 1,913.508 MiB committed memory. This narrows the long-session emulation gap without qualifying physical-phone memory, Safari or background eviction.
 
-Current research covers relevant public tools, source terms, formats and model candidates. No general model leaderboard or repository activity claim substitutes for a measured event-extraction evaluation. Model selection is limited to the measured task and sample described below.
- 
-The October 29 follow-up measured three local models on a frozen twelve-case sample and selected Qwen3.5 4B only for unreviewed source triage. It does not establish general factual or multilingual accuracy. See [Earth behavior](frontend/EARTH_VERIFICATION.md) and [context/history reconciliation](docs/CONTEXT_RECONCILIATION.md) for the consolidation and recovered-history limits.
+**Completed security refresh:** The 39-source official refresh and selected-consumer review completed after all observation closures, 02:43:57-02:50:11 UTC on November 7. The late official database tuple was unchanged, so the eight earlier actual scans remain retained rather than being relabeled as new scans. Image/native scope retains zero unresolved reviewed High/Critical findings, four affected Medium/Low role rows and all raw scan records; host Critical/High deployment findings remain unresolved. Every registered observation has a recorded terminal closure; earlier runs supply no elapsed-time credit. The release workflow must verify the exact final commit through all three hosted jobs and the six admitted proofs before publication. Its actual run/publisher receipts bind the commit, tag and four asset digests; authenticated and anonymous downloaded-byte verification remain separate final checks. Early candidate 18 CI does not qualify a later documentation/proof tree, and this precommit document does not assert its own future CI or publication outcome.
+
+Firefox paused-caption repaint remains a measured limitation: user playback restores captions and the exact transcript remains available. Its out-of-duration singleton frame callback is unsupported/unqualified, with cause unverified. Windows WebKit raw RGB identity remains failed despite a qualified fixed-range decoded-content check. No physical iPhone/Safari, listener-audibility, memory-leak freedom, model truth or public-uptime claim is made. Retained replay is not fresh generation or production API/database qualification.
+
+Read [security and reporting](SECURITY.md), [methodology](docs/METHODOLOGY.md), [source review](docs/SOURCE_REVIEW.md), [bounded collection](docs/SOURCE_COLLECTION.md), [free data](docs/FREE_DATA_PIPELINE.md), [research](docs/CURRENT_RESEARCH.md) and [decisions](docs/DECISIONS.md) for the reasoning and operational limits. Publisher selection is an editorial lens, not a calibrated truth or first-reporting score.
 
 ## License
 
-MIT application code with an explicitly GPL-3.0-or-later standalone optional speech worker and GPL-2.0-or-later upstream-derived PostGIS patch, preserving the original copyright notices. The restricted FFmpeg/libx264 build has its own GPL and corresponding-source obligations. See [third-party notices](THIRD_PARTY_NOTICES.md). Dependencies, weights, provider terms and data redistribution rights are separate. No private GOOL corpus/persona, third-party dataset dump or model cache is bundled.
+MIT application code, an explicitly GPL-3.0-or-later optional standalone speech worker and a GPL-2.0-or-later upstream-derived PostGIS patch preserve their notices. The restricted FFmpeg/libx264 build has separate GPL and corresponding-source obligations. See [third-party notices](THIRD_PARTY_NOTICES.md) and [asset provenance](docs/ASSET_PROVENANCE.md). Dependency, model-weight, provider and data-redistribution rights are separate; no third-party dataset dump is bundled.

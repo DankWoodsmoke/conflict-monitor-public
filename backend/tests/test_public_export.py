@@ -36,6 +36,18 @@ def test_credentials_are_detected_even_inside_binary_asset(tmp_path, monkeypatch
     assert credential.decode() not in output
 
 
+def test_bot_tokens_are_rejected_even_inside_urls(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(gate, "ROOT", tmp_path)
+    monkeypatch.setattr("sys.argv", ["release_gate.py", "--scan-only"])
+    path = tmp_path / "README.md"
+    token = b"123456789" + b":" + b"A" * 35
+    path.write_bytes(b"https://api.telegram.org/bot" + token + b"/getUpdates")
+    assert gate.main() == 1
+    output = capsys.readouterr().out
+    assert "telegram_bot_token" in output
+    assert token.decode() not in output
+
+
 def test_allowlist_does_not_export_backup_or_runtime_trees(tmp_path, monkeypatch):
     monkeypatch.setattr(gate, "ROOT", tmp_path)
     for relative in ["README.md", "frontend/src/App.tsx", "frontend/node_modules/secret.js",
@@ -45,6 +57,16 @@ def test_allowlist_does_not_export_backup_or_runtime_trees(tmp_path, monkeypatch
         p.write_text("fixture")
     exported = {p.relative_to(tmp_path).as_posix() for p in gate.export_files()}
     assert exported == {"README.md", "frontend/src/App.tsx"}
+
+
+def test_public_profile_and_nginx_are_included_in_clean_source_export(tmp_path, monkeypatch):
+    monkeypatch.setattr(gate, "ROOT", tmp_path)
+    relative_paths = {"compose.public.yml", "frontend/nginx-public.conf", "docs/PUBLIC_HOSTING.md"}
+    for relative in relative_paths:
+        path = tmp_path / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("fixture")
+    assert {path.relative_to(tmp_path).as_posix() for path in gate.export_files()} == relative_paths
 
 
 def versioned_files(version="0.2.0-rc.2"):

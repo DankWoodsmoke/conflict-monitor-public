@@ -1,5 +1,7 @@
 import { SHOWCASE } from "../lib/runtime";
 import { nowMs } from "../lib/clock";
+import {assessedSeverity} from "../lib/events";
+import {hasUsableReportCoordinates} from "../lib/reportPosition";
 import { MAX_LOADED_REPORTS, type HistoryStatus } from "../lib/history";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ConflictEvent } from "../types/event";
@@ -271,11 +273,11 @@ export function TimelineScrubber({
   // ── Event ticks ───────────────────────────────────────────────────────────
   const ticks = useMemo(() =>
     allEvents
-      .filter((e) => e.lat != null && e.lon != null)
+      .filter(hasUsableReportCoordinates)
       .map((e) => {
         const t = new Date(e.timestamp).getTime();
         const pct = ((t - rangeStart) / fullSpan) * 100;
-        return { pct, severity: e.severity, type: e.event_type };
+        return { pct, severity: assessedSeverity(e)??0, type: e.event_type };
       })
       .filter((t) => t.pct >= 0 && t.pct <= 100),
     [allEvents, rangeStart, fullSpan],
@@ -333,10 +335,10 @@ export function TimelineScrubber({
   }, [getTimeFromX, winStart, winEnd, rangeStart, isDragging, onRangeChange]);
 
   // ── Derived stats ─────────────────────────────────────────────────────────
-  const geoEvents    = allEvents.filter((e) => e.lat != null && e.lon != null);
+  const geoEvents    = allEvents.filter(hasUsableReportCoordinates);
   const windowEvents = allEvents.filter((e) => {
     const t = new Date(e.timestamp).getTime();
-    return t >= winStart && t <= winEnd && e.lat != null && e.lon != null;
+    return t >= winStart && t <= winEnd && hasUsableReportCoordinates(e);
   });
   const currentDay  = conflictDay(new Date(nowMs()),conflictStart);
   const windowSpan  = winEnd - winStart;
@@ -475,10 +477,10 @@ export function TimelineScrubber({
             <span style={{ color: "#58a6ff", fontWeight: 700 }}>{windowEvents.length}</span>
             <span style={{ color: "#8b9eaf" }}> / {geoEvents.length} MAPPED REPORTS</span>
           </span>
-          {windowEvents.filter((e) => e.severity >= 7).length > 0 && (
+          {windowEvents.filter((e) => (assessedSeverity(e)??0) >= 6).length > 0 && (
             <span style={{ whiteSpace: "nowrap" }}>
-              <span style={{ color: "#f85149", fontWeight: 700 }}>{windowEvents.filter((e) => e.severity >= 7).length}</span>
-              <span style={{ color: "#a3b9ca" }}> HIGH</span>
+              <span style={{ color: "#f85149", fontWeight: 700 }}>{windowEvents.filter((e) => (assessedSeverity(e)??0) >= 6).length}</span>
+              <span style={{ color: "#a3b9ca" }}> HIGH ESTIMATES</span>
             </span>
           )}
           <span title="Left/Right shift the report window when the page background is focused. Controls, media and dialogs keep their own keys." style={{ color: "#a3b9ca", fontSize: 11, whiteSpace: "nowrap" }}>PAGE ← → · DRAG</span>
@@ -509,8 +511,8 @@ export function TimelineScrubber({
               }}>
                 {SHOWCASE ? "● EXERCISE" : "● LIVE"}
               </span>
-              <span style={{ fontSize: 11, color: "#a3b9ca" }}>
-                {formatTimeLabel(new Date(winStart))} →
+              <span title={`Report window: ${formatTimeLabel(new Date(winStart))} → ${formatTimeLabel(new Date(winEnd))}`} style={{ fontSize: 11, color: "#a3b9ca" }}>
+                Through {formatTimeLabel(new Date(winEnd))}
               </span>
             </div>
           ) : activePreset === "ALL" ? (
